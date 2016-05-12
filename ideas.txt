@@ -1,0 +1,39 @@
+timeline, for tagged posts etc:
+- http://tutorialzine.com/2015/06/12-time-saving-bootstrap-examples/
+
+simple post form:
+- http://www.designbootstrap.com/livedemos/2015/03/05/twitter-feed/index.html#
+
+orgs/users page, for listing:
+- http://bootstrap.snipplicious.com/snippet/10/stylish-skills-listing
+
+
+nodebb:
+- how they hide content when view shrinks, etc
+- board view
+- sort by, oldest to newest, newest to oldest, most posts: https://community.nodebb.org/category/1/announcements
+
+
+blog template:
+- http://prideparrot.com/blog/archive/2014/4/blog_template_using_twitter_bootstrap3_part1
+
+
+post form:
+- https://community.nodebb.org/compose?p=/topic/8427/share-your-feedback-on-the-new-tesla-model/2
+
+i love this look/font, so simple but i love it:
+- http://www.jonmsterling.com/
+
+nice sidebar:
+- http://blackrockdigital.github.io/startbootstrap-simple-sidebar/#
+
+http://vadimg.com/twitter-bootstrap-wizard-example/examples/basic-tabsleft.html
+
+
+the intercept, always loved the layout of this site:
+- https://theintercept.com
+- love their menu hide/show
+
+a graph from their site:
+- https://static.theintercept.com/google-viz/index.html
+- https://theintercept.com/2016/04/22/googles-remarkably-close-relationship-with-the-obama-white-house-in-two-charts/

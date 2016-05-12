@@ -1,0 +1,33 @@
+TODO FIXME API
+
+Eval/GetUsers.purs:
+x getUserSanitizedPack' user_nick
+
+
+Eval/GetThreadsPacks.purs:
+x countThreadsByBoardId board_id
+x getThreadPacks_ByBoardId
+
+
+Eval/GetThreadPosts.purs
+x countThreadPostsByThreadId thread_id
+x getThreadPosts_ByThreadId [] thread_id
+
+
+Eval/GetOrganizations.purs
+x getOrganization org_name
+x getForumForOrgName org_name forum_name
+x getBoardByForumId (show forum_id) board_name
+x getThreadByBoardId (show board_id) thread_name
+
+
+Eval/GetForums.purs
+x getForumsByOrgName org_name
+
+
+Eval/GetBoardPacks.purs
+x getBoardPacksByForumId forum_id
+
+
+Eval/CreateThreads.purs
+x postThreadByBoardId (show board_id) thread_request
