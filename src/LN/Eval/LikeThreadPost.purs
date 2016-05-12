@@ -41,7 +41,7 @@ eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Neutral thread
 
 
 eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Dislike thread_post_id) next) = do
-  let tplr = mkThreadPostLikeRequest DontLike Nothing
+  let tplr = mkThreadPostLikeRequest Dislike Nothing
   pure next
 
 
