@@ -1,8 +1,10 @@
-module LN.Input.CreateThread where
+module LN.Input.CreateThread (
+  InputCreateThread (..)
+) where
 
 
 
-import Data.Maybe
+import Data.Maybe (Maybe)
 
 
 

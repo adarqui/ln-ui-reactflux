@@ -5,7 +5,7 @@ module LN.Input.LikeThreadPost (
 
 
 data InputLikeThreadPost
-  = InputLikeThreadPost_Like Int
+  = InputLikeThreadPost_Like    Int
   | InputLikeThreadPost_Neutral Int
   | InputLikeThreadPost_Dislike Int
-  | InputLikeThreadPost_Star Int
+  | InputLikeThreadPost_Star    Int

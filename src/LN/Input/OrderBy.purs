@@ -1,4 +1,6 @@
-module LN.Input.OrderBy where
+module LN.Input.OrderBy (
+  InputOrderBy (..)
+) where
 
 
 

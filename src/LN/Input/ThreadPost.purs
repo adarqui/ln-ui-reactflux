@@ -1,8 +1,10 @@
-module LN.Input.ThreadPost where
+module LN.Input.ThreadPost (
+  InputThreadPost (..)
+) where
 
 
 
-import Data.Maybe
+import Data.Maybe (Maybe)
 
 
 
