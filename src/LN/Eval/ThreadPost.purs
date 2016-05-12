@@ -6,6 +6,7 @@ module LN.Eval.ThreadPost (
 
 import Data.Either          (Either(..))
 import Data.Functor         (($>))
+import Data.Map             as M
 import Data.Maybe           (Maybe(..), maybe)
 import Data.Maybe.Unsafe    (fromJust)
 import Halogen              (get, modify)
@@ -47,7 +48,7 @@ eval_ThreadPost eval (CompThreadPost InputThreadPost_Post next) = do
           let
             pack = defaultThreadPostPackResponse post user
             user = userResponseToSanitizedResponse ((fromJust (st ^. stMe)) ^. _UserPackResponse .. user_)
-          modify (_ { threadPosts = (st ^. stThreadPosts) ++ [pack] })
+          modify (\st -> st{ threadPosts = M.insert (post ^. _ThreadPostResponse .. id_) pack st.threadPosts })
           pure next
 
 

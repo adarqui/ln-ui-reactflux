@@ -4,6 +4,8 @@ module LN.View.Organizations.Forums.Boards.Threads.Show (
 
 
 
+import Daimyo.Data.ArrayList           (listToArray)
+import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (ComponentHTML, HTML)
 import Halogen.HTML.Indexed            as H
@@ -77,7 +79,7 @@ posts org_name forum_name board_name thread_name st =
             ]
 
           ]
-        ) st.threadPosts)
+        ) $ listToArray $ M.values st.threadPosts)
         <>
         -- INPUT FORM AT THE BOTTOM
         [H.li_ [

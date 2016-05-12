@@ -14,6 +14,8 @@ import Optic.Core            ((^.), (..))
 import Prelude               (bind, pure, map, ($), (-), (*), (/), (+))
 import LN.Component.Types    (EvalEff)
 import LN.Input.Types        (Input(..))
+import LN.State.Helpers      (mergeMapArray)
+import LN.State.Lens         (stThreadPosts)
 import LN.Api.Internal       (getThreadPosts_ByThreadId, getThreadPostsCount_ByThreadId'
                              , getThreadPostPacks_ByThreadId, getThreadPosts')
 import LN.Api.Helpers        (rd)
@@ -24,18 +26,6 @@ import LN.T
 eval_GetThreadPosts :: EvalEff
 eval_GetThreadPosts eval (GetThreadPosts next) = do
   pure next
-
-{-
-eval_GetThreadPosts eval (GetThreadPosts next) = do
-
-  ethreadPosts <- rd $ getThreadPosts'
-  case ethreadPosts of
-    Left err -> pure next
-    Right (ThreadPostResponses threadPosts) -> do
-      modify (_{ threadPosts = threadPosts.threadPostResponses })
-      pure next
-      -}
-
 
 
 
@@ -70,5 +60,12 @@ eval_GetThreadPostsForThread eval (GetThreadPostsForThread thread_id next) = do
 
           eval (GetUsers_MergeMap_ByUserId users_ids next)
 
-          modify (_ { threadPosts = posts.threadPostPackResponses })
+--          modify (\st -> st{ threadPosts = M.union (st ^. stThreadPosts) (posts.threadPostPackResponses })
+          modify (\st -> st{
+                 threadPosts =
+                   mergeMapArray
+                     st.threadPosts
+                     posts.threadPostPackResponses
+                     (\x -> x ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse .. id_)
+                 })
           pure next

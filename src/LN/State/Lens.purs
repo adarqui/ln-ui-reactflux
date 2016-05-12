@@ -102,7 +102,7 @@ stThreadPacks =
 
 
 
-stThreadPosts :: LensP State (Array ThreadPostPackResponse)
+stThreadPosts :: LensP State (M.Map Int ThreadPostPackResponse)
 stThreadPosts =
   lens
     _.threadPosts

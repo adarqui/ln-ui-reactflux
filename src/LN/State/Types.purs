@@ -30,7 +30,7 @@ type State =
   , forums :: Array ForumResponse
   , boardPacks :: Array BoardPackResponse
   , threadPacks :: Array ThreadPackResponse
-  , threadPosts :: Array ThreadPostPackResponse
+  , threadPosts :: M.Map Int ThreadPostPackResponse
 --  , threadPostLikes :: Maybe (Array ThreadPostLikeResponse
 --  , pms :: Maybe (Array PmResponse)
 --  , resources :: Maybe (Array ResourceResponse)
@@ -69,7 +69,7 @@ initialState ch =
   , forums: []
   , boardPacks: []
   , threadPacks: []
-  , threadPosts: []
+  , threadPosts: M.empty
   , currentOrganization: Nothing
   , currentUser: Nothing
 --  , currentTeam: Nothing
