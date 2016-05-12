@@ -20,6 +20,7 @@ import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.Lens
 import LN.View.Module.Gravatar
+import LN.View.Module.LikeThreadPost
 import LN.View.Module.PageNumbers
 import LN.T
 
@@ -67,6 +68,7 @@ posts org_name forum_name board_name thread_name st =
                 ]
               , H.div [P.class_ B.colSm1] [
                     H.p_ [H.text "likes / up / down"]
+                  , renderLikeThreadPost (post_id post)
                   , H.p_ [H.text $ show $ likes_up pack]
                   , H.p_ [H.text $ show $ likes_down pack]
                   , H.p_ [H.text $ show $ starred pack]

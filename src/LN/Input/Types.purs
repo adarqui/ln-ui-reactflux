@@ -4,11 +4,12 @@ module LN.Input.Types (
 
 
 
-import LN.Input.CreateThread (InputCreateThread)
-import LN.Input.OrderBy      (InputOrderBy)
-import LN.Input.Profile      (InputProfile)
-import LN.Input.ThreadPost   (InputThreadPost)
-import LN.Router.Types       (Routes)
+import LN.Input.CreateThread   (InputCreateThread)
+import LN.Input.LikeThreadPost (InputLikeThreadPost)
+import LN.Input.OrderBy        (InputOrderBy)
+import LN.Input.Profile        (InputProfile)
+import LN.Input.ThreadPost     (InputThreadPost)
+import LN.Router.Types         (Routes)
 import LN.T
 
 
@@ -51,16 +52,14 @@ data Input a
 
   | ConnectSocket a
 
-  -- ThreadPost "Component"
   | CompThreadPost InputThreadPost a
 
-  -- CreateThread "Component"
   | CompCreateThread InputCreateThread a
 
-  -- OrderBy "Component"
   | CompOrderBy InputOrderBy a
 
-  -- Profile 'Componenet'
   | CompProfile InputProfile a
+
+  | CompLikeThreadPost InputLikeThreadPost a
 
   | Nop a
