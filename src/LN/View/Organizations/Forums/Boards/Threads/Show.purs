@@ -67,7 +67,10 @@ posts org_name forum_name board_name thread_name st =
                 ]
               , H.div [P.class_ B.colSm1] [
                     H.p_ [H.text "likes / up / down"]
-                  , H.p_ [H.text "views"]
+                  , H.p_ [H.text $ show $ likes_up pack]
+                  , H.p_ [H.text $ show $ likes_down pack]
+                  , H.p_ [H.text $ show $ starred pack]
+                  , H.p_ [H.text $ show $ views pack ]
                 ]
             ]
 
@@ -117,6 +120,10 @@ posts org_name forum_name board_name thread_name st =
   post_id post         = post ^. _ThreadPostResponse .. id_
   post_created_at post = post ^. _ThreadPostResponse .. createdAt_
   post_body post       = post ^. _ThreadPostResponse .. body_
+  likes_up pack        = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. likes_
+  likes_down pack      = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. dislikes_
+  starred pack         = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. starred_
+  views pack           = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. views_
 
 
 
