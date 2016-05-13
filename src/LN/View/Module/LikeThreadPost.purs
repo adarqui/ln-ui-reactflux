@@ -28,28 +28,28 @@ renderLikeThreadPost thread_post_id pack =
       H.button [
         colorLike,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Like thread_post_id mlike))
+        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Like pack))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconArrowUp]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorNeutral,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Neutral thread_post_id mlike))
+        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Neutral pack))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconMinus]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorDislike,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Dislike thread_post_id mlike))
+        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Dislike pack))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconArrowDown]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorStar,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Star thread_post_id))
+        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Star pack))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconStar]] []]
     ]
   ]
@@ -74,4 +74,3 @@ renderLikeThreadPost thread_post_id pack =
                          Dislike -> color HCSS.red
                          _       -> color HCSS.black
   colorStar   = color HCSS.orange
-  mlike       = pack ^. _ThreadPostPackResponse .. like_

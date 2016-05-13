@@ -11,7 +11,7 @@ import Data.Maybe                  (Maybe(..), maybe)
 import Data.Either                 (Either(..))
 import Data.Functor                (($>))
 import Halogen                     (get, gets, modify, liftAff')
-import Optic.Core                  ((^.), (..))
+import Optic.Core                  ((^.), (..), (.~))
 import Prelude                     (bind, pure, show, return, ($), (<>))
 import Purescript.Api.Helpers
 
@@ -28,10 +28,10 @@ eval_LikeThreadPost :: EvalEff
 
 
 
-eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Like thread_post_id mlike_resp) next) = do
+eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Like pack) next) = do
   let tplr = mkThreadPostLikeRequest Like Nothing
   packmap <- gets _.threadPosts
-  newmap' <- liftAff' $ boom thread_post_id mlike_resp tplr packmap
+  newmap' <- liftAff' $ boom pack tplr packmap
   case newmap' of
        Left err     -> pure next
        Right newmap -> do
@@ -40,10 +40,10 @@ eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Like thread_po
 
 
 
-eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Neutral thread_post_id mlike_resp) next) = do
+eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Neutral pack) next) = do
   let tplr = mkThreadPostLikeRequest Neutral Nothing
   packmap <- gets _.threadPosts
-  newmap' <- liftAff' $ boom thread_post_id mlike_resp tplr packmap
+  newmap' <- liftAff' $ boom pack tplr packmap
   case newmap' of
        Left err     -> pure next
        Right newmap -> do
@@ -53,10 +53,10 @@ eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Neutral thread
 
 
 
-eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Dislike thread_post_id mlike_resp) next) = do
+eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Dislike pack) next) = do
   let tplr = mkThreadPostLikeRequest Dislike Nothing
   packmap <- gets _.threadPosts
-  newmap' <- liftAff' $ boom thread_post_id mlike_resp tplr packmap
+  newmap' <- liftAff' $ boom pack tplr packmap
   case newmap' of
        Left err     -> pure next
        Right newmap -> do
@@ -66,19 +66,23 @@ eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Dislike thread
 
 
 
-eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Star thread_post_id) next) = do
+eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Star pack) next) = do
   pure next
 
 
 
-boom :: forall eff. Int -> Maybe ThreadPostLikeResponse -> ThreadPostLikeRequest -> M.Map Int ThreadPostPackResponse -> LNEff eff (Either ApiError (M.Map Int ThreadPostPackResponse))
-boom thread_post_id mlike tplr packmap = do
+boom :: forall eff. ThreadPostPackResponse -> ThreadPostLikeRequest -> M.Map Int ThreadPostPackResponse -> LNEff eff (Either ApiError (M.Map Int ThreadPostPackResponse))
+boom pack tplr packmap = do
   -- If mlike is Nothing, then we are creating a new "like".
   -- Otherwise, update an existing like
-  etplr <- (case mlike of
-       Nothing -> rD $ postThreadPostLike_ByThreadPostId' thread_post_id tplr
+  etplr <- (case (pack ^. _ThreadPostPackResponse .. like_) of
+       Nothing     -> rD $ postThreadPostLike_ByThreadPostId' thread_post_id tplr
        (Just like) -> rD $ putThreadPostLike' (like ^. _ThreadPostLikeResponse .. id_) tplr)
   case etplr of
        Left err -> pure $ Left err
        Right resp -> do
-         pure $ Right packmap
+         let
+           new_pack = _ThreadPostPackResponse .. like_ .~ (Just resp) $ pack
+         pure $ Right $ M.update (\_ -> Just new_pack) thread_post_id packmap
+  where
+  thread_post_id = pack ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse .. id_
