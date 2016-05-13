@@ -70,7 +70,7 @@ posts org_name forum_name board_name thread_name st =
                 ]
               , H.div [P.class_ B.colSm1] [
                     H.p_ [H.text "likes / up / down"]
-                  , renderLikeThreadPost (post_id post)
+                  , renderLikeThreadPost (post_id post) pack
                   , H.p_ [H.text $ show $ likes_up pack]
                   , H.p_ [H.text $ show $ likes_down pack]
                   , H.p_ [H.text $ show $ starred pack]

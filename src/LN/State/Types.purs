@@ -22,6 +22,7 @@ import LN.T
 type State =
   { currentPage :: Routes
   , me :: Maybe UserPackResponse
+  , meId :: Int
   , errors :: Maybe (Array String)
   , users :: Array UserSanitizedPackResponse
   , usersMap :: M.Map Int UserSanitizedPackResponse
@@ -61,6 +62,7 @@ initialState :: AVar (Input Unit) -> State
 initialState ch =
   { currentPage: Home
   , me: Nothing
+  , meId: 0
   , errors: Nothing
   , users: []
   , usersMap: M.empty

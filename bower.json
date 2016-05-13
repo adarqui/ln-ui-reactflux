@@ -34,13 +34,14 @@
     "purescript-globals": "^0.2.2",
     "purescript-nullable": "^0.2.1",
     "purescript-partial": "^1.1.0",
-    "purescript-maybe": "^0.3.5"
+    "purescript-maybe": "^0.3.5",
+    "purescript-halogen-css": "^0.4.0"
   },
   "resolutions": {
     "purescript-generics": "~0.7",
-    "purescript-aff": "~0.13.1",
-    "purescript-halogen": "^0.6.1",
-    "purescript-aff-coroutines": "^0.6.0",
+    "purescript-aff": "^0.14.1",
+    "purescript-halogen": "^0.5.18",
+    "purescript-aff-coroutines": "^0.4.1",
     "purescript-maps": "^0.5.7",
     "purescript-argonaut-codecs": "^0.6.0",
     "purescript-sets": "^0.5.7",

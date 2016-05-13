@@ -27,5 +27,5 @@ eval_GetMe eval (GetMe next) = do
   case eme of
     Left err -> pure next
     Right me -> do
-      modify (_{ me = Just me })
+      modify (_{ me = Just me, meId = (me ^. _UserPackResponse .. user_ ^. _UserResponse .. id_) })
       pure next
