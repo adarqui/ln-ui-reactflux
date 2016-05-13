@@ -57,6 +57,8 @@ data Routes
     | Portal
     | PortalOrganizations
     | PortalUsers Params
+    | PortalResources Params
+    | PortalLeurons Params
     | Organizations CRUD
     | OrganizationsForums String CRUD Params
     | OrganizationsForumsBoards String String CRUD Params
@@ -103,6 +105,8 @@ instance routesHasLink :: HasLink Routes where
     link Portal = Tuple "#/portal" M.empty
     link PortalOrganizations = Tuple "#/portal/orgs" M.empty
     link (PortalUsers params) = Tuple "#/portal/users" (fixParams params)
+    link (PortalResources params) = Tuple "#/portal/resources" (fixParams params)
+    link (PortalLeurons params) = Tuple "#/portal/leurons" (fixParams params)
 
     link (Organizations crud) = Tuple ("#" ++ (fst $ link crud)) M.empty
 
@@ -147,6 +151,8 @@ instance routesHasCrumb :: HasCrumb Routes where
     crumb Portal = [Tuple Portal "Portal"]
     crumb PortalOrganizations = [Tuple Portal "Portal", Tuple PortalOrganizations "Orgs"]
     crumb (PortalUsers params) = [Tuple Portal "Portal", Tuple (PortalUsers params) "Users"]
+    crumb (PortalResources params) = [Tuple Portal "Portal", Tuple (PortalResources params) "Resources"]
+    crumb (PortalLeurons params) = [Tuple Portal "Portal", Tuple (PortalLeurons params) "Leurons"]
 
     crumb (Organizations (Show org)) =
       [Tuple (Organizations (Show $ slash org)) org]
@@ -215,6 +221,8 @@ class HasOrderBy a where
 instance routesHasOrderBy :: HasOrderBy Routes where
   orderBy PortalOrganizations = []
   orderBy (PortalUsers _)     = []
+  orderBy (PortalResources _) = []
+  orderBy (PortalLeurons _)   = []
   orderBy (OrganizationsForumsBoards org forum (Show board) params) = [OrderBy_CreatedAt, OrderBy_ActivityAt]
   orderBy _                   = []
 
@@ -227,6 +235,8 @@ instance routesShow :: Show Routes where
     show Portal = "#/portal"
     show PortalOrganizations = "#/portal/orgs"
     show (PortalUsers _) = "#/portal/users"
+    show (PortalResources _) = "#/portal/resources"
+    show (PortalLeurons _) = "#/portal/leurons"
     show (Organizations crud) = "#/.."
     show (OrganizationsForums org crud params) = "#/" <> org <> "/f/..."
     show (OrganizationsForumsBoards org forum crud params) = "#/" <> org <> "/f/" <> forum <> "/b/" <> "..."
@@ -264,6 +274,8 @@ links = [
         , Portal
         , PortalOrganizations
         , PortalUsers []
+        , PortalResources []
+        , PortalLeurons []
 
         , Me
 
