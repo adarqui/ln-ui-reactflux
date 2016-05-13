@@ -4,8 +4,13 @@ module LN.Input.LikeThreadPost (
 
 
 
+import Data.Maybe (Maybe)
+
+import LN.T       (ThreadPostLikeResponse)
+
+
 data InputLikeThreadPost
-  = InputLikeThreadPost_Like    Int
-  | InputLikeThreadPost_Neutral Int
-  | InputLikeThreadPost_Dislike Int
+  = InputLikeThreadPost_Like    Int (Maybe ThreadPostLikeResponse)
+  | InputLikeThreadPost_Neutral Int (Maybe ThreadPostLikeResponse)
+  | InputLikeThreadPost_Dislike Int (Maybe ThreadPostLikeResponse)
   | InputLikeThreadPost_Star    Int

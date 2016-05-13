@@ -28,21 +28,21 @@ renderLikeThreadPost thread_post_id pack =
       H.button [
         colorLike,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Like thread_post_id))
+        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Like thread_post_id mlike))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconArrowUp]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorNeutral,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Neutral thread_post_id))
+        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Neutral thread_post_id mlike))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconMinus]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorDislike,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Dislike thread_post_id))
+        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Dislike thread_post_id mlike))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconArrowDown]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
@@ -74,26 +74,4 @@ renderLikeThreadPost thread_post_id pack =
                          Dislike -> color HCSS.red
                          _       -> color HCSS.black
   colorStar   = color HCSS.orange
-
-  {-
-  H.div [P.class_ B.row] [
-    H.div [P.classes [B.colSmOffset8, B.colSm4]] [
-      H.div [P.class_ B.inputGroup] [
-        H.input [
-          P.class_ B.formControl,
-          P.placeholder "title for new thread",
-          P.value name,
-          E.onValueChange $ E.input (\v -> CompCreateThread $ InputCreateThread_SetName (Just v))
-        ],
-        H.span [P.class_ B.inputGroupBtn] [
-          H.button [
-            P.classes [B.btn, B.btnDefault],
-            E.onClick $ E.input_ $ CompCreateThread InputCreateThread_Create
-          ] [H.text "create"]
-        ]
-      ]
-    ]
-  ]
-  where
-  name = maybe "" (\comp -> comp.name) mcomp
-  -}
+  mlike       = pack ^. _ThreadPostPackResponse .. like_

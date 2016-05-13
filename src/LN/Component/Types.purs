@@ -1,6 +1,7 @@
 module LN.Component.Types (
   ComponentSlot,
   EvalEff,
+  EvalEffP,
   LNEff,
   LN
 ) where
@@ -27,6 +28,7 @@ type ComponentSlot s f g = Unit -> { component :: Component s f g, initialState 
 
 
 type EvalEff = forall eff. {-Partial =>-} Eval Input State Input (LNEff eff) -> Eval Input State Input (LNEff eff)
+type EvalEffP= forall eff. Eval Input State Input (LNEff eff)
 
 
 
