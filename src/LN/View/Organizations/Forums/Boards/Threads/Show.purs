@@ -74,7 +74,7 @@ posts org_name forum_name board_name thread_name st =
                   , H.p_ [H.text $ "up: " <> (show $ likes_up pack)]
                   , H.p_ [H.text $ "neutral: " <> (show $ likes_neutral pack)]
                   , H.p_ [H.text $ "down: " <> (show $ likes_down pack)]
-                  , H.p_ [H.text $ "starred: " <> (show $ starred pack)]
+                  , H.p_ [H.text $ "stars: " <> (show $ stars pack)]
                   , H.p_ [H.text $ "views: " <> (show $ views pack)]
                 ]
             ]
@@ -128,7 +128,7 @@ posts org_name forum_name board_name thread_name st =
   likes_up pack        = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. likes_
   likes_neutral pack   = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. neutral_
   likes_down pack      = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. dislikes_
-  starred pack         = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. starred_
+  stars pack           = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. stars_
   views pack           = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. views_
 
 
