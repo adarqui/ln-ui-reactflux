@@ -13,7 +13,7 @@ import Halogen.HTML.Properties.Indexed as P
 import Halogen.HTML.Events.Indexed     as E
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, show, map, negate, ($), (<>))
+import Prelude                         (id, show, map, negate, ($), (<>), (-))
 
 import LN.Input.Types                  (Input (..))
 import LN.Input.ThreadPost             (InputThreadPost (..))
@@ -69,12 +69,13 @@ posts org_name forum_name board_name thread_name st =
                   , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. userProfile_ ^. _ProfileResponse .. signature_) (usersMapLookup st (post_user_id post))]
                 ]
               , H.div [P.class_ B.colSm1] [
-                    H.p_ [H.text "likes / up / down"]
-                  , renderLikeThreadPost (post_id post) pack
-                  , H.p_ [H.text $ show $ likes_up pack]
-                  , H.p_ [H.text $ show $ likes_down pack]
-                  , H.p_ [H.text $ show $ starred pack]
-                  , H.p_ [H.text $ show $ views pack ]
+                    renderLikeThreadPost (post_id post) pack
+                  , H.p_ [H.text $ "score: " <> (show $ (likes_up pack - likes_down pack))]
+                  , H.p_ [H.text $ "up: " <> (show $ likes_up pack)]
+                  , H.p_ [H.text $ "neutral: " <> (show $ likes_neutral pack)]
+                  , H.p_ [H.text $ "down: " <> (show $ likes_down pack)]
+                  , H.p_ [H.text $ "starred: " <> (show $ starred pack)]
+                  , H.p_ [H.text $ "views: " <> (show $ views pack)]
                 ]
             ]
 
@@ -125,6 +126,7 @@ posts org_name forum_name board_name thread_name st =
   post_created_at post = post ^. _ThreadPostResponse .. createdAt_
   post_body post       = post ^. _ThreadPostResponse .. body_
   likes_up pack        = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. likes_
+  likes_neutral pack   = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. neutral_
   likes_down pack      = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. dislikes_
   starred pack         = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. starred_
   views pack           = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse .. views_
