@@ -45,11 +45,11 @@ renderView Home = const $ renderView_Home
 renderView About = const $ renderView_About
 
 
-renderView Portal = const $ renderView_Portal
-renderView PortalOrganizations = renderView_Portal_Organizations
-renderView (PortalUsers params) = renderView_Portal_Users
+renderView Portal                   = const $ renderView_Portal
+renderView PortalOrganizations      = renderView_Portal_Organizations
+renderView (PortalUsers params)     = renderView_Portal_Users
 renderView (PortalResources params) = renderView_Portal_Resources
-renderView (PortalLeurons params) = renderView_Portal_Leurons
+renderView (PortalLeurons params)   = renderView_Portal_Leurons
 
 
 renderView (Users (Show user_name)) = renderView_Users_Show user_name
