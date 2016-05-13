@@ -15,7 +15,8 @@ import Optic.Core                  ((^.), (..), (.~))
 import Prelude                     (bind, pure, show, return, ($), (<>))
 import Purescript.Api.Helpers
 
-import LN.Api                      (rd, postThreadPostLike_ByThreadPostId', putThreadPostLike')
+import LN.Api                      (rd, postThreadPostLike_ByThreadPostId', putThreadPostLike'
+                                   , getThreadPostStat')
 import LN.Component.Types          (EvalEff, EvalEffP, LNEff)
 import LN.Input.LikeThreadPost     (InputLikeThreadPost(..))
 import LN.Input.Types              (Input(..))
@@ -81,8 +82,14 @@ boom pack tplr packmap = do
   case etplr of
        Left err -> pure $ Left err
        Right resp -> do
-         let
-           new_pack = _ThreadPostPackResponse .. like_ .~ (Just resp) $ pack
-         pure $ Right $ M.update (\_ -> Just new_pack) thread_post_id packmap
+         estat <- rD $ getThreadPostStat' thread_post_id
+         case estat of
+           Left err   -> pure $ Left err
+           Right stat -> do
+             -- Need to update stats AND our like
+             let
+               new_pack  = _ThreadPostPackResponse .. like_ .~ (Just resp) $ pack
+               new_pack' = _ThreadPostPackResponse .. stat_ .~ stat $ new_pack
+             pure $ Right $ M.update (\_ -> Just new_pack') thread_post_id packmap
   where
   thread_post_id = pack ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse .. id_
