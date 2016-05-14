@@ -78,9 +78,9 @@ ui = component render eval
 
     eval (GetPMs next) = pure next
 
-    eval (GetResources next) = pure next
+    eval z@(GetResources next) = eval_GetResources eval z
 
-    eval (GetLeurons next) = pure next
+    eval z@(GetLeurons next) = eval_GetLeurons eval z
 
     eval z@(ConnectSocket next) = eval_ConnectSocket eval z
 

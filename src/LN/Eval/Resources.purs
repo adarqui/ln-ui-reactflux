@@ -28,7 +28,6 @@ eval_GetResources eval (GetResources next) = do
 
   page_info <- gets _.resourcesPageInfo
 
-
   ecount <- rd $ getResourcesCount'
   case ecount of
     Left err -> pure next
