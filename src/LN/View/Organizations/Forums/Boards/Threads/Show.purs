@@ -20,7 +20,7 @@ import LN.Input.ThreadPost             (InputThreadPost (..))
 import LN.Router.Internal              (linkTo, linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
-import LN.State.User                   (usersMapLookup_ToNick)
+import LN.State.User                   (usersMapLookup, usersMapLookup_ToNick, usersMapLookup_ToUser)
 import LN.View.Module.Gravatar
 import LN.View.Module.LikeThreadPost
 import LN.View.Module.PageNumbers
