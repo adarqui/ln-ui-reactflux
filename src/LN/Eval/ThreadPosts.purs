@@ -15,6 +15,7 @@ import Prelude               (bind, pure, map, ($), (-), (*), (/), (+))
 import LN.Component.Types    (EvalEff)
 import LN.Input.Types        (Input(..))
 import LN.State.Helpers      (mergeMapArray)
+import LN.State.PageInfo
 import LN.Api.Internal       (getThreadPosts_ByThreadId, getThreadPostsCount_ByThreadId'
                              , getThreadPostPacks_ByThreadId, getThreadPosts')
 import LN.Api.Helpers        (rd)
@@ -37,18 +38,18 @@ eval_GetThreadPost eval (GetThreadPost thread_post_id next) = do
 eval_GetThreadPostsForThread :: EvalEff
 eval_GetThreadPostsForThread eval (GetThreadPostsForThread thread_id next) = do
 
-  pageInfo <- gets _.threadPostsPageInfo
+  page_info <- gets _.threadPostsPageInfo
 
   ecount <- rd $ getThreadPostsCount_ByThreadId' thread_id
   case ecount of
     Left err -> pure next
-    Right (CountResponses counts) -> do
+    Right counts -> do
 
-      let count = maybe 0 (\(CountResponse count) -> count.n) (head counts.countResponses)
+      let new_page_info = runPageInfo counts page_info
 
-      modify (_ { threadPostsPageInfo = pageInfo { totalResults = count, totalPages = (count / pageInfo.resultsPerPage)+1 } })
+      modify (_ { threadPostsPageInfo = new_page_info.pageInfo })
 
-      eposts <- rd $ getThreadPostPacks_ByThreadId [Limit pageInfo.resultsPerPage, Offset ((pageInfo.currentPage-1) * pageInfo.resultsPerPage), SortOrder pageInfo.sortOrder] thread_id
+      eposts <- rd $ getThreadPostPacks_ByThreadId new_page_info.params thread_id
       case eposts of
         Left err -> pure next
         Right (ThreadPostPackResponses posts) -> do
