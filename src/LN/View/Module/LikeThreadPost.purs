@@ -50,7 +50,7 @@ renderLikeThreadPost thread_post_id pack =
         colorStar,
         P.classes [B.btn, B.btnDefault],
         E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Star pack))
-      ] [H.span [P.classes [B.glyphicon, B.glyphiconStar]] []]
+      ] [H.span [P.classes [B.glyphicon, star]] []]
     ]
   ]
   where
@@ -77,3 +77,7 @@ renderLikeThreadPost thread_post_id pack =
     case (pack ^. _ThreadPostPackResponse .. star_) of
          Nothing -> color HCSS.black
          Just _  -> color HCSS.orange
+  star        =
+    case (pack ^. _ThreadPostPackResponse .. star_) of
+         Nothing -> B.glyphiconStarEmpty
+         Just _  -> B.glyphiconStar
