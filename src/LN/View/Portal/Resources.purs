@@ -49,10 +49,9 @@ resources st =
                   renderGravatarForUser Small (usersMapLookup_ToUser st (t pack ^. userId_))
                 ]
               , H.div [P.class_ B.colSm6] [
---                    linkToP [] (OrganizationsForumsBoardsResources org_name forum_name board_name (Show $ t pack ^.  name_) []) (t pack ^. name_)
-                    linkToP [] Home "home"
-                  , H.p_ [H.text "page-numbers"]
+                    linkToP [] (Resources (Show $ show $ t pack ^. id_)) (t pack ^. title_)
                   , H.p_ [H.text $ show $ t pack ^. createdAt_]
+                  , H.p_ [H.text $ t pack ^. description_ ]
                 ]
               , H.div [P.class_ B.colSm1] [
                   H.p_ [H.text $ show (ts pack ^. leurons_) <> " leurons"]
@@ -61,7 +60,7 @@ resources st =
                   H.p_ [H.text $ show (ts pack ^. views_) <> " views"]
                 ]
               , H.div [P.class_ B.colSm3] [
-                  H.div_ [ H.p_ [H.text "No Leurons."]]
+                  H.div_ [ H.p_ [H.text "Likes?"]]
               ]
             ]
           ])

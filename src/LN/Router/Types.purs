@@ -75,6 +75,7 @@ data Routes
     | UsersLeurons String Params
     | UsersLikes String Params
     | Resources CRUD
+--    | ResourcesLeurons Int CRUD Params
     | Leurons CRUD
     | Login
     | Logout
@@ -220,7 +221,7 @@ class HasOrderBy a where
 
 instance routesHasOrderBy :: HasOrderBy Routes where
   orderBy PortalOrganizations = []
-  orderBy (PortalUsers _)     = []
+  orderBy (PortalUsers _)     = [OrderBy_CreatedAt, OrderBy_ActivityAt]
   orderBy (PortalResources _) = []
   orderBy (PortalLeurons _)   = []
   orderBy (OrganizationsForumsBoards org forum (Show board) params) = [OrderBy_CreatedAt, OrderBy_ActivityAt]
