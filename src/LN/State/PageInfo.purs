@@ -8,12 +8,20 @@ module LN.State.PageInfo (
   defaultPageInfo_ThreadPosts,
   defaultPageInfo_Resources,
   defaultPageInfo_Leurons,
-  defaultPageInfo_Workouts
+  defaultPageInfo_Workouts,
+  RunPageInfo,
+  runPageInfo
 ) where
 
 
 
-import LN.T.Internal.Types (SortOrderBy(..), OrderBy(..))
+import Data.Array (head)
+import Data.Maybe (maybe)
+import Optic.Core ((^.), (..))
+import Prelude    ((+), (-), (/), (*))
+
+import LN.T.Internal.Types (SortOrderBy(..), OrderBy(..), CountResponses(..), CountResponse(..), Param(..)
+                           , _CountResponses, _CountResponse, countResponses_, n_)
 
 
 
@@ -75,3 +83,41 @@ defaultPageInfo_Leurons = defaultPageInfo -- { orderBy = OrderBy_CreatedAt }
 
 defaultPageInfo_Workouts :: PageInfo
 defaultPageInfo_Workouts = defaultPageInfo -- { orderBy = OrderBy_CreatedAt }
+
+
+
+-- For page numbers stuff, inside Eval components
+
+
+type RunPageInfo = {
+  count :: Int,
+  pageInfo :: PageInfo,
+  params :: Array Param
+}
+
+
+
+runPageInfo :: CountResponses -> PageInfo -> RunPageInfo
+runPageInfo count_responses page_info =
+  {
+    count: count,
+    pageInfo: pi,
+    params: par
+  }
+  where
+  count =
+    maybe
+      0
+      (\count_response -> count_response ^. _CountResponse .. n_)
+      (head (count_responses ^. _CountResponses .. countResponses_))
+  pi  =
+    page_info {
+      totalResults = count,
+      totalPages   = (count / page_info.resultsPerPage) + 1
+    }
+  par =
+    [ Limit page_info.resultsPerPage
+    , Offset ((page_info.currentPage - 1) * page_info.resultsPerPage)
+    , SortOrder page_info.sortOrder
+    , Order page_info.order
+    ]

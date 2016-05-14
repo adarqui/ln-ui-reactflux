@@ -18,6 +18,7 @@ import LN.Api                        (rd, getResourcesCount', getResourcePacks',
 import LN.Api.Internal.String        as ApiS
 import LN.Component.Types            (EvalEff)
 import LN.Input.Types                (Input(..))
+import LN.State.PageInfo
 import LN.T
 
 
@@ -25,18 +26,19 @@ import LN.T
 eval_GetResources :: EvalEff
 eval_GetResources eval (GetResources next) = do
 
-  pageInfo <- gets _.resourcesPageInfo
+  page_info <- gets _.resourcesPageInfo
+
 
   ecount <- rd $ getResourcesCount'
   case ecount of
     Left err -> pure next
-    Right (CountResponses counts) -> do
+    Right counts -> do
 
-      let count = maybe 0 (\(CountResponse count) -> count.n) (head counts.countResponses)
+      let new_page_info = runPageInfo counts page_info
 
-      modify (_ { resourcesPageInfo = pageInfo { totalResults = count, totalPages = (count / pageInfo.resultsPerPage)+1 } })
+      modify (_ { resourcesPageInfo = new_page_info.pageInfo })
 
-      eresource_packs <- rd $ getResourcePacks [Limit pageInfo.resultsPerPage, Offset ((pageInfo.currentPage-1) * pageInfo.resultsPerPage), SortOrder pageInfo.sortOrder, Order pageInfo.order]
+      eresource_packs <- rd $ getResourcePacks new_page_info.params
       case eresource_packs of
            Left err -> pure next
            Right (ResourcePackResponses resource_packs) -> do
