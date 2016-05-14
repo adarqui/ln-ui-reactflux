@@ -7,12 +7,9 @@ module LN.Eval.GetBoardPacks (
 
 
 import Control.Monad.Aff.Console       (log)
-import Data.Array                      (length)
 import Data.Either                     (Either(..))
 import Data.Functor                    (($>))
-import Data.Maybe                      (Maybe(..), maybe)
-import Halogen                         (get, modify, liftAff')
-import Optic.Core                      ((^.), (..))
+import Halogen                         (modify, liftAff')
 import Prelude                         (bind, pure, show, ($), (<>))
 
 import LN.Api                          (rd, getBoardPacks', getBoardPacks_ByForumId')
@@ -29,7 +26,7 @@ eval_GetBoardPacks eval (GetBoardPacks next) = do
   case eboardPacks of
     Left err -> pure next
     Right (BoardPackResponses boardPacks) -> do
-      modify (_{ boardPacks = boardPacks.boardPackResponses })
+      modify (_{ boards = boardPacks.boardPackResponses })
       pure next
 
 
@@ -41,5 +38,5 @@ eval_GetBoardPacksForForum eval (GetBoardPacksForForum forum_id next) = do
   case eboardPacks of
     Left err -> liftAff' $ log ("getBoardPacks_ByForumId: Error: " <> show err) $> next
     Right (BoardPackResponses boardPacks) -> do
-      modify (_{ boardPacks = boardPacks.boardPackResponses })
+      modify (_{ boards = boardPacks.boardPackResponses })
       pure next

@@ -16,7 +16,6 @@ import LN.Api                      (rd, getThreadPack', postThread_ByBoardId')
 import LN.Component.Types          (EvalEff)
 import LN.Input.CreateThread       (InputCreateThread(..))
 import LN.Input.Types              (Input(..))
-import LN.State.Lens
 import LN.T
 
 
@@ -33,8 +32,8 @@ eval_CreateThread eval (CompCreateThread InputCreateThread_Nop next) = do
 eval_CreateThread eval (CompCreateThread InputCreateThread_Create next) = do
 
   st <- get
-  let board_id = maybe 0 (\board -> board ^. _BoardResponse .. id_) (st ^. stCurrentBoard)
-  let mcomp = (st ^. stCompCreateThread)
+  let board_id = maybe 0 (\board -> board ^. _BoardResponse .. id_) st.currentBoard
+  let mcomp = st.compCreateThread
   case mcomp of
     Nothing                  -> pure next
     Just comp -> do
@@ -49,7 +48,7 @@ eval_CreateThread eval (CompCreateThread InputCreateThread_Create next) = do
           case ethread_pack of
               Left err -> liftAff' $ log ("CreateThread: getThreadPack': Error: " <> show err) $> next
               Right thread_pack -> do
-                modify (_ { threadPacks = [thread_pack] <> (st ^. stThreadPacks) })
+                modify (_ { threads = [thread_pack] <> st.threads })
                 eval_CreateThread eval (CompCreateThread (InputCreateThread_SetName Nothing) next)
                 pure next
 

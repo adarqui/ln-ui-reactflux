@@ -24,7 +24,7 @@ eval_GetThreadPacks eval (GetThreadPacks next) = do
   case ethreadPacks of
     Left err -> pure next
     Right (ThreadPackResponses threadPacks) -> do
-      modify (_{ threadPacks = threadPacks.threadPackResponses })
+      modify (_{ threads = threadPacks.threadPackResponses })
       pure next
 
 
@@ -56,5 +56,5 @@ eval_GetThreadPacksForBoard eval (GetThreadPacksForBoard board_id next) = do
 
           eval (GetUsers_MergeMap_ByUser users next)
 
-          modify (_{ threadPacks = threadPacks.threadPackResponses })
+          modify (_{ threads = threadPacks.threadPackResponses })
           pure next

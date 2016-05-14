@@ -4,13 +4,10 @@ module LN.State.Lens (
   stOrganizations,
   stUsers,
   stUsersMap,
-  usersMapLookup,
-  usersMapLookup_ToUser,
-  usersMapLookup_ToNick,
   stTeams,
   stForums,
-  stBoardPacks,
-  stThreadPacks,
+  stBoards,
+  stThreads,
   stThreadPosts,
   stCurrentOrganization,
   stCurrentUser,
@@ -30,9 +27,8 @@ module LN.State.Lens (
 
 
 import Data.Map                  as M
-import Data.Maybe                (Maybe(..), maybe)
-import Optic.Core                (LensP, lens, (^.), (..))
-import Prelude                   (($))
+import Data.Maybe                (Maybe)
+import Optic.Core                (LensP, lens)
 
 import LN.Component.CreateThread (Comp_CreateThread_State)
 import LN.Router.Types           (Routes)
@@ -79,24 +75,6 @@ stUsersMap =
 
 
 
-usersMapLookup :: State -> Int -> Maybe UserSanitizedPackResponse
-usersMapLookup st user_id =
-  M.lookup user_id (st ^. stUsersMap)
-
-
-
-usersMapLookup_ToUser :: State -> Int -> Maybe UserSanitizedResponse
-usersMapLookup_ToUser st user_id =
-  maybe Nothing (\user -> Just $ user ^. _UserSanitizedPackResponse .. user_) $ M.lookup user_id (st ^. stUsersMap)
-
-
-
-usersMapLookup_ToNick :: State -> Int -> String
-usersMapLookup_ToNick st user_id =
-  maybe "unknown" (\user -> user ^. _UserSanitizedResponse .. nick_) (usersMapLookup_ToUser st user_id)
-
-
-
 stTeams :: LensP State (Array TeamResponse)
 stTeams =
   lens
@@ -113,19 +91,19 @@ stForums =
 
 
 
-stBoardPacks :: LensP State (Array BoardPackResponse)
-stBoardPacks =
+stBoards :: LensP State (Array BoardPackResponse)
+stBoards =
   lens
-    _.boardPacks
-    (_ { boardPacks = _ })
+    _.boards
+    (_ { boards = _ })
 
 
 
-stThreadPacks :: LensP State (Array ThreadPackResponse)
-stThreadPacks =
+stThreads :: LensP State (Array ThreadPackResponse)
+stThreads =
   lens
-    _.threadPacks
-    (_ { threadPacks = _ })
+    _.threads
+    (_ { threads = _ })
 
 
 

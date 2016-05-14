@@ -16,7 +16,7 @@ import LN.Input.Types                  (Input)
 import LN.Router.Internal              (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
-import LN.State.Lens
+import LN.State.User                   (usersMapLookup_ToUser)
 import LN.View.Module.CreateThread
 import LN.View.Module.Gravatar
 import LN.View.Module.OrderBy
@@ -32,21 +32,21 @@ renderView_Organizations_Forums_Boards_Show board_name st =
         H.h2_ [H.text board_name]
       , H.p [P.class_ B.lead] [H.text board_desc]
     ],
-    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy (st ^. stCurrentPage)]],
-    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullRight]] [renderCreateThread (st ^. stCompCreateThread)]],
+    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
+    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullRight]] [renderCreateThread st.compCreateThread]],
     H.div [] [threads org_name forum_name board_name st]
   ]
   where
-  org_name = maybe "Empty" (\org -> org ^. _OrganizationResponse .. name_) (st ^. stCurrentOrganization)
-  forum_name = maybe "Empty" (\forum -> forum ^. _ForumResponse .. name_) (st ^. stCurrentForum)
-  board_desc = maybe "No description." (\board -> maybe "No description." id (board ^. _BoardResponse .. description_)) (st ^. stCurrentBoard)
+  org_name = maybe "Empty" (\org -> org ^. _OrganizationResponse .. name_) st.currentOrganization
+  forum_name = maybe "Empty" (\forum -> forum ^. _ForumResponse .. name_) st.crrentForum
+  board_desc = maybe "No description." (\board -> maybe "No description." id (board ^. _BoardResponse .. description_)) st.currentBoard
 
 
 
 threads :: String -> String -> String -> State -> ComponentHTML Input
 threads org_name forum_name board_name st =
   H.div_ [
-      renderPageNumbers (st ^. stThreadsPageInfo) (st ^. stCurrentPage)
+      renderPageNumbers st.threadsPageInfo st.currentPage
     , H.ul [P.class_ B.listUnstyled] $
         map (\(pack@(ThreadPackResponse thread_pack)) ->
           H.li_ [
@@ -77,8 +77,8 @@ threads org_name forum_name board_name st =
               ]
             ]
           ])
-        st.threadPacks
-    , renderPageNumbers (st ^. stThreadsPageInfo) (st ^. stCurrentPage)
+        st.threads
+    , renderPageNumbers (st ^. stThreadsPageInfo) st.currentPage
   ]
   where
   -- thread

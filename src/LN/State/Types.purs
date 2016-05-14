@@ -35,8 +35,8 @@ type State =
   , organizations :: Array OrganizationResponse
   , teams :: Array TeamResponse
   , forums :: Array ForumResponse
-  , boardPacks :: Array BoardPackResponse
-  , threadPacks :: Array ThreadPackResponse
+  , boards :: Array BoardPackResponse
+  , threads :: Array ThreadPackResponse
   , threadPosts :: M.Map Int ThreadPostPackResponse
   , resources :: M.Map Int ResourcePackResponse
   , leurons :: M.Map Int LeuronPackResponse
@@ -76,8 +76,8 @@ initialState ch =
   , organizations: []
   , teams: []
   , forums: []
-  , boardPacks: []
-  , threadPacks: []
+  , boards: []
+  , threads: []
   , threadPosts: M.empty
   , resources: M.empty
   , leurons: M.empty

@@ -16,7 +16,6 @@ import LN.Input.Types                  (Input)
 import LN.Router.Internal              (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
-import LN.State.Lens
 import LN.T
 
 
@@ -31,7 +30,7 @@ renderView_Organizations_Forums_Show forum_name st =
     H.div [] [render_boards_packs org_name forum_name st]
   ]
   where
-  org_name = maybe "Empty" (\org -> org ^. _OrganizationResponse .. name_) (st ^. stCurrentOrganization)
+  org_name = maybe "Empty" (\org -> org ^. _OrganizationResponse .. name_) st.currentOrganization
   forum_desc = maybe "No description." (\forum -> maybe "No description" id (forum ^. _ForumResponse .. description_)) (st ^. stCurrentForum)
 
 
@@ -75,7 +74,7 @@ render_boards_packs org_name forum_name st =
           ]
         ]
       ])
-    st.boardPacks
+    st.boards
   where
   -- board
   b x = (x ^. _BoardPackResponse .. board_ ^. _BoardResponse)
