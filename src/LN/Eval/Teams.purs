@@ -1,4 +1,4 @@
-module LN.Eval.GetTeams (
+module LN.Eval.Teams (
   eval_GetTeams
 ) where
 

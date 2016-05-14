@@ -1,6 +1,6 @@
-module LN.Eval.GetThreadPacks (
-  eval_GetThreadPacks,
-  eval_GetThreadPacksForBoard
+module LN.Eval.Threads (
+  eval_GetThreads,
+  eval_GetThreadsForBoard
 ) where
 
 
@@ -17,8 +17,8 @@ import LN.T
 
 
 
-eval_GetThreadPacks :: EvalEff
-eval_GetThreadPacks eval (GetThreadPacks next) = do
+eval_GetThreads :: EvalEff
+eval_GetThreads eval (GetThreads next) = do
 
   ethreadPacks <- rd $ getThreadPacks'
   case ethreadPacks of
@@ -29,8 +29,8 @@ eval_GetThreadPacks eval (GetThreadPacks next) = do
 
 
 
-eval_GetThreadPacksForBoard :: EvalEff
-eval_GetThreadPacksForBoard eval (GetThreadPacksForBoard board_id next) = do
+eval_GetThreadsForBoard :: EvalEff
+eval_GetThreadsForBoard eval (GetThreadsForBoard board_id next) = do
 
   pageInfo <- gets _.threadsPageInfo
 

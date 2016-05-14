@@ -1,4 +1,4 @@
-module LN.Eval.GetThreadPosts (
+module LN.Eval.ThreadPosts (
   eval_GetThreadPosts,
   eval_GetThreadPost,
   eval_GetThreadPostsForThread

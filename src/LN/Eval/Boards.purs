@@ -1,6 +1,6 @@
-module LN.Eval.GetBoardPacks (
-  eval_GetBoardPacks,
-  eval_GetBoardPacksForForum
+module LN.Eval.Boards (
+  eval_GetBoards,
+  eval_GetBoardsForForum
 ) where
 
 
@@ -19,8 +19,8 @@ import LN.T
 
 
 
-eval_GetBoardPacks :: EvalEff
-eval_GetBoardPacks eval (GetBoardPacks next) = do
+eval_GetBoards :: EvalEff
+eval_GetBoards eval (GetBoards next) = do
 
   eboardPacks <- rd $ getBoardPacks'
   case eboardPacks of
@@ -31,8 +31,8 @@ eval_GetBoardPacks eval (GetBoardPacks next) = do
 
 
 
-eval_GetBoardPacksForForum :: EvalEff
-eval_GetBoardPacksForForum eval (GetBoardPacksForForum forum_id next) = do
+eval_GetBoardsForForum :: EvalEff
+eval_GetBoardsForForum eval (GetBoardsForForum forum_id next) = do
 
   eboardPacks <- rd $ getBoardPacks_ByForumId' forum_id
   case eboardPacks of

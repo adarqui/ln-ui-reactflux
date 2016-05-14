@@ -1,4 +1,4 @@
-module LN.Eval.GetOrganizations (
+module LN.Eval.Organizations (
   eval_GetOrganizations,
   eval_GetOrganization,
   eval_GetOrganizationForum,
@@ -62,7 +62,7 @@ eval_GetOrganizationForum eval (GetOrganizationForum org_name forum_name next) =
     Right forum@(ForumResponse f) -> do
       modify (_{ currentForum = Just forum })
       -- IMPLEMENTING BOARD PACKS
-      eval (GetBoardPacksForForum f.id next)
+      eval (GetBoardsForForum f.id next)
       pure next
 
 
@@ -79,7 +79,7 @@ eval_GetOrganizationForumBoard eval (GetOrganizationForumBoard org_name forum_na
     Right board@(BoardResponse b) -> do
       modify (_{ currentBoard = Just board })
 -- IMPLEMENTING THREADS PACKS
-      eval (GetThreadPacksForBoard b.id next)
+      eval (GetThreadsForBoard b.id next)
       pure next
 
 

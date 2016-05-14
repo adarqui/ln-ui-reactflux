@@ -1,4 +1,4 @@
-module LN.Eval.GetUsers (
+module LN.Eval.Users (
   eval_GetUsers,
   eval_GetUser,
   eval_GetUsers_MergeMap_ByUser,

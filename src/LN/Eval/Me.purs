@@ -1,4 +1,4 @@
-module LN.Eval.GetMe (
+module LN.Eval.Me (
   eval_GetMe
 ) where
 

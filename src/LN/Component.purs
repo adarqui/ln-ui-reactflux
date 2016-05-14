@@ -10,14 +10,16 @@ import LN.Input.Types              (Input(..))
 import LN.State.Types
 import LN.View
 import LN.Eval.Goto
-import LN.Eval.GetMe
-import LN.Eval.GetUsers
-import LN.Eval.GetOrganizations
-import LN.Eval.GetTeams
-import LN.Eval.GetForums
-import LN.Eval.GetBoardPacks
-import LN.Eval.GetThreadPacks
-import LN.Eval.GetThreadPosts
+import LN.Eval.Me
+import LN.Eval.Users
+import LN.Eval.Organizations
+import LN.Eval.Teams
+import LN.Eval.Forums
+import LN.Eval.Boards
+import LN.Eval.Threads
+import LN.Eval.ThreadPosts
+import LN.Eval.Resources
+import LN.Eval.Leurons
 import LN.Eval.Socket
 import LN.Eval.Nop
 
@@ -62,11 +64,11 @@ ui = component render eval
     eval z@(GetForums next) = eval_GetForums eval z
     eval z@(GetForumsForOrg org_name next) = eval_GetForumsForOrg eval z
 
-    eval z@(GetBoardPacks next) = eval_GetBoardPacks eval z
-    eval z@(GetBoardPacksForForum forum next) = eval_GetBoardPacksForForum eval z
+    eval z@(GetBoards next) = eval_GetBoards eval z
+    eval z@(GetBoardsForForum forum next) = eval_GetBoardsForForum eval z
 
-    eval z@(GetThreadPacks next) = eval_GetThreadPacks eval z
-    eval z@(GetThreadPacksForBoard board next) = eval_GetThreadPacksForBoard eval z
+    eval z@(GetThreads next) = eval_GetThreads eval z
+    eval z@(GetThreadsForBoard board next) = eval_GetThreadsForBoard eval z
 
     eval z@(GetThreadPosts next) = eval_GetThreadPosts eval z
     eval z@(GetThreadPostsForThread thread_name next) = eval_GetThreadPostsForThread eval z

@@ -34,11 +34,11 @@ data Input a
   | GetForums a
   | GetForumsForOrg String a
 
-  | GetBoardPacks a
-  | GetBoardPacksForForum Int a
+  | GetBoards a
+  | GetBoardsForForum Int a
 
-  | GetThreadPacks a
-  | GetThreadPacksForBoard Int a
+  | GetThreads a
+  | GetThreadsForBoard Int a
 
   | GetThreadPosts a
   | GetThreadPostsForThread Int a

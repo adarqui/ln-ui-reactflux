@@ -1,4 +1,4 @@
-module LN.Eval.GetForums (
+module LN.Eval.Forums (
   eval_GetForums,
   eval_GetForumsForOrg
 ) where
