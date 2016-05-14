@@ -20,7 +20,7 @@ import LN.Input.ThreadPost             (InputThreadPost (..))
 import LN.Router.Internal              (linkTo, linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
-import LN.State.Lens
+import LN.State.User                   (usersMapLookup_ToNick)
 import LN.View.Module.Gravatar
 import LN.View.Module.LikeThreadPost
 import LN.View.Module.PageNumbers
@@ -37,17 +37,17 @@ renderView_Organizations_Forums_Boards_Threads_Show thread_name st =
     H.div [] [posts org_name forum_name board_name thread_name st]
   ]
   where
-  org_name = maybe "Empty" (\org -> org ^. _OrganizationResponse .. name_) (st ^. stCurrentOrganization)
-  forum_name = maybe "Empty" (\forum -> forum ^. _ForumResponse .. name_) (st ^. stCurrentForum)
-  board_name = maybe "Empty" (\board -> board ^. _BoardResponse .. name_) (st ^. stCurrentBoard)
-  thread_name = maybe "Empty" (\thread -> thread ^. _ThreadResponse .. name_) (st ^. stCurrentThread)
+  org_name = maybe "Empty" (\org -> org ^. _OrganizationResponse .. name_) st.currentOrganization
+  forum_name = maybe "Empty" (\forum -> forum ^. _ForumResponse .. name_) st.currentForum
+  board_name = maybe "Empty" (\board -> board ^. _BoardResponse .. name_) st.currentBoard
+  thread_name = maybe "Empty" (\thread -> thread ^. _ThreadResponse .. name_) st.currentThread
 
 
 
 posts :: String -> String -> String -> String -> State -> ComponentHTML Input
 posts org_name forum_name board_name thread_name st =
   H.div_ [
-      renderPageNumbers (st ^. stThreadPostsPageInfo) (st ^. stCurrentPage)
+      renderPageNumbers st.threadPostsPageInfo st.currentPage
     , H.ul [P.class_ B.listUnstyled] (
         (map (\pack ->
           let
@@ -117,10 +117,10 @@ posts org_name forum_name board_name thread_name st =
               ]
          ]
         ]])
-  , renderPageNumbers (st ^. stThreadPostsPageInfo) (st ^. stCurrentPage)
+  , renderPageNumbers st.threadPostsPageInfo st.currentPage
   ]
   where
-  body = maybe "" (\p -> postDataToBody $ p ^. _ThreadPostRequest .. body_) (st ^. stCurrentThreadPost)
+  body = maybe "" (\p -> postDataToBody $ p ^. _ThreadPostRequest .. body_) st.currentThreadPost
   post_user_id post    = post ^. _ThreadPostResponse .. userId_
   post_id post         = post ^. _ThreadPostResponse .. id_
   post_created_at post = post ^. _ThreadPostResponse .. createdAt_

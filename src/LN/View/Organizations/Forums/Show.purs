@@ -31,7 +31,7 @@ renderView_Organizations_Forums_Show forum_name st =
   ]
   where
   org_name = maybe "Empty" (\org -> org ^. _OrganizationResponse .. name_) st.currentOrganization
-  forum_desc = maybe "No description." (\forum -> maybe "No description" id (forum ^. _ForumResponse .. description_)) (st ^. stCurrentForum)
+  forum_desc = maybe "No description." (\forum -> maybe "No description" id (forum ^. _ForumResponse .. description_)) st.currentForum
 
 
 

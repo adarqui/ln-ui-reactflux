@@ -78,7 +78,7 @@ threads org_name forum_name board_name st =
             ]
           ])
         st.threads
-    , renderPageNumbers (st ^. stThreadsPageInfo) st.currentPage
+    , renderPageNumbers st.threadsPageInfo st.currentPage
   ]
   where
   -- thread

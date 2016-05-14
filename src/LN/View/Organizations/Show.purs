@@ -16,7 +16,6 @@ import LN.Input.Types                  (Input)
 import LN.Router.Internal              (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
-import LN.State.Lens
 import LN.T
 
 
@@ -42,10 +41,10 @@ renderView_Organizations_Show org_name st =
     ]
   ]
   where
-  name = maybe "Empty" (\org -> org ^. _OrganizationResponse .. name_) (st ^. stCurrentOrganization)
-  desc = maybe Nothing (\org -> org ^. _OrganizationResponse .. description_) (st ^. stCurrentOrganization)
-  company = maybe "Empty" (\org -> org ^. _OrganizationResponse .. company_) (st ^. stCurrentOrganization)
-  location = maybe "Empty" (\org -> org ^. _OrganizationResponse .. location_) (st ^. stCurrentOrganization)
+  name = maybe "Empty" (\org -> org ^. _OrganizationResponse .. name_) st.currentOrganization
+  desc = maybe Nothing (\org -> org ^. _OrganizationResponse .. description_) st.currentOrganization
+  company = maybe "Empty" (\org -> org ^. _OrganizationResponse .. company_) st.currentOrganization
+  location = maybe "Empty" (\org -> org ^. _OrganizationResponse .. location_) st.currentOrganization
 
 
 

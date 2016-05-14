@@ -17,7 +17,6 @@ import Data.Date.Helpers               (yyyy_mm_dd)
 import LN.Input.Profile                (InputProfile (..))
 import LN.Input.Types                  (Input (..))
 import LN.State.Types                  (State)
-import LN.State.Lens
 import LN.T
 import LN.View.Users
 import LN.View.Util
@@ -36,7 +35,7 @@ renderView_Users_Profile user_nick st =
 
 profile_Else :: State -> ComponentHTML Input
 profile_Else st =
-  case (st ^. stCurrentUser) of
+  case st.currentUser of
        Nothing -> profile_Else_NotFound st
        Just user -> profile_Else' st user
 
@@ -58,7 +57,7 @@ profile_Else_NotFound _ = H.div_ [H.text "Not Found"]
 
 profile_Self :: State -> ComponentHTML Input
 profile_Self st =
-  case (st ^. stMe) of
+  case st.me of
        Nothing -> profile_Self_NotFound st
        Just user -> profile_Self' st user
 

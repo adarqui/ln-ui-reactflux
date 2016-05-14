@@ -4,7 +4,7 @@ module LN.Layout (
 
 
 
-import Data.Array                      hiding ((..))
+import Data.Array                      ((:))
 import Data.Maybe                      (Maybe(..))
 import Halogen.HTML.Indexed            (HTML(), ClassName())
 import Halogen.HTML.Indexed            as H
@@ -17,7 +17,6 @@ import LN.Router.Internal              (linkToHref, linkTo)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.View.Module.Breadcrumbs      (renderBreadcrumbs)
-import LN.State.Lens
 import LN.T
 
 
@@ -36,8 +35,8 @@ defaultLayout st page =
 --  H.div [ P.class_ B.container ]
   H.div [ P.class_ B.containerFluid ]
     [ header st.me
-    , renderBreadcrumbs (st ^. stCurrentPage)
---    , row [ col' [B.colLg12] [renderBreadcrumbs (st ^. stCurrentPage)]]
+    , renderBreadcrumbs st.currentPage
+--    , row [ col' [B.colLg12] [renderBreadcrumbs st.currentPage]]
     , row
         [ col' [B.colLg12] page ]
 --        [ col' [ B.colLg10, B.colLgOffset1 ] page ]
