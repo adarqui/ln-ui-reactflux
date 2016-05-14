@@ -1,7 +1,7 @@
 module LN.State.User (
   usersMapLookup,
   usersMapLookup_ToUser,
-  usersMapLookup_ToNick,
+  usersMapLookup_ToNick
 ) where
 
 

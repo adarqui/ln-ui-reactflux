@@ -15,7 +15,6 @@ import Prelude               (bind, pure, map, ($), (-), (*), (/), (+))
 import LN.Component.Types    (EvalEff)
 import LN.Input.Types        (Input(..))
 import LN.State.Helpers      (mergeMapArray)
-import LN.State.Lens         (stThreadPosts)
 import LN.Api.Internal       (getThreadPosts_ByThreadId, getThreadPostsCount_ByThreadId'
                              , getThreadPostPacks_ByThreadId, getThreadPosts')
 import LN.Api.Helpers        (rd)
@@ -60,7 +59,7 @@ eval_GetThreadPostsForThread eval (GetThreadPostsForThread thread_id next) = do
 
           eval (GetUsers_MergeMap_ByUserId users_ids next)
 
---          modify (\st -> st{ threadPosts = M.union (st ^. stThreadPosts) (posts.threadPostPackResponses })
+--          modify (\st -> st{ threadPosts = M.union st.threadPosts (posts.threadPostPackResponses })
           modify (\st -> st{
                  threadPosts =
                    mergeMapArray

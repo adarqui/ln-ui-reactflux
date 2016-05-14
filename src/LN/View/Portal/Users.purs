@@ -11,7 +11,6 @@ import Prelude                      (map, ($))
 import LN.Input.Types               (Input)
 import LN.Router.Types              (Routes(..), CRUD(..))
 import LN.State.Types               (State)
-import LN.State.Lens
 import LN.T
 import LN.View.Module.Gravatar
 import LN.View.Module.PageNumbers
@@ -31,4 +30,4 @@ renderView_Portal_Users st =
       }
     ) st.users) pNum
   where
-  pNum = renderPageNumbers (st ^. stUsersPageInfo) (st ^. stCurrentPage)
+  pNum = renderPageNumbers st.usersPageInfo st.currentPage
