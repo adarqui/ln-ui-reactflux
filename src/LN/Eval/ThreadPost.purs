@@ -11,13 +11,12 @@ import Data.Maybe           (Maybe(..), maybe)
 import Data.Maybe.Unsafe    (fromJust)
 import Halogen              (get, modify)
 import Optic.Core           ((^.), (..))
-import Prelude              (bind, pure, ($), (++))
+import Prelude              (bind, pure, ($))
 
 import LN.Api               (rd, postThreadPost_ByThreadId')
 import LN.Component.Types   (EvalEff)
 import LN.Input.ThreadPost  (InputThreadPost(..))
 import LN.Input.Types       (Input(..))
-import LN.State.Lens
 import LN.T
 import LN.T.Pack.ThreadPost.Response (defaultThreadPostPackResponse)
 import LN.T.User.Helpers    (userResponseToSanitizedResponse)
@@ -35,8 +34,8 @@ eval_ThreadPost eval (CompThreadPost InputThreadPost_Nop next) = do
 
 eval_ThreadPost eval (CompThreadPost InputThreadPost_Post next) = do
   st <- get
-  let thread_id = maybe 0 (\thread -> thread ^. _ThreadResponse .. id_) (st ^. stCurrentThread)
-  let mthread_post_request = (st ^. stCurrentThreadPost)
+  let thread_id = maybe 0 (\thread -> thread ^. _ThreadResponse .. id_) st.currentThread
+  let mthread_post_request = st.currentThreadPost
   case mthread_post_request of
     Nothing                  -> pure next
     Just thread_post_request -> do
@@ -47,8 +46,8 @@ eval_ThreadPost eval (CompThreadPost InputThreadPost_Post next) = do
           -- TODO FIXME: needs to be a thread post pack
           let
             pack = defaultThreadPostPackResponse post user
-            user = userResponseToSanitizedResponse ((fromJust (st ^. stMe)) ^. _UserPackResponse .. user_)
-          modify (\st -> st{ threadPosts = M.insert (post ^. _ThreadPostResponse .. id_) pack st.threadPosts })
+            user = userResponseToSanitizedResponse ((fromJust st.me) ^. _UserPackResponse .. user_)
+          modify (\st' -> st'{ threadPosts = M.insert (post ^. _ThreadPostResponse .. id_) pack st.threadPosts })
           pure next
 
 

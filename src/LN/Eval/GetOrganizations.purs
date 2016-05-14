@@ -20,7 +20,6 @@ import LN.Api                          (rd, getOrganizations')
 import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Input.Types                  (Input(..))
-import LN.State.Lens
 import LN.T
 
 
@@ -72,7 +71,7 @@ eval_GetOrganizationForumBoard :: EvalEff
 eval_GetOrganizationForumBoard eval (GetOrganizationForumBoard org_name forum_name board_name next) = do
 
   st <- get
-  let forum_id = maybe 0 (\forum -> forum ^. _ForumResponse .. id_) (st ^. stCurrentForum)
+  let forum_id = maybe 0 (\forum -> forum ^. _ForumResponse .. id_) st.currentForum
 
   eboard <- rd $ ApiS.getBoard_ByForumId' board_name forum_id
   case eboard of
@@ -89,7 +88,7 @@ eval_GetOrganizationForumBoardThread :: EvalEff
 eval_GetOrganizationForumBoardThread eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) = do
 
   st <- get
-  let board_id = maybe 0 (\board -> board ^. _BoardResponse .. id_) (st ^. stCurrentBoard)
+  let board_id = maybe 0 (\board -> board ^. _BoardResponse .. id_) st.currentBoard
 
   ethread <- rd $ ApiS.getThread_ByBoardId' thread_name board_id
   case ethread of

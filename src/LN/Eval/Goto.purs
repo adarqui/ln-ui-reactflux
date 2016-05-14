@@ -6,18 +6,17 @@ module LN.Eval.Goto (
 
 import Daimyo.Data.Array      (elemBy)
 import Data.Functor           (($>))
-import Data.Maybe             (Maybe(..), maybe)
+import Data.Maybe             (maybe)
 import Data.Int               (fromString)
 import Data.Tuple             (Tuple(..))
 import Halogen                (get, gets, modify, liftAff')
 import Optic.Core             ((^.),(..))
-import Prelude                (show, bind, pure, unit, id, ($), (==), (/=), (<))
+import Prelude                (show, bind, pure, unit, id, (==), (/=), (<))
 
 import LN.Component.Types     (EvalEff)
 import LN.Input.Types         (Input(..))
 import LN.Router.Internal     (updateUrl)
 import LN.Router.Types        (Routes(..), CRUD(..))
-import LN.State.Lens
 import LN.T
 
 
@@ -70,7 +69,7 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForums org_name (Show forum_name) params) -> do
       -- TODO FIXME
-      if (org_name /= (maybe "" (\v -> v ^. _OrganizationResponse .. name_) (st ^. stCurrentOrganization)))
+      if (org_name /= (maybe "" (\v -> v ^. _OrganizationResponse .. name_) st.currentOrganization))
         then eval (GetOrganization org_name next)
         else pure next
 
@@ -80,11 +79,11 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForumsBoards org_name forum_name (Show board_name) params) -> do
       -- TODO FIXME
-      if (org_name /= (maybe "" (\v -> v ^. _OrganizationResponse .. name_) (st ^. stCurrentOrganization)))
+      if (org_name /= (maybe "" (\v -> v ^. _OrganizationResponse .. name_) st.currentOrganization))
         then eval (GetOrganization org_name next)
         else pure next
 
-      if (forum_name /= (maybe "" (\v -> v ^. _ForumResponse .. name_) (st ^. stCurrentForum)))
+      if (forum_name /= (maybe "" (\v -> v ^. _ForumResponse .. name_) st.currentForum))
         then eval (GetOrganizationForum org_name forum_name next)
         else pure next
 
@@ -121,15 +120,15 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params) -> do
       -- TODO FIXME
-      if (org_name /= (maybe "" (\v -> v ^. _OrganizationResponse .. name_) (st ^. stCurrentOrganization)))
+      if (org_name /= (maybe "" (\v -> v ^. _OrganizationResponse .. name_) st.currentOrganization))
          then eval (GetOrganization org_name next)
          else pure next
 
-      if (forum_name /= (maybe "" (\v -> v ^. _ForumResponse .. name_) (st ^. stCurrentForum)))
+      if (forum_name /= (maybe "" (\v -> v ^. _ForumResponse .. name_) st.currentForum))
          then eval (GetOrganizationForum org_name forum_name next)
          else pure next
 
-      if (board_name /= (maybe "" (\v -> v ^. _BoardResponse .. name_) (st ^. stCurrentBoard)))
+      if (board_name /= (maybe "" (\v -> v ^. _BoardResponse .. name_) st.currentBoard))
          then eval (GetOrganizationForumBoard org_name forum_name board_name next)
          else pure next
 
