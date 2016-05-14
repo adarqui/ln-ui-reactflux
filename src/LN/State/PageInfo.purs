@@ -5,7 +5,10 @@ module LN.State.PageInfo (
   defaultPageInfo_Organizations,
   defaultPageInfo_Forums,
   defaultPageInfo_Threads,
-  defaultPageInfo_ThreadPosts
+  defaultPageInfo_ThreadPosts,
+  defaultPageInfo_Resources,
+  defaultPageInfo_Leurons,
+  defaultPageInfo_Workouts
 ) where
 
 
@@ -57,3 +60,18 @@ defaultPageInfo_Threads = defaultPageInfo { sortOrder = SortOrderBy_Dsc, order =
 
 defaultPageInfo_ThreadPosts :: PageInfo
 defaultPageInfo_ThreadPosts = defaultPageInfo -- { orderBy = OrderBy_CreatedAt }
+
+
+
+defaultPageInfo_Resources :: PageInfo
+defaultPageInfo_Resources = defaultPageInfo -- { orderBy = OrderBy_CreatedAt }
+
+
+
+defaultPageInfo_Leurons :: PageInfo
+defaultPageInfo_Leurons = defaultPageInfo -- { orderBy = OrderBy_CreatedAt }
+
+
+
+defaultPageInfo_Workouts :: PageInfo
+defaultPageInfo_Workouts = defaultPageInfo -- { orderBy = OrderBy_CreatedAt }
