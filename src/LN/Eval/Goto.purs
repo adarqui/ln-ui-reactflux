@@ -169,7 +169,17 @@ eval_Goto eval (Goto route next) = do
       eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) $> unit
 
 
-    (Resources Index params) -> eval (GetResources next) $> unit
+    (Resources Index params) -> do
+      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
+      maybe
+        (pure unit)
+        (\(Tuple k offset) -> do
+          pageInfo <- gets _.resourcesPageInfo
+          modify (_{ resourcesPageInfo = pageInfo { currentPage = maybe 1 id (fromString offset) } })
+          pure unit)
+        moffset
+      eval (GetResources next) $> unit
+
     (Leurons params) -> eval (GetLeurons next) $> unit
 
 
