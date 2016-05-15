@@ -4,21 +4,17 @@ module LN.Eval.Resources (
 
 
 
-import Halogen                       (get, gets, modify)
-import Daimyo.Data.ArrayList         (listToArray, arrayToList)
-import Data.Array                    (nub, filter, head, zip)
+import Halogen                       (gets, modify)
+import Data.Array                    (zip)
 import Data.Either                   (Either(..))
 import Data.Map                      as M
-import Data.Maybe                    (Maybe(..), maybe)
-import Data.Tuple                    (Tuple(..))
 import Optic.Core                    ((^.), (..))
-import Prelude                       (bind, pure, not, map, ($), (+), (*), (-), (/))
+import Prelude                       (bind, pure, map, ($))
 
-import LN.Api                        (rd, getResourcesCount', getResourcePacks', getResourcePacks)
-import LN.Api.Internal.String        as ApiS
+import LN.Api                        (rd, getResourcesCount', getResourcePacks)
 import LN.Component.Types            (EvalEff)
 import LN.Input.Types                (Input(..))
-import LN.State.PageInfo
+import LN.State.PageInfo             (runPageInfo)
 import LN.T
 
 

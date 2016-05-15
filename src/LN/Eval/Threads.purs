@@ -4,15 +4,16 @@ module LN.Eval.Threads (
 ) where
 
 
-import Halogen                         (get, gets, modify)
-import Daimyo.Data.ArrayList           (listToArray)
-import Data.Map                        as M
-import Data.Array                      hiding ((..))
-import Prelude                         (bind, pure, show, ($), (<>))
+import Halogen                         (gets, modify)
+import Data.Array                      (catMaybes)
+import Data.Either                     (Either(..))
+import Prelude                         (bind, pure, map, ($), (<>))
 
 import LN.Component.Types              (EvalEff)
 import LN.Input.Types                  (Input(..))
-import LN.Api
+import LN.State.PageInfo               (runPageInfo)
+import LN.Api                          (getThreadPacks_ByBoardId, rd, getThreadsCount_ByBoardId'
+                                       , getThreadPacks')
 import LN.T
 
 
@@ -32,18 +33,18 @@ eval_GetThreads eval (GetThreads next) = do
 eval_GetThreadsForBoard :: EvalEff
 eval_GetThreadsForBoard eval (GetThreadsForBoard board_id next) = do
 
-  pageInfo <- gets _.threadsPageInfo
+  page_info <- gets _.threadsPageInfo
 
   ecount <- rd $ getThreadsCount_ByBoardId' board_id
   case ecount of
     Left err -> pure next
-    Right (CountResponses counts) -> do
+    Right counts -> do
 
-      let count = maybe 0 (\(CountResponse count) -> count.n) (head counts.countResponses)
+      let new_page_info = runPageInfo counts page_info
 
-      modify (_ { threadsPageInfo = pageInfo { totalResults = count, totalPages = (count / pageInfo.resultsPerPage)+1 } })
+      modify (_ { threadsPageInfo = new_page_info.pageInfo })
 
-      ethreadPacks <- rd $ getThreadPacks_ByBoardId [Limit pageInfo.resultsPerPage, Offset ((pageInfo.currentPage-1) * pageInfo.resultsPerPage), SortOrder pageInfo.sortOrder, Order pageInfo.order] board_id
+      ethreadPacks <- rd $ getThreadPacks_ByBoardId new_page_info.params board_id
       case ethreadPacks of
         Left err -> pure next
         Right (ThreadPackResponses threadPacks) -> do

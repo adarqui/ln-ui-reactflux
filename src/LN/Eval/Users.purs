@@ -7,21 +7,22 @@ module LN.Eval.Users (
 
 
 
-import Halogen                       (get, gets, modify)
-import Daimyo.Data.ArrayList         (listToArray, arrayToList)
-import Data.Array                    (nub, filter, head)
+import Halogen                       (gets, modify)
+import Daimyo.Data.ArrayList         (arrayToList)
+import Data.Array                    (nub, filter)
 import Data.Either                   (Either(..))
 import Data.Map                      as M
-import Data.Maybe                    (Maybe(..), maybe)
+import Data.Maybe                    (Maybe(..))
 import Data.Tuple                    (Tuple(..))
 import Optic.Core                    ((^.), (..))
-import Prelude                       (bind, pure, not, map, ($), (+), (*), (-), (/))
+import Prelude                       (bind, pure, not, map, ($))
 
-import LN.Api                        (rd, getUsersCount', getUserSanitizedPack'
-                                     , getUserSanitizedPacks, getUserSanitizedPacks_ByUsersIds')
+import LN.Api                        (rd, getUsersCount' , getUserSanitizedPacks
+                                     , getUserSanitizedPacks_ByUsersIds')
 import LN.Api.Internal.String        as ApiS
 import LN.Component.Types            (EvalEff)
 import LN.Input.Types                (Input(..))
+import LN.State.PageInfo             (runPageInfo)
 import LN.T
 
 
@@ -29,18 +30,18 @@ import LN.T
 eval_GetUsers :: EvalEff
 eval_GetUsers eval (GetUsers next) = do
 
-  pageInfo <- gets _.usersPageInfo
+  page_info <- gets _.usersPageInfo
 
   ecount <- rd getUsersCount'
   case ecount of
     Left err -> pure next
-    Right (CountResponses counts) -> do
+    Right counts -> do
 
-      let count = maybe 0 (\(CountResponse count) -> count.n) (head counts.countResponses)
+      let new_page_info = runPageInfo counts page_info
 
-      modify (_{ usersPageInfo = pageInfo { totalResults = count, totalPages = (count / pageInfo.resultsPerPage)+1 } })
+      modify (_{ usersPageInfo = new_page_info.pageInfo })
 
-      eusers <- rd $ getUserSanitizedPacks [Limit pageInfo.resultsPerPage, Offset ((pageInfo.currentPage-1) * pageInfo.resultsPerPage), SortOrder pageInfo.sortOrder]
+      eusers <- rd $ getUserSanitizedPacks new_page_info.params
 
       case eusers of
         Left err -> pure next
