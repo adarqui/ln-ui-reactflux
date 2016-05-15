@@ -16,8 +16,6 @@ import LN.View.About
 import LN.View.Portal
 import LN.View.Portal.Organizations
 import LN.View.Portal.Users
-import LN.View.Portal.Resources
-import LN.View.Portal.Leurons
 import LN.View.Users.Show
 import LN.View.Users.Profile
 import LN.View.Users.Settings
@@ -52,8 +50,6 @@ renderView About = const $ renderView_About
 renderView Portal                   = const $ renderView_Portal
 renderView PortalOrganizations      = renderView_Portal_Organizations
 renderView (PortalUsers params)     = renderView_Portal_Users
-renderView (PortalResources params) = renderView_Portal_Resources
-renderView (PortalLeurons params)   = renderView_Portal_Leurons
 
 
 renderView (Users (Show user_name)) = renderView_Users_Show user_name

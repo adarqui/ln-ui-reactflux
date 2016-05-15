@@ -36,8 +36,6 @@ routing =
       about <|>
       portal_organizations <|>
       portal_users <|>
-      portal_resources <|>
-      portal_leurons <|>
       portal <|>
       users_profile <|>
       users_settings <|>
@@ -69,8 +67,6 @@ routing =
 
     portal_organizations = PortalOrganizations <$ (lit "" *> lit "portal" *> lit "orgs")
     portal_users = PortalUsers <$> (lit "" *> lit "portal" *> lit "users" *> (params' <|> pure []))
-    portal_resources = PortalResources <$> (lit "" *> lit "portal" *> lit "resources" *> (params' <|> pure []))
-    portal_leurons = PortalLeurons <$> (lit "" *> lit "portal" *> lit "leurons" *> (params' <|> pure []))
     portal = Portal <$ route "portal"
 
     users_profile =

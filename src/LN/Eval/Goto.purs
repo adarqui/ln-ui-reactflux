@@ -61,27 +61,6 @@ eval_Goto eval (Goto route next) = do
         moffset
       eval (GetUsers next) $> unit
 
-    (PortalResources params) -> do
-      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
-      maybe
-        (pure unit)
-        (\(Tuple k offset) -> do
-          pageInfo <- gets _.resourcesPageInfo
-          modify (_{ resourcesPageInfo = pageInfo { currentPage = maybe 1 id (fromString offset) } })
-          pure unit)
-        moffset
-      eval (GetResources next) $> unit
-
-    (PortalLeurons params) -> do
-      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
-      maybe
-        (pure unit)
-        (\(Tuple k offset) -> do
-          pageInfo <- gets _.leuronsPageInfo
-          modify (_{ leuronsPageInfo = pageInfo { currentPage = maybe 1 id (fromString offset) } })
-          pure unit)
-        moffset
-      eval (GetLeurons next) $> unit
 
 
     (Organizations (Show org_name)) -> eval (GetOrganization org_name next) $> unit
