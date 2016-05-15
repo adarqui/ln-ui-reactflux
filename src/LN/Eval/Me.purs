@@ -4,14 +4,11 @@ module LN.Eval.Me (
 
 
 
-import Control.Monad.Aff.Console       (log)
-import Data.Array                      (length)
 import Data.Either                     (Either(..))
-import Data.Functor                    (($>))
-import Data.Maybe                      (Maybe(..), maybe)
-import Halogen                         (get, modify, liftAff')
+import Data.Maybe                      (Maybe(..))
+import Halogen                         (modify)
 import Optic.Core                      ((^.), (..))
-import Prelude                         (bind, pure, show, ($), (<>))
+import Prelude                         (bind, pure, ($))
 
 import LN.Api                          (rd, getMePack')
 import LN.Component.Types              (EvalEff)
