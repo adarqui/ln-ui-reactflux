@@ -6,12 +6,9 @@ module LN.Eval.Forums (
 
 
 import Control.Monad.Aff.Console       (log)
-import Data.Array                      (length)
 import Data.Either                     (Either(..))
 import Data.Functor                    (($>))
-import Data.Maybe                      (Maybe(..), maybe)
-import Halogen                         (get, modify, liftAff')
-import Optic.Core                      ((^.), (..))
+import Halogen                         (modify, liftAff')
 import Prelude                         (bind, pure, show, ($), (<>))
 
 import LN.Api                          (rd, getForums', getForums_ByOrganizationName')
