@@ -4,22 +4,18 @@ module LN.Eval.LikeThreadPost (
 
 
 
-import Control.Monad.Aff           (Aff())
-import Control.Monad.Aff.Class     (liftAff)
 import Data.Map                    as M
-import Data.Maybe                  (Maybe(..), maybe)
+import Data.Maybe                  (Maybe(..))
 import Data.Either                 (Either(..))
-import Data.Functor                (($>))
-import Halogen                     (get, gets, modify, liftAff')
+import Halogen                     (gets, modify, liftAff')
 import Optic.Core                  ((^.), (..), (.~))
 import Prelude                     (bind, pure, show, return, void, ($), (<>))
 import Purescript.Api.Helpers
 
-import LN.Api                      (rd
-                                   , postThreadPostLike_ByThreadPostId', putThreadPostLike', getThreadPostStat'
-                                   , postThreadPostStar_ByThreadPostId', deleteThreadPostStar', getThreadPostStar'
+import LN.Api                      ( postThreadPostLike_ByThreadPostId', putThreadPostLike', getThreadPostStat'
+                                   , postThreadPostStar_ByThreadPostId', deleteThreadPostStar'
                                    )
-import LN.Component.Types          (EvalEff, EvalEffP, LNEff)
+import LN.Component.Types          (EvalEff, LNEff)
 import LN.Input.LikeThreadPost     (InputLikeThreadPost(..))
 import LN.Input.Types              (Input(..))
 import LN.T
