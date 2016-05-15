@@ -8,6 +8,7 @@ import LN.Input.CreateThread   (InputCreateThread)
 import LN.Input.LikeThreadPost (InputLikeThreadPost)
 import LN.Input.OrderBy        (InputOrderBy)
 import LN.Input.Profile        (InputProfile)
+import LN.Input.Resource       (InputResource)
 import LN.Input.ThreadPost     (InputThreadPost)
 import LN.Router.Types         (Routes)
 import LN.T
@@ -61,5 +62,7 @@ data Input a
   | CompProfile InputProfile a
 
   | CompLikeThreadPost InputLikeThreadPost a
+
+  | CompResource InputResource a
 
   | Nop a

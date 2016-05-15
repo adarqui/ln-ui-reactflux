@@ -39,12 +39,15 @@ renderView_Resources_Index st =
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
 
     -- Button: Create a new resource
+{-
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         P.classes [B.btn, B.btnDefault],
         E.onClick $ E.input_ $ Nop
+--        ^-- create new resource!
       ] [H.span [P.classes [B.glyphicon, B.glyphiconPlus]] []]
     ],
+    -}
 
     -- Resources
     H.div [] [resources st]

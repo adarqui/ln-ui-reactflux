@@ -1,17 +1,35 @@
-module LN.Router.Internal where
+module LN.Router.Internal (
+  (</>),
+  updateUrl,
+  linkTo,
+  linkTo',
+  linkToP,
+  linkToP_Classes,
+  linkToP_Classes',
+  linkToP_Glyph,
+  linkToP_Glyph',
+  linkToHref
+) where
 
-import Prelude
-import Data.Map as M
-import Halogen
-import Halogen.HTML.Indexed as H
+
+
+import Control.Monad.Aff               (Aff)
+import Daimyo.Data.ArrayList           (listToArray)
+import Data.Map                        as M
+import Data.String                     (drop)
+import Data.Tuple                      (fst, snd)
+import DOM                             (DOM)
+import Halogen                         (HTML)
+import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
-import Routing.Hash.Aff
-import DOM
-import Purescript.Api.Helpers
-import Daimyo.Data.ArrayList
-import LN
-import LN.Router.Types
-import LN.Router.Util
+import Halogen.Themes.Bootstrap3       as B
+import Routing.Hash.Aff                (setHash)
+import Prelude                         (Unit, map, ($), (<>))
+import Purescript.Api.Helpers          (mkQueryString, flattenParams, qp)
+
+import LN.Router.Types                 (Routes(..), HasLink, link)
+import LN.Router.Util                  (mkUri)
+import LN.T.Internal.Types             (Param)
 
 
 
@@ -31,6 +49,8 @@ updateUrl route =
 
 
 
+-- | Create a link to a route, providing a string as the anchor name
+--
 linkTo :: Routes -> String -> HTML _ _
 linkTo r t =
   let l = link r
@@ -38,13 +58,8 @@ linkTo r t =
 
 
 
-linkToHref :: Routes -> P.IProp _ _
-linkToHref r =
-  let l = link r
-   in P.href $ mkUri $ (fst l) <> "/"
-
-
-
+-- | Create a link to a route, but provide an array of html elements instead of an anchor name
+--
 linkTo' :: Routes -> Array (HTML _ _) -> HTML _ _
 linkTo' r v =
   let l = link r
@@ -52,6 +67,8 @@ linkTo' r v =
 
 
 
+-- | Create a link with Params
+--
 linkToP :: Array Param -> Routes -> String -> HTML _ _
 linkToP params r t =
   let l = link r
@@ -59,6 +76,8 @@ linkToP params r t =
 
 
 
+-- | Create a link with class names as properties
+--
 linkToP_Classes :: Array H.ClassName -> Array Param -> Routes -> String -> HTML _ _
 linkToP_Classes classes params r t =
   let l = link r
@@ -67,5 +86,36 @@ linkToP_Classes classes params r t =
 
 
 -- so pointless
+--
 linkToP_Classes' :: Array Param -> Routes -> String -> HTML _ _
 linkToP_Classes' = linkToP_Classes []
+
+
+
+-- | Create a link with Params, with a glyphicon
+--
+linkToP_Glyph :: Array Param -> Routes -> H.ClassName -> HTML _ _
+linkToP_Glyph params r glyph =
+  H.a [
+      P.href $ mkUri $ (fst l) <> "/" <> (mkQueryString $ flattenParams $ map qp params)
+    ] [
+      H.span [P.classes [B.glyphicon, glyph]] []
+    ]
+  where
+  l = link r
+
+
+
+-- | Create a link with a glyphicon
+--
+linkToP_Glyph' :: Routes -> H.ClassName -> HTML _ _
+linkToP_Glyph' = linkToP_Glyph []
+
+
+
+-- | Create a link, but simply give us the property
+--
+linkToHref :: Routes -> P.IProp _ _
+linkToHref r =
+  let l = link r
+   in P.href $ mkUri $ (fst l) <> "/"
