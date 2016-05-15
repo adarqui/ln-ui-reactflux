@@ -7,17 +7,14 @@ module LN.Eval.ThreadPosts (
 
 
 import Halogen               (gets, modify)
-import Data.Array            (head)
 import Data.Either           (Either(..))
-import Data.Maybe            (maybe)
 import Optic.Core            ((^.), (..))
-import Prelude               (bind, pure, map, ($), (-), (*), (/), (+))
+import Prelude               (bind, pure, map, ($))
 import LN.Component.Types    (EvalEff)
 import LN.Input.Types        (Input(..))
 import LN.State.Helpers      (mergeMapArray)
-import LN.State.PageInfo
-import LN.Api.Internal       (getThreadPosts_ByThreadId, getThreadPostsCount_ByThreadId'
-                             , getThreadPostPacks_ByThreadId, getThreadPosts')
+import LN.State.PageInfo     (runPageInfo)
+import LN.Api.Internal       (getThreadPostsCount_ByThreadId' , getThreadPostPacks_ByThreadId)
 import LN.Api.Helpers        (rd)
 import LN.T
 
