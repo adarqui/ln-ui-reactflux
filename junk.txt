@@ -1,0 +1,11 @@
+button with glyph
+
+{-
+    H.span [P.class_ B.inputGroupBtn] [
+      H.button [
+        P.classes [B.btn, B.btnDefault],
+        E.onClick $ E.input_ $ Nop
+--        ^-- create new resource!
+      ] [H.span [P.classes [B.glyphicon, B.glyphiconPlus]] []]
+    ],
+    -}

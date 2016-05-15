@@ -15,7 +15,7 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, ($), (<>))
 
 import LN.Input.Types                  (Input(..))
-import LN.Router.Internal              (linkToP)
+import LN.Router.Internal              (linkToP, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
@@ -38,16 +38,8 @@ renderView_Resources_Index st =
     -- Page Numbers
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
 
-    -- Button: Create a new resource
-{-
-    H.span [P.class_ B.inputGroupBtn] [
-      H.button [
-        P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ Nop
---        ^-- create new resource!
-      ] [H.span [P.classes [B.glyphicon, B.glyphiconPlus]] []]
-    ],
-    -}
+    -- Create a new resource
+    linkToP_Glyph' (Resources New []) B.glyphiconPlus,
 
     -- Resources
     H.div [] [resources st]
