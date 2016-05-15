@@ -50,6 +50,9 @@ routing =
       users_likes <|>
       users <|>
       me <|>
+      resources_index <|>
+      resources_new <|>
+      resources_show <|>
       login <|>
       logout <|>
       organizations_forums_boards_threads <|>
@@ -128,6 +131,21 @@ routing =
       <*> (lit "f" *> str)
       <*> (lit "b" *> str)
       <*> (lit "t" *> (Show <$> str))
+      <*> (params' <|> pure [])
+
+    resources_index =
+      Resources
+      <$> (lit "" *> lit "resources" *> lit "index" *> pure Index)
+      <*> (params' <|> pure [])
+
+    resources_new =
+      Resources
+      <$> (lit "" *> lit "resources" *> lit "new" *> pure New)
+      <*> (params' <|> pure [])
+
+    resources_show =
+      Resources
+      <$> (lit "" *> lit "resources" *> (Show <$> str))
       <*> (params' <|> pure [])
 
     login = Login <$ route "login"

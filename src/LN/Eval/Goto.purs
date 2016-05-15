@@ -169,7 +169,7 @@ eval_Goto eval (Goto route next) = do
       eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) $> unit
 
 
-    (Resources params) -> eval (GetResources next) $> unit
+    (Resources Index params) -> eval (GetResources next) $> unit
     (Leurons params) -> eval (GetLeurons next) $> unit
 
 

@@ -63,7 +63,7 @@ resources st =
                   renderGravatarForUser Small (usersMapLookup_ToUser st (t pack ^. userId_))
                 ]
               , H.div [P.class_ B.colSm6] [
-                    linkToP [] (Resources (Show $ show $ t pack ^. id_)) (t pack ^. title_)
+                    linkToP [] (Resources (Show $ show $ t pack ^. id_) []) (t pack ^. title_)
                   , H.p_ [H.text $ show $ t pack ^. createdAt_]
                   , H.p_ [H.text $ t pack ^. description_ ]
                 ]

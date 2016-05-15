@@ -32,6 +32,10 @@ import LN.View.Organizations.Show
 import LN.View.Organizations.Forums.Show
 import LN.View.Organizations.Forums.Boards.Show
 import LN.View.Organizations.Forums.Boards.Threads.Show
+import LN.View.Resources.Index
+import LN.View.Resources.New
+import LN.View.Resources.Edit
+import LN.View.Resources.Show
 import LN.View.Four04
 
 
@@ -77,6 +81,9 @@ renderView (OrganizationsForumsBoards org_name forum_name (Show board_name) para
 
 renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params) = renderView_Organizations_Forums_Boards_Threads_Show thread_name
 
+renderView (Resources Index params) = renderView_Resources_Index
+renderView (Resources New params) = renderView_Resources_New
+renderView (Resources (Show resource_id) params) = renderView_Resources_Show resource_id
 
 renderView _ = const $ renderView_404
 
