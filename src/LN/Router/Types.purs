@@ -257,8 +257,8 @@ instance routesShow :: Show Routes where
 instance crudHasLink :: HasLink CRUD where
 -- TODO FIXME:
 -- well this could be fixed.. changed from "" in order to match CRUD Index routes
--- link Index    = Tuple "" M.empty
-  link Index    = Tuple "/index" M.empty
+  link Index    = Tuple "" M.empty
+--  link Index    = Tuple "/index" M.empty
   link New      = Tuple "/new" M.empty
   link (Show s) = Tuple ("/" <> s) M.empty
 

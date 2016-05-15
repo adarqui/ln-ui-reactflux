@@ -8,16 +8,20 @@ module Router (
 
 import Control.Alt             ((<|>))
 import Control.Apply           ((*>))
+import Control.Plus            (empty)
 import Daimyo.Data.ArrayList   (listToArray)
-import Data.Functor            (($>), (<$))
+import Data.Functor            ((<$))
+import Data.List               (List(..))
 import Data.Map                as M
 import Data.Maybe              (Maybe)
+import Data.String             (length)
 import Data.Tuple              (Tuple(..), uncurry)
 import Halogen                 hiding (set)
-import Prelude                 (Unit, bind, pure, (<$>), (<*>), ($), (<<<))
+import Prelude                 (Unit, bind, pure, (<$>), (<*>), ($), (<<<), (>))
 import Routing                 (matchesAff)
-import Routing.Match           (Match)
+import Routing.Match           (Match(..))
 import Routing.Match.Class     (class MatchClass, lit, str, params)
+import Routing.Types           (RoutePart(..))
 
 import LN.Input.Types          (Input(..))
 import LN.Router.Types         (Routing, Routes(..), CRUD(..))
@@ -28,6 +32,25 @@ import LN.Router.Types         (Routing, Routes(..), CRUD(..))
 params' :: forall f. MatchClass f => f (Array (Tuple String String))
 params' =
   (listToArray <<< M.toList) <$> params
+
+
+
+
+-- | Matches a non-empty string
+--
+str1 :: Match String
+str1 = Match \route ->
+    case route of
+      Cons (Path input) rs ->
+        if length input > 0
+          then pure $ Tuple rs input
+          else empty
+      _ -> empty
+--      _ -> mempty
+--      _ ->
+--        fail "ExpectedString"
+        -- invalid $ free ExpectedString
+
 
 
 
@@ -48,9 +71,9 @@ routing =
       users_likes <|>
       users <|>
       me <|>
-      resources_index <|>
       resources_new <|>
       resources_show <|>
+      resources_index <|>
       login <|>
       logout <|>
       organizations_forums_boards_threads <|>
@@ -131,7 +154,8 @@ routing =
 
     resources_index =
       Resources
-      <$> (lit "" *> lit "resources" *> lit "index" *> pure Index)
+--      <$> (lit "" *> lit "resources" *> lit "index" *> pure Index)
+      <$> (lit "" *> lit "resources" *> pure Index)
       <*> (params' <|> pure [])
 
     resources_new =
@@ -141,7 +165,7 @@ routing =
 
     resources_show =
       Resources
-      <$> (lit "" *> lit "resources" *> (Show <$> str))
+      <$> (lit "" *> lit "resources" *> (Show <$> str1))
       <*> (params' <|> pure [])
 
     login = Login <$ route "login"
