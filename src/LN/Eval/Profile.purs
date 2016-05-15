@@ -5,13 +5,16 @@ module LN.Eval.Profile (
 
 
 import Data.Date.Helpers  (dateFromString)
+import Data.Maybe         (Maybe(..))
 import Data.Maybe.Unsafe  (fromJust)
-import Halogen            (get, gets, modify)
+import Halogen            (gets, modify)
+import Optic.Core         ((^.),(..), (.~))
+import Prelude            (bind, pure, ($))
 
 import LN.Component.Types (EvalEff)
 import LN.Input.Profile   (InputProfile(..))
 import LN.Input.Types     (Input(..))
-import LN.Api
+import LN.Api             ()
 import LN.T
 
 

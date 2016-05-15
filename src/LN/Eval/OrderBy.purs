@@ -4,7 +4,7 @@ module LN.Eval.OrderBy (
 
 
 
-import Prelude                   (bind, pure)
+import Prelude                   (pure)
 
 import LN.Component.Types        (EvalEff)
 import LN.Input.OrderBy          (InputOrderBy(..))
