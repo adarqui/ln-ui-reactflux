@@ -9,11 +9,12 @@ import Data.Map                        as M
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
+import Halogen.HTML.Events.Indexed     as E
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, ($), (<>))
 
-import LN.Input.Types                  (Input)
+import LN.Input.Types                  (Input(..))
 import LN.Router.Internal              (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
@@ -28,10 +29,23 @@ import LN.T
 renderView_Portal_Resources :: State -> ComponentHTML Input
 renderView_Portal_Resources st =
   H.div [P.class_ B.containerFluid] [
+
     H.div [P.class_ B.pageHeader] [
       H.h2_ [H.text "Resources"]
     ],
+
+    -- Page Numbers
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
+
+    -- Button: Create a new resource
+    H.span [P.class_ B.inputGroupBtn] [
+      H.button [
+        P.classes [B.btn, B.btnDefault],
+        E.onClick $ E.input_ $ Nop
+      ] [H.span [P.classes [B.glyphicon, B.glyphiconPlus]] []]
+    ],
+
+    -- Resources
     H.div [] [resources st]
   ]
 
