@@ -29,7 +29,7 @@ renderView_Organizations_Forums_Show forum_name st =
   case st.currentOrganization, st.currentForum of
 
        Just org_pack, Just forum_pack -> renderView_Organizations_Forums_Show' org_pack forum_pack st
-       _, _                           -> H.div_ [H.text "Unavailable"]
+       _,             _               -> H.div_ [H.text "Unavailable"]
 
 
 
