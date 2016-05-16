@@ -57,7 +57,6 @@ str1 = Match \route ->
 routing :: Match Routes
 routing =
       about <|>
-      portal_organizations <|>
       portal_users <|>
       portal <|>
       users_profile <|>
@@ -79,7 +78,9 @@ routing =
       organizations_forums_boards_threads <|>
       organizations_forums_boards <|>
       organizations_forums <|>
-      organizations <|>
+      organizations_new <|>
+      organizations_index <|>
+      organizations_show <|>
       home <|>
       home2
   where
@@ -88,7 +89,6 @@ routing =
     home = Home <$ lit ""
     home2 = pure Home
 
-    portal_organizations = PortalOrganizations <$ (lit "" *> lit "portal" *> lit "orgs")
     portal_users = PortalUsers <$> (lit "" *> lit "portal" *> lit "users" *> (params' <|> pure []))
     portal = Portal <$ route "portal"
 
@@ -123,9 +123,20 @@ routing =
       Users
       <$> (lit "" *> lit "u" *> (Show <$> str))
 
-    organizations =
+    organizations_index =
       Organizations
-      <$> (lit "" *> (Show <$> str))
+      <$> (lit "" *> lit "organizations" *> pure Index)
+      <*> (params' <|> pure [])
+
+    organizations_new =
+      Organizations
+      <$> (lit "" *> lit "organizations" *> lit "new" *> pure New)
+      <*> (params' <|> pure [])
+
+    organizations_show =
+      Organizations
+      <$> (lit "" *> (Show <$> str1))
+      <*> (params' <|> pure [])
 
     -- orgname/f/forumname
     organizations_forums =
@@ -154,7 +165,6 @@ routing =
 
     resources_index =
       Resources
---      <$> (lit "" *> lit "resources" *> lit "index" *> pure Index)
       <$> (lit "" *> lit "resources" *> pure Index)
       <*> (params' <|> pure [])
 

@@ -47,8 +47,6 @@ eval_Goto eval (Goto route next) = do
       pure unit
 
 
-    PortalOrganizations -> eval (GetOrganizations next) $> unit
-
 
     (PortalUsers params) -> do
       let moffset = elemBy (\(Tuple k v) -> k == "offset") params
@@ -63,7 +61,9 @@ eval_Goto eval (Goto route next) = do
 
 
 
-    (Organizations (Show org_name)) -> eval (GetOrganization org_name next) $> unit
+    (Organizations Index params) -> eval  (GetOrganizations next) $> unit
+
+    (Organizations (Show org_name) params) -> eval (GetOrganization org_name next) $> unit
 
 
 

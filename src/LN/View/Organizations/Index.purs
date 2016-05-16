@@ -1,5 +1,5 @@
-module LN.View.Portal.Organizations (
-  renderView_Portal_Organizations
+module LN.View.Organizations.Index (
+  renderView_Organizations_Index
 ) where
 
 
@@ -18,8 +18,8 @@ import LN.View.Module.EntityListing
 
 
 
-renderView_Portal_Organizations :: State -> ComponentHTML Input
-renderView_Portal_Organizations st =
+renderView_Organizations_Index :: State -> ComponentHTML Input
+renderView_Organizations_Index st =
 --  H.div_ $ map (\(OrganizationResponse org) -> H.p_ [H.text org.name]) st.organizations
   renderEntityListing "Organizations" (
     map (\(o@(OrganizationResponse org)) ->
@@ -27,7 +27,7 @@ renderView_Portal_Organizations st =
       , displayNick: org.name
       , createdAt: org.createdAt
       , logo: gravatarUrlFromOrganization XLarge o
-      , route: Organizations (Show org.name)
+      , route: Organizations (Show org.name) []
       }
     ) st.organizations) pNum
   where

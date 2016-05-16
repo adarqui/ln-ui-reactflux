@@ -14,7 +14,6 @@ import LN.State.Types (State)
 import LN.View.Home
 import LN.View.About
 import LN.View.Portal
-import LN.View.Portal.Organizations
 import LN.View.Portal.Users
 import LN.View.Users.Show
 import LN.View.Users.Profile
@@ -26,6 +25,7 @@ import LN.View.Users.Workouts
 import LN.View.Users.Resources
 import LN.View.Users.Leurons
 import LN.View.Users.Likes
+import LN.View.Organizations.Index
 import LN.View.Organizations.Show
 import LN.View.Organizations.Forums.Show
 import LN.View.Organizations.Forums.Boards.Show
@@ -48,7 +48,6 @@ renderView About = const $ renderView_About
 
 
 renderView Portal                   = const $ renderView_Portal
-renderView PortalOrganizations      = renderView_Portal_Organizations
 renderView (PortalUsers params)     = renderView_Portal_Users
 
 
@@ -66,7 +65,8 @@ renderView (UsersLeurons user_name params) = renderView_Users_Leurons user_name
 renderView (UsersLikes user_name params) = renderView_Users_Likes user_name
 
 
-renderView (Organizations (Show org_name)) = renderView_Organizations_Show org_name
+renderView (Organizations Index params) = renderView_Organizations_Index
+renderView (Organizations (Show org_name) params) = renderView_Organizations_Show org_name
 
 
 renderView (OrganizationsForums org_name (Show forum_name) params) = renderView_Organizations_Forums_Show forum_name

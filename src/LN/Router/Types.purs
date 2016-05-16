@@ -55,9 +55,8 @@ data Routes
   | About
   | Me
   | Portal
-  | PortalOrganizations
   | PortalUsers Params
-  | Organizations CRUD
+  | Organizations CRUD Params
   | OrganizationsForums String CRUD Params
   | OrganizationsForumsBoards String String CRUD Params
   | OrganizationsForumsBoardsThreads String String String CRUD Params
@@ -102,10 +101,10 @@ instance routesHasLink :: HasLink Routes where
   link Me = Tuple "#/me" M.empty
 
   link Portal = Tuple "#/portal" M.empty
-  link PortalOrganizations = Tuple "#/portal/orgs" M.empty
   link (PortalUsers params) = Tuple "#/portal/users" (fixParams params)
 
-  link (Organizations crud) = Tuple ("#" ++ (fst $ link crud)) M.empty
+  link (Organizations Index params) = Tuple "#/organizations" (fixParams params)
+  link (Organizations crud params) = Tuple ("#" ++ (fst $ link crud)) (fixParams params)
 
   link (OrganizationsForums org crud params) = Tuple ("#/" <> org <> "/f" <> (fst $ link crud)) (fixParams params)
 
@@ -146,28 +145,36 @@ instance routesHasCrumb :: HasCrumb Routes where
   crumb About = [Tuple About "About"]
   crumb Me = [Tuple Me "Me"]
   crumb Portal = [Tuple Portal "Portal"]
-  crumb PortalOrganizations = [Tuple Portal "Portal", Tuple PortalOrganizations "Orgs"]
   crumb (PortalUsers params) = [Tuple Portal "Portal", Tuple (PortalUsers params) "Users"]
 
-  crumb (Organizations (Show org)) =
-    [Tuple (Organizations (Show $ slash org)) org]
+  crumb (Organizations Index params) =
+    [ Tuple (Organizations Index params) "Organizations" ]
+
+  crumb (Organizations (Show org) params) =
+    [
+      Tuple (Organizations Index params) "Organizations",
+      Tuple (Organizations (Show $ slash org) params) org
+    ]
 
   crumb (OrganizationsForums org (Show forum) params) =
     [
-      Tuple (Organizations (Show $ slash org)) org,
+      Tuple (Organizations Index params) "Organizations",
+      Tuple (Organizations (Show $ slash org) params) org,
       Tuple (OrganizationsForums org (Show $ slash forum) params) forum
     ]
 
   crumb (OrganizationsForumsBoards org forum (Show board) params) =
     [
-      Tuple (Organizations (Show $ slash org)) org,
+      Tuple (Organizations Index params) "Organizations",
+      Tuple (Organizations (Show $ slash org) params) org,
       Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
       Tuple (OrganizationsForumsBoards org forum (Show $ slash board) params) board
     ]
 
   crumb (OrganizationsForumsBoardsThreads org forum board (Show thread) params) =
     [
-      Tuple (Organizations (Show $ slash org)) org,
+      Tuple (Organizations Index params) "Organizations",
+      Tuple (Organizations (Show $ slash org) params) org,
       Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
       Tuple (OrganizationsForumsBoards org forum (Show $ slash board) []) board,
       Tuple (OrganizationsForumsBoardsThreads org forum board (Show $ slash thread) params) thread
@@ -203,8 +210,14 @@ instance routesHasCrumb :: HasCrumb Routes where
   crumb (UsersLikes user params) =
     [Tuple (Users (Show $ slash user)) user, Tuple (UsersLikes (slash user) params) "Likes"]
 
+  crumb (Resources Index params) =
+    [Tuple (Resources Index params) "Resources"]
+
   crumb (Resources (Show resource_id) params) =
-    [Tuple (Resources (Show $ slash resource_id) params) resource_id]
+    [
+      Tuple (Resources Index params) "Resources",
+      Tuple (Resources (Show $ slash resource_id) params) resource_id
+    ]
 
   crumb _ = [Tuple NotFound "Error"]
 
@@ -217,7 +230,6 @@ class HasOrderBy a where
 
 
 instance routesHasOrderBy :: HasOrderBy Routes where
-  orderBy PortalOrganizations = []
   orderBy (PortalUsers _)     = [OrderBy_CreatedAt, OrderBy_ActivityAt]
   orderBy (OrganizationsForumsBoards org forum (Show board) params) = [OrderBy_CreatedAt, OrderBy_ActivityAt]
   orderBy _                   = []
@@ -229,9 +241,8 @@ instance routesShow :: Show Routes where
   show About = "#/about"
   show Me = "#/me"
   show Portal = "#/portal"
-  show PortalOrganizations = "#/portal/orgs"
   show (PortalUsers _) = "#/portal/users"
-  show (Organizations crud) = "#/.."
+  show (Organizations crud params) = "#/organizations"
   show (OrganizationsForums org crud params) = "#/" <> org <> "/f/..."
   show (OrganizationsForumsBoards org forum crud params) = "#/" <> org <> "/f/" <> forum <> "/b/" <> "..."
   show (OrganizationsForumsBoardsThreads org forum board crud params) = "#/" <> org <> "/f/" <> forum <> "/b/" <> board <> "/t/" <> "..."
@@ -269,12 +280,11 @@ links =
   [ Home
   , About
   , Portal
-  , PortalOrganizations
   , PortalUsers []
 
   , Me
 
-  , Organizations Index
+  , Organizations Index []
   , OrganizationsForums "adarq" Index []
   , OrganizationsForumsBoards "adarq" "forum" Index []
   , OrganizationsForumsBoardsThreads "adarq" "forum" "board" Index []
