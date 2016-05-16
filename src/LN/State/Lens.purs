@@ -51,7 +51,7 @@ stErrors = lens _.errors _ { errors = _ }
 
 
 
-stOrganizations :: LensP State (Array OrganizationResponse)
+stOrganizations :: LensP State (M.Map Int OrganizationPackResponse)
 stOrganizations =
   lens
     _.organizations
@@ -59,7 +59,7 @@ stOrganizations =
 
 
 
-stUsers :: LensP State (Array UserSanitizedPackResponse)
+stUsers :: LensP State (M.Map Int UserSanitizedPackResponse)
 stUsers =
   lens
     _.users
@@ -75,7 +75,7 @@ stUsersMap =
 
 
 
-stTeams :: LensP State (Array TeamResponse)
+stTeams :: LensP State (M.Map Int TeamPackResponse)
 stTeams =
   lens
     _.teams
@@ -83,7 +83,7 @@ stTeams =
 
 
 
-stForums :: LensP State (Array ForumResponse)
+stForums :: LensP State (M.Map Int ForumPackResponse)
 stForums =
   lens
     _.forums
@@ -91,7 +91,7 @@ stForums =
 
 
 
-stBoards :: LensP State (Array BoardPackResponse)
+stBoards :: LensP State (M.Map Int BoardPackResponse)
 stBoards =
   lens
     _.boards
@@ -99,7 +99,7 @@ stBoards =
 
 
 
-stThreads :: LensP State (Array ThreadPackResponse)
+stThreads :: LensP State (M.Map Int ThreadPackResponse)
 stThreads =
   lens
     _.threads
@@ -115,7 +115,7 @@ stThreadPosts =
 
 
 
-stCurrentOrganization :: LensP State (Maybe OrganizationResponse)
+stCurrentOrganization :: LensP State (Maybe OrganizationPackResponse)
 stCurrentOrganization =
   lens
     (_.currentOrganization)
@@ -132,7 +132,7 @@ stCurrentUser =
 
 
 
-stCurrentForum :: LensP State (Maybe ForumResponse)
+stCurrentForum :: LensP State (Maybe ForumPackResponse)
 stCurrentForum =
   lens
     (_.currentForum)
@@ -140,7 +140,7 @@ stCurrentForum =
 
 
 
-stCurrentBoard :: LensP State (Maybe BoardResponse)
+stCurrentBoard :: LensP State (Maybe BoardPackResponse)
 stCurrentBoard =
   lens
     (_.currentBoard)
@@ -148,7 +148,7 @@ stCurrentBoard =
 
 
 
-stCurrentThread :: LensP State (Maybe ThreadResponse)
+stCurrentThread :: LensP State (Maybe ThreadPackResponse)
 stCurrentThread =
   lens
     (_.currentThread)
