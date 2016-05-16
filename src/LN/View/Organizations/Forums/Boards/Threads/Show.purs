@@ -57,7 +57,7 @@ posts org_name forum_name board_name thread_name st =
 
             H.div [P.class_ B.row] [
                 H.div [P.class_ B.colSm2] [
-                    H.p_ [linkTo (Users $ Show (usersMapLookup_ToNick st (post_user_id post))) (usersMapLookup_ToNick st (post_user_id post))]
+                    H.p_ [linkTo (Users (Show (usersMapLookup_ToNick st (post_user_id post))) [])  (usersMapLookup_ToNick st (post_user_id post))]
                   , renderGravatarForUser Medium (usersMapLookup_ToUser st (post_user_id post))
                   , displayUserStats (usersMapLookup st (post_user_id post))
                 ]

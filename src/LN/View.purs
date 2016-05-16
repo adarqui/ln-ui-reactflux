@@ -14,7 +14,7 @@ import LN.State.Types (State)
 import LN.View.Home
 import LN.View.About
 import LN.View.Portal
-import LN.View.Portal.Users
+import LN.View.Users.Index
 import LN.View.Users.Show
 import LN.View.Users.Profile
 import LN.View.Users.Settings
@@ -48,10 +48,10 @@ renderView About = const $ renderView_About
 
 
 renderView Portal                   = const $ renderView_Portal
-renderView (PortalUsers params)     = renderView_Portal_Users
 
 
-renderView (Users (Show user_name)) = renderView_Users_Show user_name
+renderView (Users Index params) = renderView_Users_Index
+renderView (Users (Show user_name) params) = renderView_Users_Show user_name
 
 
 renderView (UsersProfile user_name params) = renderView_Users_Profile user_name

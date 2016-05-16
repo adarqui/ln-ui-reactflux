@@ -63,7 +63,7 @@ render_boards_packs org_name forum_name st =
 --              case (tuple3 (t bp) (tp bp) (u bp)) of
 --                   (Just (ThreadResponse t')) /\ (Just (ThreadPostResponse tp')) /\ (Just (UserSanitizedResponse u')) ->
                     H.div_ [
-                      H.p_ [H.text $ "Last post by ", linkToP [] (Users (Show u'.nick)) u'.nick],
+                      H.p_ [H.text $ "Last post by ", linkToP [] (Users (Show u'.nick) []) u'.nick],
                       H.p_ [H.text $ "in ", linkToP [Offset (-1)] (OrganizationsForumsBoardsThreads org_name forum_name (b bp ^. name_) (Show t'.name) []) t'.name],
                       H.p_ [H.text $ show tp'.createdAt]
                     ]

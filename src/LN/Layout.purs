@@ -80,7 +80,7 @@ header muser =
   where
   me = case muser of
             Nothing -> linkTo NotFound "Me"
-            Just user -> linkTo (Users (Show (user ^. _UserPackResponse .. user_ ^. _UserResponse .. nick_))) "Me"
+            Just user -> linkTo (Users (Show (user ^. _UserPackResponse .. user_ ^. _UserResponse .. nick_)) []) "Me"
 
 
 

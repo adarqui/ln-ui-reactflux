@@ -57,7 +57,6 @@ str1 = Match \route ->
 routing :: Match Routes
 routing =
       about <|>
-      portal_users <|>
       portal <|>
       users_profile <|>
       users_settings <|>
@@ -68,7 +67,9 @@ routing =
       users_resources <|>
       users_leurons <|>
       users_likes <|>
-      users <|>
+      users_index <|>
+      users_new <|>
+      users_show <|>
       me <|>
       resources_new <|>
       resources_show <|>
@@ -89,7 +90,6 @@ routing =
     home = Home <$ lit ""
     home2 = pure Home
 
-    portal_users = PortalUsers <$> (lit "" *> lit "portal" *> lit "users" *> (params' <|> pure []))
     portal = Portal <$ route "portal"
 
     users_profile =
@@ -119,9 +119,20 @@ routing =
     users_likes =
       UsersLikes <$> (lit "" *> lit "u" *> str) <*> (lit "likes" *> (params' <|> pure []))
 
-    users =
+    users_index =
+      Users
+      <$> (lit "" *> lit "u" *> pure Index)
+      <*> (params' <|> pure [])
+
+    users_new =
+      Users
+      <$> (lit "" *> lit "u" *> lit "new" *> pure New)
+      <*> (params' <|> pure [])
+
+    users_show =
       Users
       <$> (lit "" *> lit "u" *> (Show <$> str))
+      <*> (params' <|> pure [])
 
     organizations_index =
       Organizations

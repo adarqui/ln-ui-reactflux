@@ -1,5 +1,5 @@
-module LN.View.Portal.Users (
-  renderView_Portal_Users
+module LN.View.Users.Index (
+  renderView_Users_Index
 ) where
 
 
@@ -18,15 +18,15 @@ import LN.View.Module.EntityListing
 
 
 
-renderView_Portal_Users :: State -> ComponentHTML Input
-renderView_Portal_Users st =
+renderView_Users_Index :: State -> ComponentHTML Input
+renderView_Users_Index st =
   renderEntityListing "Users" (
     map (\user ->
       { nick: user ^. _UserSanitizedPackResponse .. user_ ^. _UserSanitizedResponse .. nick_
       , displayNick: user ^. _UserSanitizedPackResponse .. user_ ^. _UserSanitizedResponse .. displayNick_
       , createdAt: user ^. _UserSanitizedPackResponse .. user_ ^. _UserSanitizedResponse .. createdAt_
       , logo: gravatarUrlFromUser XLarge (user ^. _UserSanitizedPackResponse .. user_)
-      , route: Users (Show $ user ^. _UserSanitizedPackResponse .. user_ ^. _UserSanitizedResponse .. nick_)
+      , route: Users (Show $ user ^. _UserSanitizedPackResponse .. user_ ^. _UserSanitizedResponse .. nick_) []
       }
     ) st.users) pNum
   where

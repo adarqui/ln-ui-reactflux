@@ -33,7 +33,7 @@ renderGravatarForUser sz Nothing =
   H.img [P.src $ "//www.gravatar.com/avatar/none?d=identicon&" <> (gravatarSizeParam sz)]
 renderGravatarForUser sz (Just (UserSanitizedResponse user)) =
   linkTo'
-    (Users $ Show user.nick)
+    (Users (Show user.nick) [])
     [H.img [P.src $ "//www.gravatar.com/avatar/" <> user.emailMD5 <> "?d=identicon&r=pg" <> "&" <> (gravatarSizeParam sz), P.alt user.nick]]
 
 

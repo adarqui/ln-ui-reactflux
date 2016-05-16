@@ -28,7 +28,7 @@ usersLayout user_nick st page =
   H.div [P.class_ B.containerFluid] [
     H.div [P.classes [B.colSm2]] [
       H.ul [P.class_ B.listUnstyled] [
-        H.li_ [linkToP [] (Users (Show user_nick))        "Users"],
+        H.li_ [linkToP [] (Users (Show user_nick) [])        "Users"],
         H.li_ [linkToP [] (UsersProfile user_nick [])     "Profile"],
         showIfSelf_UserNick st user_nick [H.li_ [linkToP [] (UsersSettings user_nick [])    "Settings"]],
         showIfSelf_UserNick st user_nick [H.li_ [linkToP [] (UsersPMs user_nick [])         "Personal Messages"]],

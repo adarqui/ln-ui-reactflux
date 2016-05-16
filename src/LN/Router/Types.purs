@@ -55,13 +55,12 @@ data Routes
   | About
   | Me
   | Portal
-  | PortalUsers Params
   | Organizations CRUD Params
   | OrganizationsForums String CRUD Params
   | OrganizationsForumsBoards String String CRUD Params
   | OrganizationsForumsBoardsThreads String String String CRUD Params
   | OrganizationsForumsBoardsThreadsPosts String String String String CRUD
-  | Users CRUD
+  | Users CRUD Params
   | UsersProfile String Params
   | UsersSettings String Params
   | UsersPMs String Params
@@ -101,7 +100,6 @@ instance routesHasLink :: HasLink Routes where
   link Me = Tuple "#/me" M.empty
 
   link Portal = Tuple "#/portal" M.empty
-  link (PortalUsers params) = Tuple "#/portal/users" (fixParams params)
 
   link (Organizations Index params) = Tuple "#/organizations" (fixParams params)
   link (Organizations crud params) = Tuple ("#" ++ (fst $ link crud)) (fixParams params)
@@ -114,7 +112,8 @@ instance routesHasLink :: HasLink Routes where
 
   link (OrganizationsForumsBoardsThreadsPosts org forum board thread crud) = Tuple ("#/" <> org <> "/f/" <> forum <> "/" <> board <> "/" <> thread <> (fst $ link crud)) M.empty
 
-  link (Users crud) = Tuple ("#/u" ++ (fst $ link crud)) M.empty
+  link (Users Index params) = Tuple "#/u" (fixParams params)
+  link (Users crud params) = Tuple ("#/u" ++ (fst $ link crud)) (fixParams params)
   link (UsersProfile user params) = Tuple ("#/u/" <> user <> "/profile") (fixParams params)
   link (UsersSettings user params) = Tuple ("#/u/" <> user <> "/settings") (fixParams params)
   link (UsersPMs user params) = Tuple ("#/u/" <> user <> "/pms") (fixParams params)
@@ -145,7 +144,6 @@ instance routesHasCrumb :: HasCrumb Routes where
   crumb About = [Tuple About "About"]
   crumb Me = [Tuple Me "Me"]
   crumb Portal = [Tuple Portal "Portal"]
-  crumb (PortalUsers params) = [Tuple Portal "Portal", Tuple (PortalUsers params) "Users"]
 
   crumb (Organizations Index params) =
     [ Tuple (Organizations Index params) "Organizations" ]
@@ -180,35 +178,79 @@ instance routesHasCrumb :: HasCrumb Routes where
       Tuple (OrganizationsForumsBoardsThreads org forum board (Show $ slash thread) params) thread
     ]
 
-  crumb (Users (Show user)) =
-    [Tuple (Users (Show $ slash user)) user]
+  crumb (Users Index params) =
+    [
+      Tuple (Users Index params) "Users"
+    ]
+
+  crumb (Users (Show user) params) =
+    [
+      Tuple (Users Index params) "Users",
+      Tuple (Users (Show $ slash user) params) user
+    ]
 
   crumb (UsersProfile user params) =
-    [Tuple (Users (Show $ slash user)) user, Tuple (UsersProfile (slash user) params) "Profile"]
+    [
+      Tuple (Users Index params) "Users",
+      Tuple (Users (Show $ slash user) []) user,
+      Tuple (UsersProfile (slash user) params) "Profile"
+    ]
 
   crumb (UsersSettings user params) =
-    [Tuple (Users (Show $ slash user)) user, Tuple (UsersSettings (slash user) params) "Settings"]
+    [
+      Tuple (Users Index params) "Users",
+      Tuple (Users (Show $ slash user) []) user,
+      Tuple (UsersSettings (slash user) params) "Settings"
+    ]
 
   crumb (UsersPMs user params) =
-    [Tuple (Users (Show $ slash user)) user, Tuple (UsersPMs (slash user) params) "PMs"]
+    [
+      Tuple (Users Index []) "Users",
+      Tuple (Users (Show $ slash user) []) user,
+      Tuple (UsersPMs (slash user) params) "PMs"
+    ]
 
   crumb (UsersThreads user params) =
-    [Tuple (Users (Show $ slash user)) user, Tuple (UsersThreads (slash user) params) "Threads"]
+    [
+      Tuple (Users Index []) "Users",
+      Tuple (Users (Show $ slash user) []) user,
+      Tuple (UsersThreads (slash user) params) "Threads"
+    ]
 
   crumb (UsersThreadPosts user params) =
-    [Tuple (Users (Show $ slash user)) user, Tuple (UsersThreadPosts (slash user) params) "ThreadPosts"]
+    [
+      Tuple (Users Index []) "Users",
+      Tuple (Users (Show $ slash user) []) user,
+      Tuple (UsersThreadPosts (slash user) params) "ThreadPosts"
+    ]
 
   crumb (UsersWorkouts user params) =
-    [Tuple (Users (Show $ slash user)) user, Tuple (UsersWorkouts (slash user) params) "Workouts"]
+    [
+      Tuple (Users Index []) "Users",
+      Tuple (Users (Show $ slash user) []) user,
+      Tuple (UsersWorkouts (slash user) params) "Workouts"
+    ]
 
   crumb (UsersResources user params) =
-    [Tuple (Users (Show $ slash user)) user, Tuple (UsersResources (slash user) params) "Resources"]
+    [
+      Tuple (Users Index []) "Users",
+      Tuple (Users (Show $ slash user) []) user,
+      Tuple (UsersResources (slash user) params) "Resources"
+    ]
 
   crumb (UsersLeurons user params) =
-    [Tuple (Users (Show $ slash user)) user, Tuple (UsersLeurons (slash user) params) "Leurons"]
+    [
+      Tuple (Users Index []) "Users",
+      Tuple (Users (Show $ slash user) []) user,
+      Tuple (UsersLeurons (slash user) params) "Leurons"
+    ]
 
   crumb (UsersLikes user params) =
-    [Tuple (Users (Show $ slash user)) user, Tuple (UsersLikes (slash user) params) "Likes"]
+    [
+      Tuple (Users Index []) "Users",
+      Tuple (Users (Show $ slash user) []) user,
+      Tuple (UsersLikes (slash user) params) "Likes"
+    ]
 
   crumb (Resources Index params) =
     [Tuple (Resources Index params) "Resources"]
@@ -230,7 +272,6 @@ class HasOrderBy a where
 
 
 instance routesHasOrderBy :: HasOrderBy Routes where
-  orderBy (PortalUsers _)     = [OrderBy_CreatedAt, OrderBy_ActivityAt]
   orderBy (OrganizationsForumsBoards org forum (Show board) params) = [OrderBy_CreatedAt, OrderBy_ActivityAt]
   orderBy _                   = []
 
@@ -241,13 +282,12 @@ instance routesShow :: Show Routes where
   show About = "#/about"
   show Me = "#/me"
   show Portal = "#/portal"
-  show (PortalUsers _) = "#/portal/users"
-  show (Organizations crud params) = "#/organizations"
+  show (Organizations crud params) = "#/organizations/..."
   show (OrganizationsForums org crud params) = "#/" <> org <> "/f/..."
   show (OrganizationsForumsBoards org forum crud params) = "#/" <> org <> "/f/" <> forum <> "/b/" <> "..."
   show (OrganizationsForumsBoardsThreads org forum board crud params) = "#/" <> org <> "/f/" <> forum <> "/b/" <> board <> "/t/" <> "..."
   show (OrganizationsForumsBoardsThreadsPosts org forum board thread crud) = "#/" <> org <> "/f/" <> forum <> "/" <> board <> "/" <> thread <> "/..."
-  show (Users crud) = "#/u/..."
+  show (Users crud params) = "#/u/..."
   show (UsersProfile user params) = "#/u/profile"
   show (UsersSettings user params) = "#/u/settings"
   show (UsersPMs user params) = "#/u/pms"
@@ -280,7 +320,6 @@ links =
   [ Home
   , About
   , Portal
-  , PortalUsers []
 
   , Me
 
@@ -290,7 +329,7 @@ links =
   , OrganizationsForumsBoardsThreads "adarq" "forum" "board" Index []
   , OrganizationsForumsBoardsThreadsPosts "adarq" "forum" "board" "thread" Index
 
-  , Users Index
+  , Users Index []
   , UsersProfile "adarq" []
   , UsersSettings "adarq" []
   , UsersPMs "adarq" []
