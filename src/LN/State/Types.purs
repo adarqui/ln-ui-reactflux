@@ -49,8 +49,8 @@ type State =
   , currentBoard :: Maybe BoardResponse
   , currentThread :: Maybe ThreadResponse
   , currentThreadPost :: Maybe ThreadPostRequest
-  , currentResource :: Maybe ResourceResponse
-  , currentLeuron :: Maybe LeuronResponse
+  , currentResource :: Maybe ResourcePackResponse
+  , currentLeuron :: Maybe LeuronPackResponse
 --  , currentWorkout :: Maybe WorkoutResponse
   , currentPageInfo :: PageInfo
   , organizationsPageInfo :: PageInfo

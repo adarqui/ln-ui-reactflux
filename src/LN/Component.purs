@@ -79,6 +79,8 @@ ui = component render eval
     eval (GetPMs next) = pure next
 
     eval z@(GetResources next) = eval_GetResources eval z
+    eval z@(GetResourceId resource_id next) = eval_GetResourceId eval z
+    eval z@(GetResourceSid resource_sid next) = eval_GetResourceSid eval z
 
     eval z@(GetLeurons next) = eval_GetLeurons eval z
 

@@ -1,5 +1,7 @@
 module LN.Eval.Resources (
-  eval_GetResources
+  eval_GetResources,
+  eval_GetResourceId,
+  eval_GetResourceSid
 ) where
 
 
@@ -7,11 +9,13 @@ module LN.Eval.Resources (
 import Halogen                       (gets, modify)
 import Data.Array                    (zip)
 import Data.Either                   (Either(..))
+import Data.Int                      (fromString)
 import Data.Map                      as M
+import Data.Maybe                    (Maybe(..))
 import Optic.Core                    ((^.), (..))
 import Prelude                       (bind, pure, map, ($))
 
-import LN.Api                        (rd, getResourcesCount', getResourcePacks)
+import LN.Api                        (rd, getResourcesCount', getResourcePacks, getResourcePack')
 import LN.Component.Types            (EvalEff)
 import LN.Input.Types                (Input(..))
 import LN.State.PageInfo             (runPageInfo)
@@ -50,3 +54,24 @@ eval_GetResources eval (GetResources next) = do
 
              modify (_{ resources = resources_map })
              pure next
+
+
+
+eval_GetResourceId :: EvalEff
+eval_GetResourceId eval (GetResourceId resource_id next) = do
+
+  epack <- rd $ getResourcePack' resource_id
+  case epack of
+    Left err   -> pure next
+    Right pack -> do
+      modify (_{ currentResource = Just pack })
+      pure next
+
+
+
+eval_GetResourceSid :: EvalEff
+eval_GetResourceSid eval (GetResourceSid resource_sid next) = do
+
+  case fromString resource_sid of
+       Nothing          -> pure next
+       Just resource_id -> eval (GetResourceId resource_id next)

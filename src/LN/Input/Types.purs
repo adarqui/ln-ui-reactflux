@@ -48,7 +48,11 @@ data Input a
   | GetThreadPostLikes a
 
   | GetPMs a
+
   | GetResources a
+  | GetResourceId Int a
+  | GetResourceSid String a
+
   | GetLeurons a
 
   | ConnectSocket a
