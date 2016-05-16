@@ -67,9 +67,9 @@ routing =
       users_resources <|>
       users_leurons <|>
       users_likes <|>
-      users_index <|>
       users_new <|>
       users_show <|>
+      users_index <|>
       me <|>
       resources_new <|>
       resources_show <|>
@@ -131,7 +131,7 @@ routing =
 
     users_show =
       Users
-      <$> (lit "" *> lit "u" *> (Show <$> str))
+      <$> (lit "" *> lit "u" *> (Show <$> str1))
       <*> (params' <|> pure [])
 
     organizations_index =
