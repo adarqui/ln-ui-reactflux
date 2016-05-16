@@ -26,80 +26,80 @@ import LN.T
 
 
 type State =
-  { currentPage :: Routes
-  , me :: Maybe UserPackResponse
-  , meId :: Int
-  , errors :: Maybe (Array String)
-  , users :: Array UserSanitizedPackResponse
-  , usersMap :: M.Map Int UserSanitizedPackResponse
-  , organizations :: Array OrganizationResponse
-  , teams :: Array TeamResponse
-  , forums :: Array ForumResponse
-  , boards :: Array BoardPackResponse
-  , threads :: Array ThreadPackResponse
-  , threadPosts :: M.Map Int ThreadPostPackResponse
-  , resources :: M.Map Int ResourcePackResponse
-  , leurons :: M.Map Int LeuronPackResponse
---  , workouts :: M.Map Int WorkoutPackResponse
---  , pms :: Maybe (Array PmResponse)
-  , currentOrganization :: Maybe OrganizationResponse
-  , currentUser :: Maybe UserSanitizedPackResponse
---  , currentTeam :: Maybe TeamResponse
-  , currentForum :: Maybe ForumResponse
-  , currentBoard :: Maybe BoardResponse
-  , currentThread :: Maybe ThreadResponse
-  , currentThreadPost :: Maybe ThreadPostRequest
-  , currentResource :: Maybe ResourcePackResponse
-  , currentLeuron :: Maybe LeuronPackResponse
---  , currentWorkout :: Maybe WorkoutResponse
-  , currentPageInfo :: PageInfo
+  { currentPage           :: Routes
+  , me                    :: Maybe UserPackResponse
+  , meId                  :: Int
+  , errors                :: Maybe (Array String)
+  , users                 :: M.Map Int UserSanitizedPackResponse
+  , usersMap              :: M.Map Int UserSanitizedPackResponse
+  , organizations         :: M.Map Int OrganizationResponse
+  , teams                 :: M.Map Int TeamPackResponse
+  , forums                :: M.Map Int ForumPackResponse
+  , boards                :: M.Map Int BoardPackResponse
+  , threads               :: M.Map Int ThreadPackResponse
+  , threadPosts           :: M.Map Int ThreadPostPackResponse
+  , resources             :: M.Map Int ResourcePackResponse
+  , leurons               :: M.Map Int LeuronPackResponse
+--  , workouts            :: M.Map Int WorkoutPackResponse
+--  , pms                 :: Maybe (Array PmResponse)
+  , currentOrganization   :: Maybe OrganizationPackResponse
+  , currentUser           :: Maybe UserSanitizedPackResponse
+--  , currentTeam         :: Maybe TeamResponse
+  , currentForum          :: Maybe ForumPackResponse
+  , currentBoard          :: Maybe BoardPackResponse
+  , currentThread         :: Maybe ThreadPackResponse
+  , currentThreadPost     :: Maybe ThreadPostRequest -- TODO FIXME: rename to something more appropriate
+  , currentResource       :: Maybe ResourcePackResponse
+  , currentLeuron         :: Maybe LeuronPackResponse
+--  , currentWorkout      :: Maybe WorkoutResponse
+  , currentPageInfo       :: PageInfo
   , organizationsPageInfo :: PageInfo
-  , usersPageInfo :: PageInfo
-  , threadsPageInfo :: PageInfo
-  , threadPostsPageInfo :: PageInfo
-  , resourcesPageInfo :: PageInfo
-  , leuronsPageInfo :: PageInfo
-  , compCreateThread :: Maybe Comp_CreateThread_State
-  , driverCh :: AVar (Input Unit)
+  , usersPageInfo         :: PageInfo
+  , threadsPageInfo       :: PageInfo
+  , threadPostsPageInfo   :: PageInfo
+  , resourcesPageInfo     :: PageInfo
+  , leuronsPageInfo       :: PageInfo
+  , compCreateThread      :: Maybe Comp_CreateThread_State
+  , driverCh              :: AVar (Input Unit)
   }
 
 
 
 initialState :: AVar (Input Unit) -> State
 initialState ch =
-  { currentPage: Home
-  , me: Nothing
-  , meId: 0
-  , errors: Nothing
-  , users: []
-  , usersMap: M.empty
-  , organizations: []
-  , teams: []
-  , forums: []
-  , boards: []
-  , threads: []
-  , threadPosts: M.empty
-  , resources: M.empty
-  , leurons: M.empty
---  , workouts: M.empty
-  , currentOrganization: Nothing
-  , currentUser: Nothing
---  , currentTeam: Nothing
-  , currentForum: Nothing
-  , currentBoard: Nothing
-  , currentThread: Nothing
-  , currentThreadPost: Nothing
-  , currentResource: Nothing
-  , currentLeuron: Nothing
---  , currentWorkout: Nothing
-  , currentPageInfo: defaultPageInfo
+  { currentPage:           Home
+  , me:                    Nothing
+  , meId:                  0
+  , errors:                Nothing
+  , users:                 M.empty
+  , usersMap:              M.empty
+  , organizations:         M.empty
+  , teams:                 M.empty
+  , forums:                M.empty
+  , boards:                M.empty
+  , threads:               M.empty
+  , threadPosts:           M.empty
+  , resources:             M.empty
+  , leurons:               M.empty
+--  , workouts:            M.empty
+  , currentOrganization:   Nothing
+  , currentUser:           Nothing
+--  , currentTeam:         Nothing
+  , currentForum:          Nothing
+  , currentBoard:          Nothing
+  , currentThread:         Nothing
+  , currentThreadPost:     Nothing
+  , currentResource:       Nothing
+  , currentLeuron:         Nothing
+--  , currentWorkout:      Nothing
+  , currentPageInfo:       defaultPageInfo
   , organizationsPageInfo: defaultPageInfo_Organizations
-  , usersPageInfo: defaultPageInfo_Users
+  , usersPageInfo:         defaultPageInfo_Users
   -- need dsc by modifiedAt !!!!!!!! TODO FIXME
-  , threadsPageInfo: defaultPageInfo_Threads
-  , threadPostsPageInfo: defaultPageInfo_ThreadPosts
-  , resourcesPageInfo: defaultPageInfo_Resources
-  , leuronsPageInfo: defaultPageInfo_Leurons
-  , compCreateThread: Nothing
-  , driverCh: ch
+  , threadsPageInfo:       defaultPageInfo_Threads
+  , threadPostsPageInfo:   defaultPageInfo_ThreadPosts
+  , resourcesPageInfo:     defaultPageInfo_Resources
+  , leuronsPageInfo:       defaultPageInfo_Leurons
+  , compCreateThread:      Nothing
+  , driverCh:              ch
   }
