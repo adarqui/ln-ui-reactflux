@@ -9,7 +9,7 @@ module LN.Eval.Users (
 
 import Halogen                       (gets, modify)
 import Daimyo.Data.ArrayList         (arrayToList)
-import Data.Array                    (nub, filter)
+import Data.Array                    (nub, filter, zip)
 import Data.Either                   (Either(..))
 import Data.Map                      as M
 import Data.Maybe                    (Maybe(..))
@@ -45,8 +45,13 @@ eval_GetUsers eval (GetUsers next) = do
 
       case eusers of
         Left err -> pure next
-        Right (UserSanitizedPackResponses users) -> do
-          modify (_{ users = users.userSanitizedPackResponses })
+        Right (UserSanitizedPackResponses user_packs) -> do
+          let
+            users     = user_packs.userSanitizedPackResponses
+            users_map = M.fromFoldable $ zip (map (\(UserSanitizedPackResponse pack) -> pack.user ^. _UserSanitizedResponse .. id_) users) users
+
+          -- TODO FIXME: merge this with pre-existing users? union? correct?
+          modify (\st -> st{ users = M.union st.users users_map })
           pure next
 
 
