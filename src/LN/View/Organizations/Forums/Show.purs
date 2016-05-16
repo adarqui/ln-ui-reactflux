@@ -4,6 +4,8 @@ module LN.View.Organizations.Forums.Show (
 
 
 
+import Daimyo.Data.ArrayList           (listToArray)
+import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
@@ -20,69 +22,76 @@ import LN.T
 
 
 
+
 renderView_Organizations_Forums_Show :: String -> State -> ComponentHTML Input
 renderView_Organizations_Forums_Show forum_name st =
+
+  case st.currentOrganization, st.currentForum of
+
+       Just org_pack, Just forum_pack -> renderView_Organizations_Forums_Show' org_pack forum_pack st
+       _, _                           -> H.div_ [H.text "Unavailable"]
+
+
+
+renderView_Organizations_Forums_Show' :: OrganizationPackResponse -> ForumPackResponse -> State -> ComponentHTML Input
+renderView_Organizations_Forums_Show' org_pack forum_pack st =
   H.div [P.class_ B.containerFluid] [
     H.div [P.class_ B.pageHeader] [
-        H.h2_ [H.text forum_name]
+        H.h2_ [H.text forum.name]
       , H.p [P.class_ B.lead] [H.text forum_desc]
     ],
-    H.div [] [render_boards_packs org_name forum_name st]
+    H.div [] [renderBoards org.name forum.name st]
   ]
   where
-  org_name = maybe "Empty" (\org -> org ^. _OrganizationResponse .. name_) st.currentOrganization
-  forum_desc = maybe "No description." (\forum -> maybe "No description" id (forum ^. _ForumResponse .. description_)) st.currentForum
+  org        = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  forum      = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
+  forum_desc = maybe "No description." id forum.description
 
 
 
-render_boards_packs :: String -> String -> State -> ComponentHTML Input
-render_boards_packs org_name forum_name st =
+renderBoards :: String -> String -> State -> ComponentHTML Input
+renderBoards org_name forum_name st =
   H.ul [P.class_ B.listUnstyled] $
-    map (\(bp@(BoardPackResponse board_pack)) ->
+    map (\pack ->
+      let
+        board_pack = pack ^. _BoardPackResponse
+        board      = pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
+        stat       = pack ^. _BoardPackResponse .. boardStat_ ^. _BoardStatResponse
+        thread     = pack ^. _BoardPackResponse .. latestThread_
+        post       = pack ^. _BoardPackResponse .. latestThreadPost_
+        user       = pack ^. _BoardPackResponse .. latestThreadPostUser_
+      in
       H.li_ [
         H.div [P.class_ B.row] [
             H.div [P.class_ B.colSm1] [
                 H.p_ [H.text "icon"]
             ]
           , H.div [P.class_ B.colSm5] [
-                linkToP [] (OrganizationsForumsBoards org_name forum_name (Show $ b bp ^. name_) []) (b bp ^. name_)
-              , H.p_ [H.text $ maybe "No description." id ((b bp) ^. description_)]
+                linkToP [] (OrganizationsForumsBoards org_name forum_name (Show $ board.name) []) board.name
+              , H.p_ [H.text $ maybe "No description." id board.description]
             ]
           , H.div [P.class_ B.colSm1] [
-              H.p_ [H.text $ show (bs bp ^. threads_) <> " threads"]
+              H.p_ [H.text $ show stat.threads <> " threads"]
             ]
           , H.div [P.class_ B.colSm1] [
-              H.p_ [H.text $ show (bs bp ^. threadPosts_) <> " posts"]
+              H.p_ [H.text $ show stat.threadPosts <> " posts"]
             ]
           , H.div [P.class_ B.colSm1] [
-              H.p_ [H.text $ show (bs bp ^. views_) <> " views"]
+              H.p_ [H.text $ show stat.views <> " views"]
             ]
           , H.div [P.class_ B.colSm3] [
-              case ({ _t: t bp, _tp: tp bp, _u: u bp}) of
-                   { _t: Just (ThreadResponse t'), _tp: Just (ThreadPostResponse tp'), _u: Just (UserSanitizedResponse u') } ->
---              case (tuple3 (t bp) (tp bp) (u bp)) of
---                   (Just (ThreadResponse t')) /\ (Just (ThreadPostResponse tp')) /\ (Just (UserSanitizedResponse u')) ->
+              case thread, post, user of
+                   Just (ThreadResponse thread'), Just (ThreadPostResponse post'), Just (UserSanitizedResponse user') ->
                     H.div_ [
-                      H.p_ [H.text $ "Last post by ", linkToP [] (Users (Show u'.nick) []) u'.nick],
-                      H.p_ [H.text $ "in ", linkToP [Offset (-1)] (OrganizationsForumsBoardsThreads org_name forum_name (b bp ^. name_) (Show t'.name) []) t'.name],
-                      H.p_ [H.text $ show tp'.createdAt]
+                      H.p_ [H.text $ "Last post by ", linkToP [] (Users (Show user'.nick) []) user'.nick],
+                      H.p_ [H.text $ "in ", linkToP [Offset (-1)] (OrganizationsForumsBoardsThreads org_name forum_name board.name (Show thread'.name) []) thread'.name],
+                      H.p_ [H.text $ show post'.createdAt]
                     ]
-                   _ ->
+                   _, _, _ ->
                     H.div_ [
                       H.p_ [H.text "No posts."]
                     ]
           ]
         ]
       ])
-    st.boards
-  where
-  -- board
-  b x = (x ^. _BoardPackResponse .. board_ ^. _BoardResponse)
-  -- board stat
-  bs x = (x ^. _BoardPackResponse .. boardStat_ ^. _BoardStatResponse)
-  -- thread
-  t x = (x ^. _BoardPackResponse .. latestThread_)
-  -- thread post
-  tp x = (x ^. _BoardPackResponse .. latestThreadPost_)
-  -- user
-  u x = (x ^. _BoardPackResponse .. latestThreadPostUser_)
+    $ listToArray $ M.values st.boards

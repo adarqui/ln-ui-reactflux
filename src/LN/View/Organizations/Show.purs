@@ -4,6 +4,8 @@ module LN.View.Organizations.Show (
 
 
 
+import Daimyo.Data.ArrayList           (listToArray)
+import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
@@ -52,14 +54,6 @@ renderView_Organizations_Show' pack st =
   where
   organization = pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
 
-  {-
-  where
-  name = maybe "Empty" (\org -> org ^. _OrganizationResponse .. name_) st.currentOrganization
-  desc = maybe Nothing (\org -> org ^. _OrganizationResponse .. description_) st.currentOrganization
-  company = maybe "Empty" (\org -> org ^. _OrganizationResponse .. company_) st.currentOrganization
-  location = maybe "Empty" (\org -> org ^. _OrganizationResponse .. location_) st.currentOrganization
-  -}
-
 
 
 forums :: String -> State -> ComponentHTML Input
@@ -67,7 +61,8 @@ forums name st =
   H.div [P.class_ B.pageHeader] [
     H.h1 [P.class_ B.textCenter] [ H.text "Forums" ],
     H.div [P.class_ B.listUnstyled] $
-      map (\(ForumResponse forum) ->
+      map (\forum_pack ->
+        let forum = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse in
         H.li_ [
           H.div [P.class_ B.row] [
             H.div [P.class_ B.colSm1] [
@@ -88,5 +83,5 @@ forums name st =
             ]
           ]
         ])
-        st.forums
+        $ listToArray $ M.values st.forums
   ]
