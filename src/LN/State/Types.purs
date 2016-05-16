@@ -32,7 +32,7 @@ type State =
   , errors                :: Maybe (Array String)
   , users                 :: M.Map Int UserSanitizedPackResponse
   , usersMap              :: M.Map Int UserSanitizedPackResponse
-  , organizations         :: M.Map Int OrganizationResponse
+  , organizations         :: M.Map Int OrganizationPackResponse
   , teams                 :: M.Map Int TeamPackResponse
   , forums                :: M.Map Int ForumPackResponse
   , boards                :: M.Map Int BoardPackResponse

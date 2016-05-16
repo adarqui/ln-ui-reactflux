@@ -4,6 +4,8 @@ module LN.View.Organizations.Index (
 
 
 
+import Daimyo.Data.ArrayList        (listToArray)
+import Data.Map                     as M
 import Halogen                      (ComponentHTML)
 import Optic.Core                   ((^.), (..))
 import Prelude                      (map, ($))
@@ -11,24 +13,26 @@ import Prelude                      (map, ($))
 import LN.Input.Types               (Input)
 import LN.Router.Types              (Routes(..), CRUD(..))
 import LN.State.Types               (State)
-import LN.T
-import LN.View.Module.Gravatar
-import LN.View.Module.PageNumbers
-import LN.View.Module.EntityListing
+import LN.T                         (Size(XLarge), organization_, _OrganizationPackResponse
+                                    , _OrganizationResponse)
+import LN.View.Module.Gravatar      (gravatarUrlFromOrganization)
+import LN.View.Module.PageNumbers   (renderPageNumbers)
+import LN.View.Module.EntityListing (renderEntityListing)
 
 
 
 renderView_Organizations_Index :: State -> ComponentHTML Input
 renderView_Organizations_Index st =
---  H.div_ $ map (\(OrganizationResponse org) -> H.p_ [H.text org.name]) st.organizations
   renderEntityListing "Organizations" (
-    map (\(o@(OrganizationResponse org)) ->
-      { nick: org.name
+    map (\pack ->
+      let org = pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+      in
+      { nick:        org.name
       , displayNick: org.name
-      , createdAt: org.createdAt
-      , logo: gravatarUrlFromOrganization XLarge o
-      , route: Organizations (Show org.name) []
+      , createdAt:   org.createdAt
+      , logo:        gravatarUrlFromOrganization XLarge (pack ^. _OrganizationPackResponse .. organization_)
+      , route:       Organizations (Show org.name) []
       }
-    ) st.organizations) pNum
+    ) $ listToArray $ M.values st.organizations) pNum
   where
   pNum = renderPageNumbers st.organizationsPageInfo st.currentPage
