@@ -33,7 +33,8 @@ renderView_Organizations_Forums_Show forum_name st =
 
 
 
-renderView_Organizations_Forums_Show' :: OrganizationPackResponse -> ForumPackResponse -> State -> ComponentHTML Input
+renderView_Organizations_Forums_Show'
+  :: OrganizationPackResponse -> ForumPackResponse -> State -> ComponentHTML Input
 renderView_Organizations_Forums_Show' org_pack forum_pack st =
   H.div [P.class_ B.containerFluid] [
     H.div [P.class_ B.pageHeader] [
