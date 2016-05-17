@@ -1,5 +1,6 @@
 module LN.Router.Internal (
   (</>),
+  apply',
   updateUrl,
   linkTo,
   linkTo',
@@ -27,14 +28,16 @@ import Routing.Hash.Aff                (setHash)
 import Prelude                         (Unit, map, ($), (<>))
 import Purescript.Api.Helpers          (mkQueryString, flattenParams, qp)
 
-import LN.Router.Types                 (Routes(..), HasLink, link)
+import LN.Router.Types                 (Routes, class HasLink, link)
 import LN.Router.Util                  (mkUri)
 import LN.T.Internal.Types             (Param)
 
 
 
-(</>) :: forall a b. (HasLink a, HasLink b) => (a -> b) -> a -> b
-(</>) = ($)
+infixl 9 apply' as </>
+
+apply' :: forall a b. (HasLink a, HasLink b) => (a -> b) -> a -> b
+apply' = ($)
 
 
 
