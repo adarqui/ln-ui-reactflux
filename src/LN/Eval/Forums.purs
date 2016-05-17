@@ -21,12 +21,16 @@ import LN.T
 eval_GetForums :: EvalEff
 eval_GetForums eval (GetForums next) = do
 
+  pure next
+
+{- TODO FIXME: do we use this?
   eforums <- rd $ getForums'
   case eforums of
     Left err -> pure next
     Right (ForumResponses forums) -> do
       modify (_{ forums = forums.forumResponses })
       pure next
+      -}
 
 
 

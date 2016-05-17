@@ -57,7 +57,7 @@ renderBoards org_name forum_name st =
       let
         board_pack = pack ^. _BoardPackResponse
         board      = pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
-        stat       = pack ^. _BoardPackResponse .. boardStat_ ^. _BoardStatResponse
+        stat       = pack ^. _BoardPackResponse .. stat_ ^. _BoardStatResponse
         thread     = pack ^. _BoardPackResponse .. latestThread_
         post       = pack ^. _BoardPackResponse .. latestThreadPost_
         user       = pack ^. _BoardPackResponse .. latestThreadPostUser_

@@ -14,8 +14,12 @@ import Prelude            (bind, pure, ($))
 import LN.Component.Types (EvalEff)
 import LN.Input.Profile   (InputProfile(..))
 import LN.Input.Types     (Input(..))
-import LN.Api             ()
-import LN.T
+import LN.Api             (rd, putUserProfile')
+import LN.T               (UserPackResponse(..), _UserPackResponse
+                          , ProfileResponse(..), _ProfileResponse
+                          , ProfileGender(..)
+                          , profile_, id_, gender_, birthdate_, signature_, website_, location_
+                          , profileResponseToRequest)
 
 
 
@@ -36,10 +40,10 @@ eval_Profile eval (CompProfile InputProfile_Post next) = do
        Nothing -> pure next
        Just me -> do
          let
-           profile_id  = me ^. _UserPackResponse .. userProfile_ ^. _ProfileResponse .. id_
-           profile_req = (profileResponseToRequest $ me ^. _UserPackResponse .. userProfile_)
+           profile_id  = me ^. _UserPackResponse .. profile_ ^. _ProfileResponse .. id_
+           profile_req = (profileResponseToRequest $ me ^. _UserPackResponse .. profile_)
 
--- TODO FIXME API         rd $ putUserProfile' profile_id profile_req
+         rd $ putUserProfile' profile_id profile_req
          pure next
 
 
@@ -82,7 +86,7 @@ eval_Profile_Setter accessor value next = do
        Nothing -> pure next
        Just me -> do
           let
-            profile = (_ProfileResponse .. accessor .~ value) $ (me ^. _UserPackResponse .. userProfile_)
-            me' = (_UserPackResponse .. userProfile_ .~ profile) $ me
+            profile = (_ProfileResponse .. accessor .~ value) $ (me ^. _UserPackResponse .. profile_)
+            me' = (_UserPackResponse .. profile_ .~ profile) $ me
           modify (_ { me = Just me' })
           pure next

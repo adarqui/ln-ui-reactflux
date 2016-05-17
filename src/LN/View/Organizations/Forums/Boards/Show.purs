@@ -26,7 +26,7 @@ import LN.View.Module.PageNumbers      (renderPageNumbers)
 import LN.T                            (BoardPackResponse, ForumPackResponse, OrganizationPackResponse
                                        , Size(Small), ThreadPostResponse(ThreadPostResponse)
                                        , UserSanitizedResponse(UserSanitizedResponse), latestThreadPostUser_
-                                       , _ThreadPackResponse, latestThreadPost_, _ThreadStatResponse, threadStat_
+                                       , _ThreadPackResponse, latestThreadPost_, _ThreadStatResponse, stat_
                                        , _ThreadResponse, thread_, _BoardResponse, board_, _BoardPackResponse
                                        , _ForumResponse, forum_, _ForumPackResponse, _OrganizationResponse
                                        , organization_, _OrganizationPackResponse)
@@ -74,7 +74,7 @@ renderThreads org_name forum_name board_name st =
           let
             thread_pack = pack ^. _ThreadPackResponse
             thread      = pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse
-            stat        = pack ^. _ThreadPackResponse .. threadStat_ ^. _ThreadStatResponse
+            stat        = pack ^. _ThreadPackResponse .. stat_ ^. _ThreadStatResponse
             post        = pack ^. _ThreadPackResponse .. latestThreadPost_
             user        = pack ^. _ThreadPackResponse .. latestThreadPostUser_
           in

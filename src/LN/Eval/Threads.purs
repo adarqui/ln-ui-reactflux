@@ -58,10 +58,10 @@ eval_GetThreadsForBoard eval (GetThreadsForBoard board_id next) = do
             users =
               (catMaybes $ map (\(ThreadPackResponse pack) -> pack.latestThreadPostUser) thread_packs.threadPackResponses)
               <>
-              (map (\(ThreadPackResponse pack) -> pack.threadUser) thread_packs.threadPackResponses)
+              (map (\(ThreadPackResponse pack) -> pack.user) thread_packs.threadPackResponses)
 
             threads = thread_packs.threadPackResponses
-            threads_map = M.fromFoldable $ zip (map (\(ThreadPackResponse pack) -> pack.thread ^. _ThreadResponse .. id_) threads) threads
+            threads_map = M.fromFoldable $ zip (map (\(ThreadPackResponse pack) -> pack.threadId) threads) threads
 
           eval (GetUsers_MergeMap_ByUser users next)
 

@@ -44,8 +44,8 @@ profile_Else st =
 profile_Else' :: State -> UserSanitizedPackResponse -> ComponentHTML Input
 profile_Else' st user =
   H.div [] [
---    H.p_ [H.text $ "gender: " <> (show $ user ^. _UserSanitizedPackResponse .. userProfile_ ^. _ProfileResponse .. gender_)],
-    H.p_ [H.text $ "signature: " <> (show $ user ^. _UserSanitizedPackResponse .. userProfile_ ^. _ProfileResponse .. signature_)]
+--    H.p_ [H.text $ "gender: " <> (show $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. gender_)],
+    H.p_ [H.text $ "signature: " <> (show $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_)]
   ]
 
 
@@ -102,7 +102,7 @@ profile_Self' st user =
     ] [H.text "save"]
   ]
   where
-  prof = user ^. _UserPackResponse .. userProfile_ ^. _ProfileResponse
+  prof = user ^. _UserPackResponse .. profile_ ^. _ProfileResponse
 
 
 

@@ -9,7 +9,7 @@ module LN.Eval.Organizations (
 
 
 import Control.Monad.Aff.Console       (log)
-import Data.Array                      (length, zip)
+import Data.Array                      (zip)
 import Data.Either                     (Either(..))
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
@@ -66,10 +66,10 @@ eval_GetOrganizationForum eval (GetOrganizationForum org_name forum_name next) =
   eforum <- rd $ ApiS.getForumPack_ByOrganizationName' forum_name org_name
   case eforum of
     Left err -> pure next
-    Right pack@(ForumResponse forum) -> do
+    Right pack@(ForumPackResponse forum) -> do
       modify (_{ currentForum = Just pack })
       -- IMPLEMENTING BOARD PACKS
-      eval (GetBoardsForForum forum.id next)
+      eval (GetBoardsForForum forum.forumId next)
       pure next
 
 
@@ -78,14 +78,14 @@ eval_GetOrganizationForumBoard :: EvalEff
 eval_GetOrganizationForumBoard eval (GetOrganizationForumBoard org_name forum_name board_name next) = do
 
   st <- get
-  let forum_id = maybe 0 (\forum -> forum ^. _ForumResponse .. id_) st.currentForum
+  let forum_id = maybe 0 (\(ForumPackResponse forum) -> forum.forumId) st.currentForum
 
   eboard <- rd $ ApiS.getBoardPack_ByForumId' board_name forum_id
   case eboard of
     Left err -> pure next
-    Right pack@(BoardResponse board) -> do
+    Right pack@(BoardPackResponse board) -> do
       modify (_{ currentBoard = Just pack })
-      eval (GetThreadsForBoard board.id next)
+      eval (GetThreadsForBoard board.boardId next)
       pure next
 
 
@@ -94,12 +94,12 @@ eval_GetOrganizationForumBoardThread :: EvalEff
 eval_GetOrganizationForumBoardThread eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) = do
 
   st <- get
-  let board_id = maybe 0 (\board -> board ^. _BoardResponse .. id_) st.currentBoard
+  let board_id = maybe 0 (\(BoardPackResponse board) -> board.boardId) st.currentBoard
 
   ethread <- rd $ ApiS.getThreadPack_ByBoardId' thread_name board_id
   case ethread of
     Left err -> pure next
     Right pack@(ThreadPackResponse thread) -> do
       modify (_{ currentThread = Just pack })
-      eval (GetThreadPostsForThread thread.id next)
+      eval (GetThreadPostsForThread thread.threadId next)
       pure next

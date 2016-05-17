@@ -58,19 +58,19 @@ renderLikeThreadPost thread_post_id pack =
   colorLike =
     case (pack ^. _ThreadPostPackResponse .. like_) of
          Nothing -> color HCSS.black
-         Just r  -> case (r ^. _ThreadPostLikeResponse .. opt_) of
+         Just r  -> case (r ^. _LikeResponse .. opt_) of
                          Like -> color HCSS.green
                          _    -> color HCSS.black
   colorNeutral =
     case (pack ^. _ThreadPostPackResponse .. like_) of
          Nothing -> color HCSS.black
-         Just r  -> case (r ^. _ThreadPostLikeResponse .. opt_) of
+         Just r  -> case (r ^. _LikeResponse .. opt_) of
                          Neutral -> color HCSS.yellow
                          _       -> color HCSS.black
   colorDislike =
     case (pack ^. _ThreadPostPackResponse .. like_) of
          Nothing -> color HCSS.black
-         Just r  -> case (r ^. _ThreadPostLikeResponse .. opt_) of
+         Just r  -> case (r ^. _LikeResponse .. opt_) of
                          Dislike -> color HCSS.red
                          _       -> color HCSS.black
   colorStar   =

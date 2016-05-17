@@ -27,8 +27,8 @@ import LN.View.Module.PageNumbers      (renderPageNumbers)
 import LN.T                            (UserSanitizedPackResponse, ThreadPackResponse, BoardPackResponse
                                        , ForumPackResponse, OrganizationPackResponse, PostData(PostDataBBCode)
                                        , Size(Medium), ThreadPostStatResponse(ThreadPostStatResponse)
-                                       , _UserSanitizedStatResponse, userStat_, _UserSanitizedPackResponse
-                                       , signature_, _ProfileResponse, userProfile_, _ThreadPostStatResponse, stat_
+                                       , _UserSanitizedStatResponse, stat_, _UserSanitizedPackResponse
+                                       , signature_, _ProfileResponse, profile_, _ThreadPostStatResponse
                                        , _ThreadPostPackResponse, _ThreadPostResponse, threadPost_, body_
                                        , _ThreadPostRequest, _ThreadResponse, thread_, _ThreadPackResponse
                                        , _BoardResponse, board_, _BoardPackResponse, _ForumResponse, forum_
@@ -96,7 +96,7 @@ renderPosts org_name forum_name board_name thread_name st =
                   , H.p_ [H.text $ show post.createdAt]
                   , H.p_ [H.text "quote / reply"]
                   , displayPostData post.body
-                  , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. userProfile_ ^. _ProfileResponse .. signature_) (usersMapLookup st post.userId)]
+                  , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup st post.userId)]
                 ]
               , H.div [P.class_ B.colSm1] [
                     renderLikeThreadPost post.id pack
@@ -161,7 +161,7 @@ displayUserStats (Just user) =
     H.p_ [H.text $ "leurons: " <> show stats.leurons]
   ]
   where
-  stats = user ^. _UserSanitizedPackResponse .. userStat_ ^. _UserSanitizedStatResponse
+  stats = user ^. _UserSanitizedPackResponse .. stat_ ^. _UserSanitizedStatResponse
 
 
 
