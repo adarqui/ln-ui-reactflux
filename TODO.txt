@@ -1,0 +1,1 @@
+[-] make sure every "error" in an Eval routine gets logged
