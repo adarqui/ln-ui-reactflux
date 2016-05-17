@@ -4,37 +4,38 @@ module LN.View (
 
 
 
-import Data.Maybe (Maybe(..))
-import Halogen
-import Halogen.HTML.Indexed as H
-import Prelude (map, const, ($))
-import LN.Input.Types (Input)
-import LN.Router.Types (Routes(..), CRUD(..))
-import LN.State.Types (State)
-import LN.View.Home
-import LN.View.About
-import LN.View.Portal
-import LN.View.Users.Index
-import LN.View.Users.Show
-import LN.View.Users.Profile
-import LN.View.Users.Settings
-import LN.View.Users.PMs
-import LN.View.Users.Threads
-import LN.View.Users.ThreadPosts
-import LN.View.Users.Workouts
-import LN.View.Users.Resources
-import LN.View.Users.Leurons
-import LN.View.Users.Likes
-import LN.View.Organizations.Index
-import LN.View.Organizations.Show
-import LN.View.Organizations.Forums.Show
-import LN.View.Organizations.Forums.Boards.Show
-import LN.View.Organizations.Forums.Boards.Threads.Show
-import LN.View.Resources.Index
-import LN.View.Resources.New
-import LN.View.Resources.Edit
-import LN.View.Resources.Show
-import LN.View.Four04
+import Data.Maybe                (Maybe(..))
+import Halogen                   (HTML, ComponentHTML)
+import Halogen.HTML.Indexed      as H
+import Prelude                   (map, const, ($))
+
+import LN.Input.Types            (Input)
+import LN.Router.Types           (Routes(..), CRUD(..))
+import LN.State.Types            (State)
+import LN.View.Home              (renderView_Home)
+import LN.View.About             (renderView_About)
+import LN.View.Portal            (renderView_Portal)
+import LN.View.Users.Index       (renderView_Users_Index)
+import LN.View.Users.Show        (renderView_Users_Show)
+import LN.View.Users.Profile     (renderView_Users_Profile)
+import LN.View.Users.Settings    (renderView_Users_Settings)
+import LN.View.Users.PMs         (renderView_Users_PMs)
+import LN.View.Users.Threads     (renderView_Users_Threads)
+import LN.View.Users.ThreadPosts (renderView_Users_ThreadPosts)
+import LN.View.Users.Workouts    (renderView_Users_Workouts)
+import LN.View.Users.Resources   (renderView_Users_Resources)
+import LN.View.Users.Leurons     (renderView_Users_Leurons)
+import LN.View.Users.Likes       (renderView_Users_Likes)
+import LN.View.Resources.Index   (renderView_Resources_Index)
+import LN.View.Resources.New     (renderView_Resources_New)
+-- TODO FIXME: import LN.View.Resources.Edit
+import LN.View.Resources.Show    (renderView_Resources_Show)
+import LN.View.Four04            (renderView_404)
+import LN.View.Organizations.Index                      (renderView_Organizations_Index)
+import LN.View.Organizations.Show                       (renderView_Organizations_Show)
+import LN.View.Organizations.Forums.Show                (renderView_Organizations_Forums_Show)
+import LN.View.Organizations.Forums.Boards.Show         (renderView_Organizations_Forums_Boards_Show)
+import LN.View.Organizations.Forums.Boards.Threads.Show (renderView_Organizations_Forums_Boards_Threads_Show)
 
 
 

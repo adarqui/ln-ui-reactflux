@@ -7,7 +7,7 @@ module LN.View.Resources.New (
 import Halogen              (ComponentHTML)
 import Halogen.HTML.Indexed as H
 
-import LN.Input.Types       (Input(..))
+import LN.Input.Types       (Input)
 import LN.State.Types       (State)
 
 

@@ -9,20 +9,21 @@ import Data.Map                        as M
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
-import Halogen.HTML.Events.Indexed     as E
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, show, map, ($), (<>))
+import Prelude                         (show, map, ($), (<>))
 
-import LN.Input.Types                  (Input(..))
+import LN.Input.Types                  (Input)
 import LN.Router.Internal              (linkToP, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
-import LN.View.Module.Gravatar
-import LN.View.Module.OrderBy
-import LN.View.Module.PageNumbers
-import LN.T
+import LN.View.Module.Gravatar         (renderGravatarForUser)
+import LN.View.Module.OrderBy          (renderOrderBy)
+import LN.View.Module.PageNumbers      (renderPageNumbers)
+import LN.T                            (ResourcePackResponse(..), Size(Small)
+                                       , views_, leurons_, description_, createdAt_, title_, id_, userId_, stat_, user_, resource_
+                                       ,_ResourceStatResponse, _ResourcePackResponse, _UserSanitizedResponse, _ResourceResponse)
 
 
 
