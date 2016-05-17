@@ -15,12 +15,12 @@ module LN.State.PageInfo (
 
 
 
-import Data.Array (head)
-import Data.Maybe (maybe)
-import Optic.Core ((^.), (..))
-import Prelude    ((+), (-), (/), (*))
+import Data.Array          (head)
+import Data.Maybe          (maybe)
+import Optic.Core          ((^.), (..))
+import Prelude             ((+), (-), (/), (*))
 
-import LN.T.Internal.Types (SortOrderBy(..), OrderBy(..), CountResponses(..), CountResponse(..), Param(..)
+import LN.T.Internal.Types (SortOrderBy(..), OrderBy(..), CountResponses, Param(..)
                            , _CountResponses, _CountResponse, countResponses_, n_)
 
 
