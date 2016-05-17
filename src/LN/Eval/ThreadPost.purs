@@ -34,7 +34,7 @@ eval_ThreadPost eval (CompThreadPost InputThreadPost_Nop next) = do
 
 eval_ThreadPost eval (CompThreadPost InputThreadPost_Post next) = do
   st <- get
-  let thread_id = maybe 0 (\thread -> thread ^. _ThreadResponse .. id_) st.currentThread
+  let thread_id = maybe 0 (\pack -> pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse .. id_) st.currentThread
   let mthread_post_request = st.currentThreadPost
   case mthread_post_request of
     Nothing                  -> pure next
@@ -43,7 +43,6 @@ eval_ThreadPost eval (CompThreadPost InputThreadPost_Post next) = do
       case epost of
         Left err   -> pure next
         Right post -> do
-          -- TODO FIXME: needs to be a thread post pack
           let
             pack = defaultThreadPostPackResponse post user
             user = userResponseToSanitizedResponse ((fromJust st.me) ^. _UserPackResponse .. user_)
