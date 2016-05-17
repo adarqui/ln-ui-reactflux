@@ -5,18 +5,24 @@ module LN.Eval.CreateThread (
 
 
 import Control.Monad.Aff.Console   (log)
-import Data.Maybe                  (Maybe(..), maybe)
 import Data.Either                 (Either(..))
 import Data.Functor                (($>))
+import Data.Map                    as M
+import Data.Maybe                  (Maybe(..), maybe)
 import Halogen                     (get, modify, liftAff')
 import Optic.Core                  ((^.), (..))
-import Prelude                     (bind, pure, show, ($), (<>))
+import Prelude                     (bind, pure, show, const, ($), (<>))
 
 import LN.Api                      (rd, getThreadPack', postThread_ByBoardId')
 import LN.Component.Types          (EvalEff)
 import LN.Input.CreateThread       (InputCreateThread(..))
 import LN.Input.Types              (Input(..))
-import LN.T
+import LN.T                        (_BoardPackResponse
+                                   , boardId_
+                                   , _ThreadResponse, _ThreadPackResponse
+                                   , threadId_
+                                   , id_
+                                   , mkThreadRequest)
 
 
 
@@ -32,7 +38,7 @@ eval_CreateThread eval (CompCreateThread InputCreateThread_Nop next) = do
 eval_CreateThread eval (CompCreateThread InputCreateThread_Create next) = do
 
   st <- get
-  let board_id = maybe 0 (\board -> board ^. _BoardResponse .. id_) st.currentBoard
+  let board_id = maybe 0 (\board -> board ^. _BoardPackResponse .. boardId_) st.currentBoard
   let mcomp = st.compCreateThread
   case mcomp of
     Nothing                  -> pure next
@@ -48,7 +54,11 @@ eval_CreateThread eval (CompCreateThread InputCreateThread_Create next) = do
           case ethread_pack of
               Left err -> liftAff' $ log ("CreateThread: getThreadPack': Error: " <> show err) $> next
               Right thread_pack -> do
-                modify (_ { threads = [thread_pack] <> st.threads })
+
+                let
+                  thread_id = thread_pack ^. _ThreadPackResponse .. threadId_
+
+                modify (\st' -> st'{ threads = M.update (const $ Just thread_pack) thread_id st.threads })
                 eval_CreateThread eval (CompCreateThread (InputCreateThread_SetName Nothing) next)
                 pure next
 

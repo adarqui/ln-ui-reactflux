@@ -49,8 +49,8 @@ eval_GetThreadsForBoard eval (GetThreadsForBoard board_id next) = do
 
       modify (_ { threadsPageInfo = new_page_info.pageInfo })
 
-      ethreadPacks <- rd $ getThreadPacks_ByBoardId new_page_info.params board_id
-      case ethreadPacks of
+      ethread_packs <- rd $ getThreadPacks_ByBoardId new_page_info.params board_id
+      case ethread_packs of
         Left err -> pure next
         Right (ThreadPackResponses thread_packs) -> do
 
