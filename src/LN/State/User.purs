@@ -8,14 +8,13 @@ module LN.State.User (
 
 import Data.Map                  as M
 import Data.Maybe                (Maybe(..), maybe)
-import Optic.Core                (LensP, lens, (^.), (..))
+import Optic.Core                ((^.), (..))
 import Prelude                   (($))
 
-import LN.Component.CreateThread (Comp_CreateThread_State)
-import LN.Router.Types           (Routes)
-import LN.State.PageInfo         (PageInfo)
 import LN.State.Types            (State)
-import LN.T
+import LN.T                      (UserSanitizedPackResponse, UserSanitizedResponse
+                                 , _UserSanitizedPackResponse, _UserSanitizedResponse
+                                 , nick_, user_)
 
 
 
