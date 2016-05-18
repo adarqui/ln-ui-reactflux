@@ -15,69 +15,74 @@ import CSS                                as HCSS
 import Optic.Core                         ((^.), (..))
 import Prelude                            (($), (<<<))
 
-import LN.Input.Like            (InputLike(..))
+import LN.Input.Like                      (InputLike(..))
 import LN.Input.Types                     (Input(..))
-import LN.T
+import LN.T                               ( Ent(..)
+                                          , LikeOpt(..)
+                                          , LikeResponse(..), _LikeResponse
+                                          , StarResponse(..), _StarResponse
+                                          , opt_
+                                          )
 
 
 
-renderLike :: Int -> ThreadPostPackResponse -> ComponentHTML Input
-renderLike thread_post_id pack =
+renderLike :: Ent -> Int -> Maybe LikeResponse -> Maybe StarResponse -> ComponentHTML Input
+renderLike ent ent_id mlike mstar =
   H.div [P.class_ B.row] [
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorLike,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLike (InputLike_Like pack))
+        E.onClick $ E.input_ $ (CompLike (InputLike_Like ent ent_id mlike))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconArrowUp]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorNeutral,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLike (InputLike_Neutral pack))
+        E.onClick $ E.input_ $ (CompLike (InputLike_Neutral ent ent_id mlike))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconMinus]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorDislike,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLike (InputLike_Dislike pack))
+        E.onClick $ E.input_ $ (CompLike (InputLike_Dislike ent ent_id mlike))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconArrowDown]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorStar,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLike (InputLike_Star pack))
+        E.onClick $ E.input_ $ (CompLike (InputLike_Star ent ent_id mstar))
       ] [H.span [P.classes [B.glyphicon, star]] []]
     ]
   ]
   where
   color c   = HCSS.style $ HCSS.color c
   colorLike =
-    case (pack ^. _ThreadPostPackResponse .. like_) of
+    case mlike of
          Nothing -> color HCSS.black
          Just r  -> case (r ^. _LikeResponse .. opt_) of
                          Like -> color HCSS.green
                          _    -> color HCSS.black
   colorNeutral =
-    case (pack ^. _ThreadPostPackResponse .. like_) of
+    case mlike of
          Nothing -> color HCSS.black
          Just r  -> case (r ^. _LikeResponse .. opt_) of
                          Neutral -> color HCSS.yellow
                          _       -> color HCSS.black
   colorDislike =
-    case (pack ^. _ThreadPostPackResponse .. like_) of
+    case mlike of
          Nothing -> color HCSS.black
          Just r  -> case (r ^. _LikeResponse .. opt_) of
                          Dislike -> color HCSS.red
                          _       -> color HCSS.black
   colorStar   =
-    case (pack ^. _ThreadPostPackResponse .. star_) of
+    case mstar of
          Nothing -> color HCSS.black
          Just _  -> color HCSS.orange
   star        =
-    case (pack ^. _ThreadPostPackResponse .. star_) of
+    case mstar of
          Nothing -> B.glyphiconStarEmpty
          Just _  -> B.glyphiconStar

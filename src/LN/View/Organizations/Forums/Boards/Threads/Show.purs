@@ -22,9 +22,10 @@ import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup, usersMapLookup_ToNick, usersMapLookup_ToUser)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
-import LN.View.Module.Like   (renderLike)
+import LN.View.Module.Like             (renderLike)
 import LN.View.Module.PageNumbers      (renderPageNumbers)
-import LN.T                            (UserSanitizedPackResponse, ThreadPackResponse, BoardPackResponse
+import LN.T                            ( Ent(..)
+                                       , UserSanitizedPackResponse, ThreadPackResponse, BoardPackResponse
                                        , ForumPackResponse, OrganizationPackResponse, PostData(PostDataBBCode)
                                        , Size(Medium), ThreadPostStatResponse(ThreadPostStatResponse)
                                        , _UserSanitizedStatResponse, stat_, _UserSanitizedPackResponse
@@ -80,6 +81,7 @@ renderPosts org_name forum_name board_name thread_name st =
     , H.ul [P.class_ B.listUnstyled] (
         (map (\pack ->
           let
+            pack' = pack ^. _ThreadPostPackResponse
             post  = pack ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse
             stats = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse
           in
@@ -99,7 +101,7 @@ renderPosts org_name forum_name board_name thread_name st =
                   , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup st post.userId)]
                 ]
               , H.div [P.class_ B.colSm1] [
-                    renderLike post.id pack
+                    renderLike Ent_ThreadPost post.id pack'.like pack'.star
                   , displayPostStats (ThreadPostStatResponse stats)
                 ]
             ]

@@ -6,11 +6,11 @@ module LN.Input.Like (
 
 import Data.Maybe (Maybe)
 
-import LN.T       (ThreadPostPackResponse)
+import LN.T       (Ent, LikeResponse, StarResponse)
 
 
 data InputLike
-  = InputLike_Like    ThreadPostPackResponse
-  | InputLike_Neutral ThreadPostPackResponse
-  | InputLike_Dislike ThreadPostPackResponse
-  | InputLike_Star    ThreadPostPackResponse
+  = InputLike_Like    Ent Int (Maybe LikeResponse)
+  | InputLike_Neutral Ent Int (Maybe LikeResponse)
+  | InputLike_Dislike Ent Int (Maybe LikeResponse)
+  | InputLike_Star    Ent Int (Maybe StarResponse)
