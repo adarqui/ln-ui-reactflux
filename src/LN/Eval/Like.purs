@@ -1,5 +1,5 @@
-module LN.Eval.LikeThreadPost (
-  eval_LikeThreadPost
+module LN.Eval.Like (
+  eval_Like
 ) where
 
 
@@ -12,11 +12,11 @@ import Optic.Core                  ((^.), (..), (.~))
 import Prelude                     (bind, pure, void, ($))
 import Purescript.Api.Helpers
 
-import LN.Api                      ( postThreadPostLike_ByThreadPostId', putThreadPostLike', getThreadPostStat'
-                                   , postThreadPostStar_ByThreadPostId', deleteThreadPostStar'
+import LN.Api                      ( postLike_ByThreadPostId', putLike', getThreadPostStat'
+                                   , postStar_ByThreadPostId', deleteStar'
                                    )
 import LN.Component.Types          (EvalEff, LNEff)
-import LN.Input.LikeThreadPost     (InputLikeThreadPost(..))
+import LN.Input.Like     (InputLike(..))
 import LN.Input.Types              (Input(..))
 import LN.T                        (ThreadPostPackResponse, StarRequest, LikeRequest
                                    , LikeOpt(Dislike, Neutral, Like), star_, _ThreadPostPackResponse
@@ -25,11 +25,11 @@ import LN.T                        (ThreadPostPackResponse, StarRequest, LikeReq
 
 
 
-eval_LikeThreadPost :: EvalEff
+eval_Like :: EvalEff
 
 
 
-eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Like pack) next) = do
+eval_Like eval (CompLike (InputLike_Like pack) next) = do
   let like_req = mkLikeRequest Like Nothing
   packmap <- gets _.threadPosts
   newmap' <- liftAff' $ boomLike pack like_req packmap
@@ -41,7 +41,7 @@ eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Like pack) nex
 
 
 
-eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Neutral pack) next) = do
+eval_Like eval (CompLike (InputLike_Neutral pack) next) = do
   let like_req = mkLikeRequest Neutral Nothing
   packmap <- gets _.threadPosts
   newmap' <- liftAff' $ boomLike pack like_req packmap
@@ -53,7 +53,7 @@ eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Neutral pack) 
 
 
 
-eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Dislike pack) next) = do
+eval_Like eval (CompLike (InputLike_Dislike pack) next) = do
   let like_req = mkLikeRequest Dislike Nothing
   packmap <- gets _.threadPosts
   newmap' <- liftAff' $ boomLike pack like_req packmap
@@ -65,7 +65,7 @@ eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Dislike pack) 
 
 
 
-eval_LikeThreadPost eval (CompLikeThreadPost (InputLikeThreadPost_Star pack) next) = do
+eval_Like eval (CompLike (InputLike_Star pack) next) = do
   let star_req = mkStarRequest Nothing
   packmap <- gets _.threadPosts
   newmap' <- liftAff' $ boomStar pack star_req packmap
@@ -82,8 +82,8 @@ boomLike pack like_req packmap = do
   -- If mlike is Nothing, then we are creating a new "like".
   -- Otherwise, update an existing like
   elike_req <- (case (pack ^. _ThreadPostPackResponse .. like_) of
-       Nothing     -> rD $ postThreadPostLike_ByThreadPostId' thread_post_id like_req
-       (Just like) -> rD $ putThreadPostLike' (like ^. _LikeResponse .. id_) like_req)
+       Nothing     -> rD $ postLike_ByThreadPostId' thread_post_id like_req
+       (Just like) -> rD $ putLike' (like ^. _LikeResponse .. id_) like_req)
   case elike_req of
        Left err -> pure $ Left err
        Right resp -> do
@@ -107,7 +107,7 @@ boomStar pack star_req packmap = do
 
     -- If mstar is Nothing, then we are creating a new "star".
     Nothing     -> do
-      estar_req <- rD $ postThreadPostStar_ByThreadPostId' thread_post_id star_req
+      estar_req <- rD $ postStar_ByThreadPostId' thread_post_id star_req
       case estar_req of
            Left err -> pure $ Left err
            Right resp -> do
@@ -123,7 +123,7 @@ boomStar pack star_req packmap = do
 
     (Just star) -> do
     -- Otherwise, remove the star .. ie, a toggle
-      void $ rD $ deleteThreadPostStar' (star ^. _StarResponse .. id_)
+      void $ rD $ deleteStar' (star ^. _StarResponse .. id_)
       let new_pack  = _ThreadPostPackResponse .. star_ .~ Nothing $ pack
       pure $ Right $ M.update (\_ -> Just new_pack) thread_post_id packmap
 

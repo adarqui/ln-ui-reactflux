@@ -5,7 +5,7 @@ module LN.Input.Types (
 
 
 import LN.Input.CreateThread   (InputCreateThread)
-import LN.Input.LikeThreadPost (InputLikeThreadPost)
+import LN.Input.Like (InputLike)
 import LN.Input.OrderBy        (InputOrderBy)
 import LN.Input.Profile        (InputProfile)
 import LN.Input.Resource       (InputResource)
@@ -65,7 +65,7 @@ data Input a
 
   | CompProfile InputProfile a
 
-  | CompLikeThreadPost InputLikeThreadPost a
+  | CompLike InputLike a
 
   | CompResource InputResource a
 

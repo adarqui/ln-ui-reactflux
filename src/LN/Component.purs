@@ -25,7 +25,7 @@ import LN.Eval.Nop
 
 -- Components
 import LN.Eval.CreateThread
-import LN.Eval.LikeThreadPost
+import LN.Eval.Like
 import LN.Eval.OrderBy
 import LN.Eval.ThreadPost
 import LN.Eval.Profile
@@ -90,7 +90,7 @@ ui = component render eval
 
     eval z@(CompThreadPost sub next) = eval_ThreadPost eval z
     eval z@(CompCreateThread sub next) = eval_CreateThread eval z
-    eval z@(CompLikeThreadPost sub next) = eval_LikeThreadPost eval z
+    eval z@(CompLike sub next) = eval_Like eval z
     eval z@(CompOrderBy sub next) = eval_OrderBy eval z
     eval z@(CompProfile sub next) = eval_Profile eval z
 

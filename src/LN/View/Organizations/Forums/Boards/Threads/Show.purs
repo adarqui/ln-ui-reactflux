@@ -22,7 +22,7 @@ import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup, usersMapLookup_ToNick, usersMapLookup_ToUser)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
-import LN.View.Module.LikeThreadPost   (renderLikeThreadPost)
+import LN.View.Module.Like   (renderLike)
 import LN.View.Module.PageNumbers      (renderPageNumbers)
 import LN.T                            (UserSanitizedPackResponse, ThreadPackResponse, BoardPackResponse
                                        , ForumPackResponse, OrganizationPackResponse, PostData(PostDataBBCode)
@@ -99,7 +99,7 @@ renderPosts org_name forum_name board_name thread_name st =
                   , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup st post.userId)]
                 ]
               , H.div [P.class_ B.colSm1] [
-                    renderLikeThreadPost post.id pack
+                    renderLike post.id pack
                   , displayPostStats (ThreadPostStatResponse stats)
                 ]
             ]

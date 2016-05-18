@@ -1,5 +1,5 @@
-module LN.View.Module.LikeThreadPost (
-  renderLikeThreadPost
+module LN.View.Module.Like (
+  renderLike
 ) where
 
 
@@ -15,41 +15,41 @@ import CSS                                as HCSS
 import Optic.Core                         ((^.), (..))
 import Prelude                            (($), (<<<))
 
-import LN.Input.LikeThreadPost            (InputLikeThreadPost(..))
+import LN.Input.Like            (InputLike(..))
 import LN.Input.Types                     (Input(..))
 import LN.T
 
 
 
-renderLikeThreadPost :: Int -> ThreadPostPackResponse -> ComponentHTML Input
-renderLikeThreadPost thread_post_id pack =
+renderLike :: Int -> ThreadPostPackResponse -> ComponentHTML Input
+renderLike thread_post_id pack =
   H.div [P.class_ B.row] [
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorLike,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Like pack))
+        E.onClick $ E.input_ $ (CompLike (InputLike_Like pack))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconArrowUp]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorNeutral,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Neutral pack))
+        E.onClick $ E.input_ $ (CompLike (InputLike_Neutral pack))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconMinus]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorDislike,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Dislike pack))
+        E.onClick $ E.input_ $ (CompLike (InputLike_Dislike pack))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconArrowDown]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorStar,
         P.classes [B.btn, B.btnDefault],
-        E.onClick $ E.input_ $ (CompLikeThreadPost (InputLikeThreadPost_Star pack))
+        E.onClick $ E.input_ $ (CompLike (InputLike_Star pack))
       ] [H.span [P.classes [B.glyphicon, star]] []]
     ]
   ]
