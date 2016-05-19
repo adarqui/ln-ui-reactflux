@@ -23,7 +23,7 @@ import Data.Tuple                  (Tuple(..), fst, snd)
 import DOM                         (DOM())
 import LN.Router.Util              (slash, fixParams)
 import LN.T                        (OrderBy(..))
-import Prelude                     (class Eq, class Show, (<>), ($), (++), (==))
+import Prelude                     (class Eq, class Show, show, (<>), ($), (++), (==))
 
 
 
@@ -71,8 +71,9 @@ data Routes
   | UsersLeurons String Params
   | UsersLikes String Params
   | Resources CRUD Params
---    | ResourcesLeurons Int CRUD Params
-  | Leurons CRUD
+  | ResourcesLeurons Int CRUD Params
+  | ResourcesSiftLeurons Int CRUD Params
+  | Leurons CRUD Params
   | Login
   | Logout
   | NotFound
@@ -125,7 +126,9 @@ instance routesHasLink :: HasLink Routes where
   link (UsersLikes user params) = Tuple ("#/u/" <> user <> "/likes") (fixParams params)
 
   link (Resources crud params) = Tuple ("#/resources" ++ (fst $ link crud)) (fixParams params)
-  link (Leurons crud) = Tuple ("#/leurons" ++ (fst $ link crud)) M.empty
+  link (ResourcesLeurons resource_id crud params) = Tuple ("#/resources/" <> show resource_id <> "/leurons" <> (fst $ link crud)) (fixParams params)
+  link (ResourcesSiftLeurons resource_id crud params) = Tuple ("#/resources/" <> show resource_id <> "/sifting" <> (fst $ link crud)) (fixParams params)
+  link (Leurons crud params) = Tuple ("#/leurons" ++ (fst $ link crud)) (fixParams params)
   link Login = Tuple "/auth/login" M.empty
   link Logout = Tuple "/auth/logout" M.empty
   link NotFound = Tuple "#/404" M.empty
@@ -261,6 +264,20 @@ instance routesHasCrumb :: HasCrumb Routes where
       Tuple (Resources (Show $ slash resource_id) params) resource_id
     ]
 
+  crumb (ResourcesLeurons resource_id Index params) =
+    [
+      Tuple (Resources Index params) "Resources",
+      Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
+      Tuple (ResourcesLeurons resource_id Index params) "Leurons"
+    ]
+
+  crumb (ResourcesLeurons resource_id (Show leuron_id) params) =
+    [
+      Tuple (Resources Index params) "Resources",
+      Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
+      Tuple (ResourcesLeurons resource_id Index params) "Leurons"
+    ]
+
   crumb _ = [Tuple NotFound "Error"]
 
 
@@ -298,7 +315,9 @@ instance routesShow :: Show Routes where
   show (UsersLeurons user params) = "#/u/leurons"
   show (UsersLikes user params) = "#/u/likes"
   show (Resources crud params) = "#/resources/..."
-  show (Leurons crud) = "#/leurons/..."
+  show (ResourcesLeurons resource_id crud params) = "#/resources/" <> show resource_id <> "/leurons/..."
+  show (ResourcesSiftLeurons resource_id crud params) = "#/resources/" <> show resource_id <> "/sift/..."
+  show (Leurons crud params) = "#/leurons/..."
   show Login = "/auth/login"
   show Logout = "/auth/logout"
   show NotFound = "#/404"
@@ -341,7 +360,9 @@ links =
   , UsersLikes "adarq" []
 
   , Resources Index []
-  , Leurons Index
+  , ResourcesLeurons 1 Index []
+  , ResourcesSiftLeurons 1 Index []
+  , Leurons Index []
   , Login
   , Logout
   ]
