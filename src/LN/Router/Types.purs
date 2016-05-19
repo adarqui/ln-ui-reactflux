@@ -127,7 +127,7 @@ instance routesHasLink :: HasLink Routes where
 
   link (Resources crud params) = Tuple ("#/resources" ++ (fst $ link crud)) (fixParams params)
   link (ResourcesLeurons resource_id crud params) = Tuple ("#/resources/" <> show resource_id <> "/leurons" <> (fst $ link crud)) (fixParams params)
-  link (ResourcesSiftLeurons resource_id crud params) = Tuple ("#/resources/" <> show resource_id <> "/sifting" <> (fst $ link crud)) (fixParams params)
+  link (ResourcesSiftLeurons resource_id crud params) = Tuple ("#/resources/" <> show resource_id <> "/sift" <> (fst $ link crud)) (fixParams params)
   link (Leurons crud params) = Tuple ("#/leurons" ++ (fst $ link crud)) (fixParams params)
   link Login = Tuple "/auth/login" M.empty
   link Logout = Tuple "/auth/logout" M.empty

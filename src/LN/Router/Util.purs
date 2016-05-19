@@ -2,7 +2,9 @@ module LN.Router.Util (
   mkUri,
   unUri,
   fixParams,
-  slash
+  slash,
+  preSlash,
+  postSlash
 ) where
 
 
@@ -35,3 +37,13 @@ fixParams = M.fromList <<< arrayToList
 -- also need slash to make sure there's not multiple trailing slashes, ie, dropWhileEnd which doesn't exist
 slash :: String -> String
 slash s = s <> "/"
+
+
+
+preSlash :: String -> String
+preSlash s = "/" <> s
+
+
+
+postSlash :: String -> String
+postSlash = slash
