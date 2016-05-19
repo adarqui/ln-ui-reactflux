@@ -11,9 +11,10 @@ import Control.Apply           ((*>))
 import Control.Plus            (empty)
 import Daimyo.Data.ArrayList   (listToArray)
 import Data.Functor            ((<$))
+import Data.Int                (fromString)
 import Data.List               (List(..))
 import Data.Map                as M
-import Data.Maybe              (Maybe)
+import Data.Maybe              (Maybe(..))
 import Data.String             (length)
 import Data.Tuple              (Tuple(..), uncurry)
 import Halogen                 hiding (set)
@@ -46,11 +47,16 @@ str1 = Match \route ->
           then pure $ Tuple rs input
           else empty
       _ -> empty
---      _ -> mempty
---      _ ->
---        fail "ExpectedString"
-        -- invalid $ free ExpectedString
 
+
+
+int = Match \route ->
+  case route of
+    Cons (Path input) rs ->
+      case fromString input of
+        Nothing -> empty
+        Just n  -> pure $ Tuple rs n
+    _ -> empty
 
 
 
@@ -71,6 +77,9 @@ routing =
       users_show <|>
       users_index <|>
       me <|>
+      resources_leurons_new <|>
+      resources_leurons_index <|>
+      resources_leurons_show <|>
       resources_new <|>
       resources_show <|>
       resources_index <|>
@@ -85,12 +94,23 @@ routing =
       home <|>
       home2
   where
+
     about = About <$ route "about"
+
+
+
     me = Me <$ route "me"
+
+
+
     home = Home <$ lit ""
     home2 = pure Home
 
+
+
     portal = Portal <$ route "portal"
+
+
 
     users_profile =
       UsersProfile <$> (lit "" *> lit "u" *> str) <*> (lit "profile" *> (params' <|> pure []))
@@ -119,6 +139,8 @@ routing =
     users_likes =
       UsersLikes <$> (lit "" *> lit "u" *> str) <*> (lit "likes" *> (params' <|> pure []))
 
+
+
     users_index =
       Users
       <$> (lit "" *> lit "u" *> pure Index)
@@ -133,6 +155,8 @@ routing =
       Users
       <$> (lit "" *> lit "u" *> (Show <$> str1))
       <*> (params' <|> pure [])
+
+
 
     organizations_index =
       Organizations
@@ -149,14 +173,12 @@ routing =
       <$> (lit "" *> (Show <$> str1))
       <*> (params' <|> pure [])
 
-    -- orgname/f/forumname
     organizations_forums =
       OrganizationsForums
       <$> (lit "" *> str)
       <*> (lit "f" *> (Show <$> str))
       <*> (params' <|> pure [])
 
-    -- orgname/f/forumname/boardname
     organizations_forums_boards =
       OrganizationsForumsBoards
       <$> (lit "" *> str)
@@ -165,7 +187,6 @@ routing =
 --      <*> (Show <$> str)
       <*> (params' <|> pure [])
 
-    -- orgname/f/forumname/boardname
     organizations_forums_boards_threads =
       OrganizationsForumsBoardsThreads
       <$> (lit "" *> str)
@@ -173,6 +194,28 @@ routing =
       <*> (lit "b" *> str)
       <*> (lit "t" *> (Show <$> str))
       <*> (params' <|> pure [])
+
+
+
+    resources_leurons_index =
+      ResourcesLeurons
+      <$> (lit "" *> lit "resources" *> int)
+      <*> (lit "leurons" *> pure Index)
+      <*> (params' <|> pure [])
+
+    resources_leurons_new =
+      ResourcesLeurons
+      <$> (lit "" *> lit "resources" *> int)
+      <*> (lit "leurons" *> lit "new" *> pure New)
+      <*> (params' <|> pure [])
+
+    resources_leurons_show =
+      ResourcesLeurons
+      <$> (lit "" *> lit "resources" *> int)
+      <*> (lit "leurons" *> (Show <$> str1))
+      <*> (params' <|> pure [])
+
+
 
     resources_index =
       Resources
@@ -189,10 +232,16 @@ routing =
       <$> (lit "" *> lit "resources" *> (Show <$> str1))
       <*> (params' <|> pure [])
 
+
+
     login = Login <$ route "login"
     logout = Logout <$ route "logout"
 
+
+
     route str = lit "" *> lit str
+
+
 
 {-
     parseCRUD =

@@ -12,6 +12,8 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 
 import LN.Input.Types                  (Input)
+import LN.Router.Internal              (linkToP)
+import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.T
 
@@ -33,6 +35,9 @@ renderView_Resources_Show' pack st =
     H.div [P.class_ B.pageHeader] [
       H.h1 [P.class_ B.textCenter] [H.text (resource.title)],
       H.p [P.class_ B.textCenter] [H.text (resource.description)]
+    ],
+    H.div [P.class_ B.container] [
+      linkToP [] (ResourcesLeurons resource.id Index []) "leurons"
     ]
   ]
 
