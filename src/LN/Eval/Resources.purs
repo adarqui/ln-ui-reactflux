@@ -12,16 +12,13 @@ import Data.Either                   (Either(..))
 import Data.Int                      (fromString)
 import Data.Map                      as M
 import Data.Maybe                    (Maybe(..))
-import Optic.Core                    ((^.), (..))
 import Prelude                       (bind, pure, map, ($))
 
 import LN.Api                        (rd, getResourcesCount', getResourcePacks, getResourcePack')
 import LN.Component.Types            (EvalEff)
 import LN.Input.Types                (Input(..))
 import LN.State.PageInfo             (runPageInfo)
-import LN.T                          ( ResourcePackResponses(..), ResourcePackResponse(..)
-                                     , _ResourceResponse
-                                     , id_)
+import LN.T                          (ResourcePackResponses(..), ResourcePackResponse(..))
 
 
 
@@ -48,7 +45,7 @@ eval_GetResources eval (GetResources next) = do
               users = map (\(ResourcePackResponse pack) -> pack.user) resource_packs.resourcePackResponses
               resources_map =
                 M.fromFoldable
-                  $ zip (map (\(ResourcePackResponse p) -> p.resource ^. _ResourceResponse .. id_) resource_packs.resourcePackResponses) resource_packs.resourcePackResponses
+                  $ zip (map (\(ResourcePackResponse p) -> p.resourceId) resource_packs.resourcePackResponses) resource_packs.resourcePackResponses
 
 
              eval (GetUsers_MergeMap_ByUser users next)

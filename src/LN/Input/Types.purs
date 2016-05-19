@@ -54,6 +54,8 @@ data Input a
   | GetResourceSid String a
 
   | GetLeurons a
+  | GetLeuronId Int a
+  | GetLeuronSid String a
 
   | ConnectSocket a
 
