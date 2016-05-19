@@ -17,10 +17,10 @@ import Prelude                            (($), (<<<))
 
 import LN.Input.Like                      (InputLike(..))
 import LN.Input.Types                     (Input(..))
-import LN.T                               ( Ent(..)
+import LN.T                               ( Ent
                                           , LikeOpt(..)
-                                          , LikeResponse(..), _LikeResponse
-                                          , StarResponse(..), _StarResponse
+                                          , LikeResponse, _LikeResponse
+                                          , StarResponse, _StarResponse
                                           , opt_
                                           )
 
