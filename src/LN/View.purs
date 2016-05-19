@@ -26,16 +26,20 @@ import LN.View.Users.Workouts    (renderView_Users_Workouts)
 import LN.View.Users.Resources   (renderView_Users_Resources)
 import LN.View.Users.Leurons     (renderView_Users_Leurons)
 import LN.View.Users.Likes       (renderView_Users_Likes)
-import LN.View.Resources.Index   (renderView_Resources_Index)
-import LN.View.Resources.New     (renderView_Resources_New)
--- TODO FIXME: import LN.View.Resources.Edit
-import LN.View.Resources.Show    (renderView_Resources_Show)
 import LN.View.Four04            (renderView_404)
+
 import LN.View.Organizations.Index                      (renderView_Organizations_Index)
 import LN.View.Organizations.Show                       (renderView_Organizations_Show)
 import LN.View.Organizations.Forums.Show                (renderView_Organizations_Forums_Show)
 import LN.View.Organizations.Forums.Boards.Show         (renderView_Organizations_Forums_Boards_Show)
 import LN.View.Organizations.Forums.Boards.Threads.Show (renderView_Organizations_Forums_Boards_Threads_Show)
+
+import LN.View.Resources.Index             (renderView_Resources_Index)
+import LN.View.Resources.New               (renderView_Resources_New)
+-- TODO FIXME: import LN.View.Resources.Edit
+import LN.View.Resources.Show              (renderView_Resources_Show)
+import LN.View.Resources.Leurons.Index     (renderView_Resources_Leurons_Index)
+import LN.View.Resources.SiftLeurons.Index (renderView_Resources_SiftLeurons_Index)
 
 
 
@@ -78,9 +82,18 @@ renderView (OrganizationsForumsBoards org_name forum_name (Show board_name) para
 
 renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params) = renderView_Organizations_Forums_Boards_Threads_Show thread_name
 
+
+
 renderView (Resources Index params) = renderView_Resources_Index
 renderView (Resources New params) = renderView_Resources_New
 renderView (Resources (Show resource_id) params) = renderView_Resources_Show resource_id
+
+
+
+renderView (ResourcesLeurons resource_id Index params) = renderView_Resources_Leurons_Index resource_id
+renderView (ResourcesSiftLeurons resource_id Index params) = renderView_Resources_SiftLeurons_Index resource_id
+
+
 
 renderView _ = const $ renderView_404
 
