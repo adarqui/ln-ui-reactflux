@@ -10,10 +10,10 @@ module LN.Router.Util (
 
 
 import Daimyo.Data.ArrayList (arrayToList)
-import Data.Tuple (Tuple)
-import Data.Map as M
-import Global (encodeURI, decodeURI)
-import Prelude ((<<<), (<>))
+import Data.Tuple            (Tuple)
+import Data.Map              as M
+import Global                (encodeURI, decodeURI)
+import Prelude               ((<<<), (<>))
 
 
 

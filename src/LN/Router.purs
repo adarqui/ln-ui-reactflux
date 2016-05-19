@@ -77,6 +77,9 @@ routing =
       users_show <|>
       users_index <|>
       me <|>
+      resources_sift_new <|>
+      resources_sift_index <|>
+      resources_sift_show <|>
       resources_leurons_new <|>
       resources_leurons_index <|>
       resources_leurons_show <|>
@@ -213,6 +216,26 @@ routing =
       ResourcesLeurons
       <$> (lit "" *> lit "resources" *> int)
       <*> (lit "leurons" *> (Show <$> str1))
+      <*> (params' <|> pure [])
+
+
+
+    resources_sift_index =
+      ResourcesSiftLeurons
+      <$> (lit "" *> lit "resources" *> int)
+      <*> (lit "sift" *> pure Index)
+      <*> (params' <|> pure [])
+
+    resources_sift_new =
+      ResourcesSiftLeurons
+      <$> (lit "" *> lit "resources" *> int)
+      <*> (lit "sift" *> lit "new" *> pure New)
+      <*> (params' <|> pure [])
+
+    resources_sift_show =
+      ResourcesSiftLeurons
+      <$> (lit "" *> lit "resources" *> int)
+      <*> (lit "sift" *> (Show <$> str1))
       <*> (params' <|> pure [])
 
 
