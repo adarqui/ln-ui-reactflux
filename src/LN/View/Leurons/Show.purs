@@ -112,6 +112,8 @@ renderLeuronData leuron =
     LnDCard dcard        -> renderLeuronData_DCard leuron (unwrapDCard dcard)
     LnDCardX dcardx      -> renderLeuronData_DCardX leuron (unwrapDCardX dcardx)
     LnAcronym acronym    -> renderLeuronData_Acronym leuron (unwrapAcronym acronym)
+    LnSynonym synonym    -> renderLeuronData_Synonym leuron (unwrapSynonym synonym)
+    LnAntonym antonym    -> renderLeuronData_Antonym leuron (unwrapAntonym antonym)
     _                    -> renderLeuronData_Unknown leuron
 
 
@@ -131,6 +133,7 @@ renderLeuronData_Fact leuron fact =
 renderLeuronData_FactList :: LeuronResponseR -> FactListR -> ComponentHTML Input
 renderLeuronData_FactList leuron fact_list =
   H.div_ [
+    H.p_ [H.h2_ [H.text "Fact List"]],
     H.p_ [
       H.h2_ [H.text "Fact"],
       H.pre_ [H.text fact_list.fact]
@@ -145,6 +148,7 @@ renderLeuronData_FactList leuron fact_list =
 renderLeuronData_Card :: LeuronResponseR -> CardR -> ComponentHTML Input
 renderLeuronData_Card leuron card =
   H.div_ [
+    H.p_ [H.h2_ [H.text "Card"]],
     H.p_ [H.h2_ [H.text "Front"], H.pre_ [H.text card.front]],
     H.p_ [H.h2_ [H.text "Back"], H.pre_ [H.text card.back]]
   ]
@@ -154,6 +158,7 @@ renderLeuronData_Card leuron card =
 renderLeuronData_DCard :: LeuronResponseR -> DCardR -> ComponentHTML Input
 renderLeuronData_DCard leuron dcard =
   H.div_ [
+    H.p_ [H.h2_ [H.text "DCard"]],
     H.p_ [H.h2_ [H.text "Front"], H.pre_ [H.text dcard.front]],
     H.p_ [H.h2_ [H.text "Back"], H.pre_ [H.text dcard.back]]
   ]
@@ -163,6 +168,7 @@ renderLeuronData_DCard leuron dcard =
 renderLeuronData_DCardX :: LeuronResponseR -> DCardXR -> ComponentHTML Input
 renderLeuronData_DCardX leuron dcardx =
   H.div_ [
+    H.p_ [H.h2_ [H.text "DCardX"]],
     H.p_ [H.h2_ [H.text "Front"],
       H.ul_ $ map (\front -> H.li_ [H.pre_ [H.text front]]) dcardx.front
     ],
@@ -176,8 +182,29 @@ renderLeuronData_DCardX leuron dcardx =
 renderLeuronData_Acronym :: LeuronResponseR -> AcronymR -> ComponentHTML Input
 renderLeuronData_Acronym leuron acronym =
   H.div_ [
+    H.p_ [H.h2_ [H.text "Acronym"]],
     H.p_ [H.h2_ [H.text "Abbrv"], H.pre_ [H.text acronym.abbreviation]],
     H.p_ [H.h2_ [H.text "Meaning"], H.pre_ [H.text acronym.meaning]]
+  ]
+
+
+
+renderLeuronData_Synonym :: LeuronResponseR -> SynonymR -> ComponentHTML Input
+renderLeuronData_Synonym leuron synonym =
+  H.div_ [
+    H.p_ [H.h2_ [H.text "Synonym"]],
+    H.p_ [H.h2_ [H.text "a"], H.pre_ [H.text synonym.a]],
+    H.p_ [H.h2_ [H.text "b"], H.pre_ [H.text synonym.b]]
+  ]
+
+
+
+renderLeuronData_Antonym :: LeuronResponseR -> AntonymR -> ComponentHTML Input
+renderLeuronData_Antonym leuron antonym =
+  H.div_ [
+    H.p_ [H.h2_ [H.text "Antonym"]],
+    H.p_ [H.h2_ [H.text "a"], H.pre_ [H.text antonym.a]],
+    H.p_ [H.h2_ [H.text "b"], H.pre_ [H.text antonym.b]]
   ]
 
 
