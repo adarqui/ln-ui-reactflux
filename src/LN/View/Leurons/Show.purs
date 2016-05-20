@@ -114,6 +114,12 @@ renderLeuronData leuron =
     LnAcronym acronym    -> renderLeuronData_Acronym leuron (unwrapAcronym acronym)
     LnSynonym synonym    -> renderLeuronData_Synonym leuron (unwrapSynonym synonym)
     LnAntonym antonym    -> renderLeuronData_Antonym leuron (unwrapAntonym antonym)
+    LnTemplate template  -> renderLeuronData_Template leuron (unwrapTemplate template)
+    LnImageAssociation i -> renderLeuronData_ImageAssociation leuron (unwrapImageAssociation i)
+    LnScript script      -> renderLeuronData_Script leuron (unwrapScript script)
+    LnLinearDemo demo    -> renderLeuronData_LinearDemo leuron (unwrapLinearDemo demo)
+    LnQA qa              -> renderLeuronData_QA leuron (unwrapQA qa)
+    LnTable table        -> renderLeuronData_Table leuron (unwrapTable table)
     _                    -> renderLeuronData_Unknown leuron
 
 
@@ -206,6 +212,42 @@ renderLeuronData_Antonym leuron antonym =
     H.p_ [H.h2_ [H.text "a"], H.pre_ [H.text antonym.a]],
     H.p_ [H.h2_ [H.text "b"], H.pre_ [H.text antonym.b]]
   ]
+
+
+
+renderLeuronData_Template :: LeuronResponseR -> TemplateR -> ComponentHTML Input
+renderLeuronData_Template leuron template =
+  H.div_ [H.p_ [H.text "template TODO"]]
+
+
+
+renderLeuronData_ImageAssociation :: LeuronResponseR -> ImageAssociationR -> ComponentHTML Input
+renderLeuronData_ImageAssociation leuron image_association =
+  H.div_ [H.p_ [H.text "image_association TODO"]]
+
+
+
+renderLeuronData_Script :: LeuronResponseR -> ScriptR -> ComponentHTML Input
+renderLeuronData_Script leuron script =
+  H.div_ [H.p_ [H.text "script TODO"]]
+
+
+
+renderLeuronData_LinearDemo :: LeuronResponseR -> LinearDemoR -> ComponentHTML Input
+renderLeuronData_LinearDemo leuron linear_demo =
+  H.div_ [H.p_ [H.text "linear_demo TODO"]]
+
+
+
+renderLeuronData_QA :: LeuronResponseR -> QAR -> ComponentHTML Input
+renderLeuronData_QA leuron qa =
+  H.div_ [H.p_ [H.text "qa TODO"]]
+
+
+
+renderLeuronData_Table :: LeuronResponseR -> TableR -> ComponentHTML Input
+renderLeuronData_Table leuron table =
+  H.div_ [H.p_ [H.text "table TODO"]]
 
 
 
