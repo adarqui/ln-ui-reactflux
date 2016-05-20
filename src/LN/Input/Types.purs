@@ -53,6 +53,10 @@ data Input a
   | GetResourceId Int a
   | GetResourceSid String a
 
+  | GetResourcesLeurons Int a
+
+  | GetResourcesSiftLeurons Int a
+
   | GetLeurons a
   | GetLeuronId Int a
   | GetLeuronSid String a

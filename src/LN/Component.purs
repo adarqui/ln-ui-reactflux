@@ -34,64 +34,68 @@ import LN.Eval.Profile
 
 ui :: forall eff. {-Partial =>-} Component State Input (LNEff eff)
 ui = component render eval
+
   where
-    render state =
-      L.defaultLayout state
-        [ renderView state.currentPage state
-        ]
+  render state =
+    L.defaultLayout state
+      [ renderView state.currentPage state
+      ]
 
-    eval :: Eval Input State Input (LNEff eff)
+  eval :: Eval Input State Input (LNEff eff)
 
-    eval z@(Goto route next) = eval_Goto eval z
+  eval z@(Goto _ _)                                   = eval_Goto eval z
 
-    eval z@(GetMe next) = eval_GetMe eval z
+  eval z@(GetMe _)                                    = eval_GetMe eval z
 
-    eval z@(GetUsers next) = eval_GetUsers eval z
+  eval z@(GetUsers _)                                 = eval_GetUsers eval z
 
-    eval z@(GetUser user_nick next) = eval_GetUser eval z
+  eval z@(GetUser _ _)                                = eval_GetUser eval z
 
-    eval z@(GetUsers_MergeMap_ByUser users next) = eval_GetUsers_MergeMap_ByUser eval z
-    eval z@(GetUsers_MergeMap_ByUserId user_ids next) = eval_GetUsers_MergeMap_ByUserId eval z
+  eval z@(GetUsers_MergeMap_ByUser _ _)               = eval_GetUsers_MergeMap_ByUser eval z
+  eval z@(GetUsers_MergeMap_ByUserId _ _)             = eval_GetUsers_MergeMap_ByUserId eval z
 
-    eval z@(GetOrganizations next) = eval_GetOrganizations eval z
-    eval z@(GetOrganization _ _) = eval_GetOrganization eval z
-    eval z@(GetOrganizationForum _ _ _) = eval_GetOrganizationForum eval z
-    eval z@(GetOrganizationForumBoard _ _ _ _) = eval_GetOrganizationForumBoard eval z
-    eval z@(GetOrganizationForumBoardThread _  _ _ _ _) = eval_GetOrganizationForumBoardThread eval z
+  eval z@(GetOrganizations _)                         = eval_GetOrganizations eval z
+  eval z@(GetOrganization _ _)                        = eval_GetOrganization eval z
+  eval z@(GetOrganizationForum _ _ _)                 = eval_GetOrganizationForum eval z
+  eval z@(GetOrganizationForumBoard _ _ _ _)          = eval_GetOrganizationForumBoard eval z
+  eval z@(GetOrganizationForumBoardThread _  _ _ _ _) = eval_GetOrganizationForumBoardThread eval z
 
-    eval z@(GetTeams next) = eval_GetTeams eval z
+  eval z@(GetTeams _)                                 = eval_GetTeams eval z
 
-    eval z@(GetForums next) = eval_GetForums eval z
-    eval z@(GetForumsForOrg org_name next) = eval_GetForumsForOrg eval z
+  eval z@(GetForums _)                                = eval_GetForums eval z
+  eval z@(GetForumsForOrg _ _)                        = eval_GetForumsForOrg eval z
 
-    eval z@(GetBoards next) = eval_GetBoards eval z
-    eval z@(GetBoardsForForum forum next) = eval_GetBoardsForForum eval z
+  eval z@(GetBoards _)                                = eval_GetBoards eval z
+  eval z@(GetBoardsForForum _ _)                      = eval_GetBoardsForForum eval z
 
-    eval z@(GetThreads next) = eval_GetThreads eval z
-    eval z@(GetThreadsForBoard board next) = eval_GetThreadsForBoard eval z
+  eval z@(GetThreads _)                               = eval_GetThreads eval z
+  eval z@(GetThreadsForBoard _ _)                     = eval_GetThreadsForBoard eval z
 
-    eval z@(GetThreadPosts next) = eval_GetThreadPosts eval z
-    eval z@(GetThreadPostsForThread thread_name next) = eval_GetThreadPostsForThread eval z
-    eval z@(GetThreadPost thread_post_id next)  = eval_GetThreadPost eval z
+  eval z@(GetThreadPosts _)                           = eval_GetThreadPosts eval z
+  eval z@(GetThreadPostsForThread _ _)                = eval_GetThreadPostsForThread eval z
+  eval z@(GetThreadPost _ _)                          = eval_GetThreadPost eval z
 
-    eval (GetThreadPostLikes next)  = pure next
+  eval (GetThreadPostLikes next)                      = pure next
 
-    eval (GetPMs next) = pure next
+  eval (GetPMs next)                                  = pure next
 
-    eval z@(GetResources next) = eval_GetResources eval z
-    eval z@(GetResourceId resource_id next) = eval_GetResourceId eval z
-    eval z@(GetResourceSid resource_sid next) = eval_GetResourceSid eval z
+  eval z@(GetResources _)                             = eval_GetResources eval z
+  eval z@(GetResourceId _ _)                          = eval_GetResourceId eval z
+  eval z@(GetResourceSid _ _)                         = eval_GetResourceSid eval z
 
-    eval z@(GetLeurons next) = eval_GetLeurons eval z
+  eval z@(GetResourcesLeurons _ _)                    = eval_GetResources eval z
+  eval z@(GetResourcesSiftLeurons _ _)                = eval_GetResourcesSiftLeurons eval z
 
-    eval z@(ConnectSocket next) = eval_ConnectSocket eval z
+  eval z@(GetLeurons _)                               = eval_GetLeurons eval z
 
-    -- Components
+  eval z@(ConnectSocket _)                            = eval_ConnectSocket eval z
 
-    eval z@(CompThreadPost sub next) = eval_ThreadPost eval z
-    eval z@(CompCreateThread sub next) = eval_CreateThread eval z
-    eval z@(CompLike sub next) = eval_Like eval z
-    eval z@(CompOrderBy sub next) = eval_OrderBy eval z
-    eval z@(CompProfile sub next) = eval_Profile eval z
+  -- Components
 
-    eval z@(Nop next) = eval_Nop eval z
+  eval z@(CompThreadPost _ _)                         = eval_ThreadPost eval z
+  eval z@(CompCreateThread _ _)                       = eval_CreateThread eval z
+  eval z@(CompLike _ _)                               = eval_Like eval z
+  eval z@(CompOrderBy _ _)                            = eval_OrderBy eval z
+  eval z@(CompProfile _ _)                            = eval_Profile eval z
+
+  eval z@(Nop _)                                      = eval_Nop eval z

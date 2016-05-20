@@ -143,10 +143,20 @@ class HasCrumb a where
 
 
 instance routesHasCrumb :: HasCrumb Routes where
+
+
   crumb Home = [Tuple Home "Home"]
+
+
   crumb About = [Tuple About "About"]
+
+
   crumb Me = [Tuple Me "Me"]
+
+
   crumb Portal = [Tuple Portal "Portal"]
+
+
 
   crumb (Organizations Index params) =
     [ Tuple (Organizations Index params) "Organizations" ]
@@ -181,6 +191,8 @@ instance routesHasCrumb :: HasCrumb Routes where
       Tuple (OrganizationsForumsBoardsThreads org forum board (Show $ slash thread) params) thread
     ]
 
+
+
   crumb (Users Index params) =
     [
       Tuple (Users Index params) "Users"
@@ -191,6 +203,8 @@ instance routesHasCrumb :: HasCrumb Routes where
       Tuple (Users Index params) "Users",
       Tuple (Users (Show $ slash user) params) user
     ]
+
+
 
   crumb (UsersProfile user params) =
     [
@@ -255,6 +269,8 @@ instance routesHasCrumb :: HasCrumb Routes where
       Tuple (UsersLikes (slash user) params) "Likes"
     ]
 
+
+
   crumb (Resources Index params) =
     [Tuple (Resources Index params) "Resources"]
 
@@ -263,6 +279,8 @@ instance routesHasCrumb :: HasCrumb Routes where
       Tuple (Resources Index params) "Resources",
       Tuple (Resources (Show $ slash resource_id) params) resource_id
     ]
+
+
 
   crumb (ResourcesLeurons resource_id Index params) =
     [
@@ -277,6 +295,24 @@ instance routesHasCrumb :: HasCrumb Routes where
       Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
       Tuple (ResourcesLeurons resource_id Index params) "Leurons"
     ]
+
+
+
+  crumb (ResourcesSiftLeurons resource_id Index params) =
+    [
+      Tuple (Resources Index params) "Resources",
+      Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
+      Tuple (ResourcesSiftLeurons resource_id Index params) "Sift"
+    ]
+
+  crumb (ResourcesSiftLeurons resource_id (Show leuron_id) params) =
+    [
+      Tuple (Resources Index params) "Resources",
+      Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
+      Tuple (ResourcesSiftLeurons resource_id Index params) "Sift"
+    ]
+
+
 
   crumb _ = [Tuple NotFound "Error"]
 

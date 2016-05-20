@@ -86,6 +86,9 @@ routing =
       resources_new <|>
       resources_show <|>
       resources_index <|>
+      leurons_new <|>
+      leurons_show <|>
+      leurons_index <|>
       login <|>
       logout <|>
       organizations_forums_boards_threads <|>
@@ -253,6 +256,23 @@ routing =
     resources_show =
       Resources
       <$> (lit "" *> lit "resources" *> (Show <$> str1))
+      <*> (params' <|> pure [])
+
+
+
+    leurons_index =
+      Leurons
+      <$> (lit "" *> lit "leurons" *> pure Index)
+      <*> (params' <|> pure [])
+
+    leurons_new =
+      Leurons
+      <$> (lit "" *> lit "leurons" *> lit "new" *> pure New)
+      <*> (params' <|> pure [])
+
+    leurons_show =
+      Leurons
+      <$> (lit "" *> lit "leurons" *> (Show <$> str1))
       <*> (params' <|> pure [])
 
 

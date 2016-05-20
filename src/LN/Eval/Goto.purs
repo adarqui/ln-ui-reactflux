@@ -32,19 +32,8 @@ eval_Goto eval (Goto route next) = do
   case route of
 
 
-    Me          -> do
 
-      eval (GetMe next)
-
-{-
-      st' <- get
-
-      case (st' ^. stMe) of
-           Nothing    -> pure unit
-           Just user  -> liftAff' $ updateUrl (Users (Show (user ^. _UserPackResponse .. user_ ^. _UserResponse .. name_)))
-           -}
-
-      pure unit
+    Me          -> eval (GetMe next) $> unit
 
 
     (Organizations Index params) -> eval  (GetOrganizations next) $> unit
@@ -134,6 +123,7 @@ eval_Goto eval (Goto route next) = do
       eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) $> unit
 
 
+
     (Resources Index params) -> do
       let moffset = elemBy (\(Tuple k v) -> k == "offset") params
       maybe
@@ -149,7 +139,34 @@ eval_Goto eval (Goto route next) = do
 
 
 
-    (Leurons Index params) -> eval (GetLeurons next) $> unit
+    (ResourcesLeurons resource_id Index params) -> do
+      pure unit
+
+    (ResourcesLeurons resource_id (Show leuron_sid) params) -> do
+      pure unit
+
+
+
+    (ResourcesSiftLeurons resource_id Index params) -> do
+      pure unit
+
+    (ResourcesSiftLeurons resource_id (Show leuron_sid) params) -> do
+      pure unit
+
+
+
+    (Leurons Index params) -> do
+      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
+      maybe
+        (pure unit)
+        (\(Tuple k offset) -> do
+          pageInfo <- gets _.leuronsPageInfo
+          modify (_{ leuronsPageInfo = pageInfo { currentPage = maybe 1 id (fromString offset) } })
+          pure unit)
+        moffset
+      eval (GetLeurons next) $> unit
+
+    (Leurons (Show leuron_sid) params) -> eval (GetLeuronSid leuron_sid next) $> unit
 
 
 
@@ -164,9 +181,9 @@ eval_Goto eval (Goto route next) = do
         moffset
       eval (GetUsers next) $> unit
 
-    (Users (Show user_nick) params) -> do
+    (Users (Show user_nick) params) -> eval (GetUser user_nick next) $> unit
 
-      eval (GetUser user_nick next) $> unit
+
 
     (UsersProfile user_nick params) -> eval (GetUser user_nick next) $> unit
     (UsersSettings user_nick params) -> eval (GetUser user_nick next) $> unit
@@ -180,11 +197,8 @@ eval_Goto eval (Goto route next) = do
 
 
 
-{-
-    (ThreadPosts (Show thread_post_id)) -> eval (GetThreadPost thread_post_id next) $> unit
-    -}
-
     _           -> pure unit
 
---  liftAff' (updateUrl route)
+
+
   pure next

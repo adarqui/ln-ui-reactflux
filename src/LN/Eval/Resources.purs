@@ -1,7 +1,9 @@
 module LN.Eval.Resources (
   eval_GetResources,
   eval_GetResourceId,
-  eval_GetResourceSid
+  eval_GetResourceSid,
+  eval_GetResourcesLeurons,
+  eval_GetResourcesSiftLeurons
 ) where
 
 
@@ -74,3 +76,17 @@ eval_GetResourceSid eval (GetResourceSid resource_sid next) = do
   case fromString resource_sid of
        Nothing          -> pure next
        Just resource_id -> eval (GetResourceId resource_id next)
+
+
+
+eval_GetResourcesLeurons :: EvalEff
+eval_GetResourcesLeurons eval (GetResourcesLeurons resource_sid next) = do
+
+  pure next
+
+
+
+eval_GetResourcesSiftLeurons :: EvalEff
+eval_GetResourcesSiftLeurons eval (GetResourcesSiftLeurons resource_sid next) = do
+
+  pure next
