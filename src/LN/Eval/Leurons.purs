@@ -1,5 +1,7 @@
 module LN.Eval.Leurons (
-  eval_GetLeurons
+  eval_GetLeurons,
+  eval_GetLeuronId,
+  eval_GetLeuronSid
 ) where
 
 

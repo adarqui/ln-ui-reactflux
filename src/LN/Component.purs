@@ -7,7 +7,7 @@ import Prelude                     (pure)
 import LN.Layout                   as L
 import LN.Component.Types          (LNEff)
 import LN.Input.Types              (Input(..))
-import LN.State.Types
+import LN.State.Types              (State)
 import LN.View
 import LN.Eval.Goto
 import LN.Eval.Me
@@ -87,6 +87,8 @@ ui = component render eval
   eval z@(GetResourcesSiftLeurons _ _)                = eval_GetResourcesSiftLeurons eval z
 
   eval z@(GetLeurons _)                               = eval_GetLeurons eval z
+  eval z@(GetLeuronId _ _)                            = eval_GetLeuronId eval z
+  eval z@(GetLeuronSid _ _)                           = eval_GetLeuronSid eval z
 
   eval z@(ConnectSocket _)                            = eval_ConnectSocket eval z
 

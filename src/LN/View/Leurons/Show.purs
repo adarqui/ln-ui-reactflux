@@ -52,23 +52,19 @@ renderView_Leurons_Show' pack st =
 renderLeuron :: LeuronResponse -> ComponentHTML Input
 renderLeuron ln =
   case leuron.dataP of
-    LnFact _ -> renderLeuron_Fact ln
-    _        -> renderLeuron_Unknown ln
+    LnFact _ -> renderLeuron_Fact leuron
+    _        -> renderLeuron_Unknown leuron
   where
   leuron = ln ^. _LeuronResponse
 
 
 
-renderLeuron_Fact :: LeuronResponse -> ComponentHTML Input
-renderLeuron_Fact ln =
+renderLeuron_Fact :: LeuronResponseR -> ComponentHTML Input
+renderLeuron_Fact leuron =
   H.div_ [H.text "fact"]
-  where
-  leuron = ln ^. _LeuronResponse
 
 
 
-renderLeuron_Unknown :: LeuronResponse -> ComponentHTML Input
-renderLeuron_Unknown ln =
+renderLeuron_Unknown :: LeuronResponseR -> ComponentHTML Input
+renderLeuron_Unknown leuron =
   H.div_ [H.text "unknown"]
-  where
-  leuron = ln ^. _LeuronResponse
