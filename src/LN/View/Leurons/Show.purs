@@ -13,7 +13,7 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (show, map, ($))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Internal              (linkToP)
+import LN.Router.Internal              (linkTo)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.T
@@ -51,6 +51,7 @@ renderView_Leurons_Show' pack st =
 renderLeuron :: LeuronResponse -> ComponentHTML Input
 renderLeuron leuron =
   H.div_ [
+    renderLinks leuron',
     renderLeuronData leuron',
     renderLeuronSection leuron',
     renderLeuronExamples leuron',
@@ -58,6 +59,14 @@ renderLeuron leuron =
   ]
   where
   leuron' = leuron ^. _LeuronResponse
+
+
+
+renderLinks :: LeuronResponseR -> ComponentHTML Input
+renderLinks leuron =
+  H.div_ [
+    H.p_ [H.text "Resource: ", linkTo (Resources (Show $ show leuron.resourceId) []) (show leuron.resourceId)]
+  ]
 
 
 
