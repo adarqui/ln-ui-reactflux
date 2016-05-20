@@ -11,6 +11,7 @@ module LN.Eval.Organizations (
 import Control.Monad.Aff.Console       (log)
 import Data.Array                      (zip)
 import Data.Either                     (Either(..))
+import Data.Functor                    (($>))
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (get, modify, liftAff')
@@ -20,6 +21,7 @@ import Prelude                         (bind, pure, map, show, ($), (<>))
 import LN.Api                          (rd, getOrganizationPacks')
 import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
+import LN.Helpers.Map                  (idmapFrom)
 import LN.Input.Types                  (Input(..))
 import LN.T
 
@@ -28,18 +30,17 @@ import LN.T
 eval_GetOrganizations :: EvalEff
 eval_GetOrganizations eval (GetOrganizations next) = do
 
-  eorganizations <- rd $ getOrganizationPacks'
-  case eorganizations of
+  e_organizations <- rd $ getOrganizationPacks'
+  case e_organizations of
 
-    Left err -> do
-      liftAff' $ log ("organizations error: " <> (show err))
-      pure next
+    Left err -> liftAff' (log $ "organizations error: " <> show err) $> next
 
     Right (OrganizationPackResponses organization_packs) -> do
 
       let
-        organizations     = organization_packs.organizationPackResponses
-        organizations_map = M.fromFoldable $ zip (map (\(OrganizationPackResponse pack) -> pack.organization ^. _OrganizationResponse .. id_) organizations) organizations
+        organizations_map =
+          idmapFrom (\(OrganizationPackResponse pack) -> pack.organizationId) organization_packs.organizationPackResponses
+
 
       modify (_{ organizations = organizations_map })
       pure next

@@ -1,7 +1,8 @@
-module LN.State.Helpers (
+module LN.Helpers.Map (
   mergeMap,
   mergeMapList,
-  mergeMapArray
+  mergeMapArray,
+  idmapFrom
 ) where
 
 
@@ -26,3 +27,7 @@ mergeMapList st m un_accessor =
 
 mergeMapArray st m un_accessor =
   M.union st (M.fromFoldable $ A.zip (map un_accessor m) m)
+
+
+
+idmapFrom un pack = M.fromFoldable $ A.zip (map (\pack -> un pack) pack) pack
