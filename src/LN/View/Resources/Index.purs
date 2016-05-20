@@ -39,9 +39,6 @@ renderView_Resources_Index st =
     -- Page Numbers
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
 
-    -- Create a new resource
-    linkToP_Glyph' (Resources New []) B.glyphiconPlus,
-
     -- Resources
     H.div [] [resources st]
   ]
