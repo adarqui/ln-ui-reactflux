@@ -38,10 +38,37 @@ renderView_Leurons_Show' pack st =
 --      H.p [P.class_ B.textCenter] [H.text (leuron.description)]
     ],
     H.div [P.class_ B.container] [
-      H.ul_ [
-      ]
+      renderLeuron leuron'
     ]
   ]
 
  where
- leuron = pack ^. _LeuronPackResponse .. leuron_ ^. _LeuronResponse
+ leuron  = pack ^. _LeuronPackResponse .. leuron_ ^. _LeuronResponse
+ leuron' = pack ^. _LeuronPackResponse .. leuron_
+
+
+
+
+renderLeuron :: LeuronResponse -> ComponentHTML Input
+renderLeuron ln =
+  case leuron.dataP of
+    LnFact _ -> renderLeuron_Fact ln
+    _        -> renderLeuron_Unknown ln
+  where
+  leuron = ln ^. _LeuronResponse
+
+
+
+renderLeuron_Fact :: LeuronResponse -> ComponentHTML Input
+renderLeuron_Fact ln =
+  H.div_ [H.text "fact"]
+  where
+  leuron = ln ^. _LeuronResponse
+
+
+
+renderLeuron_Unknown :: LeuronResponse -> ComponentHTML Input
+renderLeuron_Unknown ln =
+  H.div_ [H.text "unknown"]
+  where
+  leuron = ln ^. _LeuronResponse
