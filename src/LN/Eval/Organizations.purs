@@ -12,7 +12,7 @@ import Control.Monad.Aff.Console       (log)
 import Data.Either                     (Either(..))
 import Data.Functor                    (($>))
 import Data.Maybe                      (Maybe(..), maybe)
-import Halogen                         (get, modify, liftAff')
+import Halogen                         (get, gets, modify, liftAff')
 import Prelude                         (bind, pure, show, ($), (<>))
 
 import LN.Api                          (rd, getOrganizationPacks')
@@ -99,15 +99,19 @@ eval_GetOrganizationForumBoard eval (GetOrganizationForumBoard org_name forum_na
 eval_GetOrganizationForumBoardThread :: EvalEff
 eval_GetOrganizationForumBoardThread eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) = do
 
-  st <- get
-  let board_id = maybe 0 (\(BoardPackResponse board) -> board.boardId) st.currentBoard
+  m_board <- gets _.currentBoard
+  case m_board of
+    Nothing    -> liftAff' (log $ "eval_GetOrganizationForumBoardThread: No currentBoard") $> next
+    Just  pack -> go pack
 
-  e_thread <- rd $ ApiS.getThreadPack_ByBoardId' thread_name board_id
-  case e_thread of
+  where
+  go (BoardPackResponse pack) = do
+    e_thread <- rd $ ApiS.getThreadPack_ByBoardId' thread_name pack.boardId
+    case e_thread of
 
-    Left err -> liftAff' (log $ "eval_getOrganizationForumBoardThread: " <> show err) $> next
+      Left err -> liftAff' (log $ "eval_getOrganizationForumBoardThread: " <> show err) $> next
 
-    Right pack@(ThreadPackResponse thread) -> do
-      modify (_{ currentThread = Just pack })
-      eval (GetThreadPostsForThread thread.threadId next)
-      pure next
+      Right pack@(ThreadPackResponse thread) -> do
+        modify (_{ currentThread = Just pack })
+        eval (GetThreadPostsForThread thread.threadId next)
+        pure next
