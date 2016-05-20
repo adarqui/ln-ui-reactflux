@@ -48,41 +48,102 @@ renderView_Leurons_Show' pack st =
 
 
 
-
 renderLeuron :: LeuronResponse -> ComponentHTML Input
-renderLeuron ln =
-  case leuron.dataP of
-    LnFact fact          -> renderLeuron_Fact leuron (unwrapFact fact)
-    LnFactList fact_list -> renderLeuron_FactList leuron (unwrapFactList fact_list)
-    LnCard card          -> renderLeuron_Card leuron (unwrapCard card)
-    LnDCard dcard        -> renderLeuron_DCard leuron (unwrapDCard dcard)
-    LnDCardX dcardx      -> renderLeuron_DCardX leuron (unwrapDCardX dcardx)
-    _                    -> renderLeuron_Unknown leuron
+renderLeuron leuron =
+  H.div_ [
+    renderLeuronData leuron',
+    renderLeuronSection leuron',
+    renderLeuronExamples leuron',
+    renderLeuronCategories leuron'
+  ]
   where
-  leuron = ln ^. _LeuronResponse
+  leuron' = leuron ^. _LeuronResponse
 
 
 
-renderLeuron_Fact :: LeuronResponseR -> FactR -> ComponentHTML Input
-renderLeuron_Fact leuron fact =
+renderLeuronExamples :: LeuronResponseR -> ComponentHTML Input
+renderLeuronExamples leuron =
+  case leuron.examples of
+    Nothing       -> H.div_ []
+    Just examples ->
+      H.div_ [
+        H.p_ [
+          H.h2_ [H.text "Examples"],
+          H.ul_ $ map (\example -> H.li_ [H.pre_ [H.text example]]) examples
+        ]
+      ]
+
+
+
+renderLeuronSection :: LeuronResponseR -> ComponentHTML Input
+renderLeuronSection leuron =
+  case leuron.section of
+    Nothing      -> H.div_ []
+    Just section ->
+      H.div_ [
+        H.p_ [
+          H.h2_ [H.text "Section"],
+          H.pre_ [H.text section]
+        ]
+      ]
+
+
+
+renderLeuronCategories :: LeuronResponseR -> ComponentHTML Input
+renderLeuronCategories leuron =
+  case leuron.categories of
+    [] -> H.div_ []
+    _  ->
+      H.div_ [
+        H.p_ [
+          H.h2_ [H.text "Categories"],
+          H.ul_ $ map (\category -> H.li_ [H.pre_ [H.text $ show category]]) leuron.categories
+        ]
+      ]
+
+
+
+renderLeuronData :: LeuronResponseR -> ComponentHTML Input
+renderLeuronData leuron =
+  case leuron.dataP of
+    LnFact fact          -> renderLeuronData_Fact leuron (unwrapFact fact)
+    LnFactList fact_list -> renderLeuronData_FactList leuron (unwrapFactList fact_list)
+    LnCard card          -> renderLeuronData_Card leuron (unwrapCard card)
+    LnDCard dcard        -> renderLeuronData_DCard leuron (unwrapDCard dcard)
+    LnDCardX dcardx      -> renderLeuronData_DCardX leuron (unwrapDCardX dcardx)
+    LnAcronym acronym    -> renderLeuronData_Acronym leuron (unwrapAcronym acronym)
+    _                    -> renderLeuronData_Unknown leuron
+
+
+
+renderLeuronData_Fact :: LeuronResponseR -> FactR -> ComponentHTML Input
+renderLeuronData_Fact leuron fact =
   H.div_ [
-    H.pre_ [H.text fact.text]
+    H.p_ [
+      H.h2_ [H.text "Fact"],
+      H.pre_ [H.text fact.text]
+    ]
   ]
 
 
 
 
-renderLeuron_FactList :: LeuronResponseR -> FactListR -> ComponentHTML Input
-renderLeuron_FactList leuron fact_list =
+renderLeuronData_FactList :: LeuronResponseR -> FactListR -> ComponentHTML Input
+renderLeuronData_FactList leuron fact_list =
   H.div_ [
-    H.pre_ [H.text fact_list.fact],
-    H.ul_ $ map (\fact -> H.li_ [H.pre_ [H.text fact]]) fact_list.list
+    H.p_ [
+      H.h2_ [H.text "Fact"],
+      H.pre_ [H.text fact_list.fact]
+    ],
+    H.p_ [
+      H.ul_ $ map (\fact -> H.li_ [H.pre_ [H.text fact]]) fact_list.list
+    ]
   ]
 
 
 
-renderLeuron_Card :: LeuronResponseR -> CardR -> ComponentHTML Input
-renderLeuron_Card leuron card =
+renderLeuronData_Card :: LeuronResponseR -> CardR -> ComponentHTML Input
+renderLeuronData_Card leuron card =
   H.div_ [
     H.p_ [H.h2_ [H.text "Front"], H.pre_ [H.text card.front]],
     H.p_ [H.h2_ [H.text "Back"], H.pre_ [H.text card.back]]
@@ -90,8 +151,8 @@ renderLeuron_Card leuron card =
 
 
 
-renderLeuron_DCard :: LeuronResponseR -> DCardR -> ComponentHTML Input
-renderLeuron_DCard leuron dcard =
+renderLeuronData_DCard :: LeuronResponseR -> DCardR -> ComponentHTML Input
+renderLeuronData_DCard leuron dcard =
   H.div_ [
     H.p_ [H.h2_ [H.text "Front"], H.pre_ [H.text dcard.front]],
     H.p_ [H.h2_ [H.text "Back"], H.pre_ [H.text dcard.back]]
@@ -99,8 +160,8 @@ renderLeuron_DCard leuron dcard =
 
 
 
-renderLeuron_DCardX :: LeuronResponseR -> DCardXR -> ComponentHTML Input
-renderLeuron_DCardX leuron dcardx =
+renderLeuronData_DCardX :: LeuronResponseR -> DCardXR -> ComponentHTML Input
+renderLeuronData_DCardX leuron dcardx =
   H.div_ [
     H.p_ [H.h2_ [H.text "Front"],
       H.ul_ $ map (\front -> H.li_ [H.pre_ [H.text front]]) dcardx.front
@@ -112,6 +173,15 @@ renderLeuron_DCardX leuron dcardx =
 
 
 
-renderLeuron_Unknown :: LeuronResponseR -> ComponentHTML Input
-renderLeuron_Unknown leuron =
+renderLeuronData_Acronym :: LeuronResponseR -> AcronymR -> ComponentHTML Input
+renderLeuronData_Acronym leuron acronym =
+  H.div_ [
+    H.p_ [H.h2_ [H.text "Abbrv"], H.pre_ [H.text acronym.abbreviation]],
+    H.p_ [H.h2_ [H.text "Meaning"], H.pre_ [H.text acronym.meaning]]
+  ]
+
+
+
+renderLeuronData_Unknown :: LeuronResponseR -> ComponentHTML Input
+renderLeuronData_Unknown leuron =
   H.div_ [H.text "unknown"]
