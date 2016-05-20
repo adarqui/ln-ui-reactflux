@@ -314,6 +314,17 @@ instance routesHasCrumb :: HasCrumb Routes where
 
 
 
+  crumb (Leurons Index params) =
+    [Tuple (Leurons Index params) "Leurons"]
+
+  crumb (Leurons (Show leuron_id) params) =
+    [
+      Tuple (Leurons Index params) "Leurons",
+      Tuple (Leurons (Show $ slash leuron_id) params) leuron_id
+    ]
+
+
+
   crumb _ = [Tuple NotFound "Error"]
 
 

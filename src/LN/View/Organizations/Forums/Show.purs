@@ -22,7 +22,6 @@ import LN.T
 
 
 
-
 renderView_Organizations_Forums_Show :: String -> State -> ComponentHTML Input
 renderView_Organizations_Forums_Show forum_name st =
 

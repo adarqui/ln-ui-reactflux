@@ -39,9 +39,6 @@ renderView_Leurons_Index st =
     -- Page Numbers
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
 
-    -- Create a new leuron
-    linkToP_Glyph' (Leurons New []) B.glyphiconPlus,
-
     -- Leurons
     H.div [] [renderLeurons st]
   ]
