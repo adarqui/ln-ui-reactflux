@@ -41,6 +41,9 @@ import LN.View.Resources.Show              (renderView_Resources_Show)
 import LN.View.Resources.Leurons.Index     (renderView_Resources_Leurons_Index)
 import LN.View.Resources.SiftLeurons.Index (renderView_Resources_SiftLeurons_Index)
 
+import LN.View.Leurons.Index               (renderView_Leurons_Index)
+import LN.View.Leurons.Show                (renderView_Leurons_Show)
+
 
 
 renderView :: Routes -> State -> ComponentHTML Input
@@ -92,6 +95,11 @@ renderView (Resources (Show resource_id) params) = renderView_Resources_Show res
 
 renderView (ResourcesLeurons resource_id Index params) = renderView_Resources_Leurons_Index resource_id
 renderView (ResourcesSiftLeurons resource_id Index params) = renderView_Resources_SiftLeurons_Index resource_id
+
+
+
+renderView (Leurons Index params) = renderView_Leurons_Index
+renderView (Leurons (Show resource_id) params) = renderView_Leurons_Show resource_id
 
 
 
