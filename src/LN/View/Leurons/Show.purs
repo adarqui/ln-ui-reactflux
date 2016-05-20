@@ -10,7 +10,7 @@ import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (show, ($))
+import Prelude                         (show, map, ($))
 
 import LN.Input.Types                  (Input)
 import LN.Router.Internal              (linkToP)
@@ -52,16 +52,29 @@ renderView_Leurons_Show' pack st =
 renderLeuron :: LeuronResponse -> ComponentHTML Input
 renderLeuron ln =
   case leuron.dataP of
-    LnFact _ -> renderLeuron_Fact leuron
-    _        -> renderLeuron_Unknown leuron
+    LnFact fact          -> renderLeuron_Fact leuron (unwrapFact fact)
+    LnFactList fact_list -> renderLeuron_FactList leuron (unwrapFactList fact_list)
+    _                    -> renderLeuron_Unknown leuron
   where
   leuron = ln ^. _LeuronResponse
 
 
 
-renderLeuron_Fact :: LeuronResponseR -> ComponentHTML Input
-renderLeuron_Fact leuron =
-  H.div_ [H.text "fact"]
+renderLeuron_Fact :: LeuronResponseR -> FactR -> ComponentHTML Input
+renderLeuron_Fact leuron fact =
+  H.div_ [
+    H.pre_ [H.text fact.text]
+  ]
+
+
+
+
+renderLeuron_FactList :: LeuronResponseR -> FactListR -> ComponentHTML Input
+renderLeuron_FactList leuron fact_list =
+  H.div_ [
+    H.pre_ [H.text fact_list.fact],
+    H.ul_ $ map (\fact -> H.li_ [H.pre_ [H.text fact]]) fact_list.list
+  ]
 
 
 
