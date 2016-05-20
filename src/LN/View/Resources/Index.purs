@@ -53,22 +53,27 @@ resources st =
   H.div_ [
     renderPageNumbers st.resourcesPageInfo st.currentPage
     , H.ul [P.class_ B.listUnstyled] $
-        map (\(pack@(ResourcePackResponse resource_pack)) ->
+        map (\pack ->
+          let
+            resource_pack = pack ^. _ResourcePackResponse
+            resource      = pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse
+            stat          = pack ^. _ResourcePackResponse .. stat_ ^. _ResourceStatResponse
+          in
           H.li_ [
             H.div [P.class_ B.row] [
                 H.div [P.class_ B.colSm1] [
-                  renderGravatarForUser Small (usersMapLookup_ToUser st (t pack ^. userId_))
+                  renderGravatarForUser Small (usersMapLookup_ToUser st resource.userId)
                 ]
               , H.div [P.class_ B.colSm6] [
-                    linkToP [] (Resources (Show $ show $ t pack ^. id_) []) (t pack ^. title_)
-                  , H.p_ [H.text $ show $ t pack ^. createdAt_]
-                  , H.p_ [H.text $ t pack ^. description_ ]
+                    linkToP [] (Resources (Show $ show resource.id) []) resource.title
+                  , H.p_ [H.text $ show resource.createdAt]
+                  , H.p_ [H.text $ resource.description]
                 ]
               , H.div [P.class_ B.colSm1] [
-                  H.p_ [H.text $ show (ts pack ^. leurons_) <> " leurons"]
+                  H.p_ [H.text $ show stat.leurons <> " leurons"]
                 ]
               , H.div [P.class_ B.colSm1] [
-                  H.p_ [H.text $ show (ts pack ^. views_) <> " views"]
+                  H.p_ [H.text $ show stat.views <> " views"]
                 ]
               , H.div [P.class_ B.colSm3] [
                   H.div_ [ H.p_ [H.text "Likes?"]]
@@ -78,14 +83,3 @@ resources st =
         $ listToArray $ M.values st.resources
     , renderPageNumbers st.resourcesPageInfo st.currentPage
   ]
-  where
-  -- resource
-  t x = (x ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse)
-  -- resource user
-  tu x = (x ^. _ResourcePackResponse .. user_ ^. _UserSanitizedResponse)
-  -- resource stat
-  ts x = (x ^. _ResourcePackResponse .. stat_ ^. _ResourceStatResponse)
-  -- resource post
---  tp x = (x ^. _ResourcePackResponse .. latestResource_)
-  -- resource post user
---  tpu x = (x ^. _ResourcePackResponse .. latestResourceUser_)
