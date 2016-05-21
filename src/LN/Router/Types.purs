@@ -26,7 +26,6 @@ import LN.Router.Util              (slash, fixParams)
 import Prelude                     (class Eq, class Show, show, (<>), ($), (++), (==))
 
 import LN.T                        (OrderBy(..))
-import LN.Internal.Leuron          (LeuronSift(..))
 
 
 
@@ -75,7 +74,9 @@ data Routes
   | UsersLikes String Params
   | Resources CRUD Params
   | ResourcesLeurons Int CRUD Params
-  | ResourcesSiftLeurons Int CRUD (Maybe LeuronSift) Params
+  | ResourcesSiftLeurons Int Params
+  | ResourcesSiftLeuronsLinear Int CRUD Params
+  | ResourcesSiftLeuronsRandom Int Params
   | Leurons CRUD Params
   | Login
   | Logout
@@ -130,17 +131,16 @@ instance routesHasLink :: HasLink Routes where
 
   link (Resources crud params) = Tuple ("#/resources" ++ (fst $ link crud)) (fixParams params)
   link (ResourcesLeurons resource_id crud params) = Tuple ("#/resources/" <> show resource_id <> "/leurons" <> (fst $ link crud)) (fixParams params)
-  link (ResourcesSiftLeurons resource_id crud m_sift params) =
-    case m_sift of
-         Nothing -> Tuple ("#/resources/" <> show resource_id <> "/sift" <> (fst $ link crud)) (fixParams params)
-         Just LeuronSift_Linear -> Tuple ("#/resources/" <> show resource_id <> "/sift/linear" <> (fst $ link crud)) (fixParams params)
-         Just LeuronSift_Random -> Tuple ("#/resources/" <> show resource_id <> "/sift/random" <> (fst $ link crud)) (fixParams params)
---  link (ResourcesSiftLeurons resource_id crud params) = Tuple ("#/resources/" <> show resource_id <> "/sift" <> (fst $ link crud)) (fixParams params)
+  link (ResourcesSiftLeurons resource_id params) = Tuple ("#/resources/" <> show resource_id <> "/sift") (fixParams params)
+  link (ResourcesSiftLeuronsLinear resource_id crud params) = Tuple ("#/resources/" <> show resource_id <> "/sift/linear" <> (fst $ link crud)) (fixParams params)
+  link (ResourcesSiftLeuronsRandom resource_id params) = Tuple ("#/resources/" <> show resource_id <> "/sift/random") (fixParams params)
+
   link (Leurons crud params) = Tuple ("#/leurons" ++ (fst $ link crud)) (fixParams params)
+
   link Login = Tuple "/auth/login" M.empty
   link Logout = Tuple "/auth/logout" M.empty
+
   link NotFound = Tuple "#/404" M.empty
---     link _ = Tuple "#/404" M.empty
 
 
 
@@ -306,18 +306,18 @@ instance routesHasCrumb :: HasCrumb Routes where
 
 
 
-  crumb (ResourcesSiftLeurons resource_id Index m_sift params) =
+  crumb (ResourcesSiftLeurons resource_id params) =
     [
       Tuple (Resources Index params) "Resources",
       Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
-      Tuple (ResourcesSiftLeurons resource_id Index Nothing params) "Sift"
+      Tuple (ResourcesSiftLeurons resource_id params) "Sift"
     ]
 
-  crumb (ResourcesSiftLeurons resource_id (Show leuron_id) m_sift params) =
+  crumb (ResourcesSiftLeurons resource_id params) =
     [
       Tuple (Resources Index params) "Resources",
       Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
-      Tuple (ResourcesSiftLeurons resource_id Index Nothing params) "Sift"
+      Tuple (ResourcesSiftLeurons resource_id params) "Sift"
     ]
 
 
@@ -371,7 +371,9 @@ instance routesShow :: Show Routes where
   show (UsersLikes user params) = "#/u/likes"
   show (Resources crud params) = "#/resources/..."
   show (ResourcesLeurons resource_id crud params) = "#/resources/" <> show resource_id <> "/leurons/..."
-  show (ResourcesSiftLeurons resource_id crud sift params) = "#/resources/" <> show resource_id <> "/sift/..."
+  show (ResourcesSiftLeurons resource_id params) = "#/resources/" <> show resource_id <> "/sift/..."
+  show (ResourcesSiftLeuronsLinear resource_id crud params) = "#/resources/" <> show resource_id <> "/sift/linear/..."
+  show (ResourcesSiftLeuronsRandom resource_id params) = "#/resources/" <> show resource_id <> "/sift/random"
   show (Leurons crud params) = "#/leurons/..."
   show Login = "/auth/login"
   show Logout = "/auth/logout"
@@ -416,7 +418,9 @@ links =
 
   , Resources Index []
   , ResourcesLeurons 1 Index []
-  , ResourcesSiftLeurons 1 Index Nothing []
+  , ResourcesSiftLeurons 1 []
+  , ResourcesSiftLeuronsLinear 1 Index []
+  , ResourcesSiftLeuronsRandom 1 []
   , Leurons Index []
   , Login
   , Logout

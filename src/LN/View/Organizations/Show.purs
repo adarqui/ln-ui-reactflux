@@ -15,7 +15,7 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, ($), (<>))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Internal              (linkToP)
+import LN.Router.Link                  (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.T

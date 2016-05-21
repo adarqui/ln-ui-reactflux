@@ -17,7 +17,7 @@ import Prelude                         (show, map, ($), (<>))
 import Unsafe.Coerce                   as U
 
 import LN.Input.Types                  (Input)
-import LN.Router.Internal              (linkToP_Classes')
+import LN.Router.Link                  (linkToP_Classes')
 import LN.Router.Types                 (Routes, orderBy)
 import LN.T
 

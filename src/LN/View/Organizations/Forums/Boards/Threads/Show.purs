@@ -17,7 +17,7 @@ import Prelude                         (id, show, map, ($), (<>), (-))
 
 import LN.Input.Types                  (Input (..))
 import LN.Input.ThreadPost             (InputThreadPost (..))
-import LN.Router.Internal              (linkTo)
+import LN.Router.Link                  (linkTo)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup, usersMapLookup_ToNick, usersMapLookup_ToUser)

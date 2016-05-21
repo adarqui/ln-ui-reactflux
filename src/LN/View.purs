@@ -34,13 +34,15 @@ import LN.View.Organizations.Forums.Show                (renderView_Organization
 import LN.View.Organizations.Forums.Boards.Show         (renderView_Organizations_Forums_Boards_Show)
 import LN.View.Organizations.Forums.Boards.Threads.Show (renderView_Organizations_Forums_Boards_Threads_Show)
 
-import LN.View.Resources.Index             (renderView_Resources_Index)
-import LN.View.Resources.New               (renderView_Resources_New)
+import LN.View.Resources.Index                    (renderView_Resources_Index)
+import LN.View.Resources.New                      (renderView_Resources_New)
 -- TODO FIXME: import LN.View.Resources.Edit
-import LN.View.Resources.Show              (renderView_Resources_Show)
-import LN.View.Resources.Leurons.Index     (renderView_Resources_Leurons_Index)
-import LN.View.Resources.SiftLeurons.Index (renderView_Resources_SiftLeurons_Index)
-import LN.View.Resources.SiftLeurons.Show  (renderView_Resources_SiftLeurons_Show)
+import LN.View.Resources.Show                     (renderView_Resources_Show)
+import LN.View.Resources.Leurons.Index            (renderView_Resources_Leurons_Index)
+import LN.View.Resources.SiftLeurons              (renderView_Resources_SiftLeurons)
+import LN.View.Resources.SiftLeuronsLinear.Index  (renderView_Resources_SiftLeuronsLinear_Index)
+import LN.View.Resources.SiftLeuronsLinear.Show   (renderView_Resources_SiftLeuronsLinear_Show)
+import LN.View.Resources.SiftLeuronsRandom        (renderView_Resources_SiftLeuronsRandom)
 
 import LN.View.Leurons.Index               (renderView_Leurons_Index)
 import LN.View.Leurons.Show                (renderView_Leurons_Show)
@@ -50,31 +52,31 @@ import LN.View.Leurons.Show                (renderView_Leurons_Show)
 renderView :: Routes -> State -> ComponentHTML Input
 
 
-renderView Home = const $ renderView_Home
+renderView Home   = const $ renderView_Home
 
 
-renderView About = const $ renderView_About
+renderView About  = const $ renderView_About
 
 
-renderView Portal                   = const $ renderView_Portal
+renderView Portal = const $ renderView_Portal
 
 
-renderView (Users Index params) = renderView_Users_Index
+renderView (Users Index params)            = renderView_Users_Index
 renderView (Users (Show user_name) params) = renderView_Users_Show user_name
 
 
-renderView (UsersProfile user_name params) = renderView_Users_Profile user_name
-renderView (UsersSettings user_name params) = renderView_Users_Settings user_name
-renderView (UsersPMs user_name params) = renderView_Users_PMs user_name
-renderView (UsersThreads user_name params) = renderView_Users_Threads user_name
+renderView (UsersProfile user_name params)     = renderView_Users_Profile user_name
+renderView (UsersSettings user_name params)    = renderView_Users_Settings user_name
+renderView (UsersPMs user_name params)         = renderView_Users_PMs user_name
+renderView (UsersThreads user_name params)     = renderView_Users_Threads user_name
 renderView (UsersThreadPosts user_name params) = renderView_Users_ThreadPosts user_name
-renderView (UsersWorkouts user_name params) = renderView_Users_Workouts user_name
-renderView (UsersResources user_name params) = renderView_Users_Resources user_name
-renderView (UsersLeurons user_name params) = renderView_Users_Leurons user_name
-renderView (UsersLikes user_name params) = renderView_Users_Likes user_name
+renderView (UsersWorkouts user_name params)    = renderView_Users_Workouts user_name
+renderView (UsersResources user_name params)   = renderView_Users_Resources user_name
+renderView (UsersLeurons user_name params)     = renderView_Users_Leurons user_name
+renderView (UsersLikes user_name params)       = renderView_Users_Likes user_name
 
 
-renderView (Organizations Index params) = renderView_Organizations_Index
+renderView (Organizations Index params)           = renderView_Organizations_Index
 renderView (Organizations (Show org_name) params) = renderView_Organizations_Show org_name
 
 
@@ -88,19 +90,20 @@ renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Sho
 
 
 
-renderView (Resources Index params) = renderView_Resources_Index
-renderView (Resources New params) = renderView_Resources_New
+renderView (Resources Index params)              = renderView_Resources_Index
+renderView (Resources New params)                = renderView_Resources_New
 renderView (Resources (Show resource_id) params) = renderView_Resources_Show resource_id
 
 
 
-renderView (ResourcesLeurons resource_id Index params) = renderView_Resources_Leurons_Index resource_id
-renderView (ResourcesSiftLeurons resource_id Index sift params) = renderView_Resources_SiftLeurons_Index resource_id
-renderView (ResourcesSiftLeurons resource_id (Show s) sift params) = renderView_Resources_SiftLeurons_Show resource_id s sift
+renderView (ResourcesLeurons resource_id Index params)                   = renderView_Resources_Leurons_Index resource_id
+renderView (ResourcesSiftLeurons resource_id params)                     = renderView_Resources_SiftLeurons resource_id
+renderView (ResourcesSiftLeuronsLinear resource_id Index params)         = renderView_Resources_SiftLeuronsLinear_Index resource_id
+renderView (ResourcesSiftLeuronsLinear resource_id (Show offset) params) = renderView_Resources_SiftLeuronsLinear_Show resource_id offset
+renderView (ResourcesSiftLeuronsRandom resource_id params)               = renderView_Resources_SiftLeuronsRandom resource_id
 
 
-
-renderView (Leurons Index params) = renderView_Leurons_Index
+renderView (Leurons Index params)              = renderView_Leurons_Index
 renderView (Leurons (Show resource_id) params) = renderView_Leurons_Show resource_id
 
 

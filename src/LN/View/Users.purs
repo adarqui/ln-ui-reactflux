@@ -17,7 +17,7 @@ import Prelude                         (($), (<>))
 import LN.View.Util                    (showIfSelf_UserNick)
 import LN.Input.Types                  (Input)
 import LN.State.Types                  (State)
-import LN.Router.Internal              (linkToP)
+import LN.Router.Link                  (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.T
 

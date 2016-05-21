@@ -12,7 +12,7 @@ import Halogen.Themes.Bootstrap3             as B
 import Prelude                               (map, ($))
 
 import LN.Input.Types                        (Input)
-import LN.Router.Internal                    (linkTo', linkTo)
+import LN.Router.Link                        (linkTo', linkTo)
 import LN.State.Entity                       (Entity)
 
 

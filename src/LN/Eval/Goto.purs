@@ -15,8 +15,7 @@ import Prelude                (show, bind, pure, unit, id, (==), (/=), (<))
 
 import LN.Component.Types     (EvalEff)
 import LN.Input.Types         (Input(..))
-import LN.Internal.Leuron     (LeuronSift(..))
-import LN.Router.Internal     (updateUrl)
+import LN.Router.Link         (updateUrl)
 import LN.Router.Types        (Routes(..), CRUD(..))
 import LN.T
 
@@ -148,14 +147,8 @@ eval_Goto eval (Goto route next) = do
 
 
 
-    (ResourcesSiftLeurons resource_id Index m_sift params) -> do
+    (ResourcesSiftLeurons resource_id params) -> do
       pure unit
-
-    (ResourcesSiftLeurons resource_id (Show leuron_sid) m_sift params) -> do
-      case m_sift of
-        Nothing                -> pure unit
-        Just LeuronSift_Linear -> pure unit
-        Just LeuronSift_Random -> pure unit
 
 
 

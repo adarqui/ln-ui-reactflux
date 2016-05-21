@@ -9,7 +9,7 @@ import Halogen.HTML.Indexed as H
 import Prelude              (show, map, ($))
 
 import LN.Input.Types       (Input)
-import LN.Router.Internal   (linkToP)
+import LN.Router.Link       (linkToP)
 import LN.Router.Types      (links)
 
 

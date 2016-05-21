@@ -1,4 +1,4 @@
-module LN.Router.Internal (
+module LN.Router.Link (
   (</>),
   apply',
   updateUrl,

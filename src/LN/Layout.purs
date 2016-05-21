@@ -13,7 +13,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (map)
 
-import LN.Router.Internal              (linkToHref, linkTo)
+import LN.Router.Link                  (linkToHref, linkTo)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.View.Module.Breadcrumbs      (renderBreadcrumbs)

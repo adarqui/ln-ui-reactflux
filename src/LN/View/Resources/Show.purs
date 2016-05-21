@@ -12,7 +12,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Internal              (linkToP)
+import LN.Router.Link                  (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.T
@@ -39,7 +39,7 @@ renderView_Resources_Show' pack st =
     H.div [P.class_ B.container] [
       H.ul_ [
         H.li_ [linkToP [] (ResourcesLeurons resource.id Index []) "leurons"],
-        H.li_ [linkToP [] (ResourcesSiftLeurons resource.id Index Nothing []) "sift"]
+        H.li_ [linkToP [] (ResourcesSiftLeurons resource.id []) "sift"]
       ]
     ]
   ]

@@ -7,7 +7,7 @@ module Router (
 
 
 import Control.Alt             ((<|>))
-import Control.Apply           ((*>))
+import Control.Apply           ((*>), (<*))
 import Control.Plus            (empty)
 import Daimyo.Data.ArrayList   (listToArray)
 import Data.Functor            ((<$))
@@ -84,10 +84,11 @@ routing =
 
       me <|>
 
-      resources_sift_show_linear <|>
-      resources_sift_show_random <|>
-      resources_sift_new <|>
-      resources_sift_index <|>
+      resources_sift_linear_index <|>
+      resources_sift_linear_show <|>
+      resources_sift_random <|>
+
+      resources_sift <|>
 
       resources_leurons_new <|>
       resources_leurons_index <|>
@@ -237,40 +238,26 @@ routing =
 
 
 
-    resources_sift_index =
+    resources_sift =
       ResourcesSiftLeurons
-      <$> (lit "" *> lit "resources" *> int)
-      <*> (lit "sift" *> pure Index)
-      <*> pure Nothing
+      <$> (lit "" *> lit "resources" *> int <* lit "sift")
       <*> (params' <|> pure [])
 
-    resources_sift_new =
-      ResourcesSiftLeurons
+    resources_sift_linear_index =
+      ResourcesSiftLeuronsLinear
       <$> (lit "" *> lit "resources" *> int)
-      <*> (lit "sift" *> lit "new" *> pure New)
-      <*> pure Nothing
+      <*> (lit "sift" *> lit "linear" *> pure Index)
       <*> (params' <|> pure [])
 
-    resources_sift_show_linear =
-      ResourcesSiftLeurons
+    resources_sift_linear_show =
+      ResourcesSiftLeuronsLinear
       <$> (lit "" *> lit "resources" *> int)
-      <*> (
-            (lit "sift" *> lit "linear" *> (Show <$> str1))
-            <|>
-            (lit "sift" *> lit "linear" *> pure (Show "0"))
-          )
-      <*> pure (Just LeuronSift_Linear)
+      <*> (lit "sift" *> lit "linear" *> (Show <$> str1))
       <*> (params' <|> pure [])
 
-    resources_sift_show_random =
-      ResourcesSiftLeurons
-      <$> (lit "" *> lit "resources" *> int)
-      <*> (
-            (lit "sift" *> lit "random" *> (Show <$> str1))
-            <|>
-            (lit "sift" *> lit "random" *> pure (Show "0"))
-          )
-      <*> pure (Just LeuronSift_Random)
+    resources_sift_random =
+      ResourcesSiftLeuronsRandom
+      <$> (lit "" *> lit "resources" *> int <* lit "sift" <* lit "random")
       <*> (params' <|> pure [])
 
 
