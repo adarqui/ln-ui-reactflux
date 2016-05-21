@@ -8,7 +8,6 @@ module LN.Eval.Organizations (
 
 
 
-import Control.Monad.Aff.Console       (log)
 import Data.Either                     (Either(..))
 import Data.Functor                    (($>))
 import Data.Maybe                      (Maybe(..), maybe)
@@ -18,6 +17,7 @@ import Prelude                         (bind, pure, show, ($), (<>))
 import LN.Api                          (rd, getOrganizationPacks')
 import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
+import LN.Helpers.Log                  (log)
 import LN.Helpers.Map                  (idmapFrom)
 import LN.Input.Types                  (Input(..))
 import LN.T                            ( OrganizationPackResponses(..), OrganizationPackResponse(..)
@@ -109,7 +109,7 @@ eval_GetOrganizationForumBoardThread eval (GetOrganizationForumBoardThread org_n
     e_thread <- rd $ ApiS.getThreadPack_ByBoardId' thread_name pack.boardId
     case e_thread of
 
-      Left err -> liftAff' (log $ "eval_getOrganizationForumBoardThread: " <> show err) $> next
+      Left err ->  liftAff' (log $ "eval_getOrganizationForumBoardThread: " <> show err) $> next
 
       Right pack@(ThreadPackResponse thread) -> do
         modify (_{ currentThread = Just pack })
