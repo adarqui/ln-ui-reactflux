@@ -40,6 +40,7 @@ import LN.View.Resources.New               (renderView_Resources_New)
 import LN.View.Resources.Show              (renderView_Resources_Show)
 import LN.View.Resources.Leurons.Index     (renderView_Resources_Leurons_Index)
 import LN.View.Resources.SiftLeurons.Index (renderView_Resources_SiftLeurons_Index)
+import LN.View.Resources.SiftLeurons.Show  (renderView_Resources_SiftLeurons_Show)
 
 import LN.View.Leurons.Index               (renderView_Leurons_Index)
 import LN.View.Leurons.Show                (renderView_Leurons_Show)
@@ -95,6 +96,7 @@ renderView (Resources (Show resource_id) params) = renderView_Resources_Show res
 
 renderView (ResourcesLeurons resource_id Index params) = renderView_Resources_Leurons_Index resource_id
 renderView (ResourcesSiftLeurons resource_id Index params) = renderView_Resources_SiftLeurons_Index resource_id
+renderView (ResourcesSiftLeurons resource_id (Show offset) params) = renderView_Resources_SiftLeurons_Show resource_id offset
 
 
 
