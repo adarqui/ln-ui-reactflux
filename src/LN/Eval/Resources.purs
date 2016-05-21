@@ -24,7 +24,7 @@ import LN.Api                        ( rd
 import LN.Component.Types            (EvalEff)
 import LN.Input.Types                (Input(..))
 import LN.State.PageInfo             (runPageInfo)
-import LN.T                          ( Param(..)
+import LN.T                          ( Param(..), SortOrderBy(..)
                                      , ResourcePackResponses(..), ResourcePackResponse(..)
                                      , LeuronPackResponses(..), LeuronPackResponse(..))
 
@@ -102,7 +102,7 @@ eval_GetResourcesSiftLeurons eval (GetResourcesSiftLeurons resource_sid next) = 
 eval_GetResourceLeuronRandom :: EvalEff
 eval_GetResourceLeuronRandom eval (GetResourceLeuronRandom resource_id next) = do
 
-  e_packs <- rd $ getLeuronPacks_ByResourceId [Limit 1] resource_id
+  e_packs <- rd $ getLeuronPacks_ByResourceId [Limit 1, SortOrder SortOrderBy_Rnd] resource_id
   case e_packs of
     Left err   -> pure next
     Right (LeuronPackResponses packs) -> do
