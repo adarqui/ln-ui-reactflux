@@ -3,24 +3,30 @@ module LN.Eval.Resources (
   eval_GetResourceId,
   eval_GetResourceSid,
   eval_GetResourcesLeurons,
-  eval_GetResourcesSiftLeurons
+  eval_GetResourcesSiftLeurons,
+  eval_GetResourceLeuronRandom
 ) where
 
 
 
 import Halogen                       (gets, modify)
-import Data.Array                    (zip)
+import Data.Array                    (zip, head)
 import Data.Either                   (Either(..))
+import Data.Functor                  (($>))
 import Data.Int                      (fromString)
 import Data.Map                      as M
 import Data.Maybe                    (Maybe(..))
 import Prelude                       (bind, pure, map, ($))
 
-import LN.Api                        (rd, getResourcesCount', getResourcePacks, getResourcePack')
+import LN.Api                        ( rd
+                                     , getResourcesCount', getResourcePacks, getResourcePack'
+                                     , getLeuronPacks_ByResourceId)
 import LN.Component.Types            (EvalEff)
 import LN.Input.Types                (Input(..))
 import LN.State.PageInfo             (runPageInfo)
-import LN.T                          (ResourcePackResponses(..), ResourcePackResponse(..))
+import LN.T                          ( Param(..)
+                                     , ResourcePackResponses(..), ResourcePackResponse(..)
+                                     , LeuronPackResponses(..), LeuronPackResponse(..))
 
 
 
@@ -90,3 +96,16 @@ eval_GetResourcesSiftLeurons :: EvalEff
 eval_GetResourcesSiftLeurons eval (GetResourcesSiftLeurons resource_sid next) = do
 
   pure next
+
+
+
+eval_GetResourceLeuronRandom :: EvalEff
+eval_GetResourceLeuronRandom eval (GetResourceLeuronRandom resource_id next) = do
+
+  e_packs <- rd $ getLeuronPacks_ByResourceId [Limit 1] resource_id
+  case e_packs of
+    Left err   -> pure next
+    Right (LeuronPackResponses packs) -> do
+      case head packs.leuronPackResponses of
+        Nothing   -> pure next
+        Just pack -> modify (_{ currentLeuron = Just pack }) $> next

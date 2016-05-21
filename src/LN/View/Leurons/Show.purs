@@ -1,5 +1,6 @@
 module LN.View.Leurons.Show (
-  renderView_Leurons_Show
+  renderView_Leurons_Show,
+  renderView_Leurons_Show'
 ) where
 
 

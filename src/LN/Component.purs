@@ -84,6 +84,7 @@ ui = component render eval
   eval z@(GetResourceSid _ _)                         = eval_GetResourceSid eval z
 
   eval z@(GetResourcesLeurons _ _)                    = eval_GetResources eval z
+  eval z@(GetResourceLeuronRandom _ _)                = eval_GetResourceLeuronRandom eval z
   eval z@(GetResourcesSiftLeurons _ _)                = eval_GetResourcesSiftLeurons eval z
 
   eval z@(GetLeurons _)                               = eval_GetLeurons eval z
