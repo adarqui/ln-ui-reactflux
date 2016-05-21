@@ -39,7 +39,7 @@ renderView_Resources_Show' pack st =
     H.div [P.class_ B.container] [
       H.ul_ [
         H.li_ [linkToP [] (ResourcesLeurons resource.id Index []) "leurons"],
-        H.li_ [linkToP [] (ResourcesSiftLeurons resource.id Index []) "sift"]
+        H.li_ [linkToP [] (ResourcesSiftLeurons resource.id Index Nothing []) "sift"]
       ]
     ]
   ]

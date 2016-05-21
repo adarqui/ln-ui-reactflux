@@ -95,8 +95,8 @@ renderView (Resources (Show resource_id) params) = renderView_Resources_Show res
 
 
 renderView (ResourcesLeurons resource_id Index params) = renderView_Resources_Leurons_Index resource_id
-renderView (ResourcesSiftLeurons resource_id Index params) = renderView_Resources_SiftLeurons_Index resource_id
-renderView (ResourcesSiftLeurons resource_id (Show s_sift) params) = renderView_Resources_SiftLeurons_Show resource_id s_sift
+renderView (ResourcesSiftLeurons resource_id Index sift params) = renderView_Resources_SiftLeurons_Index resource_id
+renderView (ResourcesSiftLeurons resource_id (Show s) sift params) = renderView_Resources_SiftLeurons_Show resource_id s sift
 
 
 

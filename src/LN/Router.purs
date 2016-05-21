@@ -25,6 +25,7 @@ import Routing.Match.Class     (class MatchClass, lit, str, params)
 import Routing.Types           (RoutePart(..))
 
 import LN.Input.Types          (Input(..))
+import LN.Internal.Leuron      (LeuronSift(..))
 import LN.Router.Types         (Routing, Routes(..), CRUD(..))
 
 
@@ -77,9 +78,11 @@ routing =
       users_show <|>
       users_index <|>
       me <|>
+      resources_sift_show_linear <|>
+      resources_sift_show_random <|>
+      resources_sift_show_catch <|>
       resources_sift_new <|>
       resources_sift_index <|>
-      resources_sift_show <|>
       resources_leurons_new <|>
       resources_leurons_index <|>
       resources_leurons_show <|>
@@ -227,18 +230,35 @@ routing =
       ResourcesSiftLeurons
       <$> (lit "" *> lit "resources" *> int)
       <*> (lit "sift" *> pure Index)
+      <*> pure Nothing
       <*> (params' <|> pure [])
 
     resources_sift_new =
       ResourcesSiftLeurons
       <$> (lit "" *> lit "resources" *> int)
       <*> (lit "sift" *> lit "new" *> pure New)
+      <*> pure Nothing
       <*> (params' <|> pure [])
 
-    resources_sift_show =
+    resources_sift_show_linear =
+      ResourcesSiftLeurons
+      <$> (lit "" *> lit "resources" *> int)
+      <*> (lit "sift" *> lit "linear" *> (Show <$> str1))
+      <*> pure (Just LeuronSift_Linear)
+      <*> (params' <|> pure [])
+
+    resources_sift_show_random =
+      ResourcesSiftLeurons
+      <$> (lit "" *> lit "resources" *> int)
+      <*> (lit "sift" *> lit "random" *> (Show <$> str1))
+      <*> pure (Just LeuronSift_Random)
+      <*> (params' <|> pure [])
+
+    resources_sift_show_catch =
       ResourcesSiftLeurons
       <$> (lit "" *> lit "resources" *> int)
       <*> (lit "sift" *> (Show <$> str1))
+      <*> pure Nothing
       <*> (params' <|> pure [])
 
 
