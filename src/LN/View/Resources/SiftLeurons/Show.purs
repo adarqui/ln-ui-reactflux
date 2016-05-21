@@ -16,7 +16,9 @@ import LN.State.Types       (State)
 
 
 renderView_Resources_SiftLeurons_Show :: Int -> String -> Maybe LeuronSift -> State -> ComponentHTML Input
-renderView_Resources_SiftLeurons_Show resource_id s m_sift _ = H.div_ [H.text $ "resources sift leurons show: " <> s <> ", " <> show m_sift ]
+renderView_Resources_SiftLeurons_Show resource_id s m_sift _ =
+  H.div_ [H.text $ "resources sift leurons show: " <> s <> ", " <> show m_sift ]
+
 
 -- parse s_sift for linear, rand, ... and who knows what else??
 -- IDEA:

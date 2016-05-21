@@ -63,8 +63,11 @@ int = Match \route ->
 
 routing :: Match Routes
 routing =
+
       about <|>
+
       portal <|>
+
       users_profile <|>
       users_settings <|>
       users_pms <|>
@@ -74,32 +77,40 @@ routing =
       users_resources <|>
       users_leurons <|>
       users_likes <|>
+
       users_new <|>
       users_show <|>
       users_index <|>
+
       me <|>
+
       resources_sift_show_linear <|>
       resources_sift_show_random <|>
-      resources_sift_show_catch <|>
       resources_sift_new <|>
       resources_sift_index <|>
+
       resources_leurons_new <|>
       resources_leurons_index <|>
       resources_leurons_show <|>
+
       resources_new <|>
       resources_show <|>
       resources_index <|>
+
       leurons_new <|>
       leurons_show <|>
       leurons_index <|>
+
       login <|>
       logout <|>
+
       organizations_forums_boards_threads <|>
       organizations_forums_boards <|>
       organizations_forums <|>
       organizations_new <|>
       organizations_index <|>
       organizations_show <|>
+
       home <|>
       home2
   where
@@ -243,22 +254,23 @@ routing =
     resources_sift_show_linear =
       ResourcesSiftLeurons
       <$> (lit "" *> lit "resources" *> int)
-      <*> (lit "sift" *> lit "linear" *> (Show <$> str1))
+      <*> (
+            (lit "sift" *> lit "linear" *> (Show <$> str1))
+            <|>
+            (lit "sift" *> lit "linear" *> pure (Show "0"))
+          )
       <*> pure (Just LeuronSift_Linear)
       <*> (params' <|> pure [])
 
     resources_sift_show_random =
       ResourcesSiftLeurons
       <$> (lit "" *> lit "resources" *> int)
-      <*> (lit "sift" *> lit "random" *> (Show <$> str1))
+      <*> (
+            (lit "sift" *> lit "random" *> (Show <$> str1))
+            <|>
+            (lit "sift" *> lit "random" *> pure (Show "0"))
+          )
       <*> pure (Just LeuronSift_Random)
-      <*> (params' <|> pure [])
-
-    resources_sift_show_catch =
-      ResourcesSiftLeurons
-      <$> (lit "" *> lit "resources" *> int)
-      <*> (lit "sift" *> (Show <$> str1))
-      <*> pure Nothing
       <*> (params' <|> pure [])
 
 
