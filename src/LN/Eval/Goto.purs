@@ -150,7 +150,9 @@ eval_Goto eval (Goto route next) = do
     (ResourcesSiftLeurons resource_id params) -> do
       pure unit
 
-    (ResourcesSiftLeuronsRandom resource_id params) -> eval (GetResourceLeuronRandom resource_id next) $> unit
+    (ResourcesSiftLeuronsRandom resource_id params) -> do
+      eval (GetResourceLeuronRandom resource_id next)
+      pure unit
 
 
 
