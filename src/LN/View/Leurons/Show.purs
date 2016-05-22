@@ -6,6 +6,8 @@ module LN.View.Leurons.Show (
 
 
 import Data.Maybe                      (Maybe(..))
+import CSS                             as HCSS
+import Halogen.HTML.CSS.Indexed        as HCSS
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
@@ -79,7 +81,7 @@ renderLeuronExamples leuron =
       H.div_ [
         H.p_ [
           H.h2_ [H.text "Examples"],
-          H.ul_ $ map (\example -> H.li_ [H.pre_ [H.text example]]) examples
+          H.ul_ $ map (\example -> H.li_ [displayData example]) examples
         ]
       ]
 
@@ -93,7 +95,7 @@ renderLeuronSection leuron =
       H.div_ [
         H.p_ [
           H.h2_ [H.text "Section"],
-          H.pre_ [H.text section]
+          displayData section
         ]
       ]
 
@@ -107,7 +109,7 @@ renderLeuronCategories leuron =
       H.div_ [
         H.p_ [
           H.h2_ [H.text "Categories"],
-          H.ul_ $ map (\category -> H.li_ [H.pre_ [H.text $ show category]]) leuron.categories
+          H.ul_ $ map (\category -> H.li_ [displayData $ show category]) leuron.categories
         ]
       ]
 
@@ -139,7 +141,7 @@ renderLeuronData_Fact leuron fact =
   H.div_ [
     H.p_ [
       H.h2_ [H.text "Fact"],
-      H.pre_ [H.text fact.text]
+      displayData fact.text
     ]
   ]
 
@@ -152,10 +154,10 @@ renderLeuronData_FactList leuron fact_list =
     H.p_ [H.h2_ [H.text "Fact List"]],
     H.p_ [
       H.h2_ [H.text "Fact"],
-      H.pre_ [H.text fact_list.fact]
+      displayData fact_list.fact
     ],
     H.p_ [
-      H.ul_ $ map (\fact -> H.li_ [H.pre_ [H.text fact]]) fact_list.list
+      H.ul_ $ map (\fact -> H.li_ [displayData fact]) fact_list.list
     ]
   ]
 
@@ -165,8 +167,8 @@ renderLeuronData_Card :: LeuronResponseR -> CardR -> ComponentHTML Input
 renderLeuronData_Card leuron card =
   H.div_ [
     H.p_ [H.h2_ [H.text "Card"]],
-    H.p_ [H.h2_ [H.text "Front"], H.pre_ [H.text card.front]],
-    H.p_ [H.h2_ [H.text "Back"], H.pre_ [H.text card.back]]
+    H.p_ [H.h2_ [H.text "Front"], displayData card.front],
+    H.p_ [H.h2_ [H.text "Back"], displayData card.back]
   ]
 
 
@@ -175,8 +177,8 @@ renderLeuronData_DCard :: LeuronResponseR -> DCardR -> ComponentHTML Input
 renderLeuronData_DCard leuron dcard =
   H.div_ [
     H.p_ [H.h2_ [H.text "DCard"]],
-    H.p_ [H.h2_ [H.text "Front"], H.pre_ [H.text dcard.front]],
-    H.p_ [H.h2_ [H.text "Back"], H.pre_ [H.text dcard.back]]
+    H.p_ [H.h2_ [H.text "Front"], displayData dcard.front],
+    H.p_ [H.h2_ [H.text "Back"], displayData dcard.back]
   ]
 
 
@@ -186,10 +188,10 @@ renderLeuronData_DCardX leuron dcardx =
   H.div_ [
     H.p_ [H.h2_ [H.text "DCardX"]],
     H.p_ [H.h2_ [H.text "Front"],
-      H.ul_ $ map (\front -> H.li_ [H.pre_ [H.text front]]) dcardx.front
+      H.ul_ $ map (\front -> H.li_ [displayData front]) dcardx.front
     ],
     H.p_ [H.h2_ [H.text "Back"],
-      H.ul_ $ map (\back -> H.li_ [H.pre_ [H.text back]]) dcardx.back
+      H.ul_ $ map (\back -> H.li_ [displayData back]) dcardx.back
     ]
   ]
 
@@ -199,8 +201,8 @@ renderLeuronData_Acronym :: LeuronResponseR -> AcronymR -> ComponentHTML Input
 renderLeuronData_Acronym leuron acronym =
   H.div_ [
     H.p_ [H.h2_ [H.text "Acronym"]],
-    H.p_ [H.h2_ [H.text "Abbrv"], H.pre_ [H.text acronym.abbreviation]],
-    H.p_ [H.h2_ [H.text "Meaning"], H.pre_ [H.text acronym.meaning]]
+    H.p_ [H.h2_ [H.text "Abbrv"], displayData acronym.abbreviation],
+    H.p_ [H.h2_ [H.text "Meaning"], displayData acronym.meaning]
   ]
 
 
@@ -209,8 +211,8 @@ renderLeuronData_Synonym :: LeuronResponseR -> SynonymR -> ComponentHTML Input
 renderLeuronData_Synonym leuron synonym =
   H.div_ [
     H.p_ [H.h2_ [H.text "Synonym"]],
-    H.p_ [H.h2_ [H.text "a"], H.pre_ [H.text synonym.a]],
-    H.p_ [H.h2_ [H.text "b"], H.pre_ [H.text synonym.b]]
+    H.p_ [H.h2_ [H.text "a"], displayData synonym.a],
+    H.p_ [H.h2_ [H.text "b"], displayData synonym.b]
   ]
 
 
@@ -219,8 +221,8 @@ renderLeuronData_Antonym :: LeuronResponseR -> AntonymR -> ComponentHTML Input
 renderLeuronData_Antonym leuron antonym =
   H.div_ [
     H.p_ [H.h2_ [H.text "Antonym"]],
-    H.p_ [H.h2_ [H.text "a"], H.pre_ [H.text antonym.a]],
-    H.p_ [H.h2_ [H.text "b"], H.pre_ [H.text antonym.b]]
+    H.p_ [H.h2_ [H.text "a"], displayData antonym.a],
+    H.p_ [H.h2_ [H.text "b"], displayData antonym.b]
   ]
 
 
@@ -264,3 +266,10 @@ renderLeuronData_Table leuron table =
 renderLeuronData_Unknown :: LeuronResponseR -> ComponentHTML Input
 renderLeuronData_Unknown leuron =
   H.div_ [H.text "unknown"]
+
+
+
+displayData :: String -> ComponentHTML Input
+displayData s =
+--  H.pre_ [H.text s]
+  H.p [HCSS.style $ HCSS.textWhitespace HCSS.whitespacePreWrap] [H.text s]
