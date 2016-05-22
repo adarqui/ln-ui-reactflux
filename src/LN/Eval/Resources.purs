@@ -10,11 +10,10 @@ module LN.Eval.Resources (
 
 
 import Halogen                       (gets, modify)
-import Data.Array                    (zip, head)
+import Data.Array                    (head)
 import Data.Either                   (Either(..))
 import Data.Functor                  (($>))
 import Data.Int                      (fromString)
-import Data.Map                      as M
 import Data.Maybe                    (Maybe(..))
 import Prelude                       (bind, pure, map, ($))
 
@@ -22,11 +21,12 @@ import LN.Api                        ( rd
                                      , getResourcesCount', getResourcePacks, getResourcePack'
                                      , getLeuronPacks_ByResourceId)
 import LN.Component.Types            (EvalEff)
+import LN.Helpers.Map                (idmapFrom)
 import LN.Input.Types                (Input(..))
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          ( Param(..), SortOrderBy(..)
                                      , ResourcePackResponses(..), ResourcePackResponse(..)
-                                     , LeuronPackResponses(..), LeuronPackResponse(..))
+                                     , LeuronPackResponses(..))
 
 
 
@@ -50,14 +50,11 @@ eval_GetResources eval (GetResources next) = do
            Right (ResourcePackResponses resource_packs) -> do
 
              let
-              users = map (\(ResourcePackResponse pack) -> pack.user) resource_packs.resourcePackResponses
+              users         = map (\(ResourcePackResponse pack) -> pack.user) resource_packs.resourcePackResponses
               resources_map =
-                M.fromFoldable
-                  $ zip (map (\(ResourcePackResponse p) -> p.resourceId) resource_packs.resourcePackResponses) resource_packs.resourcePackResponses
-
+                idmapFrom (\(ResourcePackResponse p) -> p.resourceId) resource_packs.resourcePackResponses
 
              eval (GetUsers_MergeMap_ByUser users next)
-
 
              modify (_{ resources = resources_map })
              pure next
