@@ -14,6 +14,7 @@ import LN.Router.Types           (Routes(..), CRUD(..))
 import LN.State.Types            (State)
 import LN.View.Home              (renderView_Home)
 import LN.View.About             (renderView_About)
+import LN.View.Errors            (renderView_Errors)
 import LN.View.Portal            (renderView_Portal)
 import LN.View.Users.Index       (renderView_Users_Index)
 import LN.View.Users.Show        (renderView_Users_Show)
@@ -56,6 +57,9 @@ renderView Home   = const $ renderView_Home
 
 
 renderView About  = const $ renderView_About
+
+
+renderView Errors = renderView_Errors
 
 
 renderView Portal = const $ renderView_Portal

@@ -56,6 +56,7 @@ data Routes
   = Home
   | About
   | Me
+  | Errors
   | Portal
   | Organizations CRUD Params
   | OrganizationsForums String CRUD Params
@@ -103,6 +104,8 @@ instance routesHasLink :: HasLink Routes where
   link About = Tuple "#/about" M.empty
 
   link Me = Tuple "#/me" M.empty
+
+  link Errors = Tuple "#/errors" M.empty
 
   link Portal = Tuple "#/portal" M.empty
 
@@ -160,6 +163,9 @@ instance routesHasCrumb :: HasCrumb Routes where
 
 
   crumb Me = [Tuple Me "Me"]
+
+
+  crumb Errors = [Tuple Errors "Errors"]
 
 
   crumb Portal = [Tuple Portal "Portal"]
@@ -353,6 +359,7 @@ instance routesShow :: Show Routes where
   show Home = "#/"
   show About = "#/about"
   show Me = "#/me"
+  show Errors = "#/errors"
   show Portal = "#/portal"
   show (Organizations crud params) = "#/organizations/..."
   show (OrganizationsForums org crud params) = "#/" <> org <> "/f/..."
@@ -398,6 +405,8 @@ links =
   , Portal
 
   , Me
+
+  , Errors
 
   , Organizations Index []
   , OrganizationsForums "adarq" Index []

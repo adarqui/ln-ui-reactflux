@@ -84,6 +84,8 @@ routing =
 
       me <|>
 
+      errors <|>
+
       resources_sift_linear_index <|>
       resources_sift_linear_show <|>
       resources_sift_random <|>
@@ -121,6 +123,10 @@ routing =
 
 
     me = Me <$ route "me"
+
+
+
+    errors = Errors <$ route "errors"
 
 
 

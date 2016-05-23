@@ -36,6 +36,11 @@ eval_Goto eval (Goto route next) = do
     Me          -> eval (GetMe next) $> unit
 
 
+
+    Errors      -> pure unit
+
+
+
     (Organizations Index params) -> eval  (GetOrganizations next) $> unit
 
     (Organizations (Show org_name) params) -> eval (GetOrganization org_name next) $> unit

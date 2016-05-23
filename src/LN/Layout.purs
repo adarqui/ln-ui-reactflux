@@ -4,14 +4,14 @@ module LN.Layout (
 
 
 
-import Data.Array                      ((:))
+import Data.Array                      ((:), length)
 import Data.Maybe                      (Maybe(..))
 import Halogen.HTML.Indexed            (HTML(), ClassName())
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (map, show, ($))
+import Prelude                         (map, show, ($), (<>))
 
 import LN.Router.Link                  (linkToHref, linkTo)
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -36,7 +36,7 @@ defaultLayout :: State -> Array (HTML _ _) -> HTML _ _
 defaultLayout st page =
 --  H.div [ P.class_ B.container ]
   H.div [ P.class_ B.containerFluid ]
-    [ header st.me
+    [ header st.me (length st.errors)
     , renderBreadcrumbs st.currentPage
 --    , row [ col' [B.colLg12] [renderBreadcrumbs st.currentPage]]
     , row
@@ -52,8 +52,8 @@ container_ = container []
 
 
 
-header :: Maybe UserPackResponse -> HTML _ _
-header muser =
+header :: Maybe UserPackResponse -> Int -> HTML _ _
+header muser n_errors =
   H.div [ P.class_ B.containerFluid ] [
   H.nav [ P.classes [ B.navbarNav, B.navbarStaticTop] ]
     [ container_
@@ -62,7 +62,8 @@ header muser =
       , H.ul [ P.classes [ B.navbarNav, B.nav, B.navTabs] ]
         [
           H.li_ [ linkTo About "About" ]
-        , H.li_ [me] -- [ linkTo Me "Me" ]
+        , H.li_ [me]
+        , H.li_ [errors]
         , H.li_ [ linkTo Portal "Portal" ]
         ]
       , case muser of
@@ -83,6 +84,10 @@ header muser =
   me = case muser of
             Nothing -> linkTo NotFound "Me"
             Just user -> linkTo (Users (Show (user ^. _UserPackResponse .. user_ ^. _UserResponse .. nick_)) []) "Me"
+  errors =
+    -- TODO FIXME: use proper pull number
+    linkTo Errors $ "Errors [" <> show n_errors <> "]"
+
 
 
 
