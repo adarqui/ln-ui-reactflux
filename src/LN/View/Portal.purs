@@ -4,19 +4,33 @@ module LN.View.Portal (
 
 
 
-import Halogen              (ComponentHTML)
-import Halogen.HTML.Indexed as H
-import Prelude              (show, map, ($))
+import Halogen                         (ComponentHTML)
+import Halogen.HTML.Indexed            as H
+import Halogen.HTML.Properties.Indexed as P
+import Halogen.Themes.Bootstrap3       as B
+import Prelude                         (show, map, ($))
 
-import LN.Input.Types       (Input)
-import LN.Router.Link       (linkToP)
-import LN.Router.Types      (links)
+import LN.Input.Types                  (Input)
+import LN.Router.Link                  (linkToP)
+import LN.Router.Types                 (Routes, links)
 
 
 
 renderView_Portal :: ComponentHTML Input
 renderView_Portal =
-  H.div_
-    [ H.h1_ [ H.text "Portal" ]
-    , H.ul_ $ map (\lnk -> H.li_ [linkToP [] lnk (show lnk)]) links
+  H.div_ [
+    H.div [P.class_ B.pageHeader] [
+      H.h2_ [ H.text "Portal" ]
+    ],
+    H.ul [P.class_ B.listUnstyled] $ map renderPortalRow links
+  ]
+
+
+
+renderPortalRow :: Routes -> ComponentHTML Input
+renderPortalRow route =
+  H.div [P.class_ B.row] [
+    H.div [P.class_ B.colSm12] [
+      linkToP [] route (show route)
     ]
+  ]
