@@ -3,6 +3,8 @@ module LN.Input.Types (
 ) where
 
 
+import Data.Foreign            (ForeignError)
+import Purescript.Api.Helpers  (ApiError)
 
 import LN.Input.CreateThread   (InputCreateThread)
 import LN.Input.Like (InputLike)
@@ -19,6 +21,8 @@ data Input a
   = Goto Routes a
 
   | AddError String String a
+  | AddErrorF String ForeignError a
+  | AddErrorApi String ApiError a
   | DelError Int a
   | ClearErrors a
 

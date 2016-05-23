@@ -47,6 +47,8 @@ ui = component render eval
   eval z@(Goto _ _)                                   = eval_Goto eval z
 
   eval z@(AddError _ _ _)                             = eval_AddError eval z
+  eval z@(AddErrorF _ _ _)                            = eval_AddErrorF eval z
+  eval z@(AddErrorApi _ _ _)                          = eval_AddErrorApi eval z
   eval z@(DelError _ _)                               = eval_DelError eval z
   eval z@(ClearErrors _)                              = eval_ClearErrors eval z
 
