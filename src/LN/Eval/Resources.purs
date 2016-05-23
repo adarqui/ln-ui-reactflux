@@ -35,24 +35,23 @@ eval_GetResources eval (GetResources next) = do
 
   page_info <- gets _.resourcesPageInfo
 
-  ecount <- rd $ getResourcesCount'
-  case ecount of
-    Left err -> pure next
+  e_count <- rd $ getResourcesCount'
+  case e_count of
+    Left err     -> eval (AddErrorApi "eval_GetResources::getResourcesCount'" err next)
     Right counts -> do
 
       let new_page_info = runPageInfo counts page_info
 
       modify (_ { resourcesPageInfo = new_page_info.pageInfo })
 
-      eresource_packs <- rd $ getResourcePacks new_page_info.params
-      case eresource_packs of
-           Left err -> pure next
+      e_resource_packs <- rd $ getResourcePacks new_page_info.params
+      case e_resource_packs of
+           Left err                                     -> eval (AddErrorApi "eval_GetResources::getResourcePacks" err next)
            Right (ResourcePackResponses resource_packs) -> do
 
              let
               users         = map (\(ResourcePackResponse pack) -> pack.user) resource_packs.resourcePackResponses
-              resources_map =
-                idmapFrom (\(ResourcePackResponse p) -> p.resourceId) resource_packs.resourcePackResponses
+              resources_map = idmapFrom (\(ResourcePackResponse p) -> p.resourceId) resource_packs.resourcePackResponses
 
              eval (GetUsers_MergeMap_ByUser users next)
 
@@ -64,8 +63,8 @@ eval_GetResources eval (GetResources next) = do
 eval_GetResourceId :: EvalEff
 eval_GetResourceId eval (GetResourceId resource_id next) = do
 
-  epack <- rd $ getResourcePack' resource_id
-  case epack of
+  e_pack <- rd $ getResourcePack' resource_id
+  case e_pack of
     Left err   -> pure next
     Right pack -> do
       modify (_{ currentResource = Just pack })
@@ -77,22 +76,18 @@ eval_GetResourceSid :: EvalEff
 eval_GetResourceSid eval (GetResourceSid resource_sid next) = do
 
   case fromString resource_sid of
-       Nothing          -> pure next
+       Nothing          -> eval (AddError "eval_GetResourceSid" "Bad string id" next)
        Just resource_id -> eval (GetResourceId resource_id next)
 
 
 
 eval_GetResourcesLeurons :: EvalEff
-eval_GetResourcesLeurons eval (GetResourcesLeurons resource_sid next) = do
-
-  pure next
+eval_GetResourcesLeurons eval (GetResourcesLeurons resource_sid next) = pure next
 
 
 
 eval_GetResourcesSiftLeurons :: EvalEff
-eval_GetResourcesSiftLeurons eval (GetResourcesSiftLeurons resource_sid next) = do
-
-  pure next
+eval_GetResourcesSiftLeurons eval (GetResourcesSiftLeurons resource_sid next) = pure next
 
 
 
@@ -101,8 +96,8 @@ eval_GetResourceLeuronRandom eval (GetResourceLeuronRandom resource_id next) = d
 
   e_packs <- rd $ getLeuronPacks_ByResourceId [Limit 1, SortOrder SortOrderBy_Rnd] resource_id
   case e_packs of
-    Left err   -> pure next
+    Left err                          -> eval (AddErrorApi "eval_GetResourceLeuronRandom::getLeuronPacks_ByResourceId" err next)
     Right (LeuronPackResponses packs) -> do
       case head packs.leuronPackResponses of
-        Nothing   -> pure next
+        Nothing   -> eval (AddError "eval_GetResourceLeuronRandom" "Empty leuron response" next)
         Just pack -> modify (_{ currentLeuron = Just pack }) $> next
