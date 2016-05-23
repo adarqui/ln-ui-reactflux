@@ -17,7 +17,8 @@ import LN.Component.Types            (EvalEff)
 import LN.Helpers.Map                (idmapFrom)
 import LN.Input.Types                (Input(..))
 import LN.State.PageInfo             (runPageInfo)
-import LN.T                          (LeuronPackResponses(..), LeuronPackResponse(..), Param(..))
+import LN.T                          ( LeuronPackResponses(..), LeuronPackResponse(..)
+                                     , Param(..), SortOrderBy(..))
 
 
 
