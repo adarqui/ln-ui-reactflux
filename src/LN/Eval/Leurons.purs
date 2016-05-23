@@ -7,15 +7,14 @@ module LN.Eval.Leurons (
 
 
 import Halogen                       (gets, modify)
-import Data.Array                    (zip)
 import Data.Either                   (Either(..))
 import Data.Int                      (fromString)
-import Data.Map                      as M
 import Data.Maybe                    (Maybe(..))
 import Prelude                       (bind, pure, map, ($))
 
 import LN.Api                        (rd, getLeuronsCount', getLeuronPack', getLeuronPacks)
 import LN.Component.Types            (EvalEff)
+import LN.Helpers.Map                (idmapFrom)
 import LN.Input.Types                (Input(..))
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          (LeuronPackResponses(..), LeuronPackResponse(..))
@@ -27,25 +26,23 @@ eval_GetLeurons eval (GetLeurons next) = do
 
   page_info <- gets _.leuronsPageInfo
 
-  ecount <- rd $ getLeuronsCount'
-  case ecount of
-    Left err -> pure next
+  e_count <- rd $ getLeuronsCount'
+  case e_count of
+    Left err     -> eval (AddErrorApi "eval_GetLeurons::getLeuronsCount'" err next)
     Right counts -> do
 
       let new_page_info = runPageInfo counts page_info
 
       modify (_ { leuronsPageInfo = new_page_info.pageInfo })
 
-      eleuron_packs <- rd $ getLeuronPacks new_page_info.params
-      case eleuron_packs of
-           Left err -> pure next
+      e_leuron_packs <- rd $ getLeuronPacks new_page_info.params
+      case e_leuron_packs of
+           Left err                                 -> eval (AddErrorApi "eval_GetLeurons::getLeuronPacks" err next)
            Right (LeuronPackResponses leuron_packs) -> do
 
              let
-              users = map (\(LeuronPackResponse pack) -> pack.user) leuron_packs.leuronPackResponses
-              leurons_map =
-                M.fromFoldable
-                  $ zip (map (\(LeuronPackResponse p) -> p.leuronId) leuron_packs.leuronPackResponses) leuron_packs.leuronPackResponses
+              users       = map (\(LeuronPackResponse pack) -> pack.user) leuron_packs.leuronPackResponses
+              leurons_map = idmapFrom (\(LeuronPackResponse p) -> p.leuronId) leuron_packs.leuronPackResponses
 
 
              eval (GetUsers_MergeMap_ByUser users next)
