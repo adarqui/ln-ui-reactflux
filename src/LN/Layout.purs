@@ -57,7 +57,7 @@ header muser n_errors =
   H.div [ P.class_ B.containerFluid ] [
   H.nav [ P.classes [ B.navbarNav, B.navbarStaticTop] ]
     [ container_
-      [ H.a [ P.classes [ B.navbarBrand ], linkToHref Home ]-- P.href (link Home) ]
+      [ H.a [ P.classes [ B.navbarBrand ], linkToHref Home ]
         [ H.text "Home" ]
       , H.ul [ P.classes [ B.navbarNav, B.nav, B.navTabs] ]
         [
@@ -71,7 +71,6 @@ header muser n_errors =
                  H.ul [ P.classes [ B.nav, B.navbarNav, B.navTabs, B.navbarRight ] ]
                      [
                         H.li_ [ linkTo Login "Log in" ]
---                     , H.li_ [ linkTo Registration "Sign up" ]
                      ]
              Just u ->
                  H.ul [ P.classes [ B.nav, B.navbarNav, B.navTabs, B.navbarRight ] ]
@@ -85,7 +84,7 @@ header muser n_errors =
             Nothing -> linkTo NotFound "Me"
             Just user -> linkTo (Users (Show (user ^. _UserPackResponse .. user_ ^. _UserResponse .. nick_)) []) "Me"
   errors =
-    -- TODO FIXME: use proper pull number
+    -- TODO FIXME: use proper pill number
     linkTo Errors $ "Errors [" <> show n_errors <> "]"
 
 
