@@ -7,7 +7,8 @@ import Data.Foreign            (ForeignError)
 import Purescript.Api.Helpers  (ApiError)
 
 import LN.Input.CreateThread   (InputCreateThread)
-import LN.Input.Like (InputLike)
+import LN.Input.Like           (InputLike)
+import LN.Input.Star           (InputStar)
 import LN.Input.OrderBy        (InputOrderBy)
 import LN.Input.Profile        (InputProfile)
 import LN.Input.Resource       (InputResource)
@@ -81,6 +82,8 @@ data Input a
   | CompProfile InputProfile a
 
   | CompLike InputLike a
+
+  | CompStar InputStar a
 
   | CompResource InputResource a
 
