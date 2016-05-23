@@ -11,7 +11,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Prelude                         (show, map, ($))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Link                  (linkToP)
+import LN.Router.Link                  (linkToP_Classes)
 import LN.Router.Types                 (Routes, links)
 
 
@@ -22,15 +22,13 @@ renderView_Portal =
     H.div [P.class_ B.pageHeader] [
       H.h2_ [ H.text "Portal" ]
     ],
-    H.ul [P.class_ B.listUnstyled] $ map renderPortalRow links
+    H.div [P.class_ B.listGroup] $ map renderPortalRow links
   ]
 
 
 
 renderPortalRow :: Routes -> ComponentHTML Input
 renderPortalRow route =
-  H.div [P.class_ B.row] [
-    H.div [P.class_ B.colSm12] [
-      linkToP [] route (show route)
-    ]
+  H.div [P.class_ B.colSm12] [
+    linkToP_Classes [B.listGroupItem] [] route (show route)
   ]
