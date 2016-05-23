@@ -7,10 +7,12 @@ module LN.Eval.Errors (
 
 
 import Control.Monad.Aff.Console       (log)
+import Data.Array                      (deleteAt)
 import Data.Either                     (Either(..))
 import Data.Functor                    (($>))
 import Data.Maybe                      (Maybe(..))
-import Halogen                         (modify, liftAff')
+import Data.Tuple                      (Tuple(..))
+import Halogen                         (gets, modify, liftAff')
 import Optic.Core                      ((^.), (..))
 import Prelude                         (bind, pure, show, ($), (<>))
 
@@ -22,6 +24,7 @@ import LN.Input.Types                  (Input(..))
 eval_AddError :: EvalEff
 eval_AddError eval (AddError author err next) = do
 
+  modify (\st -> st{ errors = st.errors <> [Tuple author err] })
   pure next
 
 
@@ -29,7 +32,11 @@ eval_AddError eval (AddError author err next) = do
 eval_DelError :: EvalEff
 eval_DelError eval (DelError index next) = do
 
-  pure next
+  errors <- gets _.errors
+
+  case deleteAt index errors of
+       Nothing -> pure next
+       Just arr -> modify (_{ errors = arr }) $> next
 
 
 
