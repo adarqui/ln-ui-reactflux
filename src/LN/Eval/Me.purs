@@ -4,13 +4,11 @@ module LN.Eval.Me (
 
 
 
-import Control.Monad.Aff.Console       (log)
 import Data.Either                     (Either(..))
-import Data.Functor                    (($>))
 import Data.Maybe                      (Maybe(..))
-import Halogen                         (modify, liftAff')
+import Halogen                         (modify)
 import Optic.Core                      ((^.), (..))
-import Prelude                         (bind, pure, show, ($), (<>))
+import Prelude                         (bind, pure, ($))
 
 import LN.Api                          (rd, getMePack')
 import LN.Component.Types              (EvalEff)
@@ -26,7 +24,7 @@ eval_GetMe eval (GetMe next) = do
 
   case e_me of
 
-    Left err -> eval (AddError "eval_GetMe" (show err) next) $> next
+    Left err -> eval (AddErrorApi "eval_GetMe::getMePack'" err next)
 
     Right me -> do
       modify (_{ me = Just me, meId = (me ^. _UserPackResponse .. userId_) })
