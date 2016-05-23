@@ -6,7 +6,7 @@ module LN.Eval.Goto (
 
 import Daimyo.Data.Array      (elemBy)
 import Data.Functor           (($>))
-import Data.Maybe             (Maybe(..), maybe)
+import Data.Maybe             (maybe)
 import Data.Int               (fromString)
 import Data.Tuple             (Tuple(..))
 import Halogen                (get, gets, modify, liftAff')
