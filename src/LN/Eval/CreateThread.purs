@@ -4,14 +4,13 @@ module LN.Eval.CreateThread (
 
 
 
-import Control.Monad.Aff.Console   (log)
 import Data.Either                 (Either(..))
 import Data.Functor                (($>))
 import Data.Map                    as M
-import Data.Maybe                  (Maybe(..), maybe)
-import Halogen                     (get, modify, liftAff')
+import Data.Maybe                  (Maybe(..))
+import Halogen                     (get, modify)
 import Optic.Core                  ((^.), (..))
-import Prelude                     (bind, pure, show, const, ($), (<>))
+import Prelude                     (bind, pure, const, ($))
 
 import LN.Api                      (rd, getThreadPack', postThread_ByBoardId')
 import LN.Component.Types          (EvalEff)
@@ -30,42 +29,47 @@ eval_CreateThread :: EvalEff
 
 
 
-eval_CreateThread eval (CompCreateThread InputCreateThread_Nop next) = do
-  pure next
+eval_CreateThread eval (CompCreateThread InputCreateThread_Nop next) = pure next
 
 
 
 eval_CreateThread eval (CompCreateThread InputCreateThread_Create next) = do
 
   st <- get
-  let board_id = maybe 0 (\board -> board ^. _BoardPackResponse .. boardId_) st.currentBoard
-  let mcomp = st.compCreateThread
-  case mcomp of
-    Nothing                  -> pure next
-    Just comp -> do
-      let thread_request = mkThreadRequest comp.name Nothing false false Nothing
-      ethread <- rd $ postThread_ByBoardId' board_id thread_request
-      case ethread of
-        Left err     -> liftAff' $ log ("CreateThread: postThread_ByBoardId': Error: " <> show err) $> next
-        Right thread -> do
+  case st.currentBoard, st.compCreateThread of
+       Nothing, _            -> eval (AddError "eval_CreateThread" "Current board doesn't exist" next)
+       _, Nothing            -> eval (AddError "eval_CreateThread" "Thread state doesn't exist" next)
+       Just board, Just comp -> go st board comp
 
-          -- Now we need to turn this into a thread pack
-          ethread_pack <- rd $ getThreadPack' (thread ^. _ThreadResponse .. id_)
-          case ethread_pack of
-              Left err -> liftAff' $ log ("CreateThread: getThreadPack': Error: " <> show err) $> next
-              Right thread_pack -> do
+  where
+  go st board comp = do
 
-                let
-                  thread_id = thread_pack ^. _ThreadPackResponse .. threadId_
+    let
+      thread_request = mkThreadRequest comp.name Nothing false false Nothing
+      board_id       = board ^. _BoardPackResponse .. boardId_
 
-                modify (\st' -> st'{ threads = M.update (const $ Just thread_pack) thread_id st.threads })
-                eval_CreateThread eval (CompCreateThread (InputCreateThread_SetName Nothing) next)
-                pure next
+    e_thread <- rd $ postThread_ByBoardId' board_id thread_request
+    case e_thread of
+      Left err     -> eval (AddErrorApi "eval_CreateThread::postThread_ByBoardId'" err next)
+      Right thread -> do
+
+        -- Now we need to turn this into a thread pack
+        e_thread_pack <- rd $ getThreadPack' (thread ^. _ThreadResponse .. id_)
+        case e_thread_pack of
+            Left err          -> eval (AddErrorApi "eval_CreateThread::getThreadPack'" err next)
+            Right thread_pack -> do
+
+              let
+                thread_id = thread_pack ^. _ThreadPackResponse .. threadId_
+
+              modify (\st' -> st'{ threads = M.update (const $ Just thread_pack) thread_id st.threads })
+              eval_CreateThread eval (CompCreateThread (InputCreateThread_SetName Nothing) next)
+              pure next
 
 
 
-eval_CreateThread eval (CompCreateThread (InputCreateThread_SetName mname) next) = do
-  case mname of
+eval_CreateThread eval (CompCreateThread (InputCreateThread_SetName m_name) next) = do
+  case m_name of
        Nothing -> modify (_ { compCreateThread = Nothing }) $> next
        (Just name) -> do
          modify (_ { compCreateThread = Just { name: name } })
