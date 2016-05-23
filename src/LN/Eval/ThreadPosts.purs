@@ -21,14 +21,12 @@ import LN.T
 
 
 eval_GetThreadPosts :: EvalEff
-eval_GetThreadPosts eval (GetThreadPosts next) = do
-  pure next
+eval_GetThreadPosts eval (GetThreadPosts next) = pure next
 
 
 
 eval_GetThreadPost :: EvalEff
-eval_GetThreadPost eval (GetThreadPost thread_post_id next) = do
-  pure next
+eval_GetThreadPost eval (GetThreadPost thread_post_id next) = pure next
 
 
 
@@ -37,18 +35,18 @@ eval_GetThreadPostsForThread eval (GetThreadPostsForThread thread_id next) = do
 
   page_info <- gets _.threadPostsPageInfo
 
-  ecount <- rd $ getThreadPostsCount_ByThreadId' thread_id
-  case ecount of
-    Left err -> pure next
+  e_count <- rd $ getThreadPostsCount_ByThreadId' thread_id
+  case e_count of
+    Left err     -> eval (AddErrorApi "eval_GetThreadPostsForThread::getThreadPostsCount_ByThreadId'" err next)
     Right counts -> do
 
       let new_page_info = runPageInfo counts page_info
 
       modify (_ { threadPostsPageInfo = new_page_info.pageInfo })
 
-      eposts <- rd $ getThreadPostPacks_ByThreadId new_page_info.params thread_id
-      case eposts of
-        Left err -> pure next
+      e_posts <- rd $ getThreadPostPacks_ByThreadId new_page_info.params thread_id
+      case e_posts of
+        Left err -> eval (AddErrorApi "eval_GetThreadPostsForThread::getThreadPostPacks_ByThreadId" err next)
         Right (ThreadPostPackResponses posts) -> do
 
           let
@@ -57,7 +55,6 @@ eval_GetThreadPostsForThread eval (GetThreadPostsForThread thread_id next) = do
 
           eval (GetUsers_MergeMap_ByUserId users_ids next)
 
---          modify (\st -> st{ threadPosts = M.union st.threadPosts (posts.threadPostPackResponses })
           modify (\st -> st{
                  threadPosts =
                    mergeMapArray
