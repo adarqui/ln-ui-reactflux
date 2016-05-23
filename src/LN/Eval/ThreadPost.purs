@@ -7,18 +7,18 @@ module LN.Eval.ThreadPost (
 import Data.Either          (Either(..))
 import Data.Functor         (($>))
 import Data.Map             as M
-import Data.Maybe           (Maybe(..), maybe)
+import Data.Maybe           (Maybe(..))
 import Halogen              (get, modify)
-import Optic.Core           ((^.), (..))
 import Prelude              (bind, pure, ($))
 
 import LN.Api               (rd, postThreadPost_ByThreadId', getThreadPostPack')
 import LN.Component.Types   (EvalEff)
 import LN.Input.ThreadPost  (InputThreadPost(..))
 import LN.Input.Types       (Input(..))
-import LN.T                 (_ThreadPackResponse, ThreadPostRequest (..)
-                            , ThreadPostResponse (..), _ThreadResponse, thread_, id_
-                            , PostData (..))
+import LN.T                 ( ThreadPackResponse(..)
+                            , ThreadPostRequest(..)
+                            , ThreadPostResponse(..)
+                            , PostData(..))
 
 
 
@@ -33,21 +33,21 @@ eval_ThreadPost eval (CompThreadPost InputThreadPost_Nop next) = do
 
 eval_ThreadPost eval (CompThreadPost InputThreadPost_Post next) = do
   st <- get
-  let thread_id = maybe 0 (\pack -> pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse .. id_) st.currentThread
-  let mthread_post_request = st.currentThreadPost
+  case st.currentThread, st.currentThreadPost of
+       Nothing, _                    -> eval (AddError "eval_ThreadPost(Post)" "Thread doesn't exist" next)
+       _, Nothing                    -> eval (AddError "eval_ThreadPost(Post)" "currentThreadPost doesn't exist" next)
+       Just thread, Just thread_post -> go st thread thread_post
 
-  case mthread_post_request of
-    Nothing                  -> pure next
-    Just thread_post_request -> do
-
-      epost <- rd $ postThreadPost_ByThreadId' thread_id thread_post_request
-      case epost of
-        Left err   -> pure next
+  where
+  go st (ThreadPackResponse thread) thread_post_request = do
+      e_post <- rd $ postThreadPost_ByThreadId' thread.threadId thread_post_request
+      case e_post of
+        Left err                        -> eval (AddErrorApi "eval_ThreadPost(Post)::postThreadPost_ByThreadId'" err next)
         Right (ThreadPostResponse post) -> do
 
-          epack <- rd $ getThreadPostPack' post.id
-          case epack of
-            Left err   -> pure next
+          e_pack <- rd $ getThreadPostPack' post.id
+          case e_pack of
+            Left err   -> eval (AddErrorApi "eval_ThreadPost(Post)::getThreadPostPack'" err next)
             Right pack -> do
               modify (\st' -> st'{ threadPosts = M.insert post.id pack st.threadPosts })
               pure next
@@ -55,9 +55,9 @@ eval_ThreadPost eval (CompThreadPost InputThreadPost_Post next) = do
 
 
 
-eval_ThreadPost eval (CompThreadPost (InputThreadPost_SetBody mbody) next) = do
-  case mbody of
-       Nothing -> modify (_ { currentThreadPost = Nothing }) $> next
+eval_ThreadPost eval (CompThreadPost (InputThreadPost_SetBody m_body) next) = do
+  case m_body of
+       Nothing     -> modify (_ { currentThreadPost = Nothing }) $> next
        (Just body) -> do
          -- TODO FIXME: tags
          modify (_ { currentThreadPost = Just $ ThreadPostRequest { title: Nothing, body: PostDataBBCode body, tags: [], privateTags: [] } })
