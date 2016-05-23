@@ -27,17 +27,16 @@ eval_Profile :: EvalEff
 
 
 
-eval_Profile eval (CompProfile InputProfile_Nop next) = do
-  pure next
+eval_Profile eval (CompProfile InputProfile_Nop next) = pure next
 
 
 
 eval_Profile eval (CompProfile InputProfile_Post next) = do
 
-  mme <- gets _.me
+  m_me <- gets _.me
 
-  case mme of
-       Nothing -> pure next
+  case m_me of
+       Nothing -> eval (AddError "eval_Profile" "st.me doesn't exist" next)
        Just me -> do
          let
            profile_id  = me ^. _UserPackResponse .. profile_ ^. _ProfileResponse .. id_
@@ -80,9 +79,9 @@ eval_Profile eval (CompProfile (InputProfile_Signature msignature) next) = do
 
 
 eval_Profile_Setter accessor value next = do
-  mme <- gets _.me
+  m_me <- gets _.me
 
-  case mme of
+  case m_me of
        Nothing -> pure next
        Just me -> do
           let
