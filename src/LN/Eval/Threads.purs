@@ -5,13 +5,12 @@ module LN.Eval.Threads (
 
 
 import Halogen                         (gets, modify)
-import Data.Array                      (catMaybes, zip)
+import Data.Array                      (catMaybes)
 import Data.Either                     (Either(..))
-import Data.Map                        as M
-import Optic.Core                      ((^.), (..))
 import Prelude                         (bind, pure, map, ($), (<>))
 
 import LN.Component.Types              (EvalEff)
+import LN.Helpers.Map                  (idmapFrom)
 import LN.Input.Types                  (Input(..))
 import LN.State.PageInfo               (runPageInfo)
 import LN.Api                          (getThreadPacks_ByBoardId, rd, getThreadsCount_ByBoardId')
@@ -20,18 +19,7 @@ import LN.T
 
 
 eval_GetThreads :: EvalEff
-eval_GetThreads eval (GetThreads next) = do
-
-  pure next
-
-{- TODO FIXME: do we use this?
-  ethreadPacks <- rd $ getThreadPacks'
-  case ethreadPacks of
-    Left err -> pure next
-    Right (ThreadPackResponses threadPacks) -> do
-      modify (_{ threads = threadPacks.threadPackResponses })
-      pure next
--}
+eval_GetThreads eval (GetThreads next) = pure next
 
 
 
@@ -40,17 +28,17 @@ eval_GetThreadsForBoard eval (GetThreadsForBoard board_id next) = do
 
   page_info <- gets _.threadsPageInfo
 
-  ecount <- rd $ getThreadsCount_ByBoardId' board_id
-  case ecount of
-    Left err -> pure next
+  e_count <- rd $ getThreadsCount_ByBoardId' board_id
+  case e_count of
+    Left err     -> eval (AddErrorApi "eval_GetThreadsForBoard::getThreadsCount_ByBoardId'" err next)
     Right counts -> do
 
       let new_page_info = runPageInfo counts page_info
 
       modify (_ { threadsPageInfo = new_page_info.pageInfo })
 
-      ethread_packs <- rd $ getThreadPacks_ByBoardId new_page_info.params board_id
-      case ethread_packs of
+      e_thread_packs <- rd $ getThreadPacks_ByBoardId new_page_info.params board_id
+      case e_thread_packs of
         Left err -> pure next
         Right (ThreadPackResponses thread_packs) -> do
 
@@ -60,8 +48,7 @@ eval_GetThreadsForBoard eval (GetThreadsForBoard board_id next) = do
               <>
               (map (\(ThreadPackResponse pack) -> pack.user) thread_packs.threadPackResponses)
 
-            threads = thread_packs.threadPackResponses
-            threads_map = M.fromFoldable $ zip (map (\(ThreadPackResponse pack) -> pack.threadId) threads) threads
+            threads_map = idmapFrom (\(ThreadPackResponse p) -> p.threadId) thread_packs.threadPackResponses
 
           eval (GetUsers_MergeMap_ByUser users next)
 
