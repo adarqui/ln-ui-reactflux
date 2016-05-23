@@ -8,6 +8,7 @@ module LN.Eval.Leurons (
 
 import Data.Array                    (head)
 import Data.Either                   (Either(..))
+import Data.Functor                  (($>))
 import Data.Int                      (fromString)
 import Data.Maybe                    (Maybe(..))
 import Halogen                       (gets, modify)
@@ -81,8 +82,8 @@ eval_GetLeuronRandom eval (GetLeuronRandom next) = do
 
   e_packs <- rd $ getLeuronPacks [Limit 1, SortOrder SortOrderBy_Rnd]
   case e_packs of
-    Left err                         -> eval (AddErrorApi "eval_GetLeuronRandom::getLeuronPacks" err next)
-    Right (LeuronPackResponse packs) -> do
+    Left err                          -> eval (AddErrorApi "eval_GetLeuronRandom::getLeuronPacks" err next)
+    Right (LeuronPackResponses packs) -> do
       case head packs.leuronPackResponses of
         Nothing   -> eval (AddError "eval_GetLeuronRandom" "Empty leuron response" next)
         Just pack -> modify (_{ currentLeuron = Just pack }) $> next
