@@ -17,7 +17,7 @@ import LN.Component.Types            (EvalEff)
 import LN.Helpers.Map                (idmapFrom)
 import LN.Input.Types                (Input(..))
 import LN.State.PageInfo             (runPageInfo)
-import LN.T                          (LeuronPackResponses(..), LeuronPackResponse(..))
+import LN.T                          (LeuronPackResponses(..), LeuronPackResponse(..), Param(..))
 
 
 
@@ -71,3 +71,16 @@ eval_GetLeuronSid eval (GetLeuronSid leuron_sid next) = do
   case fromString leuron_sid of
        Nothing          -> pure next
        Just leuron_id   -> eval (GetLeuronId leuron_id next)
+
+
+
+eval_GetLeuronRandom :: EvalEff
+eval_GetLeuronRandom eval (GetLeuronRandom next) = do
+
+  e_packs <- rd $ getLeuronPacks [Limit 1, SortOrder SortOrderBy_Rnd]
+  case e_packs of
+    Left err                         -> eval (AddErrorApi "eval_GetLeuronRandom::getLeuronPacks" err next)
+    Right (LeuronPackResponse packs) -> do
+      case head packs.leuronPackResponses of
+        Nothing   -> eval (AddError "eval_GetLeuronRandom" "Empty leuron response" next)
+        Just pack -> modify (_{ currentLeuron = Just pack }) $> next

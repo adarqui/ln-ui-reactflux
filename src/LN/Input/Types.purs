@@ -70,6 +70,7 @@ data Input a
   | GetLeurons a
   | GetLeuronId Int a
   | GetLeuronSid String a
+  | GetLeuronRandom a
 
   | ConnectSocket a
 
