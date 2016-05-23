@@ -9,6 +9,7 @@ import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.HTML.Events.Indexed     as E
+import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (($))
 
@@ -53,6 +54,7 @@ randomLeuronButton :: LeuronPackResponse -> ComponentHTML Input
 randomLeuronButton pack =
   H.div_ [
     H.button [
+      P.classes [B.btnInfo, B.btnLg],
       E.onClick $ E.input_ $ GetResourceLeuronRandom resource.resourceId
     ] [H.text "next"]
   ]

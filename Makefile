@@ -4,7 +4,7 @@ all:
 all-upload: all upload
 
 upload:
-	rsync -av -e ssh ./static/dist/app.js adarq:/root/projects/leuronet/ln-yesod/static/pure/ln.js
+	rsync -av -e ssh ./static/dist/app.js adarq:/root/projects/leuronet/ln-ui/static/dist/app.js
 #	scp static/dist/app.js adarq:/root/projects/leuronet/ln-yesod/static/pure/ln.js
 
 id:
