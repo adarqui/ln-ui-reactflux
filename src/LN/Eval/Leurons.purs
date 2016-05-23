@@ -56,8 +56,8 @@ eval_GetLeurons eval (GetLeurons next) = do
 eval_GetLeuronId :: EvalEff
 eval_GetLeuronId eval (GetLeuronId leuron_id next) = do
 
-  epack <- rd $ getLeuronPack' leuron_id
-  case epack of
+  e_pack <- rd $ getLeuronPack' leuron_id
+  case e_pack of
     Left err   -> pure next
     Right pack -> do
       modify (_{ currentLeuron = Just pack })
@@ -70,4 +70,4 @@ eval_GetLeuronSid eval (GetLeuronSid leuron_sid next) = do
 
   case fromString leuron_sid of
        Nothing          -> pure next
-       Just leuron_id -> eval (GetLeuronId leuron_id next)
+       Just leuron_id   -> eval (GetLeuronId leuron_id next)
