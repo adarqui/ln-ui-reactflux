@@ -4,32 +4,29 @@ module LN.Eval.Teams (
 
 
 
-import Data.Array                      (zip)
 import Data.Either                     (Either(..))
-import Data.Map                        as M
 import Halogen                         (modify)
-import Optic.Core                      ((^.), (..))
-import Prelude                         (bind, pure, map, ($))
+import Prelude                         (bind, pure, ($))
 
 import LN.Api                          (rd, getTeamPacks')
 import LN.Component.Types              (EvalEff)
+import LN.Helpers.Map                  (idmapFrom)
 import LN.Input.Types                  (Input(..))
-import LN.T                            (TeamPackResponses(..), TeamPackResponse(..)
-                                       , _TeamResponse, id_)
+import LN.T                            (TeamPackResponses(..), TeamPackResponse(..))
 
 
 
 eval_GetTeams :: EvalEff
 eval_GetTeams eval (GetTeams next) = do
 
-  eteams <- rd $ getTeamPacks'
-  case eteams of
-    Left err -> pure next
+  e_teams <- rd $ getTeamPacks'
+  case e_teams of
+    Left err                             -> eval (AddErrorApi "eval_GetTeams::getTeamPacks'" err next)
     Right (TeamPackResponses team_packs) -> do
 
       let
         teams     = team_packs.teamPackResponses
-        teams_map = M.fromFoldable $ zip (map (\(TeamPackResponse pack) -> pack.team ^. _TeamResponse .. id_) teams) teams
+        teams_map = idmapFrom (\(TeamPackResponse p) -> p.teamId) team_packs.teamPackResponses
 
       modify (_{ teams = teams_map })
       pure next
