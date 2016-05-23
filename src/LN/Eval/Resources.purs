@@ -9,12 +9,12 @@ module LN.Eval.Resources (
 
 
 
-import Halogen                       (gets, modify)
 import Data.Array                    (head)
 import Data.Either                   (Either(..))
 import Data.Functor                  (($>))
 import Data.Int                      (fromString)
 import Data.Maybe                    (Maybe(..))
+import Halogen                       (gets, modify)
 import Prelude                       (bind, pure, map, ($))
 
 import LN.Api                        ( rd
