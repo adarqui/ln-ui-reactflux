@@ -11,13 +11,15 @@ import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (map)
+import Prelude                         (map, show, ($))
 
 import LN.Router.Link                  (linkToHref, linkTo)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.View.Module.Breadcrumbs      (renderBreadcrumbs)
 import LN.T
+
+import Data.Date as Date
 
 
 

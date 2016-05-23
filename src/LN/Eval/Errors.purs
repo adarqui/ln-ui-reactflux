@@ -1,5 +1,7 @@
-module LN.Eval.Me (
-  eval_GetMe
+module LN.Eval.Errors (
+  eval_AddError,
+  eval_DelError,
+  eval_ClearErrors
 ) where
 
 
@@ -12,22 +14,24 @@ import Halogen                         (modify, liftAff')
 import Optic.Core                      ((^.), (..))
 import Prelude                         (bind, pure, show, ($), (<>))
 
-import LN.Api                          (rd, getMePack')
 import LN.Component.Types              (EvalEff)
 import LN.Input.Types                  (Input(..))
-import LN.T                            (_UserPackResponse, userId_)
 
 
 
-eval_GetMe :: EvalEff
-eval_GetMe eval (GetMe next) = do
+eval_AddError :: EvalEff
+eval_AddError eval (AddError author err next) = do
 
-  e_me <- rd $ getMePack'
+  pure next
 
-  case e_me of
 
-    Left err -> eval (AddError "eval_GetMe" (show err) next) $> next
 
-    Right me -> do
-      modify (_{ me = Just me, meId = (me ^. _UserPackResponse .. userId_) })
-      pure next
+eval_DelError :: EvalEff
+eval_DelError eval (DelError index next) = do
+
+  pure next
+
+
+
+eval_ClearErrors :: EvalEff
+eval_ClearErrors eval (ClearErrors next) = modify (_{ errors = [] }) $> next

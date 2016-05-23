@@ -28,6 +28,7 @@ module LN.State.Lens (
 
 import Data.Map                  as M
 import Data.Maybe                (Maybe)
+import Data.Tuple                (Tuple)
 import Optic.Core                (LensP, lens)
 
 import LN.Component.CreateThread (Comp_CreateThread_State)
@@ -46,7 +47,7 @@ stMe =
 
 
 
-stErrors :: LensP State (Maybe (Array String))
+stErrors :: LensP State (Array (Tuple String String))
 stErrors = lens _.errors _ { errors = _ }
 
 

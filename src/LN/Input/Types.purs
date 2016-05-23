@@ -18,6 +18,10 @@ import LN.T
 data Input a
   = Goto Routes a
 
+  | AddError String String a
+  | DelError Int a
+  | ClearErrors a
+
   | GetUser String a
   | GetMe a
   | GetUsers a

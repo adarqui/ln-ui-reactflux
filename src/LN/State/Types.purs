@@ -8,6 +8,7 @@ module LN.State.Types (
 import Control.Monad.Aff.AVar       (AVar())
 import Data.Map                     as M
 import Data.Maybe                   (Maybe(..))
+import Data.Tuple                   (Tuple)
 import Prelude                      (Unit)
 
 import LN.Router.Types              (Routes(..))
@@ -29,7 +30,7 @@ type State =
   { currentPage           :: Routes
   , me                    :: Maybe UserPackResponse
   , meId                  :: Int
-  , errors                :: Maybe (Array String)
+  , errors                :: Array (Tuple String String)
   , users                 :: M.Map Int UserSanitizedPackResponse
   , usersMap              :: M.Map Int UserSanitizedPackResponse
   , organizations         :: M.Map Int OrganizationPackResponse
@@ -70,7 +71,7 @@ initialState ch =
   { currentPage:           Home
   , me:                    Nothing
   , meId:                  0
-  , errors:                Nothing
+  , errors:                []
   , users:                 M.empty
   , usersMap:              M.empty
   , organizations:         M.empty

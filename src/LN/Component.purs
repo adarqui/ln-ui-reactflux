@@ -10,6 +10,7 @@ import LN.Input.Types              (Input(..))
 import LN.State.Types              (State)
 import LN.View
 import LN.Eval.Goto
+import LN.Eval.Errors
 import LN.Eval.Me
 import LN.Eval.Users
 import LN.Eval.Organizations
@@ -44,6 +45,10 @@ ui = component render eval
   eval :: Eval Input State Input (LNEff eff)
 
   eval z@(Goto _ _)                                   = eval_Goto eval z
+
+  eval z@(AddError _ _ _)                             = eval_AddError eval z
+  eval z@(DelError _ _)                               = eval_DelError eval z
+  eval z@(ClearErrors _)                              = eval_ClearErrors eval z
 
   eval z@(GetMe _)                                    = eval_GetMe eval z
 
