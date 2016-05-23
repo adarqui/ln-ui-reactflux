@@ -12,7 +12,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Link                  (linkToP)
+import LN.Router.Link                  (linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.T
@@ -37,9 +37,9 @@ renderView_Resources_Show' pack st =
       H.p [P.class_ B.textCenter] [H.text (resource.description)]
     ],
     H.div [P.class_ B.container] [
-      H.ul_ [
-        H.li_ [linkToP [] (ResourcesLeurons resource.id Index []) "leurons"],
-        H.li_ [linkToP [] (ResourcesSiftLeurons resource.id []) "sift"]
+      H.div [P.class_ B.listGroup] [
+        linkToP_Classes [B.listGroupItem] [] (ResourcesLeurons resource.id Index []) "leurons",
+        linkToP_Classes [B.listGroupItem] [] (ResourcesSiftLeurons resource.id []) "sift"
       ]
     ]
   ]

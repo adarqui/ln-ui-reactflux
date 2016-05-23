@@ -29,6 +29,4 @@ renderView_Portal =
 
 renderPortalRow :: Routes -> ComponentHTML Input
 renderPortalRow route =
-  H.div [P.class_ B.colSm12] [
-    linkToP_Classes [B.listGroupItem] [] route (show route)
-  ]
+  linkToP_Classes [B.listGroupItem] [] route (show route)
