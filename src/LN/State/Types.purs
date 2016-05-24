@@ -7,6 +7,7 @@ module LN.State.Types (
 
 import Control.Monad.Aff.AVar       (AVar())
 import Data.Map                     as M
+import Data.StrMap                  as SM
 import Data.Maybe                   (Maybe(..))
 import Data.Tuple                   (Tuple)
 import Prelude                      (Unit)
@@ -14,6 +15,7 @@ import Prelude                      (Unit)
 import LN.Router.Types              (Routes(..))
 import LN.Component.CreateThread    (Comp_CreateThread_State)
 import LN.Input.Types               (Input)
+import LN.State.Loading             (LoadingMap, defaultLoadingMap)
 import LN.State.PageInfo            (PageInfo
                                     , defaultPageInfo
                                     , defaultPageInfo_Organizations
@@ -52,7 +54,6 @@ type State =
   , currentThreadPost     :: Maybe ThreadPostRequest -- TODO FIXME: rename to something more appropriate
   , currentResource       :: Maybe ResourcePackResponse
   , currentLeuron         :: Maybe LeuronPackResponse
-  , currentLeuronL        :: Boolean
 --  , currentWorkout      :: Maybe WorkoutResponse
   , currentPageInfo       :: PageInfo
   , organizationsPageInfo :: PageInfo
@@ -63,6 +64,7 @@ type State =
   , leuronsPageInfo       :: PageInfo
   , compCreateThread      :: Maybe Comp_CreateThread_State
   , driverCh              :: AVar (Input Unit)
+  , loading               :: LoadingMap
   }
 
 
@@ -93,7 +95,6 @@ initialState ch =
   , currentThreadPost:     Nothing
   , currentResource:       Nothing
   , currentLeuron:         Nothing
-  , currentLeuronL:        false
 --  , currentWorkout:      Nothing
   , currentPageInfo:       defaultPageInfo
   , organizationsPageInfo: defaultPageInfo_Organizations
@@ -105,4 +106,5 @@ initialState ch =
   , leuronsPageInfo:       defaultPageInfo_Leurons
   , compCreateThread:      Nothing
   , driverCh:              ch
+  , loading:               defaultLoadingMap
   }

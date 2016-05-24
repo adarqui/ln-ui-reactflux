@@ -25,6 +25,7 @@ import LN.Api                        ( rd
 import LN.Component.Types            (EvalEff)
 import LN.Helpers.Map                (idmapFrom)
 import LN.Input.Types                (Input(..))
+import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron)
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          ( Param(..), SortOrderBy(..)
                                      , ResourcePackResponses(..), ResourcePackResponse(..)
@@ -100,11 +101,12 @@ eval_GetResourcesSiftLeurons eval (GetResourcesSiftLeurons resource_sid next) = 
 eval_GetResourceLeuronLinear :: EvalEff
 eval_GetResourceLeuronLinear eval (GetResourceLeuronLinear resource_id offset next) = do
 
-  modify (_{ currentLeuron = Nothing, currentLeuronL = true })
+  modify (_{ currentLeuron = Nothing })
+  modify (\st->st{loading = setLoading l_currentLeuron st.loading})
 
   e_packs <- rd $ getLeuronPacks_ByResourceId [Limit 1, Offset offset, SortOrder SortOrderBy_Asc] resource_id
 
-  modify (_{ currentLeuronL = false })
+  modify (\st->st{ loading = clearLoading l_currentLeuron st.loading})
 
   case e_packs of
     Left err                          -> eval (AddErrorApi "eval_GetResourceLeuronLinear::getLeuronPacks_ByResourceId" err next)
@@ -118,11 +120,12 @@ eval_GetResourceLeuronLinear eval (GetResourceLeuronLinear resource_id offset ne
 eval_GetResourceLeuronRandom :: EvalEff
 eval_GetResourceLeuronRandom eval (GetResourceLeuronRandom resource_id next) = do
 
-  modify (_{ currentLeuron = Nothing, currentLeuronL = true })
+  modify (_{ currentLeuron = Nothing })
+  modify (\st->st{loading = setLoading l_currentLeuron st.loading})
 
   e_packs <- rd $ getLeuronPacks_ByResourceId [Limit 1, SortOrder SortOrderBy_Rnd] resource_id
 
-  modify (_{ currentLeuronL = false })
+  modify (\st->st{loading = clearLoading l_currentLeuron st.loading})
 
   case e_packs of
     Left err                          -> eval (AddErrorApi "eval_GetResourceLeuronRandom::getLeuronPacks_ByResourceId" err next)
