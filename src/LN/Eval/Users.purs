@@ -60,8 +60,10 @@ eval_GetUsers eval (GetUsers next) = do
 eval_GetUser :: EvalEff
 eval_GetUser eval (GetUser user_nick next) = do
 
-  euser <- rd $ ApiS.getUserSanitizedPack' user_nick
-  case euser of
+  modify (_{ currentUser = Nothing })
+
+  e_user <- rd $ ApiS.getUserSanitizedPack' user_nick
+  case e_user of
       Left err -> pure next
       Right user -> do
         modify (_{ currentUser = Just user })
