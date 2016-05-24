@@ -89,19 +89,19 @@ renderPosts org_name forum_name board_name thread_name st =
           H.li_ [
 
             H.div [P.class_ B.row] [
-                H.div [P.class_ B.colSm2] [
+                H.div [P.class_ B.colXs2] [
                     H.p_ [linkTo (Users (Show (usersMapLookup_ToNick st post.userId)) []) (usersMapLookup_ToNick st post.userId)]
                   , renderGravatarForUser Medium (usersMapLookup_ToUser st post.userId)
                   , displayUserStats (usersMapLookup st post.userId)
                 ]
-              , H.div [P.class_ B.colSm9] [
+              , H.div [P.class_ B.colXs9] [
                     linkTo (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (Show $ show post.id)) (thread_name <> "/" <> show post.id)
                   , H.p_ [H.text $ show post.createdAt]
                   , H.p_ [H.text "quote / reply"]
                   , displayPostData post.body
                   , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup st post.userId)]
                 ]
-              , H.div [P.class_ B.colSm1] [
+              , H.div [P.class_ B.colXs1] [
                     renderLike Ent_ThreadPost post.id pack'.like pack'.star
                   , displayPostStats (ThreadPostStatResponse stats)
                 ]
@@ -113,10 +113,10 @@ renderPosts org_name forum_name board_name thread_name st =
         -- INPUT FORM AT THE BOTTOM
         [H.li_ [
           H.div [P.class_ B.row] [
-              H.div [P.class_ B.colSm2] [
+              H.div [P.class_ B.colXs2] [
                 H.p_ [H.text "1"]
               ]
-            , H.div [P.class_ B.colSm9] [
+            , H.div [P.class_ B.colXs9] [
                 H.p_ [H.text "2"]
               , H.div [P.class_ B.well] [
                 -- TODO FIXME , need to fix this input form, doesnt do anything
@@ -130,17 +130,17 @@ renderPosts org_name forum_name board_name thread_name st =
                      ]
                 -- TODO FIXME , need to style these buttons properly etc
                   , H.a [
-                      P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnSm],
+                      P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg],
                       E.onClick $ E.input (\v -> CompThreadPost InputThreadPost_Post)
                     ] [H.text "send"]
                   , H.a [
-                      P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnSm],
+                      P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg],
                       E.onClick $ E.input (\v -> CompThreadPost (InputThreadPost_SetBody Nothing))
                     ] [H.text "cancel"]
-                  , H.a [P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnSm]] [H.text "preview"]
+                  , H.a [P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg]] [H.text "preview"]
                 ]
               ]
-            , H.div [P.class_ B.colSm1] [
+            , H.div [P.class_ B.colXs1] [
                 H.p_ [H.text "3"]
               ]
          ]

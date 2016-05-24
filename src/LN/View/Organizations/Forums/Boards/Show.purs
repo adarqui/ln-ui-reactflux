@@ -15,7 +15,7 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, ($), (<>))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Link                  (linkToP)
+import LN.Router.Link                  (linkToP, linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
@@ -85,7 +85,7 @@ renderThreads org_name forum_name board_name st =
                   renderGravatarForUser Small (usersMapLookup_ToUser st thread.userId)
                 ]
               , H.div [P.class_ B.colXs6] [
-                    linkToP [] (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread.name) []) thread.name
+                    H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread.name) []) thread.name]
                   , H.p_ [H.text "page-numbers"]
                   , H.p_ [H.text $ show thread.createdAt]
                 ]
