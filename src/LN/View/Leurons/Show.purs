@@ -6,7 +6,7 @@ module LN.View.Leurons.Show (
 
 
 import Data.Maybe                      (Maybe(..))
-import CSS                             as HCSS
+import CSS                             as CSS
 import Halogen.HTML.CSS.Indexed        as HCSS
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
@@ -19,7 +19,19 @@ import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkTo)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
-import LN.T
+import LN.T                            ( LeuronPackResponse, LeuronResponse
+                                       , LeuronResponseR
+                                       , LeuronData(..)
+                                       , unwrapFact, unwrapFactList, unwrapCard, unwrapDCard, unwrapDCardX
+                                       , unwrapAcronym, unwrapSynonym, unwrapAntonym, unwrapTemplate
+                                       , unwrapImageAssociation, unwrapLinearDemo, unwrapScript, unwrapQA
+                                       , unwrapTable
+                                       , FactR, FactListR, CardR, DCardR, DCardXR
+                                       , AcronymR, SynonymR, AntonymR, TemplateR
+                                       , ImageAssociationR, LinearDemoR, ScriptR, QAR
+                                       , TableR
+                                       , _LeuronPackResponse, _LeuronResponse
+                                       , leuron_)
 
 
 
@@ -272,4 +284,4 @@ renderLeuronData_Unknown leuron =
 displayData :: String -> ComponentHTML Input
 displayData s =
 --  H.pre_ [H.text s]
-  H.p [HCSS.style $ HCSS.textWhitespace HCSS.whitespacePreWrap] [H.text s]
+  H.p [HCSS.style $ CSS.textWhitespace CSS.whitespacePreWrap] [H.text s]
