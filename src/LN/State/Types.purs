@@ -52,6 +52,7 @@ type State =
   , currentThreadPost     :: Maybe ThreadPostRequest -- TODO FIXME: rename to something more appropriate
   , currentResource       :: Maybe ResourcePackResponse
   , currentLeuron         :: Maybe LeuronPackResponse
+  , currentLeuronL        :: Boolean
 --  , currentWorkout      :: Maybe WorkoutResponse
   , currentPageInfo       :: PageInfo
   , organizationsPageInfo :: PageInfo
@@ -92,6 +93,7 @@ initialState ch =
   , currentThreadPost:     Nothing
   , currentResource:       Nothing
   , currentLeuron:         Nothing
+  , currentLeuronL:        false
 --  , currentWorkout:      Nothing
   , currentPageInfo:       defaultPageInfo
   , organizationsPageInfo: defaultPageInfo_Organizations

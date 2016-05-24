@@ -26,9 +26,10 @@ import LN.T                            ( LeuronPackResponse
 
 renderView_Resources_SiftLeuronsLinear_Show :: Int -> Int -> State -> ComponentHTML Input
 renderView_Resources_SiftLeuronsLinear_Show resource_id offset st =
-  case st.currentLeuron of
-       Nothing   -> renderLoading
-       Just pack -> renderView_Resources_SiftLeuronsLinear_Show' pack offset st
+  case st.currentLeuron, st.currentLeuronL of
+       _, true          -> renderLoading
+       Nothing, false   -> H.div_ [H.p_ [H.text "no more leurons"]]
+       Just pack, false -> renderView_Resources_SiftLeuronsLinear_Show' pack offset st
 
 
 
