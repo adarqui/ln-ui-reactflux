@@ -21,7 +21,7 @@ import LN.Input.Types                     (Input(..))
 renderCreateThread :: Maybe Comp_CreateThread_State -> ComponentHTML Input
 renderCreateThread mcomp =
   H.div [P.class_ B.row] [
-    H.div [P.classes [B.colSmOffset8, B.colSm4]] [
+    H.div [P.classes [B.colXsOffset8, B.colXs4]] [
       H.div [P.class_ B.inputGroup] [
         H.input [
           P.class_ B.formControl,
