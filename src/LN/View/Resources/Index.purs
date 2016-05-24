@@ -56,7 +56,7 @@ renderView_Resources_Index' st =
 
 resources :: State -> ComponentHTML Input
 resources st =
-  H.div_ [
+  H.div [P.class_ B.containerFluid] [
     renderPageNumbers st.resourcesPageInfo st.currentPage
     , H.ul [P.class_ B.listUnstyled] $
         map (\pack ->
@@ -67,21 +67,21 @@ resources st =
           in
           H.li_ [
             H.div [P.class_ B.row] [
-                H.div [P.class_ B.colSm1] [
+                H.div [P.class_ B.colXs1] [
                   renderGravatarForUser Small (usersMapLookup_ToUser st resource.userId)
                 ]
-              , H.div [P.class_ B.colSm3] [
+              , H.div [P.class_ B.colXs7] [
                     H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (Resources (Show $ show resource.id) []) resource.title]
                   , H.p_ [H.text $ show resource.createdAt]
                   , H.p_ [H.text $ resource.description]
                 ]
-              , H.div [P.class_ B.colSm1] [
+              , H.div [P.class_ B.colXs2] [
                   H.p_ [H.text $ show stat.leurons <> " leurons"]
                 ]
-              , H.div [P.class_ B.colSm1] [
+              , H.div [P.class_ B.colXs2] [
                   H.p_ [H.text $ show stat.views <> " views"]
                 ]
---              , H.div [P.class_ B.colSm3] [
+--              , H.div [P.class_ B.colXs3] [
 --                  H.div_ [ H.p_ [H.text "Likes?"]]
 --              ]
             ]

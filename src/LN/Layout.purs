@@ -34,14 +34,12 @@ col' szs = H.div [ P.classes szs ]
 
 defaultLayout :: State -> Array (HTML _ _) -> HTML _ _
 defaultLayout st page =
---  H.div [ P.class_ B.container ]
   H.div [ P.class_ B.containerFluid ]
     [ header st.me (length st.errors)
     , renderBreadcrumbs st.currentPage
---    , row [ col' [B.colLg12] [renderBreadcrumbs st.currentPage]]
-    , row
-        [ col' [B.colLg12] page ]
---        [ col' [ B.colLg10, B.colLgOffset1 ] page ]
+    , row page
+--    , row
+--        [ col' [B.colSm12] page ]
     ]
 
 -- container :: Array IProp -> HTML _ _
