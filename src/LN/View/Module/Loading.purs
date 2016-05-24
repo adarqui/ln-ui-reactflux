@@ -1,5 +1,5 @@
-module LN.View.Loading (
-  renderView_Loading
+module LN.View.Module.Loading (
+  renderLoading
 ) where
 
 
@@ -13,8 +13,8 @@ import LN.Input.Types                  (Input)
 
 
 
-renderView_Loading :: ComponentHTML Input
-renderView_Loading =
+renderLoading :: ComponentHTML Input
+renderLoading =
   H.div_ [
     H.img [P.src $ "https://leuro.adarq.org/static/img/loading/2.gif"]
   ]

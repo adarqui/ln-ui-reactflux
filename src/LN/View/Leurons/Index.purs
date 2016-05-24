@@ -14,21 +14,30 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (show, map, ($), (<>))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Link                  (linkToP, linkToP_Glyph')
+import LN.Router.Link                  (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
+import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.OrderBy          (renderOrderBy)
 import LN.View.Module.PageNumbers      (renderPageNumbers)
-import LN.T                            (LeuronPackResponse(..), Size(Small)
-                                       , views_, leurons_, description_, createdAt_, title_, id_, userId_, stat_, user_, leuron_
-                                       ,_LeuronStatResponse, _LeuronPackResponse, _UserSanitizedResponse, _LeuronResponse)
+import LN.T                            ( Size(Small)
+                                       , _LeuronStatResponse, _LeuronPackResponse, _LeuronResponse
+                                       , stat_, leuron_)
 
 
 
 renderView_Leurons_Index :: State -> ComponentHTML Input
 renderView_Leurons_Index st =
+  if M.isEmpty st.leurons
+     then renderLoading
+     else renderView_Leurons_Index' st
+
+
+
+renderView_Leurons_Index' :: State -> ComponentHTML Input
+renderView_Leurons_Index' st =
 
   H.div [P.class_ B.containerFluid] [
 

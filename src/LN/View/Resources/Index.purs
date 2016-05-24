@@ -18,8 +18,8 @@ import LN.Router.Link                  (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
-import LN.View.Loading                 (renderView_Loading)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
+import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.OrderBy          (renderOrderBy)
 import LN.View.Module.PageNumbers      (renderPageNumbers)
 import LN.T                            ( Size(Small)
@@ -31,7 +31,7 @@ import LN.T                            ( Size(Small)
 renderView_Resources_Index :: State -> ComponentHTML Input
 renderView_Resources_Index st =
   if M.isEmpty st.resources
-     then renderView_Loading
+     then renderLoading
      else renderView_Resources_Index' st
 
 

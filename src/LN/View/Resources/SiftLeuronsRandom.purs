@@ -14,11 +14,9 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (($))
 
 import LN.Input.Types                  (Input(..))
-import LN.Router.Types                 (Routes(..))
-import LN.Router.Link                  (linkTo)
 import LN.State.Types                  (State)
 import LN.View.Leurons.Show            (renderView_Leurons_Show')
-import LN.View.Loading                 (renderView_Loading)
+import LN.View.Module.Loading          (renderLoading)
 import LN.T                            (LeuronPackResponse
                                        , _LeuronPackResponse, _LeuronResponse
                                        , leuron_)
@@ -28,7 +26,7 @@ import LN.T                            (LeuronPackResponse
 renderView_Resources_SiftLeuronsRandom :: Int -> State -> ComponentHTML Input
 renderView_Resources_SiftLeuronsRandom resource_id st =
   case st.currentLeuron of
-    Nothing   -> renderView_Loading
+    Nothing   -> renderLoading
     Just pack -> renderView_Resources_SiftLeuronsRandom' pack st
 
 
