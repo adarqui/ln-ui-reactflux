@@ -8,6 +8,7 @@ module LN.Eval.ThreadPosts (
 
 import Halogen               (gets, modify)
 import Data.Either           (Either(..))
+import Data.Map              as M
 import Optic.Core            ((^.), (..))
 import Prelude               (bind, pure, map, ($))
 import LN.Component.Types    (EvalEff)
@@ -32,6 +33,8 @@ eval_GetThreadPost eval (GetThreadPost thread_post_id next) = pure next
 
 eval_GetThreadPostsForThread :: EvalEff
 eval_GetThreadPostsForThread eval (GetThreadPostsForThread thread_id next) = do
+
+  modify (_{ threadPosts = (M.empty :: M.Map Int ThreadPostPackResponse) })
 
   page_info <- gets _.threadPostsPageInfo
 
