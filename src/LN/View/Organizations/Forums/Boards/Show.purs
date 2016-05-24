@@ -81,21 +81,21 @@ renderThreads org_name forum_name board_name st =
           in
           H.li_ [
             H.div [P.class_ B.row] [
-                H.div [P.class_ B.colSm1] [
+                H.div [P.class_ B.colXs1] [
                   renderGravatarForUser Small (usersMapLookup_ToUser st thread.userId)
                 ]
-              , H.div [P.class_ B.colSm6] [
+              , H.div [P.class_ B.colXs6] [
                     linkToP [] (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread.name) []) thread.name
                   , H.p_ [H.text "page-numbers"]
                   , H.p_ [H.text $ show thread.createdAt]
                 ]
-              , H.div [P.class_ B.colSm1] [
+              , H.div [P.class_ B.colXs1] [
                   H.p_ [H.text $ show stat.threadPosts <> " posts"]
                 ]
-              , H.div [P.class_ B.colSm1] [
+              , H.div [P.class_ B.colXs1] [
                   H.p_ [H.text $ show stat.views <> " views"]
                 ]
-              , H.div [P.class_ B.colSm3] [
+              , H.div [P.class_ B.colXs3] [
                 case post, user of
                      Just (ThreadPostResponse post'), Just (UserSanitizedResponse user') ->
                        H.div_ [
