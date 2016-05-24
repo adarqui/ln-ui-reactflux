@@ -69,6 +69,8 @@ eval_GetOrganization eval (GetOrganization org_name next) = do
 eval_GetOrganizationForum :: EvalEff
 eval_GetOrganizationForum eval (GetOrganizationForum org_name forum_name next) = do
 
+  modify (_{ currentForum = Nothing })
+
   e_forum <- rd $ ApiS.getForumPack_ByOrganizationName' forum_name org_name
   case e_forum of
 
@@ -83,6 +85,8 @@ eval_GetOrganizationForum eval (GetOrganizationForum org_name forum_name next) =
 
 eval_GetOrganizationForumBoard :: EvalEff
 eval_GetOrganizationForumBoard eval (GetOrganizationForumBoard org_name forum_name board_name next) = do
+
+  modify (_{ currentBoard = Nothing })
 
   m_forum <- gets _.currentForum
   case m_forum of
@@ -106,6 +110,8 @@ eval_GetOrganizationForumBoard eval (GetOrganizationForumBoard org_name forum_na
 
 eval_GetOrganizationForumBoardThread :: EvalEff
 eval_GetOrganizationForumBoardThread eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) = do
+
+  modify (_{ currentThread = Nothing })
 
   m_board <- gets _.currentBoard
   case m_board of
