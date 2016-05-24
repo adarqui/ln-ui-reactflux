@@ -6,6 +6,7 @@ module LN.Eval.Boards (
 
 
 import Data.Either                     (Either(..))
+import Data.Map                        as M
 import Halogen                         (modify)
 import Prelude                         (bind, pure, ($))
 
@@ -24,6 +25,8 @@ eval_GetBoards eval (GetBoards next) = pure next
 
 eval_GetBoardsForForum :: EvalEff
 eval_GetBoardsForForum eval (GetBoardsForForum forum_id next) = do
+
+  modify (_{ boards = (M.empty :: M.Map Int BoardPackResponse) })
 
   e_board_packs <- rd $ getBoardPacks_ByForumId' forum_id
   case e_board_packs of
