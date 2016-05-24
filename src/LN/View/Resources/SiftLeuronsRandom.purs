@@ -18,6 +18,7 @@ import LN.Router.Types                 (Routes(..))
 import LN.Router.Link                  (linkTo)
 import LN.State.Types                  (State)
 import LN.View.Leurons.Show            (renderView_Leurons_Show')
+import LN.View.Loading                 (renderView_Loading)
 import LN.T                            (LeuronPackResponse
                                        , _LeuronPackResponse, _LeuronResponse
                                        , leuron_)
@@ -27,7 +28,7 @@ import LN.T                            (LeuronPackResponse
 renderView_Resources_SiftLeuronsRandom :: Int -> State -> ComponentHTML Input
 renderView_Resources_SiftLeuronsRandom resource_id st =
   case st.currentLeuron of
-    Nothing   -> H.div_ [H.p_ [H.text "what?"]]
+    Nothing   -> renderView_Loading
     Just pack -> renderView_Resources_SiftLeuronsRandom' pack st
 
 

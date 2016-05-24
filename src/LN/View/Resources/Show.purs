@@ -15,7 +15,9 @@ import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
-import LN.T
+import LN.View.Loading                 (renderView_Loading)
+import LN.T                            ( ResourcePackResponse, _ResourcePackResponse, _ResourceResponse
+                                       , resource_)
 
 
 
@@ -23,7 +25,7 @@ renderView_Resources_Show :: String -> State -> ComponentHTML Input
 renderView_Resources_Show resource_sid st =
 
   case st.currentResource of
-       Nothing   -> H.div_ [H.text "Resource Unavailable"]
+       Nothing   -> renderView_Loading
        Just pack -> renderView_Resources_Show' pack st
 
 

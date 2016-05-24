@@ -13,6 +13,7 @@ import Data.Array                    (head)
 import Data.Either                   (Either(..))
 import Data.Functor                  (($>))
 import Data.Int                      (fromString)
+import Data.Map                      as M
 import Data.Maybe                    (Maybe(..))
 import Halogen                       (gets, modify)
 import Prelude                       (bind, pure, map, ($))
@@ -33,6 +34,8 @@ import LN.T                          ( Param(..), SortOrderBy(..)
 eval_GetResources :: EvalEff
 eval_GetResources eval (GetResources next) = do
 
+  modify (_{ resources = (M.empty :: M.Map Int ResourcePackResponse) })
+
   page_info <- gets _.resourcesPageInfo
 
   e_count <- rd $ getResourcesCount'
@@ -42,7 +45,7 @@ eval_GetResources eval (GetResources next) = do
 
       let new_page_info = runPageInfo counts page_info
 
-      modify (_ { resourcesPageInfo = new_page_info.pageInfo })
+      modify (_{ resourcesPageInfo = new_page_info.pageInfo })
 
       e_resource_packs <- rd $ getResourcePacks new_page_info.params
       case e_resource_packs of
@@ -62,6 +65,8 @@ eval_GetResources eval (GetResources next) = do
 
 eval_GetResourceId :: EvalEff
 eval_GetResourceId eval (GetResourceId resource_id next) = do
+
+  modify (_{ currentResource = Nothing })
 
   e_pack <- rd $ getResourcePack' resource_id
   case e_pack of
@@ -93,6 +98,8 @@ eval_GetResourcesSiftLeurons eval (GetResourcesSiftLeurons resource_sid next) = 
 
 eval_GetResourceLeuronRandom :: EvalEff
 eval_GetResourceLeuronRandom eval (GetResourceLeuronRandom resource_id next) = do
+
+  modify (_{ currentLeuron = Nothing })
 
   e_packs <- rd $ getLeuronPacks_ByResourceId [Limit 1, SortOrder SortOrderBy_Rnd] resource_id
   case e_packs of
