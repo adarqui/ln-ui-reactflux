@@ -17,10 +17,9 @@ module LN.Router.Types (
 import Control.Monad.Aff           (Aff())
 import Control.Monad.Aff.AVar      (AVAR())
 import Control.Monad.Eff.Exception (EXCEPTION())
-import Data.Generic                (class Generic, gEq, gShow)
+import Data.Generic                (class Generic, gEq)
 import Data.Map                    as M
-import Data.Maybe                  (Maybe(..))
-import Data.Tuple                  (Tuple(..), fst, snd)
+import Data.Tuple                  (Tuple(..), fst)
 import DOM                         (DOM())
 import LN.Router.Util              (slash, fixParams)
 import Prelude                     (class Eq, class Show, show, (<>), ($), (++), (==))
@@ -319,11 +318,19 @@ instance routesHasCrumb :: HasCrumb Routes where
       Tuple (ResourcesSiftLeurons resource_id params) "Sift"
     ]
 
-  crumb (ResourcesSiftLeurons resource_id params) =
+  crumb (ResourcesSiftLeuronsRandom resource_id params) =
     [
       Tuple (Resources Index params) "Resources",
       Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
       Tuple (ResourcesSiftLeurons resource_id params) "Sift"
+    ]
+
+  crumb (ResourcesSiftLeuronsLinear resource_id _ params) =
+    [
+      Tuple (Resources Index params) "Resources",
+      Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
+      Tuple (ResourcesSiftLeurons resource_id params) "Sift",
+      Tuple (ResourcesSiftLeuronsLinear resource_id Index params) "Linear"
     ]
 
 
