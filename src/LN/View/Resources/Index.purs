@@ -14,7 +14,7 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (show, map, ($), (<>))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Link                  (linkToP)
+import LN.Router.Link                  (linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
@@ -71,7 +71,7 @@ resources st =
                   renderGravatarForUser Small (usersMapLookup_ToUser st resource.userId)
                 ]
               , H.div [P.class_ B.colSm6] [
-                    linkToP [] (Resources (Show $ show resource.id) []) resource.title
+                    H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (Resources (Show $ show resource.id) []) resource.title]
                   , H.p_ [H.text $ show resource.createdAt]
                   , H.p_ [H.text $ resource.description]
                 ]

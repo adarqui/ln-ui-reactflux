@@ -28,7 +28,7 @@ pageRange pageInfo = range 1 pageInfo.totalPages
 renderPageNumbers :: PageInfo -> Routes -> ComponentHTML Input
 renderPageNumbers pageInfo route =
   H.div [P.class_ B.centerBlock] [
-    H.ul [P.class_ (H.className "pagination")]
+    H.ul [P.classes [B.pagination, B.paginationLg]]
     $
       map (\a ->
         a
