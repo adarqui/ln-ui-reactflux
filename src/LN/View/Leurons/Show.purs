@@ -19,6 +19,7 @@ import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkTo)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
+import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( LeuronPackResponse, LeuronResponse
                                        , LeuronResponseR
                                        , LeuronData(..)
@@ -39,7 +40,7 @@ renderView_Leurons_Show :: String -> State -> ComponentHTML Input
 renderView_Leurons_Show leuron_sid st =
 
   case st.currentLeuron of
-       Nothing   -> H.div_ [H.text "Leuron Unavailable"]
+       Nothing   -> renderLoading
        Just pack -> renderView_Leurons_Show' pack st
 
 

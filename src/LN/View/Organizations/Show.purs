@@ -18,7 +18,10 @@ import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
-import LN.T
+import LN.View.Module.Loading          (renderLoading)
+import LN.T                            ( OrganizationPackResponse
+                                       , _OrganizationPackResponse, _OrganizationResponse, organization_
+                                       , _ForumPackResponse, _ForumResponse, forum_)
 
 
 
@@ -26,7 +29,7 @@ renderView_Organizations_Show :: String -> State -> ComponentHTML Input
 renderView_Organizations_Show org_name st =
 
   case st.currentOrganization of
-       Nothing   -> H.div_ [H.text "Organization Unavailable"]
+       Nothing   -> renderLoading
        Just pack -> renderView_Organizations_Show' pack st
 
 
