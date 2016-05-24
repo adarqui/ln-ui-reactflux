@@ -15,7 +15,7 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, ($), (<>))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Link                  (linkToP)
+import LN.Router.Link                  (linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
@@ -72,7 +72,7 @@ forums name st =
               H.p_ [H.text "icon"]
             ],
             H.div [P.class_ B.colXs6] [
-              linkToP [] (OrganizationsForums name (Show forum.name) []) forum.name,
+              H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForums name (Show forum.name) []) forum.name],
               H.p_ [H.text $ maybe "No description." id forum.description]
             ],
             H.div [P.class_ B.colXs2] [
