@@ -6,6 +6,7 @@ module LN.Eval.Forums (
 
 
 import Data.Either                     (Either(..))
+import Data.Map                        as M
 import Halogen                         (modify)
 import Prelude                         (bind, pure, ($))
 
@@ -24,6 +25,8 @@ eval_GetForums eval (GetForums next) = pure next
 
 eval_GetForumsForOrg :: EvalEff
 eval_GetForumsForOrg eval (GetForumsForOrg org_name next) = do
+
+  modify (_{ forums = (M.empty :: M.Map Int ForumPackResponse) })
 
   e_forum_packs <- rd $ getForumPacks_ByOrganizationName' org_name
   case e_forum_packs of
