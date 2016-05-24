@@ -25,7 +25,6 @@ import Routing.Match.Class     (class MatchClass, lit, str, params)
 import Routing.Types           (RoutePart(..))
 
 import LN.Input.Types          (Input(..))
-import LN.Internal.Leuron      (LeuronSift(..))
 import LN.Router.Types         (Routing, Routes(..), CRUD(..))
 
 
@@ -86,8 +85,8 @@ routing =
 
       errors <|>
 
-      resources_sift_linear_index <|>
       resources_sift_linear_show <|>
+      resources_sift_linear_index <|>
       resources_sift_random <|>
 
       resources_sift <|>
