@@ -11,7 +11,7 @@ import Halogen.HTML.Properties.Indexed    as P
 import Halogen.HTML.Events.Indexed        as E
 import Halogen.Themes.Bootstrap3          as B
 import Halogen.HTML.CSS.Indexed           as HCSS
-import CSS                                as HCSS
+import CSS                                as CSS
 import Optic.Core                         ((^.), (..))
 import Prelude                            (($), (<<<))
 
@@ -33,56 +33,56 @@ renderLike ent ent_id m_like m_star =
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorLike,
-        P.classes [B.btn, B.btnDefault],
+        P.classes [B.btn, B.btnDefault, B.btnLg],
         E.onClick $ E.input_ $ (CompLike (InputLike_Like ent ent_id m_like))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconArrowUp]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorNeutral,
-        P.classes [B.btn, B.btnDefault],
+        P.classes [B.btn, B.btnDefault, B.btnLg],
         E.onClick $ E.input_ $ (CompLike (InputLike_Neutral ent ent_id m_like))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconMinus]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorDislike,
-        P.classes [B.btn, B.btnDefault],
+        P.classes [B.btn, B.btnDefault, B.btnLg],
         E.onClick $ E.input_ $ (CompLike (InputLike_Dislike ent ent_id m_like))
       ] [H.span [P.classes [B.glyphicon, B.glyphiconArrowDown]] []]
     ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         colorStar,
-        P.classes [B.btn, B.btnDefault],
+        P.classes [B.btn, B.btnDefault, B.btnLg],
         E.onClick $ E.input_ $ (CompStar (InputStar ent ent_id m_star))
       ] [H.span [P.classes [B.glyphicon, star]] []]
     ]
   ]
   where
-  color c   = HCSS.style $ HCSS.color c
+  color c   = HCSS.style $ CSS.color c
   colorLike =
     case m_like of
-         Nothing -> color HCSS.black
+         Nothing -> color CSS.black
          Just r  -> case (r ^. _LikeResponse .. opt_) of
-                         Like -> color HCSS.green
-                         _    -> color HCSS.black
+                         Like -> color CSS.green
+                         _    -> color CSS.black
   colorNeutral =
     case m_like of
-         Nothing -> color HCSS.black
+         Nothing -> color CSS.black
          Just r  -> case (r ^. _LikeResponse .. opt_) of
-                         Neutral -> color HCSS.yellow
-                         _       -> color HCSS.black
+                         Neutral -> color CSS.yellow
+                         _       -> color CSS.black
   colorDislike =
     case m_like of
-         Nothing -> color HCSS.black
+         Nothing -> color CSS.black
          Just r  -> case (r ^. _LikeResponse .. opt_) of
-                         Dislike -> color HCSS.red
-                         _       -> color HCSS.black
+                         Dislike -> color CSS.red
+                         _       -> color CSS.black
   colorStar   =
     case m_star of
-         Nothing -> color HCSS.black
-         Just _  -> color HCSS.orange
+         Nothing -> color CSS.black
+         Just _  -> color CSS.orange
   star        =
     case m_star of
          Nothing -> B.glyphiconStarEmpty
