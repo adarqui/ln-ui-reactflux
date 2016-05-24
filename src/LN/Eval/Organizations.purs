@@ -9,6 +9,7 @@ module LN.Eval.Organizations (
 
 
 import Data.Either                     (Either(..))
+import Data.Map                        as M
 import Data.Maybe                      (Maybe(..))
 import Halogen                         (gets, modify)
 import Prelude                         (bind, pure, ($))
@@ -27,6 +28,8 @@ import LN.T                            ( OrganizationPackResponses(..), Organiza
 
 eval_GetOrganizations :: EvalEff
 eval_GetOrganizations eval (GetOrganizations next) = do
+
+  modify (_{ organizations = (M.empty :: M.Map Int OrganizationPackResponse) })
 
   e_organizations <- rd $ getOrganizationPacks'
   case e_organizations of
@@ -47,6 +50,8 @@ eval_GetOrganizations eval (GetOrganizations next) = do
 
 eval_GetOrganization :: EvalEff
 eval_GetOrganization eval (GetOrganization org_name next) = do
+
+  modify (_{ currentOrganization = Nothing })
 
   eval (GetForumsForOrg org_name next)
 

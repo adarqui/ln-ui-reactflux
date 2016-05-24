@@ -11,6 +11,7 @@ import Data.Array                    (head)
 import Data.Either                   (Either(..))
 import Data.Functor                  (($>))
 import Data.Int                      (fromString)
+import Data.Map                      as M
 import Data.Maybe                    (Maybe(..))
 import Halogen                       (gets, modify)
 import Prelude                       (bind, pure, map, ($))
@@ -27,6 +28,8 @@ import LN.T                          ( LeuronPackResponses(..), LeuronPackRespon
 
 eval_GetLeurons :: EvalEff
 eval_GetLeurons eval (GetLeurons next) = do
+
+  modify (_{ leurons = (M.empty :: M.Map Int LeuronPackResponse) })
 
   page_info <- gets _.leuronsPageInfo
 
@@ -60,9 +63,11 @@ eval_GetLeurons eval (GetLeurons next) = do
 eval_GetLeuronId :: EvalEff
 eval_GetLeuronId eval (GetLeuronId leuron_id next) = do
 
+  modify (_{ currentLeuron = Nothing })
+
   e_pack <- rd $ getLeuronPack' leuron_id
   case e_pack of
-    Left err   -> pure next
+    Left err   -> eval (AddErrorApi "eval_GetLeuronId::getLeuronPack'" err next)
     Right pack -> do
       modify (_{ currentLeuron = Just pack })
       pure next
