@@ -35,7 +35,7 @@ renderEntityListing title entities page_numbers =
 
 renderEntity :: Entity -> ComponentHTML Input
 renderEntity entity =
-  H.div [P.class_ B.colSm4] [
+  H.div [P.class_ B.colXs4] [
     H.div_ [
         linkTo' entity.route
           [H.img [P.src entity.logo, P.alt entity.nick, P.classes [H.className "img-circle", H.className "img-thumbnail"]]]
