@@ -19,6 +19,8 @@ import LN.T                            (TeamPackResponses(..), TeamPackResponse(
 eval_GetTeams :: EvalEff
 eval_GetTeams eval (GetTeams next) = do
 
+  modify (_{ teams = (M.empty :: M.Map Int TeamPackResponse) })
+
   e_teams <- rd $ getTeamPacks'
   case e_teams of
     Left err                             -> eval (AddErrorApi "eval_GetTeams::getTeamPacks'" err next)
