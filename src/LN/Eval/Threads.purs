@@ -7,6 +7,7 @@ module LN.Eval.Threads (
 import Halogen                         (gets, modify)
 import Data.Array                      (catMaybes)
 import Data.Either                     (Either(..))
+import Data.Map                        as M
 import Prelude                         (bind, pure, map, ($), (<>))
 
 import LN.Component.Types              (EvalEff)
@@ -25,6 +26,8 @@ eval_GetThreads eval (GetThreads next) = pure next
 
 eval_GetThreadsForBoard :: EvalEff
 eval_GetThreadsForBoard eval (GetThreadsForBoard board_id next) = do
+
+  modify (_{ threads = (M.empty :: M.Map Int ThreadPackResponse) })
 
   page_info <- gets _.threadsPageInfo
 
