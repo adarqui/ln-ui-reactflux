@@ -22,6 +22,7 @@ import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup, usersMapLookup_ToNick, usersMapLookup_ToUser)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
+import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.Like             (renderLike)
 import LN.View.Module.PageNumbers      (renderPageNumbers)
 import LN.T                            ( Ent(..)
@@ -47,7 +48,7 @@ renderView_Organizations_Forums_Boards_Threads_Show thread_name st =
 
          renderView_Organizations_Forums_Boards_Threads_Show' org_pack forum_pack board_pack thread_pack st
 
-       _,             _,               _,              _                 -> H.div_ [H.text "Unavailable"]
+       _,             _,               _,              _                 -> renderLoading
 
 
 
