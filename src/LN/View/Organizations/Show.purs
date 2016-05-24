@@ -68,20 +68,20 @@ forums name st =
         let forum = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse in
         H.li_ [
           H.div [P.class_ B.row] [
-            H.div [P.class_ B.colSm1] [
+            H.div [P.class_ B.colXs1] [
               H.p_ [H.text "icon"]
             ],
-            H.div [P.class_ B.colSm6] [
+            H.div [P.class_ B.colXs6] [
               linkToP [] (OrganizationsForums name (Show forum.name) []) forum.name,
               H.p_ [H.text $ maybe "No description." id forum.description]
             ],
-            H.div [P.class_ B.colSm2] [
+            H.div [P.class_ B.colXs2] [
               H.p_ [H.text "boards"],
               H.p_ [H.text "threads"],
               H.p_ [H.text "posts"],
               H.p_ [H.text "views"]
             ],
-            H.div [P.class_ B.colSm3] [
+            H.div [P.class_ B.colXs3] [
               H.p_ [H.text "created-at"]
             ]
           ]
