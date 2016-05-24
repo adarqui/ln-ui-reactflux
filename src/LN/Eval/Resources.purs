@@ -106,7 +106,7 @@ eval_GetResourceLeuronLinear eval (GetResourceLeuronLinear resource_id offset ne
 
   e_packs <- rd $ getLeuronPacks_ByResourceId [Limit 1, Offset offset, SortOrder SortOrderBy_Asc] resource_id
 
-  modify (\st->st{ loading = clearLoading l_currentLeuron st.loading})
+  modify (\st->st{loading = clearLoading l_currentLeuron st.loading})
 
   case e_packs of
     Left err                          -> eval (AddErrorApi "eval_GetResourceLeuronLinear::getLeuronPacks_ByResourceId" err next)

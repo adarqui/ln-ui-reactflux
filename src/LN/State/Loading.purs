@@ -56,7 +56,7 @@ setLoading key lm = M.update (const $ Just false) key lm
 
 
 clearLoading :: Int -> LoadingMap -> LoadingMap
-clearLoading key lm = M.update (const Nothing) key lm
+clearLoading key lm = M.update (const $ Just false) key lm
 
 
 
