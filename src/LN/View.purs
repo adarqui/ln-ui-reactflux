@@ -100,11 +100,11 @@ renderView (Resources (Show resource_id) params) = renderView_Resources_Show res
 
 
 
-renderView (ResourcesLeurons resource_id Index params)                   = renderView_Resources_Leurons_Index resource_id
-renderView (ResourcesSiftLeurons resource_id params)                     = renderView_Resources_SiftLeurons resource_id
-renderView (ResourcesSiftLeuronsLinear resource_id Index params)         = renderView_Resources_SiftLeuronsLinear_Index resource_id
-renderView (ResourcesSiftLeuronsLinear resource_id (Show offset) params) = renderView_Resources_SiftLeuronsLinear_Show resource_id offset
-renderView (ResourcesSiftLeuronsRandom resource_id params)               = renderView_Resources_SiftLeuronsRandom resource_id
+renderView (ResourcesLeurons resource_id Index params)                    = renderView_Resources_Leurons_Index resource_id
+renderView (ResourcesSiftLeurons resource_id params)                      = renderView_Resources_SiftLeurons resource_id
+renderView (ResourcesSiftLeuronsLinear resource_id Index params)          = renderView_Resources_SiftLeuronsLinear_Index resource_id
+renderView (ResourcesSiftLeuronsLinear resource_id (ShowI offset) params) = renderView_Resources_SiftLeuronsLinear_Show resource_id offset
+renderView (ResourcesSiftLeuronsRandom resource_id params)                = renderView_Resources_SiftLeuronsRandom resource_id
 
 
 renderView (Leurons Index params)              = renderView_Leurons_Index

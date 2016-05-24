@@ -34,16 +34,22 @@ type Routing e = Aff (dom :: DOM, avar :: AVAR, err :: EXCEPTION | e)
 
 data CRUD
   = Index
-  | Show String
+  | Show  String
+  | ShowI Int
+  | ShowN Number
+  | ShowB Boolean
   | New
 
 
 
 instance eqCrud :: Eq CRUD where
-  eq Index Index       = true
-  eq New New           = true
-  eq (Show a) (Show b) = a == b
-  eq _ _               = false
+  eq Index Index         = true
+  eq New New             = true
+  eq (Show a)  (Show b)  = a == b
+  eq (ShowI a) (ShowI b) = a == b
+  eq (ShowN a) (ShowN b) = a == b
+  eq (ShowB a) (ShowB b) = a == b
+  eq _         _         = false
 
 
 
@@ -398,10 +404,13 @@ instance routesShow :: Show Routes where
 instance crudHasLink :: HasLink CRUD where
 -- TODO FIXME:
 -- well this could be fixed.. changed from "" in order to match CRUD Index routes
-  link Index    = Tuple "" M.empty
+  link Index        = Tuple "" M.empty
 --  link Index    = Tuple "/index" M.empty
-  link New      = Tuple "/new" M.empty
-  link (Show s) = Tuple ("/" <> s) M.empty
+  link New          = Tuple "/new" M.empty
+  link (Show s)     = Tuple ("/" <> s) M.empty
+  link (ShowI int)  = Tuple ("/" <> show int) M.empty
+  link (ShowN num)  = Tuple ("/" <> show num) M.empty
+  link (ShowB bool) = Tuple ("/" <> show bool) M.empty
 
 
 

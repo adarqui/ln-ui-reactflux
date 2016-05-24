@@ -63,7 +63,7 @@ data Input a
   | GetResourceSid String a
 
   | GetResourcesLeurons Int a
-  | GetResourceLeuronLinear Int String a
+  | GetResourceLeuronLinear Int Int a
   | GetResourceLeuronRandom Int a
 
   | GetResourcesSiftLeurons Int a

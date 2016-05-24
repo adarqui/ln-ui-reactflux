@@ -85,7 +85,7 @@ routing =
 
       errors <|>
 
-      resources_sift_linear_show <|>
+      resources_sift_linear_show_int <|>
       resources_sift_linear_index <|>
       resources_sift_random <|>
 
@@ -254,10 +254,10 @@ routing =
       <*> (lit "sift" *> lit "linear" *> pure Index)
       <*> (params' <|> pure [])
 
-    resources_sift_linear_show =
+    resources_sift_linear_show_int =
       ResourcesSiftLeuronsLinear
       <$> (lit "" *> lit "resources" *> int)
-      <*> (lit "sift" *> lit "linear" *> (Show <$> str1))
+      <*> (lit "sift" *> lit "linear" *> (ShowI <$> int))
       <*> (params' <|> pure [])
 
     resources_sift_random =

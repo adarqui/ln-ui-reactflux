@@ -155,8 +155,8 @@ eval_Goto eval (Goto route next) = do
     (ResourcesSiftLeurons resource_id params) -> do
       pure unit
 
-    (ResourcesSiftLeuronsLinear resource_id (Show s_offset) params) -> do
-      eval (GetResourceLeuronLinear resource_id s_offset next)
+    (ResourcesSiftLeuronsLinear resource_id (ShowI offset) params) -> do
+      eval (GetResourceLeuronLinear resource_id offset next)
       pure unit
 
     (ResourcesSiftLeuronsRandom resource_id params) -> do

@@ -4,13 +4,13 @@ module LN.View.Resources.SiftLeuronsLinear.Show (
 
 
 
-import Data.Int                        (fromString)
 import Data.Maybe                      (Maybe(..))
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
+import Prelude                         ((==), (+), (-))
 
 import LN.Input.Types                  (Input)
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -24,32 +24,33 @@ import LN.T                            ( LeuronPackResponse
 
 
 
-renderView_Resources_SiftLeuronsLinear_Show :: Int -> String -> State -> ComponentHTML Input
-renderView_Resources_SiftLeuronsLinear_Show resource_id s_offset st =
-  case st.currentLeuron, fromString s_offset of
-       _, Nothing             -> H.div_ [H.p_ [H.text "Invalid offset"]]
-       Nothing, _             -> renderLoading
-       Just pack, Just offset -> renderView_Resources_SiftLeuronsLinear_Show' pack offset st
+renderView_Resources_SiftLeuronsLinear_Show :: Int -> Int -> State -> ComponentHTML Input
+renderView_Resources_SiftLeuronsLinear_Show resource_id offset st =
+  case st.currentLeuron of
+       Nothing   -> renderLoading
+       Just pack -> renderView_Resources_SiftLeuronsLinear_Show' pack offset st
 
 
 
 renderView_Resources_SiftLeuronsLinear_Show' :: LeuronPackResponse -> Int -> State -> ComponentHTML Input
 renderView_Resources_SiftLeuronsLinear_Show' pack offset st =
   H.div_ [
-    renderButtons pack st,
+    renderButtons pack offset st,
     renderView_Leurons_Show' pack st,
-    renderButtons pack st
+    renderButtons pack offset st
   ]
 
 
 
-renderButtons :: LeuronPackResponse -> State -> ComponentHTML Input
-renderButtons pack st =
+renderButtons :: LeuronPackResponse -> Int -> State -> ComponentHTML Input
+renderButtons pack offset st =
   H.div_ [
     H.div [P.class_ B.listGroup] [
-      linkToP_Classes [B.listGroupItem] [] (ResourcesSiftLeuronsLinear leuron.resourceId Index []) "prev",
-      linkToP_Classes [B.listGroupItem] [] (ResourcesSiftLeuronsLinear leuron.resourceId Index []) "next"
+      linkToP_Classes [B.listGroupItem] [] (ResourcesSiftLeuronsLinear leuron.resourceId (ShowI offset_prev) []) "prev",
+      linkToP_Classes [B.listGroupItem] [] (ResourcesSiftLeuronsLinear leuron.resourceId (ShowI offset_next) []) "next"
     ]
   ]
   where
-  leuron = pack ^. _LeuronPackResponse .. leuron_ ^. _LeuronResponse
+  leuron      = pack ^. _LeuronPackResponse .. leuron_ ^. _LeuronResponse
+  offset_prev = if offset == 0 then 0 else (offset-1)
+  offset_next = offset+1
