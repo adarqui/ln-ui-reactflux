@@ -73,23 +73,23 @@ renderBoards org_name forum_name st =
       in
       H.li_ [
         H.div [P.class_ B.row] [
-            H.div [P.class_ B.colSm1] [
+            H.div [P.class_ B.colXs1] [
                 H.p_ [H.text "icon"]
             ]
-          , H.div [P.class_ B.colSm5] [
+          , H.div [P.class_ B.colXs5] [
                 linkToP [] (OrganizationsForumsBoards org_name forum_name (Show $ board.name) []) board.name
               , H.p_ [H.text $ maybe "No description." id board.description]
             ]
-          , H.div [P.class_ B.colSm1] [
+          , H.div [P.class_ B.colXs1] [
               H.p_ [H.text $ show stat.threads <> " threads"]
             ]
-          , H.div [P.class_ B.colSm1] [
+          , H.div [P.class_ B.colXs1] [
               H.p_ [H.text $ show stat.threadPosts <> " posts"]
             ]
-          , H.div [P.class_ B.colSm1] [
+          , H.div [P.class_ B.colXs1] [
               H.p_ [H.text $ show stat.views <> " views"]
             ]
-          , H.div [P.class_ B.colSm3] [
+          , H.div [P.class_ B.colXs3] [
               case thread, post, user of
                    Just (ThreadResponse thread'), Just (ThreadPostResponse post'), Just (UserSanitizedResponse user') ->
                     H.div_ [
