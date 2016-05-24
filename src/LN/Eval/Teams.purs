@@ -5,6 +5,7 @@ module LN.Eval.Teams (
 
 
 import Data.Either                     (Either(..))
+import Data.Map                        as M
 import Halogen                         (modify)
 import Prelude                         (bind, pure, ($))
 
