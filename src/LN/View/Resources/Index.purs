@@ -70,7 +70,7 @@ resources st =
                 H.div [P.class_ B.colSm1] [
                   renderGravatarForUser Small (usersMapLookup_ToUser st resource.userId)
                 ]
-              , H.div [P.class_ B.colSm6] [
+              , H.div [P.class_ B.colSm3] [
                     H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (Resources (Show $ show resource.id) []) resource.title]
                   , H.p_ [H.text $ show resource.createdAt]
                   , H.p_ [H.text $ resource.description]
@@ -81,9 +81,9 @@ resources st =
               , H.div [P.class_ B.colSm1] [
                   H.p_ [H.text $ show stat.views <> " views"]
                 ]
-              , H.div [P.class_ B.colSm3] [
-                  H.div_ [ H.p_ [H.text "Likes?"]]
-              ]
+--              , H.div [P.class_ B.colSm3] [
+--                  H.div_ [ H.p_ [H.text "Likes?"]]
+--              ]
             ]
           ])
         $ listToArray $ M.values st.resources
