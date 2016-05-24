@@ -21,6 +21,7 @@ import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
 import LN.View.Module.CreateThread     (renderCreateThread)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
+import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.OrderBy          (renderOrderBy)
 import LN.View.Module.PageNumbers      (renderPageNumbers)
 import LN.T                            (BoardPackResponse, ForumPackResponse, OrganizationPackResponse
@@ -41,7 +42,7 @@ renderView_Organizations_Forums_Boards_Show board_name st =
        Just org_pack, Just forum_pack, Just board_pack ->
          renderView_Organizations_Forums_Boards_Show' org_pack forum_pack board_pack st
 
-       _,             _,               _               -> H.div_ [H.text "Unavailable"]
+       _,             _,               _               -> renderLoading
 
 
 
