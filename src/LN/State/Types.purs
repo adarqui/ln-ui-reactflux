@@ -7,7 +7,6 @@ module LN.State.Types (
 
 import Control.Monad.Aff.AVar       (AVar())
 import Data.Map                     as M
-import Data.StrMap                  as SM
 import Data.Maybe                   (Maybe(..))
 import Data.Tuple                   (Tuple)
 import Prelude                      (Unit)
@@ -53,7 +52,9 @@ type State =
   , currentThread         :: Maybe ThreadPackResponse
   , currentThreadPost     :: Maybe ThreadPostRequest -- TODO FIXME: rename to something more appropriate
   , currentResource       :: Maybe ResourcePackResponse
+  , currentResourceRequest :: Maybe ResourceRequest
   , currentLeuron         :: Maybe LeuronPackResponse
+  , currentLeuronRequest  :: Maybe LeuronRequest
 --  , currentWorkout      :: Maybe WorkoutResponse
   , currentPageInfo       :: PageInfo
   , organizationsPageInfo :: PageInfo
@@ -94,7 +95,9 @@ initialState ch =
   , currentThread:         Nothing
   , currentThreadPost:     Nothing
   , currentResource:       Nothing
+  , currentResourceRequest: Nothing
   , currentLeuron:         Nothing
+  , currentLeuronRequest:  Nothing
 --  , currentWorkout:      Nothing
   , currentPageInfo:       defaultPageInfo
   , organizationsPageInfo: defaultPageInfo_Organizations

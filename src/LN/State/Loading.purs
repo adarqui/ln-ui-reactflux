@@ -21,7 +21,9 @@ module LN.State.Loading (
   l_currentThread,
   l_currentThreadPost,
   l_currentResource,
-  l_currentLeuron
+  l_currentResourceRequest,
+  l_currentLeuron,
+  l_currentLeuronRequest
 ) where
 
 
@@ -75,70 +77,103 @@ loadingKeys =
     , l_resources
     , l_leurons
     , l_currentOrganization
+    , l_currentOrganizationRequest
     , l_currentUser
     , l_currentForum
+    , l_currentForumRequest
     , l_currentBoard
+    , l_currentBoardRequest
     , l_currentThread
+    , l_currentThreadRequest
     , l_currentThreadPost
+    , l_currentThreadPostRequest
     , l_currentResource
+    , l_currentResourceRequest
     , l_currentLeuron
+    , l_currentLeuronRequest
     ]
 
 
 
-l_me                  :: Int
-l_me                  = 0
+-- TODO FIXME: This should be an Enum
 
-l_users               :: Int
-l_users               = 1
+l_me                            :: Int
+l_me                            = 0
 
-l_organizations       :: Int
-l_organizations       = 2
+l_users                         :: Int
+l_users                         = 1
 
-l_teams               :: Int
-l_teams               = 3
+l_organizations                 :: Int
+l_organizations                 = 2
 
-l_forums              :: Int
-l_forums              = 4
+l_teams                         :: Int
+l_teams                         = 3
 
-l_boards              :: Int
-l_boards              = 5
+l_forums                        :: Int
+l_forums                        = 4
 
-l_threads             :: Int
-l_threads             = 6
+l_boards                        :: Int
+l_boards                        = 5
 
-l_threadPosts         :: Int
-l_threadPosts         = 7
+l_threads                       :: Int
+l_threads                       = 6
 
-l_resources           :: Int
-l_resources           = 8
+l_threadPosts                   :: Int
+l_threadPosts                   = 7
 
-l_leurons             :: Int
-l_leurons             = 9
+l_resources                     :: Int
+l_resources                     = 8
 
-l_currentOrganization :: Int
-l_currentOrganization = 10
+l_leurons                       :: Int
+l_leurons                       = 9
 
-l_currentTeam         :: Int
-l_currentTeam         = 11
+l_currentOrganization           :: Int
+l_currentOrganization           = 10
 
-l_currentUser         :: Int
-l_currentUser         = 12
+l_currentOrganizationRequest    :: Int
+l_currentOrganizationRequest    = 11
 
-l_currentForum        :: Int
-l_currentForum        = 13
+l_currentTeam                   :: Int
+l_currentTeam                   = 12
 
-l_currentBoard        :: Int
-l_currentBoard        = 14
+l_currentTeamRequest            :: Int
+l_currentTeamRequest            = 13
 
-l_currentThread       :: Int
-l_currentThread       = 15
+l_currentUser                   :: Int
+l_currentUser                   = 14
 
-l_currentThreadPost   :: Int
-l_currentThreadPost   = 16
+l_currentForum                  :: Int
+l_currentForum                  = 15
 
-l_currentResource     :: Int
-l_currentResource     = 17
+l_currentForumRequest           :: Int
+l_currentForumRequest           = 16
 
-l_currentLeuron       :: Int
-l_currentLeuron       = 18
+l_currentBoard                  :: Int
+l_currentBoard                  = 17
+
+l_currentBoardRequest           :: Int
+l_currentBoardRequest           = 18
+
+l_currentThread                 :: Int
+l_currentThread                 = 19
+
+l_currentThreadRequest          :: Int
+l_currentThreadRequest          = 20
+
+l_currentThreadPost             :: Int
+l_currentThreadPost             = 21
+
+l_currentThreadPostRequest      :: Int
+l_currentThreadPostRequest      = 22
+
+l_currentResource               :: Int
+l_currentResource               = 23
+
+l_currentResourceRequest        :: Int
+l_currentResourceRequest        = 24
+
+l_currentLeuron                 :: Int
+l_currentLeuron                 = 25
+
+l_currentLeuronRequest          :: Int
+l_currentLeuronRequest          = 26
