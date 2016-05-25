@@ -96,7 +96,7 @@ renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Sho
 
 renderView (Resources Index params)              = renderView_Resources_Index
 renderView (Resources New params)                = renderView_Resources_New
-renderView (Resources (Show resource_id) params) = renderView_Resources_Show resource_id
+renderView (Resources (ShowI resource_id) params) = renderView_Resources_Show resource_id
 
 
 
@@ -108,7 +108,7 @@ renderView (ResourcesSiftLeuronsRandom resource_id params)                = rend
 
 
 renderView (Leurons Index params)              = renderView_Leurons_Index
-renderView (Leurons (Show resource_id) params) = renderView_Leurons_Show resource_id
+renderView (Leurons (ShowI resource_id) params) = renderView_Leurons_Show resource_id
 
 
 

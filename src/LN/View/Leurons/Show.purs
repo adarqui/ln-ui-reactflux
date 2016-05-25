@@ -36,8 +36,8 @@ import LN.T                            ( LeuronPackResponse, LeuronResponse
 
 
 
-renderView_Leurons_Show :: String -> State -> ComponentHTML Input
-renderView_Leurons_Show leuron_sid st =
+renderView_Leurons_Show :: Int -> State -> ComponentHTML Input
+renderView_Leurons_Show leuron_id st =
 
   case st.currentLeuron of
        Nothing   -> renderLoading

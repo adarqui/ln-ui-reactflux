@@ -89,7 +89,6 @@ ui = component render eval
 
   eval z@(GetResources _)                             = eval_GetResources eval z
   eval z@(GetResourceId _ _)                          = eval_GetResourceId eval z
-  eval z@(GetResourceSid _ _)                         = eval_GetResourceSid eval z
 
   eval z@(GetResourcesLeurons _ _)                    = eval_GetResources eval z
   eval z@(GetResourceLeuronLinear _ _ _)              = eval_GetResourceLeuronLinear eval z
@@ -98,7 +97,6 @@ ui = component render eval
 
   eval z@(GetLeurons _)                               = eval_GetLeurons eval z
   eval z@(GetLeuronId _ _)                            = eval_GetLeuronId eval z
-  eval z@(GetLeuronSid _ _)                           = eval_GetLeuronSid eval z
   eval z@(GetLeuronRandom _)                          = eval_GetLeuronRandom eval z
 
   eval z@(ConnectSocket _)                            = eval_ConnectSocket eval z

@@ -140,7 +140,7 @@ eval_Goto eval (Goto route next) = do
         moffset
       eval (GetResources next) $> unit
 
-    (Resources (Show resource_sid) params) -> eval (GetResourceSid resource_sid next) $> unit
+    (Resources (ShowI resource_id) params) -> eval (GetResourceId resource_id next) $> unit
 
 
 
@@ -177,7 +177,7 @@ eval_Goto eval (Goto route next) = do
         moffset
       eval (GetLeurons next) $> unit
 
-    (Leurons (Show leuron_sid) params) -> eval (GetLeuronSid leuron_sid next) $> unit
+    (Leurons (ShowI leuron_id) params) -> eval (GetLeuronId leuron_id next) $> unit
 
 
 

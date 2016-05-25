@@ -1,7 +1,6 @@
 module LN.Eval.Leurons (
   eval_GetLeurons,
   eval_GetLeuronId,
-  eval_GetLeuronSid,
   eval_GetLeuronRandom
 ) where
 
@@ -71,15 +70,6 @@ eval_GetLeuronId eval (GetLeuronId leuron_id next) = do
     Right pack -> do
       modify (_{ currentLeuron = Just pack })
       pure next
-
-
-
-eval_GetLeuronSid :: EvalEff
-eval_GetLeuronSid eval (GetLeuronSid leuron_sid next) = do
-
-  case fromString leuron_sid of
-       Nothing          -> pure next
-       Just leuron_id   -> eval (GetLeuronId leuron_id next)
 
 
 

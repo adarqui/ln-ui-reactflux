@@ -60,7 +60,6 @@ data Input a
 
   | GetResources a
   | GetResourceId Int a
-  | GetResourceSid String a
 
   | GetResourcesLeurons Int a
   | GetResourceLeuronLinear Int Int a
@@ -70,7 +69,6 @@ data Input a
 
   | GetLeurons a
   | GetLeuronId Int a
-  | GetLeuronSid String a
   | GetLeuronRandom a
 
   | ConnectSocket a

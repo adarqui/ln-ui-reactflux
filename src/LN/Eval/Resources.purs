@@ -1,7 +1,6 @@
 module LN.Eval.Resources (
   eval_GetResources,
   eval_GetResourceId,
-  eval_GetResourceSid,
   eval_GetResourcesLeurons,
   eval_GetResourcesSiftLeurons,
   eval_GetResourceLeuronLinear,
@@ -76,15 +75,6 @@ eval_GetResourceId eval (GetResourceId resource_id next) = do
     Right pack -> do
       modify (_{ currentResource = Just pack })
       pure next
-
-
-
-eval_GetResourceSid :: EvalEff
-eval_GetResourceSid eval (GetResourceSid resource_sid next) = do
-
-  case fromString resource_sid of
-       Nothing          -> eval (AddError "eval_GetResourceSid" "Bad string id" next)
-       Just resource_id -> eval (GetResourceId resource_id next)
 
 
 

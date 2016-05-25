@@ -21,8 +21,8 @@ import LN.T                            ( ResourcePackResponse, _ResourcePackResp
 
 
 
-renderView_Resources_Show :: String -> State -> ComponentHTML Input
-renderView_Resources_Show resource_sid st =
+renderView_Resources_Show :: Int -> State -> ComponentHTML Input
+renderView_Resources_Show resource_id st =
 
   case st.currentResource of
        Nothing   -> renderLoading

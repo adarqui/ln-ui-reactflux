@@ -96,11 +96,11 @@ routing =
       resources_leurons_show <|>
 
       resources_new <|>
-      resources_show <|>
+      resources_show_int <|>
       resources_index <|>
 
       leurons_new <|>
-      leurons_show <|>
+      leurons_show_int <|>
       leurons_index <|>
 
       login <|>
@@ -277,9 +277,9 @@ routing =
       <$> (lit "" *> lit "resources" *> lit "new" *> pure New)
       <*> (params' <|> pure [])
 
-    resources_show =
+    resources_show_int =
       Resources
-      <$> (lit "" *> lit "resources" *> (Show <$> str1))
+      <$> (lit "" *> lit "resources" *> (ShowI <$> int))
       <*> (params' <|> pure [])
 
 
@@ -294,9 +294,9 @@ routing =
       <$> (lit "" *> lit "leurons" *> lit "new" *> pure New)
       <*> (params' <|> pure [])
 
-    leurons_show =
+    leurons_show_int =
       Leurons
-      <$> (lit "" *> lit "leurons" *> (Show <$> str1))
+      <$> (lit "" *> lit "leurons" *> (ShowI <$> int))
       <*> (params' <|> pure [])
 
 
