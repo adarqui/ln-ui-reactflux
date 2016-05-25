@@ -45,6 +45,10 @@ renderView_Resources_Index' st =
       H.h2_ [H.text "Resources"]
     ],
 
+    H.div [P.classes [B.colLg2, B.colMd2, B.colXs12]] [
+      linkToP_Classes [B.btn, B.btnLg, B.btnInfo, B.btnBlock] [] (Resources New []) "new"
+    ],
+
     -- Page Numbers
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
 
