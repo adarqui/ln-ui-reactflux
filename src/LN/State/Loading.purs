@@ -51,7 +51,7 @@ getLoading key lm = fromJust $ M.lookup key lm
 
 
 setLoading :: Int -> LoadingMap -> LoadingMap
-setLoading key lm = M.update (const $ Just false) key lm
+setLoading key lm = M.update (const $ Just true) key lm
 
 
 
