@@ -293,10 +293,13 @@ instance routesHasCrumb :: HasCrumb Routes where
   crumb (Resources Index params) =
     [Tuple (Resources Index params) "Resources"]
 
-  crumb (Resources (Show resource_id) params) =
+  crumb (Resources New params) =
+    [Tuple (Resources Index params) "Resources"]
+
+  crumb (Resources (ShowI resource_id) params) =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (Show $ slash resource_id) params) resource_id
+      Tuple (Resources (ShowI resource_id) params) (show resource_id)
     ]
 
 
@@ -304,14 +307,14 @@ instance routesHasCrumb :: HasCrumb Routes where
   crumb (ResourcesLeurons resource_id Index params) =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) (show resource_id),
       Tuple (ResourcesLeurons resource_id Index params) "Leurons"
     ]
 
   crumb (ResourcesLeurons resource_id (Show leuron_id) params) =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) (show resource_id),
       Tuple (ResourcesLeurons resource_id Index params) "Leurons"
     ]
 
@@ -320,21 +323,21 @@ instance routesHasCrumb :: HasCrumb Routes where
   crumb (ResourcesSiftLeurons resource_id params) =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) (show resource_id),
       Tuple (ResourcesSiftLeurons resource_id params) "Sift"
     ]
 
   crumb (ResourcesSiftLeuronsRandom resource_id params) =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) (show resource_id),
       Tuple (ResourcesSiftLeurons resource_id params) "Sift"
     ]
 
   crumb (ResourcesSiftLeuronsLinear resource_id _ params) =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (Show $ slash $ show resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) (show resource_id),
       Tuple (ResourcesSiftLeurons resource_id params) "Sift",
       Tuple (ResourcesSiftLeuronsLinear resource_id Index params) "Linear"
     ]
@@ -344,10 +347,10 @@ instance routesHasCrumb :: HasCrumb Routes where
   crumb (Leurons Index params) =
     [Tuple (Leurons Index params) "Leurons"]
 
-  crumb (Leurons (Show leuron_id) params) =
+  crumb (Leurons (ShowI leuron_id) params) =
     [
       Tuple (Leurons Index params) "Leurons",
-      Tuple (Leurons (Show $ slash leuron_id) params) leuron_id
+      Tuple (Leurons (ShowI leuron_id) params) (show leuron_id)
     ]
 
 
