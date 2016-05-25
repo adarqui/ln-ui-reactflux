@@ -4,9 +4,10 @@ module LN.Input.Resource (
 
 
 
-import Data.Maybe (Maybe)
+import Data.Maybe           (Maybe)
 
-import LN.T       (ResourceType, Visibility)
+import LN.Internal.Resource (RType)
+import LN.T                 (ResourceType, Visibility)
 
 
 
@@ -14,8 +15,7 @@ import LN.T       (ResourceType, Visibility)
 
 
 data InputResource
-  = InputResource_Nop1
-  | InputResource_Mod_SetTitle String
+  = InputResource_Mod_SetTitle String
   | InputResource_Mod_SetDescription String
   | InputResource_Mod_SetSource ResourceType
   | InputResource_Mod_AddAuthor String
@@ -26,6 +26,9 @@ data InputResource
   | InputResource_Mod_EditCategory Int (Maybe (Array String))
   | InputResource_Mod_SetVisibility Visibility
   | InputResource_Mod_AddUrl String
+  | InputResource_Mod_EditUrl Int String
   | InputResource_Mod_DelUrl Int
   | InputResource_Mod_Save (Maybe Int)
+  | InputResource_ModState_SetRType RType
+
   | InputResource_Nop

@@ -15,6 +15,7 @@ import LN.Router.Types              (Routes(..))
 import LN.Component.CreateThread    (Comp_CreateThread_State)
 import LN.Input.Types               (Input)
 import LN.State.Loading             (LoadingMap, defaultLoadingMap)
+import LN.State.Resource            (ResourceRequestState, defaultResourceRequestState)
 import LN.State.PageInfo            (PageInfo
                                     , defaultPageInfo
                                     , defaultPageInfo_Organizations
@@ -53,6 +54,7 @@ type State =
   , currentThreadPost     :: Maybe ThreadPostRequest -- TODO FIXME: rename to something more appropriate
   , currentResource       :: Maybe ResourcePackResponse
   , currentResourceRequest :: Maybe ResourceRequest
+  , currentResourceRequestSt :: Maybe ResourceRequestState
   , currentLeuron         :: Maybe LeuronPackResponse
   , currentLeuronRequest  :: Maybe LeuronRequest
 --  , currentWorkout      :: Maybe WorkoutResponse
@@ -96,6 +98,7 @@ initialState ch =
   , currentThreadPost:     Nothing
   , currentResource:       Nothing
   , currentResourceRequest: Nothing
+  , currentResourceRequestSt: Nothing
   , currentLeuron:         Nothing
   , currentLeuronRequest:  Nothing
 --  , currentWorkout:      Nothing
