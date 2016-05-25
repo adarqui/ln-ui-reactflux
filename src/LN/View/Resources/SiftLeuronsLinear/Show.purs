@@ -47,10 +47,10 @@ renderView_Resources_SiftLeuronsLinear_Show' pack offset st =
 renderButtons :: LeuronPackResponse -> Int -> State -> ComponentHTML Input
 renderButtons pack offset st =
   H.div [P.class_ B.row] [
-    H.div [P.class_ B.colXs6] [
+    H.div [P.classes [B.colLg2, B.colMd2, B.colXs6]] [
       linkToP_Classes [B.btn, B.btnLg, B.btnInfo, B.btnBlock] [] (ResourcesSiftLeuronsLinear leuron.resourceId (ShowI offset_prev) []) "prev"
     ],
-    H.div [P.class_ B.colXs6] [
+    H.div [P.classes [B.colLg2, B.colMd2, B.colXs6]] [
       linkToP_Classes [B.btn, B.btnLg, B.btnInfo, B.btnBlock] [] (ResourcesSiftLeuronsLinear leuron.resourceId (ShowI offset_next) []) "next"
     ]
   ]
