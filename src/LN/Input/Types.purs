@@ -1,17 +1,21 @@
 module LN.Input.Types (
-  Input (..)
+  Input (..),
+  -- helpers
+  cResource,
+  cResourceMod
 ) where
 
 
 import Data.Foreign            (ForeignError)
 import Purescript.Api.Helpers  (ApiError)
+import Prelude                 (Unit, unit, (<<<))
 
 import LN.Input.CreateThread   (InputCreateThread)
 import LN.Input.Like           (InputLike)
 import LN.Input.Star           (InputStar)
 import LN.Input.OrderBy        (InputOrderBy)
 import LN.Input.Profile        (InputProfile)
-import LN.Input.Resource       (InputResource)
+import LN.Input.Resource       (InputResource(..), Resource_Mod(..))
 import LN.Input.ThreadPost     (InputThreadPost)
 import LN.Router.Types         (Routes)
 import LN.T
@@ -88,3 +92,11 @@ data Input a
   | CompResource InputResource a
 
   | Nop a
+
+
+
+cResource :: forall a. InputResource -> a -> Input a
+cResource ir next = CompResource ir next
+
+cResourceMod :: forall a. Resource_Mod -> a -> Input a
+cResourceMod rm next = CompResource (InputResource_Mod rm) next

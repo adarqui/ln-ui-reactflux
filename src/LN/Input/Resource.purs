@@ -1,5 +1,6 @@
 module LN.Input.Resource (
-  InputResource (..)
+  InputResource(..),
+  Resource_Mod(..)
 ) where
 
 
@@ -15,20 +16,24 @@ import LN.T                 (ResourceType, Visibility)
 
 
 data InputResource
-  = InputResource_Mod_SetTitle String
-  | InputResource_Mod_SetDescription String
-  | InputResource_Mod_SetSource ResourceType
-  | InputResource_Mod_AddAuthor String
-  | InputResource_Mod_DelAuthor Int
-  | InputResource_Mod_EditAuthor Int String
-  | InputResource_Mod_AddCategory (Maybe (Array String))
-  | InputResource_Mod_DelCategory Int
-  | InputResource_Mod_EditCategory Int (Maybe (Array String))
-  | InputResource_Mod_SetVisibility Visibility
-  | InputResource_Mod_AddUrl String
-  | InputResource_Mod_EditUrl Int String
-  | InputResource_Mod_DelUrl Int
-  | InputResource_Mod_Save (Maybe Int)
-  | InputResource_ModState_SetRType RType
-
+  = InputResource_Mod Resource_Mod
   | InputResource_Nop
+
+
+
+data Resource_Mod
+  = Resource_Mod_SetTitle String
+  | Resource_Mod_SetDescription String
+  | Resource_Mod_SetSource ResourceType
+  | Resource_Mod_AddAuthor String
+  | Resource_Mod_DelAuthor Int
+  | Resource_Mod_EditAuthor Int String
+  | Resource_Mod_AddCategory (Maybe (Array String))
+  | Resource_Mod_DelCategory Int
+  | Resource_Mod_EditCategory Int (Maybe (Array String))
+  | Resource_Mod_SetVisibility Visibility
+  | Resource_Mod_AddUrl String
+  | Resource_Mod_EditUrl Int String
+  | Resource_Mod_DelUrl Int
+  | Resource_Mod_Save (Maybe Int)
+  | Resource_ModState_SetRType RType
