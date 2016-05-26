@@ -1,12 +1,14 @@
 module LN.Internal.Resource (
   RType(..),
-  resourceTypeToRType
+  resourceTypeToRType,
+  defaultResourceRequest
 ) where
 
 
 
 import Data.Generic                (class Generic)
-import Prelude                     (class Eq, class Show, eq, show)
+import Data.Maybe                  (Maybe(Nothing))
+import Prelude                     (class Eq, class Show)
 
 import LN.T
 
@@ -42,3 +44,8 @@ resourceTypeToRType type_ =
        ISBN _     -> RTypeISBN
        URL _      -> RTypeURL
        SourceNone -> RTypeNONE
+
+
+
+defaultResourceRequest :: ResourceRequest
+defaultResourceRequest = mkResourceRequest "" "" SourceNone Nothing [] [] Public 0 Nothing Nothing

@@ -6,7 +6,7 @@ module LN.Eval.Goto (
 
 import Daimyo.Data.Array      (elemBy)
 import Data.Functor           (($>))
-import Data.Maybe             (maybe)
+import Data.Maybe             (Maybe(..), maybe)
 import Data.Int               (fromString)
 import Data.Tuple             (Tuple(..))
 import Halogen                (get, gets, modify, liftAff')
@@ -14,9 +14,11 @@ import Optic.Core             ((^.),(..))
 import Prelude                (show, bind, pure, unit, id, (==), (/=), (<))
 
 import LN.Component.Types     (EvalEff)
+import LN.Internal.Resource   (defaultResourceRequest)
 import LN.Input.Types         (Input(..))
 import LN.Router.Link         (updateUrl)
 import LN.Router.Types        (Routes(..), CRUD(..))
+import LN.State.Resource      (defaultResourceRequestState)
 import LN.T
 
 
@@ -139,6 +141,14 @@ eval_Goto eval (Goto route next) = do
           pure unit)
         moffset
       eval (GetResources next) $> unit
+
+    (Resources New params) -> do
+      modify (_{ currentResourceRequest = Just defaultResourceRequest, currentResourceRequestSt = Just defaultResourceRequestState })
+      pure unit
+
+    (Resources (EditI resource_id) params) -> pure unit
+
+    (Resources (DelI resource_id) params) -> pure unit
 
     (Resources (ShowI resource_id) params) -> eval (GetResourceId resource_id next) $> unit
 

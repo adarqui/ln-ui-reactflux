@@ -39,16 +39,28 @@ data CRUD
   | ShowN Number
   | ShowB Boolean
   | New
+  | Edit String
+  | EditI Int
+  | EditN Number
+  | Del String
+  | DelI Int
+  | DelN Number
 
 
 
 instance eqCrud :: Eq CRUD where
-  eq Index Index         = true
-  eq New New             = true
+  eq Index     Index     = true
   eq (Show a)  (Show b)  = a == b
   eq (ShowI a) (ShowI b) = a == b
   eq (ShowN a) (ShowN b) = a == b
   eq (ShowB a) (ShowB b) = a == b
+  eq New       New       = true
+  eq (Edit a)  (Edit b)  = a == b
+  eq (EditI a) (EditI b) = a == b
+  eq (EditN a) (EditN b) = a == b
+  eq (Del a)   (Del b)   = a == b
+  eq (DelI a)  (DelI b)  = a == b
+  eq (DelN a)  (DelN b)  = a == b
   eq _         _         = false
 
 
