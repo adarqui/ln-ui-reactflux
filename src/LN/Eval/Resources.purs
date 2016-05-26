@@ -10,14 +10,14 @@ module LN.Eval.Resources (
 
 
 
-import Data.Array                    (head, deleteAt, modifyAt)
+import Data.Array                    (head, deleteAt, modifyAt, nub)
 import Data.Either                   (Either(..))
 import Data.Functor                  (($>))
 import Data.Map                      as M
 import Data.Maybe                    (Maybe(..), maybe)
 import Halogen                       (gets, modify)
 import Optic.Core                    ((^.), (..), (.~))
-import Prelude                       (id, const, bind, pure, map, ($), (<>))
+import Prelude                       (class Eq, id, const, bind, pure, map, ($), (<>))
 
 import LN.Api                        ( rd
                                      , getResourcesCount', getResourcePacks, getResourcePack'
@@ -173,9 +173,9 @@ eval_Resource eval (CompResource sub next) = do
 
    InputResource_Nop   -> pure next
  where
- append :: forall a. Maybe (Array a) -> a -> Maybe (Array a)
+ append :: forall a. Eq a => Maybe (Array a) -> a -> Maybe (Array a)
  append Nothing a    = Just [a]
- append (Just arr) a = Just $ arr <> [a]
+ append (Just arr) a = Just $ nub $ arr <> [a]
  set' ref value request   = Just (_ResourceRequest .. ref .~ value $ request) -- unused.. this is nicer, but only typechecks for String
  set v req                = Just (v req)
  mod new                  = modify (\st->st{ currentResourceRequest = maybe Nothing new st.currentResourceRequest }) $> next
