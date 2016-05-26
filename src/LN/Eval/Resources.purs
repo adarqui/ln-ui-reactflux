@@ -13,12 +13,11 @@ module LN.Eval.Resources (
 import Data.Array                    (head)
 import Data.Either                   (Either(..))
 import Data.Functor                  (($>))
-import Data.Int                      (fromString)
 import Data.Map                      as M
 import Data.Maybe                    (Maybe(..), maybe)
 import Halogen                       (gets, modify)
 import Optic.Core                    ((^.), (..), (.~))
-import Prelude                       (id, bind, pure, map, ($))
+import Prelude                       (id, bind, pure, map, ($), (<>))
 
 import LN.Api                        ( rd
                                      , getResourcesCount', getResourcePacks, getResourcePack'
@@ -31,8 +30,9 @@ import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron)
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          ( Param(..), SortOrderBy(..)
                                      , ResourcePackResponses(..), ResourcePackResponse(..)
+                                     , ResourceRequest(..)
                                      , _ResourceRequest
-                                     , title_, description_
+                                     , title_, description_, source_, visibility_
                                      , LeuronPackResponses(..))
 
 
@@ -138,14 +138,30 @@ eval_Resource eval (CompResource sub next) = do
   case sub of
    InputResource_Mod q -> do
      case q of
-       Resource_Mod_SetTitle title -> do
-         mod (set title_ title)
-       Resource_Mod_SetDescription desc -> do
-         mod (set description_ desc)
+       Resource_Mod_SetTitle title        -> mod $ set (\req -> _ResourceRequest .. title_ .~ title $ req)
+       Resource_Mod_SetDescription desc   -> mod $ set (\req -> _ResourceRequest .. description_ .~ desc $ req)
+       Resource_Mod_SetSource source      -> mod $ set (\req -> _ResourceRequest .. source_ .~ source $ req)
+       Resource_Mod_AddAuthor author'     -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ author = append req.author author' })
+       Resource_Mod_DelAuthor idx         -> pure next
+       Resource_Mod_EditAuthor idx author -> pure next
+       Resource_Mod_AddCategory cat       -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ categories = req.categories <> [cat] })
+       Resource_Mod_DelCategory idx       -> pure next
+       Resource_Mod_EditCategory idx cat  -> pure next
+       Resource_Mod_SetVisibility viz     -> mod $ set (\req -> _ResourceRequest ..  visibility_ .~ viz $ req)
+       Resource_Mod_AddUrl url            -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ urls = append req.urls url })
+       Resource_Mod_DelUrl idx            -> pure next
+       Resource_Mod_EditUrl idx url       -> pure next
+       Resource_ModState_SetRType rtype   -> do
+         modify (\st->st{ currentResourceRequestSt = maybe Nothing (\rst -> Just $ rst{rtype = rtype}) st.currentResourceRequestSt }) $> next
+       Resource_Mod_Save m_resource_id    -> pure next
+
 
 
    InputResource_Nop   -> pure next
  where
- set ref value request = Just (_ResourceRequest .. ref .~ value $ request)
- mod new               = modify (\st->st{ currentResourceRequest = maybe Nothing new st.currentResourceRequest }) $> next
- -- at this point in my life.. I consider the above mod/set functions extremely sexy.
+ append :: forall a. Maybe (Array a) -> a -> Maybe (Array a)
+ append Nothing a    = Just [a]
+ append (Just arr) a = Just $ arr <> [a]
+ set' ref value request   = Just (_ResourceRequest .. ref .~ value $ request) -- unused.. this is nicer, but only typechecks for String
+ set v req                = Just (v req)
+ mod new                  = modify (\st->st{ currentResourceRequest = maybe Nothing new st.currentResourceRequest }) $> next

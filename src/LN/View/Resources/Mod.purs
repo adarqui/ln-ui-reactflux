@@ -4,14 +4,14 @@ module LN.View.Resources.Mod (
 
 
 
-import Data.Maybe                      (Maybe(..))
+import Data.Maybe                      (Maybe(..), maybe)
 import Data.Tuple                      (Tuple(..))
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events             as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
-import Prelude                         (map, show, ($), (<<<))
+import Prelude                         (id, map, show, ($), (<<<))
 
 import LN.Halogen.Util
 import LN.Helpers.Array                (seqArrayFrom)
@@ -76,14 +76,14 @@ renderView_Resources_Mod' m_resource_id resource_req rst st =
   -- ResourceCategories
   --
 
-  , input_Label "Categories" "Category" "" P.InputText  (E.input (cResourceMod <<< Resource_Mod_AddCategory <<< decodeString))
+  , input_Label "Categories" "Category" "" P.InputText  (E.input (cResourceMod <<< Resource_Mod_AddCategory <<< maybe [] id <<< decodeString))
 
   , H.div_ $
       map (\(Tuple idx category) ->
         input_DeleteEdit
           P.InputText
           (show category)
-          (E.input (\new -> cResourceMod $ Resource_Mod_EditCategory idx (decodeString new)))
+          (E.input (\new -> cResourceMod $ Resource_Mod_EditCategory idx (maybe [] id $ decodeString new)))
           (E.input_ (cResourceMod $ Resource_Mod_DelCategory idx))
       ) $ seqArrayFrom resource.categories
 
