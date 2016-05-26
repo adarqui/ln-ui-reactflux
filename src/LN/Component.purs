@@ -109,5 +109,6 @@ ui = component render eval
   eval z@(CompStar _ _)                               = eval_Star eval z
   eval z@(CompOrderBy _ _)                            = eval_OrderBy eval z
   eval z@(CompProfile _ _)                            = eval_Profile eval z
+  eval z@(CompResource _ _)                           = eval_Resource eval z
 
   eval z@(Nop _)                                      = eval_Nop eval z

@@ -4,7 +4,8 @@ module LN.Eval.Resources (
   eval_GetResourcesLeurons,
   eval_GetResourcesSiftLeurons,
   eval_GetResourceLeuronLinear,
-  eval_GetResourceLeuronRandom
+  eval_GetResourceLeuronRandom,
+  eval_Resource
 ) where
 
 
@@ -23,6 +24,7 @@ import LN.Api                        ( rd
                                      , getLeuronPacks_ByResourceId)
 import LN.Component.Types            (EvalEff)
 import LN.Helpers.Map                (idmapFrom)
+import LN.Input.Resource             (InputResource(..), Resource_Mod(..))
 import LN.Input.Types                (Input(..))
 import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron)
 import LN.State.PageInfo             (runPageInfo)
@@ -123,3 +125,13 @@ eval_GetResourceLeuronRandom eval (GetResourceLeuronRandom resource_id next) = d
       case head packs.leuronPackResponses of
         Nothing   -> eval (AddError "eval_GetResourceLeuronRandom" "Empty leuron response" next)
         Just pack -> modify (_{ currentLeuron = Just pack }) $> next
+
+
+
+-- | Component
+--
+eval_Resource :: EvalEff
+eval_Resource eval (CompResource sub next) = do
+  case sub of
+       InputResource_Mod q -> pure next
+       InputResource_Nop   -> pure next
