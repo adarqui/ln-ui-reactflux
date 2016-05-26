@@ -15,9 +15,10 @@ import Data.Either                   (Either(..))
 import Data.Functor                  (($>))
 import Data.Int                      (fromString)
 import Data.Map                      as M
-import Data.Maybe                    (Maybe(..))
+import Data.Maybe                    (Maybe(..), maybe)
 import Halogen                       (gets, modify)
-import Prelude                       (bind, pure, map, ($))
+import Optic.Core                    ((^.), (..), (.~))
+import Prelude                       (id, bind, pure, map, ($))
 
 import LN.Api                        ( rd
                                      , getResourcesCount', getResourcePacks, getResourcePack'
@@ -30,6 +31,8 @@ import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron)
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          ( Param(..), SortOrderBy(..)
                                      , ResourcePackResponses(..), ResourcePackResponse(..)
+                                     , _ResourceRequest
+                                     , title_, description_
                                      , LeuronPackResponses(..))
 
 
@@ -133,5 +136,16 @@ eval_GetResourceLeuronRandom eval (GetResourceLeuronRandom resource_id next) = d
 eval_Resource :: EvalEff
 eval_Resource eval (CompResource sub next) = do
   case sub of
-       InputResource_Mod q -> pure next
-       InputResource_Nop   -> pure next
+   InputResource_Mod q -> do
+     case q of
+       Resource_Mod_SetTitle title -> do
+         mod (set title_ title)
+       Resource_Mod_SetDescription desc -> do
+         mod (set description_ desc)
+
+
+   InputResource_Nop   -> pure next
+ where
+ set ref value request = Just (_ResourceRequest .. ref .~ value $ request)
+ mod new               = modify (\st->st{ currentResourceRequest = maybe Nothing new st.currentResourceRequest }) $> next
+ -- at this point in my life.. I consider the above mod/set functions extremely sexy.
