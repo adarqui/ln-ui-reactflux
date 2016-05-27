@@ -1,7 +1,8 @@
 module LN.Internal.Resource (
   RType(..),
   resourceTypeToRType,
-  defaultResourceRequest
+  defaultResourceRequest,
+  unwrapResourceSource
 ) where
 
 
@@ -49,3 +50,14 @@ resourceTypeToRType type_ =
 
 defaultResourceRequest :: ResourceRequest
 defaultResourceRequest = mkResourceRequest "" "" SourceNone Nothing [] [] Public 0 Nothing Nothing
+
+
+
+unwrapResourceSource :: ResourceType -> String
+unwrapResourceSource source =
+  case source of
+       ISBN13 s -> s
+       ISBN10 s -> s
+       ISBN   s -> s
+       URL    s -> s
+       _        -> ""

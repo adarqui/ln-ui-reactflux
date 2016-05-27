@@ -18,7 +18,7 @@ import Prelude                         (id, map, show, ($), (<<<))
 import LN.Halogen.Util
 import LN.Helpers.Array                (seqArrayFrom)
 import LN.Helpers.JSON                 (decodeString)
-import LN.Internal.Resource            (RType(..), resourceTypeToRType)
+import LN.Internal.Resource            (RType(..), resourceTypeToRType, unwrapResourceSource)
 import LN.Input.Resource
 import LN.Input.Types                  (Input(..), cResourceMod)
 import LN.State.Loading                (getLoading, l_currentResource)
@@ -66,8 +66,8 @@ renderView_Resources_Mod' m_resource_id resource_req rst st =
 
     , case rst.rtype of
            RTypeNONE -> H.p_ [H.text "NONE"]
-           RTypeURL  -> H.p_ [input_Label "URL" "url" (show resource.source) P.InputUrl (E.input (\url -> cResourceMod $ Resource_Mod_SetSource (URL url)))]
-           RTypeISBN -> H.p_ [input_Label "ISBN" "isbn" (show resource.source) P.InputText (E.input (\isbn -> cResourceMod $ Resource_Mod_SetSource (ISBN isbn)))]
+           RTypeURL  -> H.p_ [input_Label "URL" "url" (unwrapResourceSource resource.source) P.InputUrl (E.input (\url -> cResourceMod $ Resource_Mod_SetSource (URL url)))]
+           RTypeISBN -> H.p_ [input_Label "ISBN" "isbn" (unwrapResourceSource resource.source) P.InputText (E.input (\isbn -> cResourceMod $ Resource_Mod_SetSource (ISBN isbn)))]
 
   --
   -- ResourceAuthor
