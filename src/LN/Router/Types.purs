@@ -309,7 +309,16 @@ instance routesHasCrumb :: HasCrumb Routes where
     [Tuple (Resources Index params) "Resources"]
 
   crumb (Resources (EditI resource_id) params) =
-    [Tuple (Resources Index params) "Resources"]
+    [
+      Tuple (Resources Index params) "Resources",
+      Tuple (Resources (ShowI resource_id) params) (show resource_id)
+    ]
+
+  crumb (Resources (DeleteI resource_id) params) =
+    [
+      Tuple (Resources Index params) "Resources",
+      Tuple (Resources (ShowI resource_id) params) (show resource_id)
+    ]
 
   crumb (Resources (ShowI resource_id) params) =
     [
@@ -422,13 +431,19 @@ instance routesShow :: Show Routes where
 instance crudHasLink :: HasLink CRUD where
 -- TODO FIXME:
 -- well this could be fixed.. changed from "" in order to match CRUD Index routes
-  link Index        = Tuple "" M.empty
+  link Index          = Tuple "" M.empty
 --  link Index    = Tuple "/index" M.empty
-  link New          = Tuple "/new" M.empty
-  link (Show s)     = Tuple ("/" <> s) M.empty
-  link (ShowI int)  = Tuple ("/" <> show int) M.empty
-  link (ShowN num)  = Tuple ("/" <> show num) M.empty
-  link (ShowB bool) = Tuple ("/" <> show bool) M.empty
+  link New            = Tuple "/new" M.empty
+  link (Show s)       = Tuple ("/" <> s) M.empty
+  link (ShowI int)    = Tuple ("/" <> show int) M.empty
+  link (ShowN num)    = Tuple ("/" <> show num) M.empty
+  link (ShowB bool)   = Tuple ("/" <> show bool) M.empty
+  link (Edit s)       = Tuple ("/_edit/" <> s) M.empty
+  link (EditI int)    = Tuple ("/_edit/" <> show int) M.empty
+  link (EditN num)    = Tuple ("/_edit/" <> show num) M.empty
+  link (Delete s)     = Tuple ("/_delete/" <> s) M.empty
+  link (DeleteI int)  = Tuple ("/_delete/" <> show int) M.empty
+  link (DeleteN num)  = Tuple ("/_delete/" <> show num) M.empty
 
 
 

@@ -39,10 +39,10 @@ renderView_Resources_Show' pack st =
       H.h1 [P.class_ B.textCenter] [H.text (resource.title)],
       H.p [P.class_ B.textCenter] [H.text (resource.description)]
     ],
---    H.div [P.class_ B.container] [
---      linkToP_Glyph' (Resources (EditI resource.id) []) B.glyphiconPencil,
---      linkToP_Glyph' (Resources (DeleteI resource.id) []) B.glyphiconTrash
---    ],
+    H.div [P.class_ B.container] [
+      linkToP_Glyph' (Resources (EditI resource.id) []) B.glyphiconPencil,
+      linkToP_Glyph' (Resources (DeleteI resource.id) []) B.glyphiconTrash
+    ],
     H.div [P.class_ B.container] [
       H.div [P.class_ B.listGroup] [
         linkToP_Classes [B.listGroupItem] [] (ResourcesLeurons resource.id Index []) "leurons",
