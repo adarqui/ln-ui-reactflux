@@ -13,7 +13,7 @@ import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events             as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
-import Prelude                         (id, map, show, ($), (<<<))
+import Prelude                         (id, map, show, const, ($), (<<<))
 
 import LN.Halogen.Util
 import LN.Helpers.Array                (seqArrayFrom)
@@ -128,8 +128,9 @@ renderView_Resources_Mod' m_resource_id resource_req rst st =
                 (E.input_ (cResourceMod $ Resource_Mod_DelUrl idx))
               ) $ seqArrayFrom urls
 
- , simpleInfoButton "Create!" (cResourceMod $ Resource_Mod_Save m_resource_id)
+ , simpleInfoButton save (cResourceMod $ Resource_Mod_Save m_resource_id)
 
   ]
   where
   resource = unwrapResourceRequest resource_req
+  save     = maybe "Create" (const "Save") m_resource_id
