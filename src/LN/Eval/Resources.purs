@@ -128,7 +128,7 @@ eval_GetResourceLeuronRandom eval (GetResourceLeuronRandom resource_id next) = d
     Left err                          -> eval (AddErrorApi "eval_GetResourceLeuronRandom::getLeuronPacks_ByResourceId" err next)
     Right (LeuronPackResponses packs) -> do
       case head packs.leuronPackResponses of
-        Nothing   -> eval (AddError "eval_GetResourceLeuronRandom" "Empty leuron response" next)
+        Nothing   -> pure next
         Just pack -> modify (_{ currentLeuron = Just pack }) $> next
 
 

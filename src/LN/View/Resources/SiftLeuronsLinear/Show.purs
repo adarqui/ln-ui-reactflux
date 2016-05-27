@@ -29,6 +29,7 @@ renderView_Resources_SiftLeuronsLinear_Show :: Int -> Int -> State -> ComponentH
 renderView_Resources_SiftLeuronsLinear_Show resource_id offset st =
   case st.currentLeuron, getLoading l_currentLeuron st.loading of
        _, true          -> renderLoading
+       Just _, true     -> renderLoading
        Nothing, false   -> H.div_ [H.p_ [H.text "no more leurons"]]
        Just pack, false -> renderView_Resources_SiftLeuronsLinear_Show' pack offset st
 
