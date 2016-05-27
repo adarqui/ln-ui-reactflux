@@ -11,11 +11,12 @@ import Data.Int               (fromString)
 import Data.Tuple             (Tuple(..))
 import Halogen                (get, gets, modify, liftAff')
 import Optic.Core             ((^.),(..))
-import Prelude                (show, bind, pure, unit, id, (==), (/=), (<))
+import Prelude                (show, bind, pure, unit, id, (==), (/=), (<), ($))
 
 import LN.Component.Types     (EvalEff)
 import LN.Internal.Resource   (defaultResourceRequest)
 import LN.Input.Types         (Input(..))
+import LN.Internal.Resource   (resourceTypeToRType)
 import LN.Router.Link         (updateUrl)
 import LN.Router.Types        (Routes(..), CRUD(..))
 import LN.State.Resource      (defaultResourceRequestState)
@@ -146,9 +147,28 @@ eval_Goto eval (Goto route next) = do
       modify (_{ currentResourceRequest = Just defaultResourceRequest, currentResourceRequestSt = Just defaultResourceRequestState })
       pure unit
 
-    (Resources (EditI resource_id) params)   -> eval (GetResourceId resource_id next) $> unit
+    (Resources (EditI resource_id) params)   -> do
+      eval (GetResourceId resource_id next)
+      m_pack <- gets _.currentResource
+      case m_pack of
+           Nothing                          -> pure unit
+           Just (ResourcePackResponse pack) -> do
+             -- TODO FIXME: St's RType needs to match source
+             let
+               resource = pack.resource ^. _ResourceResponse
+               rst      = defaultResourceRequestState { rtype = resourceTypeToRType resource.source }
+             modify (_{ currentResourceRequest = Just $ resourceResponseToResourceRequest pack.resource, currentResourceRequestSt = Just rst })
+             pure unit
 
-    (Resources (DeleteI resource_id) params) -> eval (GetResourceId resource_id next) $> unit
+    (Resources (DeleteI resource_id) params) -> do
+      eval (GetResourceId resource_id next)
+      m_pack <- gets _.currentResource
+      case m_pack of
+           Nothing                          -> pure unit
+           Just (ResourcePackResponse pack) -> do
+             modify (_{ currentResourceRequest = Just $ resourceResponseToResourceRequest pack.resource })
+             pure unit
+
 
     (Resources (ShowI resource_id) params)   -> eval (GetResourceId resource_id next) $> unit
 

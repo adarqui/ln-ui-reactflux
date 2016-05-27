@@ -27,11 +27,15 @@ import LN.Component.Types            (EvalEff)
 import LN.Helpers.Map                (idmapFrom)
 import LN.Input.Resource             (InputResource(..), Resource_Mod(..))
 import LN.Input.Types                (Input(..))
+import LN.Internal.Resource          (resourceTypeToRType)
 import LN.Router.Types               (Routes(..), CRUD(..))
 import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron, l_currentResource, l_resources)
+import LN.State.Resource             (ResourceRequestState, defaultResourceRequestState)
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          ( Param(..), SortOrderBy(..)
                                      , ResourcePackResponses(..), ResourcePackResponse(..)
+                                     , _ResourcePackResponse, resource_
+                                     , _ResourceResponse
                                      , ResourceRequest(..), ResourceResponse(..)
                                      , _ResourceRequest
                                      , title_, description_, source_, visibility_
@@ -90,6 +94,7 @@ eval_GetResourceId eval (GetResourceId resource_id next) = do
     Right pack -> do
       modify (_{ currentResource = Just pack })
       pure next
+
 
 
 

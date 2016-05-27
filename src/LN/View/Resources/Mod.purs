@@ -21,6 +21,7 @@ import LN.Helpers.JSON                 (decodeString)
 import LN.Internal.Resource            (RType(..), resourceTypeToRType)
 import LN.Input.Resource
 import LN.Input.Types                  (Input(..), cResourceMod)
+import LN.State.Loading                (getLoading, l_currentResource)
 import LN.State.Resource               (ResourceRequestState)
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
@@ -40,9 +41,10 @@ renderView_Resources_Edit resource_id = renderView_Resources_Mod (Just resource_
 
 renderView_Resources_Mod :: Maybe Int -> State -> ComponentHTML Input
 renderView_Resources_Mod m_resource_id st =
-  case st.currentResourceRequest, st.currentResourceRequestSt of
-    Nothing, _                  -> renderLoading
-    Just resource_req, Just rst -> renderView_Resources_Mod' m_resource_id resource_req rst st
+  case st.currentResourceRequest, st.currentResourceRequestSt, getLoading l_currentResource st.loading of
+    _, _, true                         -> renderLoading
+    Just resource_req, Just rst, false -> renderView_Resources_Mod' m_resource_id resource_req rst st
+    _, _, false                        -> H.div_ [H.p_ [H.text "unexpected error."]]
 
 
 
