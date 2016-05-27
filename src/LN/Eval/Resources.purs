@@ -28,7 +28,7 @@ import LN.Helpers.Map                (idmapFrom)
 import LN.Input.Resource             (InputResource(..), Resource_Mod(..))
 import LN.Input.Types                (Input(..))
 import LN.Router.Types               (Routes(..), CRUD(..))
-import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron)
+import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron, l_currentResource, l_resources)
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          ( Param(..), SortOrderBy(..)
                                      , ResourcePackResponses(..), ResourcePackResponse(..)
@@ -54,8 +54,12 @@ eval_GetResources eval (GetResources next) = do
       let new_page_info = runPageInfo counts page_info
 
       modify (_{ resourcesPageInfo = new_page_info.pageInfo })
+      modify (\st->st{loading = setLoading l_resources st.loading})
 
       e_resource_packs <- rd $ getResourcePacks new_page_info.params
+
+      modify (\st->st{loading = clearLoading l_resources st.loading})
+
       case e_resource_packs of
            Left err                                     -> eval (AddErrorApi "eval_GetResources::getResourcePacks" err next)
            Right (ResourcePackResponses resource_packs) -> do
@@ -75,8 +79,12 @@ eval_GetResourceId :: EvalEff
 eval_GetResourceId eval (GetResourceId resource_id next) = do
 
   modify (_{ currentResource = Nothing })
+  modify (\st->st{loading = setLoading l_currentResource st.loading})
 
   e_pack <- rd $ getResourcePack' resource_id
+
+  modify (\st->st{loading = clearLoading l_currentResource st.loading})
+
   case e_pack of
     Left err   -> pure next
     Right pack -> do

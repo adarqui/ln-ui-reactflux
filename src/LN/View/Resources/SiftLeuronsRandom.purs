@@ -28,7 +28,6 @@ renderView_Resources_SiftLeuronsRandom :: Int -> State -> ComponentHTML Input
 renderView_Resources_SiftLeuronsRandom resource_id st =
   case st.currentLeuron, getLoading l_currentLeuron st.loading of
     _, true          -> renderLoading
-    Just _, true     -> renderLoading
     Nothing, false   -> H.div_ [H.p_ [H.text "no leurons."]]
     Just pack, false -> renderView_Resources_SiftLeuronsRandom' pack st
 

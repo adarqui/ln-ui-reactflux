@@ -146,11 +146,11 @@ eval_Goto eval (Goto route next) = do
       modify (_{ currentResourceRequest = Just defaultResourceRequest, currentResourceRequestSt = Just defaultResourceRequestState })
       pure unit
 
-    (Resources (EditI resource_id) params) -> pure unit
+    (Resources (EditI resource_id) params)   -> eval (GetResourceId resource_id next) $> unit
 
-    (Resources (DelI resource_id) params) -> pure unit
+    (Resources (DeleteI resource_id) params) -> eval (GetResourceId resource_id next) $> unit
 
-    (Resources (ShowI resource_id) params) -> eval (GetResourceId resource_id next) $> unit
+    (Resources (ShowI resource_id) params)   -> eval (GetResourceId resource_id next) $> unit
 
 
 

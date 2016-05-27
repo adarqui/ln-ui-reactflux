@@ -42,26 +42,26 @@ data CRUD
   | Edit String
   | EditI Int
   | EditN Number
-  | Del String
-  | DelI Int
-  | DelN Number
+  | Delete String
+  | DeleteI Int
+  | DeleteN Number
 
 
 
 instance eqCrud :: Eq CRUD where
-  eq Index     Index     = true
-  eq (Show a)  (Show b)  = a == b
-  eq (ShowI a) (ShowI b) = a == b
-  eq (ShowN a) (ShowN b) = a == b
-  eq (ShowB a) (ShowB b) = a == b
-  eq New       New       = true
-  eq (Edit a)  (Edit b)  = a == b
-  eq (EditI a) (EditI b) = a == b
-  eq (EditN a) (EditN b) = a == b
-  eq (Del a)   (Del b)   = a == b
-  eq (DelI a)  (DelI b)  = a == b
-  eq (DelN a)  (DelN b)  = a == b
-  eq _         _         = false
+  eq Index        Index        = true
+  eq (Show a)     (Show b)     = a == b
+  eq (ShowI a)    (ShowI b)    = a == b
+  eq (ShowN a)    (ShowN b)    = a == b
+  eq (ShowB a)    (ShowB b)    = a == b
+  eq New          New          = true
+  eq (Edit a)     (Edit b)     = a == b
+  eq (EditI a)    (EditI b)    = a == b
+  eq (EditN a)    (EditN b)    = a == b
+  eq (Delete a)   (Delete b)   = a == b
+  eq (DeleteI a)  (DeleteI b)  = a == b
+  eq (DeleteN a)  (DeleteN b)  = a == b
+  eq _            _            = false
 
 
 
@@ -306,6 +306,9 @@ instance routesHasCrumb :: HasCrumb Routes where
     [Tuple (Resources Index params) "Resources"]
 
   crumb (Resources New params) =
+    [Tuple (Resources Index params) "Resources"]
+
+  crumb (Resources (EditI resource_id) params) =
     [Tuple (Resources Index params) "Resources"]
 
   crumb (Resources (ShowI resource_id) params) =
