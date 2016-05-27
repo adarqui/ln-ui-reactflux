@@ -5,17 +5,17 @@ module LN.State.Resource (
 
 
 
-import LN.Internal.Resource (RType(..))
+import LN.T (TyResourceType(..))
 
 
 
 type ResourceRequestState = {
-  rtype :: RType
+  source :: TyResourceType
 }
 
 
 
 defaultResourceRequestState :: ResourceRequestState
 defaultResourceRequestState = {
-  rtype: RTypeNONE
+  source: TySourceNone
 }

@@ -18,7 +18,7 @@ import Prelude                         (id, map, show, ($), (<<<))
 import LN.Halogen.Util
 import LN.Helpers.Array                (seqArrayFrom)
 import LN.Helpers.JSON                 (decodeString)
-import LN.Internal.Resource            (RType(..), resourceTypeToRType, unwrapResourceSource)
+import LN.Internal.Resource            (resourceTypeToTyResourceType, unwrapResourceSource)
 import LN.Input.Resource
 import LN.Input.Types                  (Input(..), cResourceMod)
 import LN.State.Loading                (getLoading, l_currentResource)
@@ -62,12 +62,12 @@ renderView_Resources_Mod' m_resource_id resource_req rst st =
   -- ResourceSource
   --
 
-    , radioMenu "Resource Type" "resource-type" [RTypeNONE, RTypeURL, RTypeISBN] (cResourceMod <<< Resource_ModState_SetRType) rst.rtype
+    , radioMenu "Resource Type" "resource-type" [TySourceNone, TyURL, TyISBN] (cResourceMod <<< Resource_ModState_SetTyResourceType) rst.source
 
-    , case rst.rtype of
-           RTypeNONE -> H.p_ [H.text "NONE"]
-           RTypeURL  -> H.p_ [input_Label "URL" "url" (unwrapResourceSource resource.source) P.InputUrl (E.input (\url -> cResourceMod $ Resource_Mod_SetSource (URL url)))]
-           RTypeISBN -> H.p_ [input_Label "ISBN" "isbn" (unwrapResourceSource resource.source) P.InputText (E.input (\isbn -> cResourceMod $ Resource_Mod_SetSource (ISBN isbn)))]
+    , case rst.source of
+           TySourceNone -> H.p_ [H.text "NONE"]
+           TyURL        -> H.p_ [input_Label "URL" "url" (unwrapResourceSource resource.source) P.InputUrl (E.input (\url -> cResourceMod $ Resource_Mod_SetSource (URL url)))]
+           TyISBN       -> H.p_ [input_Label "ISBN" "isbn" (unwrapResourceSource resource.source) P.InputText (E.input (\isbn -> cResourceMod $ Resource_Mod_SetSource (ISBN isbn)))]
 
   --
   -- ResourceAuthor

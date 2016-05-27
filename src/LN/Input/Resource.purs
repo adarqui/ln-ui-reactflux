@@ -7,8 +7,7 @@ module LN.Input.Resource (
 
 import Data.Maybe           (Maybe)
 
-import LN.Internal.Resource (RType)
-import LN.T                 (ResourceType, Visibility)
+import LN.T                 (ResourceType, TyResourceType, Visibility)
 
 
 
@@ -36,4 +35,4 @@ data Resource_Mod
   | Resource_Mod_DelUrl Int
   | Resource_Mod_EditUrl Int String
   | Resource_Mod_Save (Maybe Int)
-  | Resource_ModState_SetRType RType
+  | Resource_ModState_SetTyResourceType TyResourceType

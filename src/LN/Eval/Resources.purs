@@ -27,7 +27,7 @@ import LN.Component.Types            (EvalEff)
 import LN.Helpers.Map                (idmapFrom)
 import LN.Input.Resource             (InputResource(..), Resource_Mod(..))
 import LN.Input.Types                (Input(..))
-import LN.Internal.Resource          (resourceTypeToRType)
+import LN.Internal.Resource          (resourceTypeToTyResourceType)
 import LN.Router.Types               (Routes(..), CRUD(..))
 import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron, l_currentResource, l_resources)
 import LN.State.Resource             (ResourceRequestState, defaultResourceRequestState)
@@ -179,8 +179,8 @@ eval_Resource eval (CompResource sub next) = do
 
        Resource_Mod_EditUrl idx url       -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ urls = maybe req.urls (deleteAt idx) req.urls })
 
-       Resource_ModState_SetRType rtype   -> do
-         modify (\st->st{ currentResourceRequestSt = maybe Nothing (\rst -> Just $ rst{rtype = rtype}) st.currentResourceRequestSt }) $> next
+       Resource_ModState_SetTyResourceType source   -> do
+         modify (\st->st{ currentResourceRequestSt = maybe Nothing (\rst -> Just $ rst{source = source}) st.currentResourceRequestSt }) $> next
 
        Resource_Mod_Save m_resource_id    -> do
          m_req <- gets _.currentResourceRequest

@@ -16,7 +16,7 @@ import Prelude                (show, bind, pure, unit, id, (==), (/=), (<), ($))
 import LN.Component.Types     (EvalEff)
 import LN.Internal.Resource   (defaultResourceRequest)
 import LN.Input.Types         (Input(..))
-import LN.Internal.Resource   (resourceTypeToRType)
+import LN.Internal.Resource   (resourceTypeToTyResourceType)
 import LN.Router.Link         (updateUrl)
 import LN.Router.Types        (Routes(..), CRUD(..))
 import LN.State.Resource      (defaultResourceRequestState)
@@ -153,10 +153,10 @@ eval_Goto eval (Goto route next) = do
       case m_pack of
            Nothing                          -> pure unit
            Just (ResourcePackResponse pack) -> do
-             -- TODO FIXME: St's RType needs to match source
+             -- TODO FIXME: St's TyResourceType needs to match source
              let
                resource = pack.resource ^. _ResourceResponse
-               rst      = defaultResourceRequestState { rtype = resourceTypeToRType resource.source }
+               rst      = defaultResourceRequestState { source = resourceTypeToTyResourceType resource.source }
              modify (_{ currentResourceRequest = Just $ resourceResponseToResourceRequest pack.resource, currentResourceRequestSt = Just rst })
              pure unit
 
