@@ -2,7 +2,9 @@ module LN.Input.Types (
   Input (..),
   -- helpers
   cResource,
-  cResourceMod
+  cResourceMod,
+  cLeuron,
+  cLeuronMod
 ) where
 
 
@@ -11,11 +13,12 @@ import Purescript.Api.Helpers  (ApiError)
 import Prelude                 (Unit, unit, (<<<))
 
 import LN.Input.CreateThread   (InputCreateThread)
+import LN.Input.Leuron         (InputLeuron(..), Leuron_Mod)
 import LN.Input.Like           (InputLike)
 import LN.Input.Star           (InputStar)
 import LN.Input.OrderBy        (InputOrderBy)
 import LN.Input.Profile        (InputProfile)
-import LN.Input.Resource       (InputResource(..), Resource_Mod(..))
+import LN.Input.Resource       (InputResource(..), Resource_Mod)
 import LN.Input.ThreadPost     (InputThreadPost)
 import LN.Router.Types         (Routes)
 import LN.T
@@ -91,12 +94,25 @@ data Input a
 
   | CompResource InputResource a
 
+  | CompLeuron InputLeuron a
+
   | Nop a
 
 
+
+-- | Helpers for "components" and "subcomponents"
+--
 
 cResource :: forall a. InputResource -> a -> Input a
 cResource ir next = CompResource ir next
 
 cResourceMod :: forall a. Resource_Mod -> a -> Input a
 cResourceMod rm next = CompResource (InputResource_Mod rm) next
+
+
+
+cLeuron :: forall a. InputLeuron -> a -> Input a
+cLeuron il next = CompLeuron il next
+
+cLeuronMod :: forall a. Leuron_Mod -> a -> Input a
+cLeuronMod lm next = CompLeuron (InputLeuron_Mod lm) next

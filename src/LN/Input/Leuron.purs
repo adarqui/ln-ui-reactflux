@@ -12,7 +12,7 @@ import LN.Internal.Leuron (LeuronSift)
 data InputLeuron
   = InputLeuron_Nop1
   | InputLeuron_Set_Sift LeuronSift
-  | InputLeuron_Mod
+  | InputLeuron_Mod Leuron_Mod
   | InputLeuron_Nop
 
 

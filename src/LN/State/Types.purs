@@ -14,9 +14,10 @@ import Prelude                      (Unit)
 import LN.Router.Types              (Routes(..))
 import LN.Component.CreateThread    (Comp_CreateThread_State)
 import LN.Input.Types               (Input)
+import LN.State.Leuron              (LeuronRequestState, defaultLeuronRequestState)
 import LN.State.Loading             (LoadingMap, defaultLoadingMap)
 import LN.State.Resource            (ResourceRequestState, defaultResourceRequestState)
-import LN.State.PageInfo            (PageInfo
+import LN.State.PageInfo            ( PageInfo
                                     , defaultPageInfo
                                     , defaultPageInfo_Organizations
                                     , defaultPageInfo_Users
@@ -57,6 +58,7 @@ type State =
   , currentResourceRequestSt :: Maybe ResourceRequestState
   , currentLeuron         :: Maybe LeuronPackResponse
   , currentLeuronRequest  :: Maybe LeuronRequest
+  , currentLeuronRequestSt :: Maybe LeuronRequestState
 --  , currentWorkout      :: Maybe WorkoutResponse
   , currentPageInfo       :: PageInfo
   , organizationsPageInfo :: PageInfo
@@ -101,6 +103,7 @@ initialState ch =
   , currentResourceRequestSt: Nothing
   , currentLeuron:         Nothing
   , currentLeuronRequest:  Nothing
+  , currentLeuronRequestSt: Nothing
 --  , currentWorkout:      Nothing
   , currentPageInfo:       defaultPageInfo
   , organizationsPageInfo: defaultPageInfo_Organizations
