@@ -36,8 +36,7 @@ import LN.View.Organizations.Forums.Boards.Show         (renderView_Organization
 import LN.View.Organizations.Forums.Boards.Threads.Show (renderView_Organizations_Forums_Boards_Threads_Show)
 
 import LN.View.Resources.Index                    (renderView_Resources_Index)
-import LN.View.Resources.New                      (renderView_Resources_New)
--- TODO FIXME: import LN.View.Resources.Edit
+import LN.View.Resources.Mod                      (renderView_Resources_New, renderView_Resources_Edit)
 import LN.View.Resources.Show                     (renderView_Resources_Show)
 import LN.View.Resources.Leurons.Index            (renderView_Resources_Leurons_Index)
 import LN.View.Resources.SiftLeurons              (renderView_Resources_SiftLeurons)
@@ -94,8 +93,9 @@ renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Sho
 
 
 
-renderView (Resources Index params)              = renderView_Resources_Index
-renderView (Resources New params)                = renderView_Resources_New
+renderView (Resources Index params )              = renderView_Resources_Index
+renderView (Resources New params)                 = renderView_Resources_New
+renderView (Resources (EditI resource_id) params) = renderView_Resources_Edit resource_id
 renderView (Resources (ShowI resource_id) params) = renderView_Resources_Show resource_id
 
 

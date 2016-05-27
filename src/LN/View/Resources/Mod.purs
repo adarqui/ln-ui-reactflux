@@ -1,4 +1,6 @@
 module LN.View.Resources.Mod (
+  renderView_Resources_New,
+  renderView_Resources_Edit,
   renderView_Resources_Mod
 ) where
 
@@ -23,6 +25,16 @@ import LN.State.Resource               (ResourceRequestState)
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
+
+
+
+renderView_Resources_New :: State -> ComponentHTML Input
+renderView_Resources_New = renderView_Resources_Mod Nothing
+
+
+
+renderView_Resources_Edit :: Int -> State -> ComponentHTML Input
+renderView_Resources_Edit resource_id = renderView_Resources_Mod (Just resource_id)
 
 
 

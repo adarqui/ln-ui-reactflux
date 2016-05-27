@@ -97,6 +97,7 @@ routing =
 
       resources_new <|>
       resources_show_int <|>
+      resources_edit_int <|>
       resources_index <|>
 
       leurons_new <|>
@@ -280,6 +281,11 @@ routing =
     resources_show_int =
       Resources
       <$> (lit "" *> lit "resources" *> (ShowI <$> int))
+      <*> (params' <|> pure [])
+
+    resources_edit_int =
+      Resources
+      <$> (lit "" *> lit "resources" *> lit "_edit" *> (EditI <$> int))
       <*> (params' <|> pure [])
 
 
