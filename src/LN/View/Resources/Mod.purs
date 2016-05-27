@@ -51,8 +51,8 @@ renderView_Resources_Mod m_resource_id st =
 renderView_Resources_Mod' :: Maybe Int -> ResourceRequest -> ResourceRequestState -> State -> ComponentHTML Input
 renderView_Resources_Mod' m_resource_id resource_req rst st =
   H.div_ [
-    H.h1_
-      [ H.text "Add Resource" ]
+
+    H.h1_ [ H.text "Add Resource" ]
 
   , input_Label "Title" "Title" resource.title P.InputText (E.input (cResourceMod <<< Resource_Mod_SetTitle))
 

@@ -5,6 +5,9 @@ module LN.Input.Leuron (
 
 
 
+import Data.Maybe         (Maybe)
+
+import LN.T               (TyLeuron(..))
 import LN.Internal.Leuron (LeuronSift)
 
 
@@ -20,33 +23,33 @@ data InputLeuron
 data Leuron_Mod
   = SetTitle String
   | EditTitle String
-  | RemTitle
+  | RemoveTitle
 
   | SetDescription String
   | EditDescription String
-  | RemDescription
+  | RemoveDescription
 
   | SetSection String
   | EditSection String
-  | RemSection
+  | RemoveSection
 
   | SetPage Int
   | EditPage Int
-  | RemPage
+  | RemovePage
 
   | AddExample String
   | EditExample Int String
-  | DelExample Int
+  | DeleteExample Int
   | ClearExamples
 
   | AddStrength String
   | EditStrength Int String
-  | DelStrength Int
+  | DeleteStrength Int
   | ClearStrength
 
   | AddCategory (Array String)
   | EditCategory Int (Array String)
-  | DelCategory Int
+  | DeleteCategory Int
   | ClearCategories
 
   -- substitutions
@@ -54,9 +57,13 @@ data Leuron_Mod
 
   | AddTag String
   | EditTag Int String
-  | DelTag Int
+  | DeleteTag Int
   | ClearTags
 
   | SetSpecificTo String
   | EditSpecificTo String
-  | RemSpecificTo
+  | RemoveSpecificTo
+
+  | SetType TyLeuron
+
+  | Save (Maybe Int)
