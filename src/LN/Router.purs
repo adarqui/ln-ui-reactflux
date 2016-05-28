@@ -92,8 +92,10 @@ routing =
       resources_sift <|>
 
       resources_leurons_new <|>
+      resources_leurons_edit_int <|>
+      resources_leurons_delete_int <|>
+      resources_leurons_show_int <|>
       resources_leurons_index <|>
-      resources_leurons_show <|>
 
       resources_new <|>
       resources_show_int <|>
@@ -237,10 +239,22 @@ routing =
       <*> (lit "leurons" *> lit "new" *> pure New)
       <*> (params' <|> pure [])
 
-    resources_leurons_show =
+    resources_leurons_edit_int =
       ResourcesLeurons
       <$> (lit "" *> lit "resources" *> int)
-      <*> (lit "leurons" *> (Show <$> str1))
+      <*> (lit "leurons" *> lit "_edit" *> (EditI <$> int))
+      <*> (params' <|> pure [])
+
+    resources_leurons_delete_int =
+      ResourcesLeurons
+      <$> (lit "" *> lit "resources" *> int)
+      <*> (lit "leurons" *> lit "_delete" *> (DeleteI <$> int))
+      <*> (params' <|> pure [])
+
+    resources_leurons_show_int =
+      ResourcesLeurons
+      <$> (lit "" *> lit "resources" *> int)
+      <*> (lit "leurons" *> (ShowI <$> int))
       <*> (params' <|> pure [])
 
 

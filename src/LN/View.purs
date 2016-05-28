@@ -36,9 +36,8 @@ import LN.View.Organizations.Forums.Boards.Show         (renderView_Organization
 import LN.View.Organizations.Forums.Boards.Threads.Show (renderView_Organizations_Forums_Boards_Threads_Show)
 
 import LN.View.Resources.Index                    (renderView_Resources_Index)
-import LN.View.Resources.Mod                      (renderView_Resources_New, renderView_Resources_Edit)
+import LN.View.Resources.Mod                      (renderView_Resources_New, renderView_Resources_Edit, renderView_Resources_Delete)
 import LN.View.Resources.Show                     (renderView_Resources_Show)
-import LN.View.Resources.Delete                   (renderView_Resources_Delete)
 import LN.View.Resources.Leurons.Index            (renderView_Resources_Leurons_Index)
 import LN.View.Resources.SiftLeurons              (renderView_Resources_SiftLeurons)
 import LN.View.Resources.SiftLeuronsLinear.Index  (renderView_Resources_SiftLeuronsLinear_Index)
@@ -47,6 +46,7 @@ import LN.View.Resources.SiftLeuronsRandom        (renderView_Resources_SiftLeur
 
 import LN.View.Leurons.Index               (renderView_Leurons_Index)
 import LN.View.Leurons.Show                (renderView_Leurons_Show)
+import LN.View.Leurons.Mod                 (renderView_Leurons_New, renderView_Leurons_Edit, renderView_Leurons_Delete)
 
 
 
@@ -103,6 +103,13 @@ renderView (Resources (DeleteI resource_id) params) = renderView_Resources_Delet
 
 
 renderView (ResourcesLeurons resource_id Index params)                    = renderView_Resources_Leurons_Index resource_id
+renderView (ResourcesLeurons resource_id New params)                      = renderView_Leurons_New
+renderView (ResourcesLeurons resource_id (EditI leuron_id) params)        = renderView_Leurons_Edit leuron_id
+renderView (ResourcesLeurons resource_id (ShowI leuron_id) params)        = renderView_Leurons_Show leuron_id
+renderView (ResourcesLeurons resource_id (DeleteI leuron_id) params)      = renderView_Leurons_Delete leuron_id
+
+
+
 renderView (ResourcesSiftLeurons resource_id params)                      = renderView_Resources_SiftLeurons resource_id
 renderView (ResourcesSiftLeuronsLinear resource_id Index params)          = renderView_Resources_SiftLeuronsLinear_Index resource_id
 renderView (ResourcesSiftLeuronsLinear resource_id (ShowI offset) params) = renderView_Resources_SiftLeuronsLinear_Show resource_id offset

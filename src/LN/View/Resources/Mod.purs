@@ -1,4 +1,5 @@
 module LN.View.Resources.Mod (
+  renderView_Resources_Delete,
   renderView_Resources_New,
   renderView_Resources_Edit,
   renderView_Resources_Mod
@@ -13,6 +14,7 @@ import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events             as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
+import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, show, const, ($), (<<<))
 
 import LN.Halogen.Util
@@ -26,6 +28,24 @@ import LN.State.Resource               (ResourceRequestState)
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
+
+
+
+renderView_Resources_Delete :: Int -> State -> ComponentHTML Input
+renderView_Resources_Delete resource_id st =
+
+  case st.currentResource, getLoading l_currentResource st.loading of
+       _, true          -> renderLoading
+       Nothing, false   -> H.div_ [H.p_ [H.text "resource unavailable."]]
+       Just pack, false -> renderView_Resources_Delete' pack st
+
+
+
+renderView_Resources_Delete' :: ResourcePackResponse -> State -> ComponentHTML Input
+renderView_Resources_Delete' pack st =
+  H.div_ [H.p_ [H.text "Delete? <yes/no>"]]
+ where
+ resource = pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse
 
 
 
@@ -44,7 +64,7 @@ renderView_Resources_Mod m_resource_id st =
   case st.currentResourceRequest, st.currentResourceRequestSt, getLoading l_currentResource st.loading of
     _, _, true                         -> renderLoading
     Just resource_req, Just rst, false -> renderView_Resources_Mod' m_resource_id resource_req rst st
-    _, _, false                        -> H.div_ [H.p_ [H.text "unexpected error."]]
+    _, _, false                        -> H.div_ [H.p_ [H.text "Resources_Mod: unexpected error."]]
 
 
 

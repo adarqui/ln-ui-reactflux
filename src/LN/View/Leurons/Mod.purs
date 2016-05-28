@@ -1,4 +1,5 @@
 module LN.View.Leurons.Mod (
+  renderView_Leurons_Delete,
   renderView_Leurons_New,
   renderView_Leurons_Edit,
   renderView_Leurons_Mod
@@ -7,25 +8,46 @@ module LN.View.Leurons.Mod (
 
 
 import Data.Maybe                      (Maybe(..), maybe)
-import Data.Tuple                      (Tuple(..))
+--import Data.Tuple                      (Tuple(..))
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events             as E
 import Halogen.HTML.Properties.Indexed as P
-import Halogen.Themes.Bootstrap3       as B
+-- import Halogen.Themes.Bootstrap3       as B
+import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, show, const, ($), (<<<), (<>))
 
-import LN.Halogen.Util
-import LN.Helpers.Array                (seqArrayFrom)
-import LN.Helpers.JSON                 (decodeString)
+import LN.Halogen.Util                 (simpleInfoButton, input_DeleteEdit, input_Label
+                                       , textArea_DeleteEdit, input_maybeField_DeleteEdit, radioMenu)
+--import LN.Helpers.Array                (seqArrayFrom)
+--import LN.Helpers.JSON                 (decodeString)
 -- import LN.Internal.Leuron
-import LN.Input.Leuron
-import LN.Input.Types                  (Input(..), cLeuronMod)
+--import LN.Input.Leuron
+import LN.Input.Leuron                 (Leuron_Mod(..))
+import LN.Input.Types                  (Input, cLeuronMod)
 import LN.State.Loading                (getLoading, l_currentLeuron)
 import LN.State.Leuron                 (LeuronRequestState)
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
+
+
+
+renderView_Leurons_Delete :: Int -> State -> ComponentHTML Input
+renderView_Leurons_Delete leuron_id st =
+
+  case st.currentLeuron, getLoading l_currentLeuron st.loading of
+       _, true          -> renderLoading
+       Nothing, false   -> H.div_ [H.p_ [H.text "leuron unavailable."]]
+       Just pack, false -> renderView_Leurons_Delete' pack st
+
+
+
+renderView_Leurons_Delete' :: LeuronPackResponse -> State -> ComponentHTML Input
+renderView_Leurons_Delete' pack st =
+  H.div_ [H.p_ [H.text "Delete? <yes/no>"]]
+ where
+ leuron = pack ^. _LeuronPackResponse .. leuron_ ^. _LeuronResponse
 
 
 
@@ -43,8 +65,11 @@ renderView_Leurons_Mod :: Maybe Int -> State -> ComponentHTML Input
 renderView_Leurons_Mod m_leuron_id st =
   case st.currentLeuronRequest, st.currentLeuronRequestSt, getLoading l_currentLeuron st.loading of
     _, _, true                         -> renderLoading
-    Just leuron_req, Just rst, false -> renderView_Leurons_Mod' m_leuron_id leuron_req rst st
-    _, _, false                        -> H.div_ [H.p_ [H.text "unexpected error."]]
+    Just leuron_req, Just lst, false   -> renderView_Leurons_Mod' m_leuron_id leuron_req lst st
+    _, _, false                        -> H.div_ [H.p_ [H.text "Leurons_Mod: unexpected error."]]
+--    Just _, Just _, false              -> H.div_ [H.text "0"]
+--    Just _, Nothing, false             -> H.div_ [H.text "1"]
+--    Nothing, Just _, false             -> H.div_ [H.text "2"]
 
 
 
@@ -72,6 +97,7 @@ renderView_Leurons_Mod' m_leuron_id leuron_req lst st =
 
    , case lst.ty of
           TyLnEmpty    -> empty
+          _            -> empty
 --          TyLnFact     -> fact lst.fact
 {-
           TyLnFactList -> factList lst.factList

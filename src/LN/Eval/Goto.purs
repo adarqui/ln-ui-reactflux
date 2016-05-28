@@ -14,11 +14,12 @@ import Optic.Core             ((^.),(..))
 import Prelude                (show, bind, pure, unit, id, (==), (/=), (<), ($))
 
 import LN.Component.Types     (EvalEff)
-import LN.Internal.Resource   (defaultResourceRequest)
 import LN.Input.Types         (Input(..))
-import LN.Internal.Resource   (resourceTypeToTyResourceType)
+import LN.Internal.Leuron     (defaultLeuronRequest, leuronToTyLeuron)
+import LN.Internal.Resource   (defaultResourceRequest, resourceTypeToTyResourceType)
 import LN.Router.Link         (updateUrl)
 import LN.Router.Types        (Routes(..), CRUD(..))
+import LN.State.Leuron        (defaultLeuronRequestState)
 import LN.State.Resource      (defaultResourceRequestState)
 import LN.T
 
@@ -175,10 +176,43 @@ eval_Goto eval (Goto route next) = do
 
 
     (ResourcesLeurons resource_id Index params) -> do
+      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
+      maybe
+        (pure unit)
+        (\(Tuple k offset) -> do
+          pageInfo <- gets _.leuronsPageInfo
+          modify (_{ leuronsPageInfo = pageInfo { currentPage = maybe 1 id (fromString offset) } })
+          pure unit)
+        moffset
+      eval (GetLeurons next) $> unit
+
+    (ResourcesLeurons resource_id New params) -> do
+      modify (_{ currentLeuronRequest = Just defaultLeuronRequest, currentLeuronRequestSt = Just defaultLeuronRequestState })
       pure unit
 
-    (ResourcesLeurons resource_id (Show leuron_sid) params) -> do
-      pure unit
+    (ResourcesLeurons resource_id (EditI leuron_id) params)   -> do
+      eval (GetLeuronId leuron_id next)
+      m_pack <- gets _.currentLeuron
+      case m_pack of
+           Nothing                          -> pure unit
+           Just (LeuronPackResponse pack) -> do
+             -- TODO FIXME: St's TyLeuronType needs to match source
+             let
+               leuron = pack.leuron ^. _LeuronResponse
+               rst    = defaultLeuronRequestState { ty = leuronToTyLeuron leuron.dataP }
+             modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron, currentLeuronRequestSt = Just rst })
+             pure unit
+
+    (ResourcesLeurons resource_id (DeleteI leuron_id) params) -> do
+      eval (GetLeuronId leuron_id next)
+      m_pack <- gets _.currentLeuron
+      case m_pack of
+           Nothing                          -> pure unit
+           Just (LeuronPackResponse pack) -> do
+             modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron })
+             pure unit
+
+    (ResourcesLeurons resource_id (ShowI leuron_id) params) -> eval (GetLeuronId leuron_id next) $> unit
 
 
 
@@ -206,6 +240,32 @@ eval_Goto eval (Goto route next) = do
           pure unit)
         moffset
       eval (GetLeurons next) $> unit
+
+    (Leurons New params) -> do
+      modify (_{ currentLeuronRequest = Just defaultLeuronRequest, currentLeuronRequestSt = Just defaultLeuronRequestState })
+      pure unit
+
+    (Leurons (EditI leuron_id) params)   -> do
+      eval (GetLeuronId leuron_id next)
+      m_pack <- gets _.currentLeuron
+      case m_pack of
+           Nothing                          -> pure unit
+           Just (LeuronPackResponse pack) -> do
+             -- TODO FIXME: St's TyLeuronType needs to match source
+             let
+               leuron = pack.leuron ^. _LeuronResponse
+               rst    = defaultLeuronRequestState { ty = leuronToTyLeuron leuron.dataP }
+             modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron, currentLeuronRequestSt = Just rst })
+             pure unit
+
+    (Leurons (DeleteI leuron_id) params) -> do
+      eval (GetLeuronId leuron_id next)
+      m_pack <- gets _.currentLeuron
+      case m_pack of
+           Nothing                          -> pure unit
+           Just (LeuronPackResponse pack) -> do
+             modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron })
+             pure unit
 
     (Leurons (ShowI leuron_id) params) -> eval (GetLeuronId leuron_id next) $> unit
 

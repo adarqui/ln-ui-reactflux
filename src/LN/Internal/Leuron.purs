@@ -1,11 +1,16 @@
 module LN.Internal.Leuron (
-  LeuronSift (..)
+  LeuronSift (..),
+  leuronToTyLeuron,
+  defaultLeuronRequest
 ) where
 
 
 
 import Data.Generic                (class Generic)
+import Data.Maybe                  (Maybe(..))
 import Prelude                     (class Eq, class Show, eq, show)
+
+import LN.T                        (LeuronRequest, mkLeuronRequest, LeuronData(..), TyLeuron(..))
 
 
 
@@ -29,3 +34,15 @@ instance leuronSiftEq :: Eq LeuronSift where
 instance leuronSiftShow :: Show LeuronSift where
   show LeuronSift_Linear = "Linear"
   show LeuronSift_Random = "Random"
+
+
+
+leuronToTyLeuron :: LeuronData -> TyLeuron
+leuronToTyLeuron ld =
+  case ld of
+       _ -> TyLnEmpty
+
+
+
+defaultLeuronRequest :: LeuronRequest
+defaultLeuronRequest = mkLeuronRequest LnEmpty Nothing Nothing Nothing Nothing Nothing Nothing [] Nothing Nothing Nothing Nothing
