@@ -187,7 +187,10 @@ eval_Goto eval (Goto route next) = do
       eval (GetLeurons next) $> unit
 
     (ResourcesLeurons resource_id New params) -> do
-      modify (_{ currentLeuronRequest = Just defaultLeuronRequest, currentLeuronRequestSt = Just defaultLeuronRequestState })
+      -- Important: don't over-write leuron request state.. we want to hold on to that info to make our lives easier
+      -- when adding leurons fast
+      lst <- gets _.currentLeuronRequestSt
+      modify (_{ currentLeuronRequest = Just defaultLeuronRequest, currentLeuronRequestSt = Just $ maybe defaultLeuronRequestState id lst })
       pure unit
 
     (ResourcesLeurons resource_id (EditI leuron_id) params)   -> do
@@ -199,8 +202,8 @@ eval_Goto eval (Goto route next) = do
              -- TODO FIXME: St's TyLeuronType needs to match source
              let
                leuron = pack.leuron ^. _LeuronResponse
-               rst    = defaultLeuronRequestState { ty = leuronToTyLeuron leuron.dataP }
-             modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron, currentLeuronRequestSt = Just rst })
+               lst    = defaultLeuronRequestState { ty = leuronToTyLeuron leuron.dataP }
+             modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron, currentLeuronRequestSt = Just lst })
              pure unit
 
     (ResourcesLeurons resource_id (DeleteI leuron_id) params) -> do
@@ -242,7 +245,10 @@ eval_Goto eval (Goto route next) = do
       eval (GetLeurons next) $> unit
 
     (Leurons New params) -> do
-      modify (_{ currentLeuronRequest = Just defaultLeuronRequest, currentLeuronRequestSt = Just defaultLeuronRequestState })
+      -- Important: don't over-write leuron request state.. we want to hold on to that info to make our lives easier
+      -- when adding leurons fast
+      lst <- gets _.currentLeuronRequestSt
+      modify (_{ currentLeuronRequest = Just defaultLeuronRequest, currentLeuronRequestSt = Just $ maybe defaultLeuronRequestState id lst })
       pure unit
 
     (Leurons (EditI leuron_id) params)   -> do
@@ -254,8 +260,8 @@ eval_Goto eval (Goto route next) = do
              -- TODO FIXME: St's TyLeuronType needs to match source
              let
                leuron = pack.leuron ^. _LeuronResponse
-               rst    = defaultLeuronRequestState { ty = leuronToTyLeuron leuron.dataP }
-             modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron, currentLeuronRequestSt = Just rst })
+               lst    = defaultLeuronRequestState { ty = leuronToTyLeuron leuron.dataP }
+             modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron, currentLeuronRequestSt = Just lst })
              pure unit
 
     (Leurons (DeleteI leuron_id) params) -> do
