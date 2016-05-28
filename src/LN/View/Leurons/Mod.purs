@@ -18,7 +18,8 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, show, const, ($), (<<<), (<>))
 
 import LN.Halogen.Util                 (simpleInfoButton, input_DeleteEdit, input_Label
-                                       , textArea_DeleteEdit, input_maybeField_DeleteEdit, radioMenu)
+                                       , textArea_DeleteEdit, input_maybeField_DeleteEdit, radioMenu
+                                       , textArea_Label)
 --import LN.Helpers.Array                (seqArrayFrom)
 --import LN.Helpers.JSON                 (decodeString)
 -- import LN.Internal.Leuron
@@ -97,8 +98,9 @@ renderView_Leurons_Mod' m_leuron_id leuron_req lst st =
 
    , case lst.ty of
           TyLnEmpty    -> empty
-          _            -> empty
---          TyLnFact     -> fact lst.fact
+          TyLnFact     -> fact lst.fact
+          TyLnCard     -> card lst.card
+          TyLnDCard    -> dcard lst.dcard
 {-
           TyLnFactList -> factList lst.factList
           TyLnCard     -> card lst.card
@@ -282,13 +284,11 @@ TODO FIXME
 
   empty = H.h1_ [H.text "NONE"]
 
-{-
   fact (Fact v) =
     H.p_ [
       H.h1_ [H.text "Fact"],
-      textArea_Label "Fact" "fact" v.factText (E.input SetFact_FactText)
+      textArea_Label "Fact" "fact" v.text (E.input (\s -> cLeuronMod $ SetData $ LnFact $ mkFact s))
     ]
--}
 
 {-
   factList (FactList v) =
@@ -304,21 +304,21 @@ TODO FIXME
               (E.input_ (RemoveFactList_List fact))
           ) v.factListList
     ]
+    -}
 
   card (Card v) =
     H.p_ [
       H.h1_ [H.text "Card"],
-      textArea_Label "Front" "front" v.cardFront (E.input SetCard_CardFront),
-      textArea_Label "Back" "back" v.cardBack (E.input SetCard_CardBack)
+      textArea_Label "Front" "front" v.front (E.input (\s -> cLeuronMod $ SetData $ LnCard $ Card v{front=s})),
+      textArea_Label "Back" "back" v.back (E.input (\s -> cLeuronMod $ SetData $ LnCard $ Card v{back=s}))
     ]
 
   dcard (DCard v) =
     H.p_ [
       H.h1_ [H.text "DCard"],
-      textArea_Label "Front" "front" v.dcardFront (E.input SetDCard_DCardFront),
-      textArea_Label "Back" "back" v.dcardBack (E.input SetDCard_DCardBack)
+      textArea_Label "Front" "front" v.front (E.input (\s -> cLeuronMod $ SetData $ LnDCard $ DCard v{front=s})),
+      textArea_Label "Back" "back" v.back (E.input (\s -> cLeuronMod $ SetData $ LnDCard $ DCard v{back=s}))
     ]
--}
 
 
   leuron   = unwrapLeuronRequest leuron_req

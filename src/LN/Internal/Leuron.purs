@@ -1,7 +1,11 @@
 module LN.Internal.Leuron (
   LeuronSift (..),
   leuronToTyLeuron,
-  defaultLeuronRequest
+  defaultLeuronRequest,
+  defaultFact,
+  defaultFactList,
+  defaultCard,
+  defaultDCard
 ) where
 
 
@@ -10,7 +14,11 @@ import Data.Generic                (class Generic)
 import Data.Maybe                  (Maybe(..))
 import Prelude                     (class Eq, class Show, eq, show)
 
-import LN.T                        (LeuronRequest, mkLeuronRequest, LeuronData(..), TyLeuron(..))
+import LN.T                        (LeuronRequest, mkLeuronRequest, LeuronData(..), TyLeuron(..)
+                                   , mkFact, Fact
+                                   , mkFactList, FactList
+                                   , mkCard, Card
+                                   , mkDCard, DCard)
 
 
 
@@ -46,3 +54,23 @@ leuronToTyLeuron ld =
 
 defaultLeuronRequest :: LeuronRequest
 defaultLeuronRequest = mkLeuronRequest LnEmpty Nothing Nothing Nothing Nothing Nothing Nothing [] Nothing Nothing Nothing Nothing
+
+
+
+defaultFact :: Fact
+defaultFact = mkFact ""
+
+
+
+defaultFactList :: FactList
+defaultFactList = mkFactList "" []
+
+
+
+defaultCard :: Card
+defaultCard = mkCard "" ""
+
+
+
+defaultDCard :: DCard
+defaultDCard = mkDCard "" ""

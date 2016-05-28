@@ -15,18 +15,21 @@ import Data.Map                      as M
 import Data.Maybe                    (Maybe(..), maybe)
 import Halogen                       (gets, modify)
 import Optic.Core                    ((^.), (..), (.~))
-import Prelude                       (class Eq, id, const, bind, pure, map, ($), (<>))
+import Prelude                       (class Eq, id, const, bind, pure, map, ($), (<>), (<<<))
 
 import LN.Api                        (rd, getLeuronsCount', getLeuronPack', getLeuronPacks)
 import LN.Component.Types            (EvalEff)
 import LN.Helpers.Map                (idmapFrom)
 import LN.Input.Leuron               (InputLeuron(..), Leuron_Mod(..))
 import LN.Input.Types                (Input(..))
+import LN.State.Leuron               (leuronRequestStateFromLeuronData)
 import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron, l_leurons)
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          ( LeuronPackResponses(..), LeuronPackResponse(..)
+                                     , LeuronRequest(..)
                                      , _LeuronRequest
                                      , title_, section_
+                                     , LeuronData(..)
                                      , Param(..), SortOrderBy(..))
 
 
@@ -114,6 +117,12 @@ eval_Leuron eval (CompLeuron sub next) = do
       case q of
         SetTitle title      -> mod $ set (\req -> _LeuronRequest .. title_ .~ Just title $ req)
         SetSection section  -> mod $ set (\req -> _LeuronRequest .. section_ .~ Just section $ req)
+        SetData d           -> do
+          mod $ set (\(LeuronRequest req) -> LeuronRequest req{ dataP = d })
+          modify (\st->st { currentLeuronRequestSt = maybe Nothing (Just <<< leuronRequestStateFromLeuronData d) st.currentLeuronRequestSt }) $> next
+
+        SetType ty          -> do
+          modify (\st->st{ currentLeuronRequestSt = maybe Nothing (\lst -> Just $ lst{ty = ty}) st.currentLeuronRequestSt }) $> next
 
     InputLeuron_Nop         -> pure next
 

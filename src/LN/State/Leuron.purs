@@ -1,16 +1,31 @@
 module LN.State.Leuron (
   LeuronRequestState,
-  defaultLeuronRequestState
+  defaultLeuronRequestState,
+  leuronRequestStateFromLeuronData
 ) where
 
 
 
-import LN.T (TyLeuron(..))
+import LN.Internal.Leuron ( defaultFact
+                          , defaultFactList
+                          , defaultCard
+                          , defaultDCard)
+
+import LN.T               ( TyLeuron(..)
+                          , LeuronData(..)
+                          , Fact
+                          , FactList
+                          , Card
+                          , DCard)
 
 
 
 type LeuronRequestState = {
   ty        :: TyLeuron,
+  fact      :: Fact,
+  factList  :: FactList,
+  card      :: Card,
+  dcard     :: DCard,
   ids       :: Array Int
 }
 
@@ -19,5 +34,20 @@ type LeuronRequestState = {
 defaultLeuronRequestState :: LeuronRequestState
 defaultLeuronRequestState = {
   ty:  TyLnFact,
+  fact: defaultFact,
+  factList: defaultFactList,
+  card: defaultCard,
+  dcard: defaultDCard,
   ids: []
 }
+
+
+
+leuronRequestStateFromLeuronData :: LeuronData -> LeuronRequestState -> LeuronRequestState
+leuronRequestStateFromLeuronData d st =
+  case d of
+       LnFact v         -> st{fact = v}
+       LnFactList v     -> st{factList = v}
+       LnCard v         -> st{card = v}
+       LnDCard v        -> st{dcard = v}
+       _                -> st

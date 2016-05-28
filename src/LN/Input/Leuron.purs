@@ -7,7 +7,7 @@ module LN.Input.Leuron (
 
 import Data.Maybe         (Maybe)
 
-import LN.T               (TyLeuron(..))
+import LN.T               (TyLeuron, LeuronData)
 import LN.Internal.Leuron (LeuronSift)
 
 
@@ -64,6 +64,7 @@ data Leuron_Mod
   | EditSpecificTo String
   | RemoveSpecificTo
 
+  | SetData LeuronData
   | SetType TyLeuron
 
   | Save (Maybe Int)
