@@ -7,7 +7,7 @@ module LN.Eval.Leurons (
 
 
 
-import Data.Array                    (head, deleteAt, modifyAt, nub)
+import Data.Array                    (head, deleteAt, modifyAt, nub, (:))
 import Data.Either                   (Either(..))
 import Data.Functor                  (($>))
 import Data.Int                      (fromString)
@@ -143,10 +143,12 @@ eval_Leuron eval (CompLeuron sub next) = do
                  e_leuron <- rd $ postLeuron_ByResourceId' resource_id req
                  case e_leuron of
                       Left err                      -> eval (AddErrorApi "eval_Leuron(Save)::postLeuron'" err next)
-                      Right (LeuronResponse leuron) -> pure next
+                      Right (LeuronResponse leuron) -> do
+                        modify (\st->st{ currentLeuronRequestSt = maybe Nothing (\lst -> Just $ lst{ids = leuron.id : lst.ids}) st.currentLeuronRequestSt })
+                        pure next
 --                        eval (Goto (Leurons (ShowI leuron.id) []) next)
 
-        Edit leuron_id    -> do
+        EditP leuron_id    -> do
 
           m_req <- gets _.currentLeuronRequest
 

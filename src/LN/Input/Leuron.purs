@@ -70,4 +70,4 @@ data Leuron_Mod
   | SetSt LeuronRequestState
 
   | Save Int -- save to resource_id
-  | Edit Int -- edit leuron_id
+  | EditP Int -- edit leuron_id

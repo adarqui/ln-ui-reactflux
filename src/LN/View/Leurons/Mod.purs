@@ -27,6 +27,8 @@ import LN.Helpers.Array                (seqArrayFrom)
 --import LN.Input.Leuron
 import LN.Input.Leuron                 (Leuron_Mod(..))
 import LN.Input.Types                  (Input, cLeuronMod, cLeuronNop)
+import LN.Router.Link                  (linkToP)
+import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                (getLoading, l_currentLeuron)
 import LN.State.Leuron                 (LeuronRequestState)
 import LN.State.Types                  (State)
@@ -276,10 +278,11 @@ TODO FIXME
 
   , case m_resource_id, m_leuron_id of
          Just resource_id, Nothing -> simpleInfoButton "Create" (cLeuronMod $ Save resource_id)
-         Nothing, Just leuron_id   -> simpleInfoButton "Save" (cLeuronMod $ Edit leuron_id)
+         Nothing, Just leuron_id   -> simpleInfoButton "Save" (cLeuronMod $ EditP leuron_id)
          _, _                      -> H.p_ [H.text "unexpected error."]
 
-  , H.p_ $ map (\id_ -> H.a [P.href $ "/leurons/" <> show id_] [H.text $ show id_]) lst.ids
+  -- show a list of recently added leurons
+  , H.ul_ $ map (\id_ -> H.li_ [linkToP [] (Leurons (ShowI id_) []) (show id_)]) lst.ids
 
   ]
   where
