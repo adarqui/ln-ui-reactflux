@@ -22,7 +22,7 @@ import Prelude                       (class Eq, id, const, bind, pure, map, ($),
 import LN.Api                        ( rd
                                      , getResourcesCount', getResourcePacks, getResourcePack'
                                      , getLeuronPacks_ByResourceId
-                                     , postResource')
+                                     , postResource', putResource')
 import LN.Component.Types            (EvalEff)
 import LN.Helpers.Map                (idmapFrom)
 import LN.Input.Resource             (InputResource(..), Resource_Mod(..))
@@ -183,15 +183,30 @@ eval_Resource eval (CompResource sub next) = do
          modify (\st->st{ currentResourceRequestSt = maybe Nothing (\rst -> Just $ rst{source = source}) st.currentResourceRequestSt }) $> next
 
        Resource_Mod_Save m_resource_id    -> do
+
          m_req <- gets _.currentResourceRequest
+
          case m_req of
               Nothing  -> eval (AddError "eval_Resource(Save)" "Resource request doesn't exist" next)
               Just req -> do
-                e_resource <- rd $ postResource' req
-                case e_resource of
-                     Left err                          -> eval (AddErrorApi "eval_Resource(Save)::postResource'" err next)
-                     Right (ResourceResponse resource) -> do
-                       eval (Goto (Resources (ShowI resource.id) []) next)
+
+                case m_resource_id of
+                     Nothing          -> do
+                     -- Create a new resource
+                       e_resource <- rd $ postResource' req
+                       case e_resource of
+                            Left err                          -> eval (AddErrorApi "eval_Resource(Save)::postResource'" err next)
+                            Right (ResourceResponse resource) -> do
+                              eval (Goto (Resources (ShowI resource.id) []) next)
+
+                     Just resource_id -> do
+                     -- Save an existing resource
+                       e_resource <- rd $ putResource' resource_id req
+                       case e_resource of
+                            Left err                          -> eval (AddErrorApi "eval_Resource(Save)::putResource'" err next)
+                            Right (ResourceResponse resource) -> do
+                              eval (Goto (Resources (ShowI resource.id) []) next)
+
 
 
 
