@@ -124,6 +124,12 @@ eval_Leuron eval (CompLeuron sub next) = do
         SetType ty          -> do
           modify (\st->st{ currentLeuronRequestSt = maybe Nothing (\lst -> Just $ lst{ty = ty}) st.currentLeuronRequestSt }) $> next
 
+        -- We need this because there are ancillary items associated with LeuronData types, on the front end
+        -- for example, an item that being edited prior to its inclusing in a list
+        -- ie, factList_listItem is eventually added to factList.list
+        SetSt lst           -> do
+          modify (\st->st { currentLeuronRequestSt = Just lst }) $> next
+
     InputLeuron_Nop         -> pure next
 
   where

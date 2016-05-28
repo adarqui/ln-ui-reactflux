@@ -4,7 +4,8 @@ module LN.Input.Types (
   cResource,
   cResourceMod,
   cLeuron,
-  cLeuronMod
+  cLeuronMod,
+  cLeuronNop
 ) where
 
 
@@ -116,3 +117,6 @@ cLeuron il next = CompLeuron il next
 
 cLeuronMod :: forall a. Leuron_Mod -> a -> Input a
 cLeuronMod lm next = CompLeuron (InputLeuron_Mod lm) next
+
+cLeuronNop :: forall a. a -> Input a
+cLeuronNop next = CompLeuron InputLeuron_Nop next

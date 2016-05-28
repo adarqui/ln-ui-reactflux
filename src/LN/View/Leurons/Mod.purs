@@ -7,8 +7,9 @@ module LN.View.Leurons.Mod (
 
 
 
+import Data.Array                      (modifyAt, deleteAt, nub)
 import Data.Maybe                      (Maybe(..), maybe)
---import Data.Tuple                      (Tuple(..))
+import Data.Tuple                      (Tuple(..))
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events             as E
@@ -19,13 +20,13 @@ import Prelude                         (id, map, show, const, ($), (<<<), (<>))
 
 import LN.Halogen.Util                 (simpleInfoButton, input_DeleteEdit, input_Label
                                        , textArea_DeleteEdit, input_maybeField_DeleteEdit, radioMenu
-                                       , textArea_Label)
---import LN.Helpers.Array                (seqArrayFrom)
+                                       , textArea_Label, textArea_LabelWithButton)
+import LN.Helpers.Array                (seqArrayFrom)
 --import LN.Helpers.JSON                 (decodeString)
 -- import LN.Internal.Leuron
 --import LN.Input.Leuron
 import LN.Input.Leuron                 (Leuron_Mod(..))
-import LN.Input.Types                  (Input, cLeuronMod)
+import LN.Input.Types                  (Input, cLeuronMod, cLeuronNop)
 import LN.State.Loading                (getLoading, l_currentLeuron)
 import LN.State.Leuron                 (LeuronRequestState)
 import LN.State.Types                  (State)
@@ -99,6 +100,7 @@ renderView_Leurons_Mod' m_leuron_id leuron_req lst st =
    , case lst.ty of
           TyLnEmpty    -> empty
           TyLnFact     -> fact lst.fact
+          TyLnFactList -> factList lst.factList
           TyLnCard     -> card lst.card
           TyLnDCard    -> dcard lst.dcard
 {-
@@ -290,21 +292,21 @@ TODO FIXME
       textArea_Label "Fact" "fact" v.text (E.input (\s -> cLeuronMod $ SetData $ LnFact $ mkFact s))
     ]
 
-{-
   factList (FactList v) =
     H.p_ [
       H.h1_ [H.text "FactList"],
-      textArea_Label "Fact" "fact" v.factListFact (E.input SetFactList_Fact),
-      textArea_LabelWithButton "FactList" "fact" st.leuronFactList_ListInput "Add" (E.input ModifyFactList_List) (E.input_AddFactList_List)
-      , H.div_ $
-          map (\fact ->
-            textArea_DeleteEdit
-              fact
-              (E.input (\new -> EditFactList_List fact new))
-              (E.input_ (RemoveFactList_List fact))
-          ) v.factListList
+      textArea_Label "Fact" "fact" v.fact (E.input (\s -> cLeuronMod $ SetData $ LnFactList $ FactList v{fact=s})),
+      textArea_LabelWithButton "List" "fact" lst.factList_listItem "Add"
+        (E.input (\s -> cLeuronMod $ SetSt $ lst{factList_listItem=s}))
+        (E.input_ (cLeuronMod $ SetData $ LnFactList $ FactList v{list=nub v.list<>[lst.factList_listItem]})),
+      H.div_ $
+        map (\(Tuple idx fact) ->
+          textArea_DeleteEdit
+            fact
+            (E.input (\new -> cLeuronMod $ SetData $ LnFactList $ FactList v{list=maybe v.list id (modifyAt idx (const new) v.list)}))
+            (E.input_ (cLeuronMod $ SetData $ LnFactList $ FactList v{list=maybe v.list id (deleteAt idx v.list)}))
+        ) $ seqArrayFrom v.list
     ]
-    -}
 
   card (Card v) =
     H.p_ [

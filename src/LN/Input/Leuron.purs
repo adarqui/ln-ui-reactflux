@@ -9,6 +9,7 @@ import Data.Maybe         (Maybe)
 
 import LN.T               (TyLeuron, LeuronData)
 import LN.Internal.Leuron (LeuronSift)
+import LN.State.Leuron    (LeuronRequestState)
 
 
 
@@ -66,5 +67,6 @@ data Leuron_Mod
 
   | SetData LeuronData
   | SetType TyLeuron
+  | SetSt LeuronRequestState
 
   | Save (Maybe Int)
