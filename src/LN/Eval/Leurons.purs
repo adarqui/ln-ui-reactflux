@@ -27,6 +27,7 @@ import LN.State.Leuron               (leuronRequestStateFromLeuronData)
 import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron, l_leurons)
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          ( LeuronPackResponses(..), LeuronPackResponse(..)
+                                     , LeuronResponse(..)
                                      , LeuronRequest(..)
                                      , _LeuronRequest
                                      , title_, section_
@@ -141,9 +142,9 @@ eval_Leuron eval (CompLeuron sub next) = do
 
                  e_leuron <- rd $ postLeuron_ByResourceId' resource_id req
                  case e_leuron of
-                      Left err                          -> eval (AddErrorApi "eval_Leuron(Save)::postLeuron'" err next)
-                      Right (LeuronResponse leuron) -> do
-                        eval (Goto (Leurons (ShowI leuron.id) []) next)
+                      Left err                      -> eval (AddErrorApi "eval_Leuron(Save)::postLeuron'" err next)
+                      Right (LeuronResponse leuron) -> pure next
+--                        eval (Goto (Leurons (ShowI leuron.id) []) next)
 
         Edit leuron_id    -> do
 
@@ -156,8 +157,8 @@ eval_Leuron eval (CompLeuron sub next) = do
                  e_leuron <- rd $ putLeuron' leuron_id req
                  case e_leuron of
                       Left err                          -> eval (AddErrorApi "eval_Leuron(Edit)::putLeuron'" err next)
-                      Right (LeuronResponse leuron) -> do
-                        eval (Goto (Leurons (ShowI leuron.id) []) next)
+                      Right (LeuronResponse leuron) -> pure next
+--                        eval (Goto (Leurons (ShowI leuron.id) []) next)
 
     InputLeuron_Nop         -> pure next
 

@@ -34,13 +34,13 @@ type LeuronRequestState = {
 
 defaultLeuronRequestState :: LeuronRequestState
 defaultLeuronRequestState = {
-  ty:  TyLnFact,
-  fact: defaultFact,
-  factList: defaultFactList,
+  ty:                TyLnFact,
+  fact:              defaultFact,
+  factList:          defaultFactList,
   factList_listItem: "",
-  card: defaultCard,
-  dcard: defaultDCard,
-  ids: []
+  card:              defaultCard,
+  dcard:             defaultDCard,
+  ids:               []
 }
 
 
