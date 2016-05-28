@@ -26,7 +26,7 @@ import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron,
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          ( LeuronPackResponses(..), LeuronPackResponse(..)
                                      , _LeuronRequest
-                                     , title_
+                                     , title_, section_
                                      , Param(..), SortOrderBy(..))
 
 
@@ -112,9 +112,10 @@ eval_Leuron eval (CompLeuron sub next) = do
   case sub of
     InputLeuron_Mod q -> do
       case q of
-        SetTitle title  -> mod $ set (\req -> _LeuronRequest .. title_ .~ Just title $ req)
+        SetTitle title      -> mod $ set (\req -> _LeuronRequest .. title_ .~ Just title $ req)
+        SetSection section  -> mod $ set (\req -> _LeuronRequest .. section_ .~ Just section $ req)
 
-    InputLeuron_Nop     -> pure next
+    InputLeuron_Nop         -> pure next
 
   where
   append :: forall a. Eq a => Maybe (Array a) -> a -> Maybe (Array a)

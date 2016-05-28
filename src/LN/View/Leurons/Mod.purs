@@ -109,25 +109,25 @@ renderView_Leurons_Mod' m_leuron_id leuron_req lst st =
 
   -- Title
 
-  , input_maybeField_DeleteEdit
-      P.InputText
-      "Title"
-      leuron.title
-      (E.input_ (cLeuronMod $ SetTitle ""))
-      (E.input (\new -> cLeuronMod $ SetTitle new))
-      (E.input_ (cLeuronMod $ RemoveTitle))
+--  , input_maybeField_DeleteEdit
+--      P.InputText
+--      "Title"
+--      leuron.title
+--      (E.input_ (cLeuronMod $ SetTitle ""))
+--      (E.input (\new -> cLeuronMod $ SetTitle new))
+--      (E.input_ (cLeuronMod $ RemoveTitle))
 
 
 
   -- Description
 
-  , input_maybeField_DeleteEdit
-      P.InputText
-      "Description"
-      leuron.description
-      (E.input_ (cLeuronMod $ SetDescription ""))
-      (E.input (\new -> cLeuronMod $ SetDescription new))
-      (E.input_ (cLeuronMod $ RemoveDescription))
+--  , input_maybeField_DeleteEdit
+--      P.InputText
+--      "Description"
+--      leuron.description
+--      (E.input_ (cLeuronMod $ SetDescription ""))
+--      (E.input (\new -> cLeuronMod $ SetDescription new))
+--      (E.input_ (cLeuronMod $ RemoveDescription))
 
 
 
