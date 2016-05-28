@@ -1,11 +1,18 @@
 all:
 	pulp browserify > static/dist/app.js
 
+uglify:
+	uglifyjs --compress --mangle -- static/dist/app.js 2>/dev/null > static/dist/app.min.js
+
 all-upload: all upload
+
+uglify-upload: all uglify upload-ugly
 
 upload:
 	rsync -av -e ssh ./static/dist/app.js adarq:/root/projects/leuronet/ln-ui/static/dist/app.js
-#	scp static/dist/app.js adarq:/root/projects/leuronet/ln-yesod/static/pure/ln.js
+
+upload-ugly:
+	rsync -av -e ssh ./static/dist/app.min.js adarq:/root/projects/leuronet/ln-ui/static/dist/app.js
 
 id:
 	pscid --censor-codes=ImplicitImport,UnusedExplicitImport,HidingImport,WildcardInferredType,ImplicitQualifiedImport,DeprecatedOperatorDecl
