@@ -1,6 +1,7 @@
 all:
 	pulp browserify > static/dist/app.js
 
+# https://www.npmjs.com/package/uglify-js
 uglify:
 	uglifyjs --compress --mangle -- static/dist/app.js 2>/dev/null > static/dist/app.min.js
 
