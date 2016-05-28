@@ -1,27 +1,32 @@
 module LN.Eval.Leurons (
   eval_GetLeurons,
   eval_GetLeuronId,
-  eval_GetLeuronRandom
+  eval_GetLeuronRandom,
+  eval_Leuron
 ) where
 
 
 
-import Data.Array                    (head)
+import Data.Array                    (head, deleteAt, modifyAt, nub)
 import Data.Either                   (Either(..))
 import Data.Functor                  (($>))
 import Data.Int                      (fromString)
 import Data.Map                      as M
-import Data.Maybe                    (Maybe(..))
+import Data.Maybe                    (Maybe(..), maybe)
 import Halogen                       (gets, modify)
-import Prelude                       (bind, pure, map, ($))
+import Optic.Core                    ((^.), (..), (.~))
+import Prelude                       (class Eq, id, const, bind, pure, map, ($), (<>))
 
 import LN.Api                        (rd, getLeuronsCount', getLeuronPack', getLeuronPacks)
 import LN.Component.Types            (EvalEff)
 import LN.Helpers.Map                (idmapFrom)
+import LN.Input.Leuron               (InputLeuron(..), Leuron_Mod(..))
 import LN.Input.Types                (Input(..))
 import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron, l_leurons)
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          ( LeuronPackResponses(..), LeuronPackResponse(..)
+                                     , _LeuronRequest
+                                     , title_
                                      , Param(..), SortOrderBy(..))
 
 
@@ -98,3 +103,22 @@ eval_GetLeuronRandom eval (GetLeuronRandom next) = do
       case head packs.leuronPackResponses of
         Nothing   -> pure next
         Just pack -> modify (_{ currentLeuron = Just pack }) $> next
+
+
+
+
+eval_Leuron :: EvalEff
+eval_Leuron eval (CompLeuron sub next) = do
+  case sub of
+    InputLeuron_Mod q -> do
+      case q of
+        SetTitle title  -> mod $ set (\req -> _LeuronRequest .. title_ .~ Just title $ req)
+
+    InputLeuron_Nop     -> pure next
+
+  where
+  append :: forall a. Eq a => Maybe (Array a) -> a -> Maybe (Array a)
+  append Nothing a    = Just [a]
+  append (Just arr) a = Just $ nub $ arr <> [a]
+  set v req                = Just (v req)
+  mod new                  = modify (\st->st{ currentLeuronRequest = maybe Nothing new st.currentLeuronRequest }) $> next

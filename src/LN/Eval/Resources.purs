@@ -207,11 +207,8 @@ eval_Resource eval (CompResource sub next) = do
                             Right (ResourceResponse resource) -> do
                               eval (Goto (Resources (ShowI resource.id) []) next)
 
-
-
-
-
    InputResource_Nop   -> pure next
+
  where
  append :: forall a. Eq a => Maybe (Array a) -> a -> Maybe (Array a)
  append Nothing a    = Just [a]
