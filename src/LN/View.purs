@@ -103,7 +103,7 @@ renderView (Resources (DeleteI resource_id) params) = renderView_Resources_Delet
 
 
 renderView (ResourcesLeurons resource_id Index params)                    = renderView_Resources_Leurons_Index resource_id
-renderView (ResourcesLeurons resource_id New params)                      = renderView_Leurons_New
+renderView (ResourcesLeurons resource_id New params)                      = renderView_Leurons_New resource_id
 renderView (ResourcesLeurons resource_id (EditI leuron_id) params)        = renderView_Leurons_Edit leuron_id
 renderView (ResourcesLeurons resource_id (ShowI leuron_id) params)        = renderView_Leurons_Show leuron_id
 renderView (ResourcesLeurons resource_id (DeleteI leuron_id) params)      = renderView_Leurons_Delete leuron_id

@@ -53,30 +53,27 @@ renderView_Leurons_Delete' pack st =
 
 
 
-renderView_Leurons_New :: State -> ComponentHTML Input
-renderView_Leurons_New = renderView_Leurons_Mod Nothing
+renderView_Leurons_New :: Int -> State -> ComponentHTML Input
+renderView_Leurons_New resource_id = renderView_Leurons_Mod (Just resource_id) Nothing
 
 
 
 renderView_Leurons_Edit :: Int -> State -> ComponentHTML Input
-renderView_Leurons_Edit leuron_id = renderView_Leurons_Mod (Just leuron_id)
+renderView_Leurons_Edit leuron_id = renderView_Leurons_Mod Nothing (Just leuron_id)
 
 
 
-renderView_Leurons_Mod :: Maybe Int -> State -> ComponentHTML Input
-renderView_Leurons_Mod m_leuron_id st =
+renderView_Leurons_Mod :: Maybe Int -> Maybe Int -> State -> ComponentHTML Input
+renderView_Leurons_Mod m_resource_id m_leuron_id st =
   case st.currentLeuronRequest, st.currentLeuronRequestSt, getLoading l_currentLeuron st.loading of
     _, _, true                         -> renderLoading
-    Just leuron_req, Just lst, false   -> renderView_Leurons_Mod' m_leuron_id leuron_req lst st
+    Just leuron_req, Just lst, false   -> renderView_Leurons_Mod' m_resource_id m_leuron_id leuron_req lst st
     _, _, false                        -> H.div_ [H.p_ [H.text "Leurons_Mod: unexpected error."]]
---    Just _, Just _, false              -> H.div_ [H.text "0"]
---    Just _, Nothing, false             -> H.div_ [H.text "1"]
---    Nothing, Just _, false             -> H.div_ [H.text "2"]
 
 
 
-renderView_Leurons_Mod' :: Maybe Int -> LeuronRequest -> LeuronRequestState -> State -> ComponentHTML Input
-renderView_Leurons_Mod' m_leuron_id leuron_req lst st =
+renderView_Leurons_Mod' :: Maybe Int -> Maybe Int -> LeuronRequest -> LeuronRequestState -> State -> ComponentHTML Input
+renderView_Leurons_Mod' m_resource_id m_leuron_id leuron_req lst st =
   H.div_ [
 
       H.h1_ [ H.text "Add Leuron" ]
@@ -277,7 +274,10 @@ TODO FIXME
 -}
 
 
-  , simpleInfoButton save (cLeuronMod $ Save m_leuron_id)
+  , case m_resource_id, m_leuron_id of
+         Just resource_id, Nothing -> simpleInfoButton "Create" (cLeuronMod $ Save resource_id)
+         Nothing, Just leuron_id   -> simpleInfoButton "Save" (cLeuronMod $ Edit leuron_id)
+         _, _                      -> H.p_ [H.text "unexpected error."]
 
   , H.p_ $ map (\id_ -> H.a [P.href $ "/leurons/" <> show id_] [H.text $ show id_]) lst.ids
 
@@ -324,5 +324,4 @@ TODO FIXME
 
 
   leuron   = unwrapLeuronRequest leuron_req
-  save     = maybe "Create" (const "Save") m_leuron_id
 --  resource = unwrapResourceResponse st.resource

@@ -17,7 +17,8 @@ import Halogen                       (gets, modify)
 import Optic.Core                    ((^.), (..), (.~))
 import Prelude                       (class Eq, id, const, bind, pure, map, ($), (<>), (<<<))
 
-import LN.Api                        (rd, getLeuronsCount', getLeuronPack', getLeuronPacks)
+import LN.Api                        ( rd, getLeuronsCount', getLeuronPack', getLeuronPacks
+                                     , postLeuron_ByResourceId', putLeuron')
 import LN.Component.Types            (EvalEff)
 import LN.Helpers.Map                (idmapFrom)
 import LN.Input.Leuron               (InputLeuron(..), Leuron_Mod(..))
@@ -129,6 +130,34 @@ eval_Leuron eval (CompLeuron sub next) = do
         -- ie, factList_listItem is eventually added to factList.list
         SetSt lst           -> do
           modify (\st->st { currentLeuronRequestSt = Just lst }) $> next
+
+        Save resource_id   -> do
+
+          m_req <- gets _.currentLeuronRequest
+
+          case m_req of
+               Nothing  -> eval (AddError "eval_Leuron(Save)" "Leuron request doesn't exist" next)
+               Just req -> do
+
+                 e_leuron <- rd $ postLeuron_ByResourceId' resource_id req
+                 case e_leuron of
+                      Left err                          -> eval (AddErrorApi "eval_Leuron(Save)::postLeuron'" err next)
+                      Right (LeuronResponse leuron) -> do
+                        eval (Goto (Leurons (ShowI leuron.id) []) next)
+
+        Edit leuron_id    -> do
+
+          m_req <- gets _.currentLeuronRequest
+
+          case m_req of
+               Nothing  -> eval (AddError "eval_Leuron(Edit)" "Leuron request doesn't exist" next)
+               Just req -> do
+
+                 e_leuron <- rd $ putLeuron' leuron_id req
+                 case e_leuron of
+                      Left err                          -> eval (AddErrorApi "eval_Leuron(Edit)::putLeuron'" err next)
+                      Right (LeuronResponse leuron) -> do
+                        eval (Goto (Leurons (ShowI leuron.id) []) next)
 
     InputLeuron_Nop         -> pure next
 

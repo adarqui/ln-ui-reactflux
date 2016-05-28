@@ -69,4 +69,5 @@ data Leuron_Mod
   | SetType TyLeuron
   | SetSt LeuronRequestState
 
-  | Save (Maybe Int)
+  | Save Int -- save to resource_id
+  | Edit Int -- edit leuron_id
