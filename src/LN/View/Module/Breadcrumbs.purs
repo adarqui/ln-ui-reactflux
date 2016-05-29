@@ -14,14 +14,15 @@ import Prelude                               (map, ($))
 import LN.Input.Types                        (Input)
 import LN.Router.Link                        (linkTo)
 import LN.Router.Types                       (Routes, crumb)
+import LN.State.Types                        (State)
 
 
 
-renderBreadcrumbs :: Routes -> ComponentHTML Input
-renderBreadcrumbs route =
+renderBreadcrumbs :: Routes -> State -> ComponentHTML Input
+renderBreadcrumbs route st =
   H.div_ [
     H.ol [P.classes [B.breadcrumb]] $
-      map (\(Tuple breadcrumb name) -> H.li [] [linkTo breadcrumb name]) (crumb route)
+      map (\(Tuple breadcrumb name) -> H.li [] [linkTo breadcrumb name]) (crumb route st)
   ]
 
 

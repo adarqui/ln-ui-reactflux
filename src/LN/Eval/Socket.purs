@@ -32,8 +32,8 @@ import LN.Input.Types                   (Input(..))
 eval_ConnectSocket :: EvalEff
 eval_ConnectSocket eval (ConnectSocket next) = do
   liftAff' $ log "ConnectSocket"
-  ch <- gets _.driverCh
-  liftAff' $ makeSocket ch (URL "wss://leuro.adarq.org")
+-- TODO FIXME: took this out temporarily because of cyclic dependency  ch <- gets _.driverCh
+-- TODO FIXME: ^^  liftAff' $ makeSocket ch (URL "wss://leuro.adarq.org")
 --  Connection socket <- liftEff' $ newWebSocket (URL "wss://leuro.adarq.org/spa") []
 --  driver <- makeAuxDriver <$> get
 --  url <- URL <$> gets _.chatServerUrl

@@ -1,22 +1,18 @@
-module LN.State.Types (
-  State,
-  initialState
+module LN.State.Internal.Types (
+  InternalState
 ) where
 
 
 
-import LN.Router.Class.Routes       (Routes)
-import LN.State.Internal.Types      (InternalState)
 import Control.Monad.Aff.AVar       (AVar())
 import Data.Map                     as M
 import Data.Maybe                   (Maybe(..))
 import Data.Tuple                   (Tuple)
 import Prelude                      (Unit)
 
--- import LN.Router.Types              (Routes(..))
 import LN.Component.CreateThread    (Comp_CreateThread_State)
-import LN.Input.Types               (Input)
-import LN.Router.Class.Routes       (Routes(..))
+-- import LN.Input.Types               (Input)
+-- import LN.Router.Types              (Routes(..))
 import LN.State.Leuron              (LeuronRequestState, defaultLeuronRequestState)
 import LN.State.Loading             (LoadingMap, defaultLoadingMap)
 import LN.State.Resource            (ResourceRequestState, defaultResourceRequestState)
@@ -32,12 +28,54 @@ import LN.T
 
 
 
-type State = InternalState Routes
+type InternalState routes =
+  { currentPage           :: routes
+  , me                    :: Maybe UserPackResponse
+  , meId                  :: Int
+  , errors                :: Array (Tuple String String)
+  , users                 :: M.Map Int UserSanitizedPackResponse
+  , usersMap              :: M.Map Int UserSanitizedPackResponse
+  , organizations         :: M.Map Int OrganizationPackResponse
+  , teams                 :: M.Map Int TeamPackResponse
+  , forums                :: M.Map Int ForumPackResponse
+  , boards                :: M.Map Int BoardPackResponse
+  , threads               :: M.Map Int ThreadPackResponse
+  , threadPosts           :: M.Map Int ThreadPostPackResponse
+  , resources             :: M.Map Int ResourcePackResponse
+  , leurons               :: M.Map Int LeuronPackResponse
+--  , workouts            :: M.Map Int WorkoutPackResponse
+--  , pms                 :: Maybe (Array PmResponse)
+  , currentOrganization   :: Maybe OrganizationPackResponse
+  , currentUser           :: Maybe UserSanitizedPackResponse
+--  , currentTeam         :: Maybe TeamResponse
+  , currentForum          :: Maybe ForumPackResponse
+  , currentBoard          :: Maybe BoardPackResponse
+  , currentThread         :: Maybe ThreadPackResponse
+  , currentThreadPost     :: Maybe ThreadPostRequest -- TODO FIXME: rename to something more appropriate
+  , currentResource       :: Maybe ResourcePackResponse
+  , currentResourceRequest :: Maybe ResourceRequest
+  , currentResourceRequestSt :: Maybe ResourceRequestState
+  , currentLeuron         :: Maybe LeuronPackResponse
+  , currentLeuronRequest  :: Maybe LeuronRequest
+  , currentLeuronRequestSt :: Maybe LeuronRequestState
+--  , currentWorkout      :: Maybe WorkoutResponse
+  , currentPageInfo       :: PageInfo
+  , organizationsPageInfo :: PageInfo
+  , usersPageInfo         :: PageInfo
+  , threadsPageInfo       :: PageInfo
+  , threadPostsPageInfo   :: PageInfo
+  , resourcesPageInfo     :: PageInfo
+  , leuronsPageInfo       :: PageInfo
+  , compCreateThread      :: Maybe Comp_CreateThread_State
+--  , driverCh              :: AVar (Input Unit)
+  , loading               :: LoadingMap
+  }
 
 
 
-initialState :: AVar (Input Unit) -> State
-initialState ch =
+{-
+initialInternalState :: AVar (Input Unit) -> InternalState
+initialInternalState ch =
   { currentPage:           Home
   , me:                    Nothing
   , meId:                  0
@@ -79,3 +117,4 @@ initialState ch =
 --  , driverCh:              ch
   , loading:               defaultLoadingMap
   }
+-}

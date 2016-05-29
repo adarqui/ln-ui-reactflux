@@ -189,11 +189,13 @@ eval_Goto eval (Goto route next) = do
     (ResourcesLeurons resource_id New params) -> do
       -- Important: don't over-write leuron request state.. we want to hold on to that info to make our lives easier
       -- when adding leurons fast
+      eval (GetResourceId resource_id next) -- TODO FIXME
       lst <- gets _.currentLeuronRequestSt
       modify (_{ currentLeuronRequest = Just defaultLeuronRequest, currentLeuronRequestSt = Just $ maybe defaultLeuronRequestState id lst })
       pure unit
 
     (ResourcesLeurons resource_id (EditI leuron_id) params)   -> do
+      eval (GetResourceId resource_id next) -- TODO FIXME
       eval (GetLeuronId leuron_id next)
       m_pack <- gets _.currentLeuron
       case m_pack of
@@ -208,6 +210,7 @@ eval_Goto eval (Goto route next) = do
              pure unit
 
     (ResourcesLeurons resource_id (DeleteI leuron_id) params) -> do
+      eval (GetResourceId resource_id next) -- TODO FIXME
       eval (GetLeuronId leuron_id next)
       m_pack <- gets _.currentLeuron
       case m_pack of
@@ -216,7 +219,9 @@ eval_Goto eval (Goto route next) = do
              modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron })
              pure unit
 
-    (ResourcesLeurons resource_id (ShowI leuron_id) params) -> eval (GetLeuronId leuron_id next) $> unit
+    (ResourcesLeurons resource_id (ShowI leuron_id) params) -> do
+      eval (GetResourceId resource_id next) -- TODO FIXME
+      eval (GetLeuronId leuron_id next) $> unit
 
 
 
@@ -224,10 +229,12 @@ eval_Goto eval (Goto route next) = do
       pure unit
 
     (ResourcesSiftLeuronsLinear resource_id (ShowI offset) params) -> do
+      eval (GetResourceId resource_id next) -- TODO FIXME
       eval (GetResourceLeuronLinear resource_id offset next)
       pure unit
 
     (ResourcesSiftLeuronsRandom resource_id params) -> do
+      eval (GetResourceId resource_id next) -- TODO FIXME
       eval (GetResourceLeuronRandom resource_id next)
       pure unit
 

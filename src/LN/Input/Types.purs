@@ -21,7 +21,7 @@ import LN.Input.OrderBy        (InputOrderBy)
 import LN.Input.Profile        (InputProfile)
 import LN.Input.Resource       (InputResource(..), Resource_Mod)
 import LN.Input.ThreadPost     (InputThreadPost)
-import LN.Router.Types         (Routes)
+import LN.Router.Class.Routes  (Routes)
 import LN.T
 
 

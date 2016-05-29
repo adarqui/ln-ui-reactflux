@@ -1,21 +1,7 @@
-module LN.Router.Types (
-  Routing,
-  module CRUD,
-  module Link,
-  module OrderBy,
-  module Routes
-  {-,
-  CRUD (..),
-  Params (..),
+module LN.Router.Class.Routes (
   Routes (..),
-  class HasLink,
-  link,
   class HasCrumb,
-  crumb,
-  class HasOrderBy,
-  orderBy,
-  links
-  -}
+  crumb
 ) where
 
 
@@ -25,58 +11,19 @@ import Control.Monad.Aff.AVar      (AVAR())
 import Control.Monad.Eff.Exception (EXCEPTION())
 import Data.Generic                (class Generic, gEq)
 import Data.Map                    as M
+import Data.Maybe                  (maybe)
 import Data.Tuple                  (Tuple(..), fst)
 import DOM                         (DOM())
-import LN.Router.Util              (slash, fixParams)
+import Optic.Core                  ((^.), (..))
 import Prelude                     (class Eq, class Show, show, (<>), ($), (++), (==))
 
-import LN.T                        (OrderBy(..))
-import LN.Router.Class.CRUD        as CRUD
-import LN.Router.Class.Link        as Link
-import LN.Router.Class.OrderBy     as OrderBy
-import LN.Router.Class.Routes      as Routes
-
-
-
-type Routing e = Aff (dom :: DOM, avar :: AVAR, err :: EXCEPTION | e)
-
-
-
-{-
-data CRUD
-  = Index
-  | Show  String
-  | ShowI Int
-  | ShowN Number
-  | ShowB Boolean
-  | New
-  | Edit String
-  | EditI Int
-  | EditN Number
-  | Delete String
-  | DeleteI Int
-  | DeleteN Number
-
-
-
-instance eqCrud :: Eq CRUD where
-  eq Index        Index        = true
-  eq (Show a)     (Show b)     = a == b
-  eq (ShowI a)    (ShowI b)    = a == b
-  eq (ShowN a)    (ShowN b)    = a == b
-  eq (ShowB a)    (ShowB b)    = a == b
-  eq New          New          = true
-  eq (Edit a)     (Edit b)     = a == b
-  eq (EditI a)    (EditI b)    = a == b
-  eq (EditN a)    (EditN b)    = a == b
-  eq (Delete a)   (Delete b)   = a == b
-  eq (DeleteI a)  (DeleteI b)  = a == b
-  eq (DeleteN a)  (DeleteN b)  = a == b
-  eq _            _            = false
-
-
-
-type Params = Array (Tuple String String)
+import LN.T
+import LN.Router.Util              (slash, fixParams)
+import LN.Router.Class.CRUD
+import LN.Router.Class.Params
+import LN.Router.Class.Link
+import LN.Router.Class.OrderBy
+import LN.State.Internal.Types     (InternalState)
 
 
 
@@ -114,7 +61,6 @@ data Routes
 
 
 derive instance genericRoutes :: Generic Routes
-derive instance genericCrud :: Generic CRUD
 
 
 
@@ -122,8 +68,8 @@ instance eqRoute :: Eq Routes where eq = gEq
 
 
 
-class HasLink a where
-  link :: a -> Tuple String (M.Map String String)
+class HasCrumb a where
+  crumb :: a -> InternalState Routes -> Array (Tuple Routes String)
 
 
 
@@ -176,47 +122,42 @@ instance routesHasLink :: HasLink Routes where
 
 
 
-class HasCrumb a where
-  crumb :: a -> Array (Tuple Routes String)
-
-
-
 instance routesHasCrumb :: HasCrumb Routes where
 
 
-  crumb Home = [Tuple Home "Home"]
+  crumb Home _ = [Tuple Home "Home"]
 
 
-  crumb About = [Tuple About "About"]
+  crumb About _ = [Tuple About "About"]
 
 
-  crumb Me = [Tuple Me "Me"]
+  crumb Me _ = [Tuple Me "Me"]
 
 
-  crumb Errors = [Tuple Errors "Errors"]
+  crumb Errors _ = [Tuple Errors "Errors"]
 
 
-  crumb Portal = [Tuple Portal "Portal"]
+  crumb Portal _ = [Tuple Portal "Portal"]
 
 
 
-  crumb (Organizations Index params) =
+  crumb (Organizations Index params) _ =
     [ Tuple (Organizations Index params) "Organizations" ]
 
-  crumb (Organizations (Show org) params) =
+  crumb (Organizations (Show org) params) _ =
     [
       Tuple (Organizations Index params) "Organizations",
       Tuple (Organizations (Show $ slash org) params) org
     ]
 
-  crumb (OrganizationsForums org (Show forum) params) =
+  crumb (OrganizationsForums org (Show forum) params) _ =
     [
       Tuple (Organizations Index params) "Organizations",
       Tuple (Organizations (Show $ slash org) params) org,
       Tuple (OrganizationsForums org (Show $ slash forum) params) forum
     ]
 
-  crumb (OrganizationsForumsBoards org forum (Show board) params) =
+  crumb (OrganizationsForumsBoards org forum (Show board) params) _ =
     [
       Tuple (Organizations Index params) "Organizations",
       Tuple (Organizations (Show $ slash org) params) org,
@@ -224,7 +165,7 @@ instance routesHasCrumb :: HasCrumb Routes where
       Tuple (OrganizationsForumsBoards org forum (Show $ slash board) params) board
     ]
 
-  crumb (OrganizationsForumsBoardsThreads org forum board (Show thread) params) =
+  crumb (OrganizationsForumsBoardsThreads org forum board (Show thread) params) _ =
     [
       Tuple (Organizations Index params) "Organizations",
       Tuple (Organizations (Show $ slash org) params) org,
@@ -235,12 +176,12 @@ instance routesHasCrumb :: HasCrumb Routes where
 
 
 
-  crumb (Users Index params) =
+  crumb (Users Index params) _ =
     [
       Tuple (Users Index params) "Users"
     ]
 
-  crumb (Users (Show user) params) =
+  crumb (Users (Show user) params) _ =
     [
       Tuple (Users Index params) "Users",
       Tuple (Users (Show $ slash user) params) user
@@ -248,63 +189,63 @@ instance routesHasCrumb :: HasCrumb Routes where
 
 
 
-  crumb (UsersProfile user params) =
+  crumb (UsersProfile user params) _ =
     [
       Tuple (Users Index params) "Users",
       Tuple (Users (Show $ slash user) []) user,
       Tuple (UsersProfile (slash user) params) "Profile"
     ]
 
-  crumb (UsersSettings user params) =
+  crumb (UsersSettings user params) _ =
     [
       Tuple (Users Index params) "Users",
       Tuple (Users (Show $ slash user) []) user,
       Tuple (UsersSettings (slash user) params) "Settings"
     ]
 
-  crumb (UsersPMs user params) =
+  crumb (UsersPMs user params) _ =
     [
       Tuple (Users Index []) "Users",
       Tuple (Users (Show $ slash user) []) user,
       Tuple (UsersPMs (slash user) params) "PMs"
     ]
 
-  crumb (UsersThreads user params) =
+  crumb (UsersThreads user params) _ =
     [
       Tuple (Users Index []) "Users",
       Tuple (Users (Show $ slash user) []) user,
       Tuple (UsersThreads (slash user) params) "Threads"
     ]
 
-  crumb (UsersThreadPosts user params) =
+  crumb (UsersThreadPosts user params) _ =
     [
       Tuple (Users Index []) "Users",
       Tuple (Users (Show $ slash user) []) user,
       Tuple (UsersThreadPosts (slash user) params) "ThreadPosts"
     ]
 
-  crumb (UsersWorkouts user params) =
+  crumb (UsersWorkouts user params) _ =
     [
       Tuple (Users Index []) "Users",
       Tuple (Users (Show $ slash user) []) user,
       Tuple (UsersWorkouts (slash user) params) "Workouts"
     ]
 
-  crumb (UsersResources user params) =
+  crumb (UsersResources user params) _ =
     [
       Tuple (Users Index []) "Users",
       Tuple (Users (Show $ slash user) []) user,
       Tuple (UsersResources (slash user) params) "Resources"
     ]
 
-  crumb (UsersLeurons user params) =
+  crumb (UsersLeurons user params) _ =
     [
       Tuple (Users Index []) "Users",
       Tuple (Users (Show $ slash user) []) user,
       Tuple (UsersLeurons (slash user) params) "Leurons"
     ]
 
-  crumb (UsersLikes user params) =
+  crumb (UsersLikes user params) _ =
     [
       Tuple (Users Index []) "Users",
       Tuple (Users (Show $ slash user) []) user,
@@ -313,90 +254,104 @@ instance routesHasCrumb :: HasCrumb Routes where
 
 
 
-  crumb (Resources Index params) =
+  crumb (Resources Index params) _ =
     [Tuple (Resources Index params) "Resources"]
 
-  crumb (Resources New params) =
+  crumb (Resources New params) _ =
     [Tuple (Resources Index params) "Resources"]
 
-  crumb (Resources (EditI resource_id) params) =
+  crumb (Resources (EditI resource_id) params) st =
     [
       Tuple (Resources Index params) "Resources",
       Tuple (Resources (ShowI resource_id) params) (show resource_id)
+      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
+        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
     ]
 
-  crumb (Resources (DeleteI resource_id) params) =
+  crumb (Resources (DeleteI resource_id) params) st =
     [
       Tuple (Resources Index params) "Resources",
       Tuple (Resources (ShowI resource_id) params) (show resource_id)
+      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
+        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
     ]
 
-  crumb (Resources (ShowI resource_id) params) =
+  crumb (Resources (ShowI resource_id) params) st =
     [
       Tuple (Resources Index params) "Resources",
       Tuple (Resources (ShowI resource_id) params) (show resource_id)
+      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
+        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
     ]
 
 
 
-  crumb (ResourcesLeurons resource_id Index params) =
+  crumb (ResourcesLeurons resource_id Index params) st =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
+        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
       Tuple (ResourcesLeurons resource_id Index params) "Leurons"
     ]
 
-  crumb (ResourcesLeurons resource_id New params) =
+  crumb (ResourcesLeurons resource_id New params) st =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
+        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
       Tuple (ResourcesLeurons resource_id Index params) "Leurons"
     ]
 
-  crumb (ResourcesLeurons resource_id (EditI leuron_id) params) =
+  crumb (ResourcesLeurons resource_id (EditI leuron_id) params) st =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
+        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
       Tuple (ResourcesLeurons resource_id Index params) "Leurons",
       Tuple (ResourcesLeurons resource_id (ShowI leuron_id) params) (show leuron_id)
     ]
 
-  crumb (ResourcesLeurons resource_id (DeleteI leuron_id) params) =
+  crumb (ResourcesLeurons resource_id (DeleteI leuron_id) params) st =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
+        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
       Tuple (ResourcesLeurons resource_id Index params) "Leurons",
       Tuple (ResourcesLeurons resource_id (ShowI leuron_id) params) (show leuron_id)
     ]
 
-  crumb (ResourcesLeurons resource_id (ShowI leuron_id) params) =
+  crumb (ResourcesLeurons resource_id (ShowI leuron_id) params) st =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
+        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
       Tuple (ResourcesLeurons resource_id Index params) "Leurons",
       Tuple (ResourcesLeurons resource_id (ShowI leuron_id) params) (show leuron_id)
     ]
 
 
 
-  crumb (ResourcesSiftLeurons resource_id params) =
+  crumb (ResourcesSiftLeurons resource_id params) st =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
+        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
       Tuple (ResourcesSiftLeurons resource_id params) "Sift"
     ]
 
-  crumb (ResourcesSiftLeuronsRandom resource_id params) =
+  crumb (ResourcesSiftLeuronsRandom resource_id params) st =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
+        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
       Tuple (ResourcesSiftLeurons resource_id params) "Sift"
     ]
 
-  crumb (ResourcesSiftLeuronsLinear resource_id _ params) =
+  crumb (ResourcesSiftLeuronsLinear resource_id _ params) st =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) (show resource_id),
+      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
+        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
       Tuple (ResourcesSiftLeurons resource_id params) "Sift",
       Tuple (ResourcesSiftLeuronsLinear resource_id Index params) "Linear"
     ]
@@ -414,13 +369,8 @@ instance routesHasCrumb :: HasCrumb Routes where
 
 
 
-  crumb _ = [Tuple NotFound "Error"]
+  crumb _ _ = [Tuple NotFound "Error"]
 
-
-
-
-class HasOrderBy a where
-  orderBy :: a -> Array OrderBy
 
 
 
@@ -460,62 +410,3 @@ instance routesShow :: Show Routes where
   show Login = "/auth/login"
   show Logout = "/auth/logout"
   show NotFound = "#/404"
-
-
-
-instance crudHasLink :: HasLink CRUD where
--- TODO FIXME:
--- well this could be fixed.. changed from "" in order to match CRUD Index routes
---  link Index    = Tuple "/index" M.empty
-  link Index          = Tuple "" M.empty
-  link New            = Tuple "/new" M.empty
-  link (Show s)       = Tuple ("/" <> s) M.empty
-  link (ShowI int)    = Tuple ("/" <> show int) M.empty
-  link (ShowN num)    = Tuple ("/" <> show num) M.empty
-  link (ShowB bool)   = Tuple ("/" <> show bool) M.empty
-  link (Edit s)       = Tuple ("/_edit/" <> s) M.empty
-  link (EditI int)    = Tuple ("/_edit/" <> show int) M.empty
-  link (EditN num)    = Tuple ("/_edit/" <> show num) M.empty
-  link (Delete s)     = Tuple ("/_delete/" <> s) M.empty
-  link (DeleteI int)  = Tuple ("/_delete/" <> show int) M.empty
-  link (DeleteN num)  = Tuple ("/_delete/" <> show num) M.empty
-
-
-
-links :: Array Routes
-links =
-  [ Home
-  , About
-  , Portal
-
-  , Me
-
-  , Errors
-
-  , Organizations Index []
-  , OrganizationsForums "adarq" Index []
-  , OrganizationsForumsBoards "adarq" "forum" Index []
-  , OrganizationsForumsBoardsThreads "adarq" "forum" "board" Index []
-  , OrganizationsForumsBoardsThreadsPosts "adarq" "forum" "board" "thread" Index
-
-  , Users Index []
-  , UsersProfile "adarq" []
-  , UsersSettings "adarq" []
-  , UsersPMs "adarq" []
-  , UsersThreads "adarq" []
-  , UsersThreadPosts "adarq" []
-  , UsersWorkouts "adarq" []
-  , UsersResources "adarq" []
-  , UsersLeurons "adarq" []
-  , UsersLikes "adarq" []
-
-  , Resources Index []
-  , ResourcesLeurons 1 Index []
-  , ResourcesSiftLeurons 1 []
-  , ResourcesSiftLeuronsLinear 1 Index []
-  , ResourcesSiftLeuronsRandom 1 []
---  , Leurons Index []
-  , Login
-  , Logout
-  ]
-  -}
