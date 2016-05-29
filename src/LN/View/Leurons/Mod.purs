@@ -102,11 +102,12 @@ renderView_Leurons_Mod' m_resource_id m_leuron_id leuron_req lst st =
           TyLnFactList -> factList lst.factList
           TyLnCard     -> card lst.card
           TyLnDCard    -> dcard lst.dcard
-{-
-          TyLnFactList -> factList lst.factList
-          TyLnCard     -> card lst.card
-          TyLnDCard    -> dcard lst.dcard
--}
+          TyLnDCardX   -> dcardx lst.dcardx
+          TyLnAcronym  -> acronym lst.acronym
+          TyLnSynonym  -> synonym lst.synonym
+          TyLnAntonym  -> antonym lst.antonym
+          TyLnQA       -> qa lst.qa
+          _            -> H.p_ [H.text "not implemented."]
 
 
 
@@ -325,6 +326,35 @@ TODO FIXME
       textArea_Label "Back" "back" v.back (E.input (\s -> cLeuronMod $ SetData $ LnDCard $ DCard v{back=s}))
     ]
 
+  dcardx (DCardX v) = H.p_ [H.text "dcardx"]
+
+  acronym (Acronym v) =
+    H.p_ [
+      H.h1_ [H.text "Acronym"],
+      textArea_Label "Abbreviation" "abbreviation" v.abbreviation (E.input (\s -> cLeuronMod $ SetData $ LnAcronym $ Acronym v{abbreviation=s})),
+      textArea_Label "Meaning" "meaning" v.meaning (E.input (\s -> cLeuronMod $ SetData $ LnAcronym $ Acronym v{meaning=s}))
+    ]
+
+  synonym (Synonym v) =
+    H.p_ [
+      H.h1_ [H.text "Synonym"],
+      textArea_Label "A" "a" v.a (E.input (\s -> cLeuronMod $ SetData $ LnSynonym $ Synonym v{a=s})),
+      textArea_Label "B" "b" v.b (E.input (\s -> cLeuronMod $ SetData $ LnSynonym $ Synonym v{b=s}))
+    ]
+
+  antonym (Antonym v) =
+    H.p_ [
+      H.h1_ [H.text "Antonym"],
+      textArea_Label "A" "a" v.a (E.input (\s -> cLeuronMod $ SetData $ LnAntonym $ Antonym v{a=s})),
+      textArea_Label "B" "b" v.b (E.input (\s -> cLeuronMod $ SetData $ LnAntonym $ Antonym v{b=s}))
+    ]
+
+  qa (QA v) =
+    H.p_ [
+      H.h1_ [H.text "QA"],
+      textArea_Label "Question" "question" v.question (E.input (\s -> cLeuronMod $ SetData $ LnQA $ QA v{question=s})),
+      textArea_Label "Answer" "answer" v.answer (E.input (\s -> cLeuronMod $ SetData $ LnQA $ QA v{answer=s}))
+    ]
 
   leuron   = unwrapLeuronRequest leuron_req
 --  resource = unwrapResourceResponse st.resource
