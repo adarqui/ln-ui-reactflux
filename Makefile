@@ -15,6 +15,13 @@ upload:
 upload-ugly:
 	rsync -av -e ssh ./static/dist/app.min.js adarq:/root/projects/leuronet/ln-ui/static/dist/app.js
 
+prod:
+	psc-bundle output/**/*.js -m Main --main Main > ./static/dist/app.js
+
+prod-uglify: prod uglify
+
+upload-prod: prod-uglify upload-ugly
+
 id:
 	pscid --censor-codes=ImplicitImport,UnusedExplicitImport,HidingImport,WildcardInferredType,ImplicitQualifiedImport,DeprecatedOperatorDecl
 
