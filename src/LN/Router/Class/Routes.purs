@@ -263,7 +263,6 @@ instance routesHasCrumb :: HasCrumb Routes where
   crumb (Resources (EditI resource_id) params) st =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) (show resource_id)
       Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
         (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
     ]
@@ -271,7 +270,6 @@ instance routesHasCrumb :: HasCrumb Routes where
   crumb (Resources (DeleteI resource_id) params) st =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) (show resource_id)
       Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
         (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
     ]
@@ -279,7 +277,6 @@ instance routesHasCrumb :: HasCrumb Routes where
   crumb (Resources (ShowI resource_id) params) st =
     [
       Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) (show resource_id)
       Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
         (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
     ]
