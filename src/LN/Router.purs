@@ -103,9 +103,9 @@ routing =
       resources_delete_int <|>
       resources_index <|>
 
-      leurons_new <|>
-      leurons_show_int <|>
-      leurons_index <|>
+--      leurons_new <|>
+--      leurons_show_int <|>
+--      leurons_index <|>
 
       login <|>
       logout <|>
@@ -310,20 +310,20 @@ routing =
 
 
 
-    leurons_index =
-      Leurons
-      <$> (lit "" *> lit "leurons" *> pure Index)
-      <*> (params' <|> pure [])
-
-    leurons_new =
-      Leurons
-      <$> (lit "" *> lit "leurons" *> lit "new" *> pure New)
-      <*> (params' <|> pure [])
-
-    leurons_show_int =
-      Leurons
-      <$> (lit "" *> lit "leurons" *> (ShowI <$> int))
-      <*> (params' <|> pure [])
+--    leurons_index =
+--      Leurons
+--      <$> (lit "" *> lit "leurons" *> pure Index)
+--      <*> (params' <|> pure [])
+--
+--    leurons_new =
+--      Leurons
+--      <$> (lit "" *> lit "leurons" *> lit "new" *> pure New)
+--      <*> (params' <|> pure [])
+--
+--    leurons_show_int =
+--      Leurons
+--      <$> (lit "" *> lit "leurons" *> (ShowI <$> int))
+--      <*> (params' <|> pure [])
 
 
 

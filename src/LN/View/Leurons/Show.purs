@@ -16,8 +16,9 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (show, map, ($))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Link                  (linkTo)
+import LN.Router.Link                  (linkTo, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.State.Loading                (getLoading, l_currentLeuron)
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( LeuronPackResponse, LeuronResponse
@@ -39,9 +40,10 @@ import LN.T                            ( LeuronPackResponse, LeuronResponse
 renderView_Leurons_Show :: Int -> State -> ComponentHTML Input
 renderView_Leurons_Show leuron_id st =
 
-  case st.currentLeuron of
-       Nothing   -> renderLoading
-       Just pack -> renderView_Leurons_Show' pack st
+  case st.currentLeuron, getLoading l_currentLeuron st.loading of
+       _, true          -> renderLoading
+       Nothing, false   -> H.p_ [H.text "leuron unavailable."]
+       Just pack, false -> renderView_Leurons_Show' pack st
 
 
 
@@ -52,6 +54,10 @@ renderView_Leurons_Show' pack st =
     H.div [P.class_ B.pageHeader] [
       H.h1 [P.class_ B.textCenter] [H.text $ show leuron.id]
 --      H.p [P.class_ B.textCenter] [H.text (leuron.description)]
+    ],
+    H.div [P.class_ B.container] [
+      linkToP_Glyph' (Leurons (EditI leuron.id) []) B.glyphiconPencil,
+      linkToP_Glyph' (Leurons (DeleteI leuron.id) []) B.glyphiconTrash
     ],
     H.div [P.class_ B.container] [
       renderLeuron leuron'

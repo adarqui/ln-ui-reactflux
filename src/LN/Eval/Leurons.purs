@@ -15,7 +15,7 @@ import Data.Map                      as M
 import Data.Maybe                    (Maybe(..), maybe)
 import Halogen                       (gets, modify)
 import Optic.Core                    ((^.), (..), (.~))
-import Prelude                       (class Eq, id, const, bind, pure, map, ($), (<>), (<<<))
+import Prelude                       (class Eq, id, const, bind, pure, map, ($), (<>), (<<<), (==))
 
 import LN.Api                        ( rd, getLeuronsCount', getLeuronPack', getLeuronPacks
                                      , postLeuron_ByResourceId', putLeuron')
@@ -136,11 +136,17 @@ eval_Leuron eval (CompLeuron sub next) = do
 
         SetExample ex       -> modSt (_{exampleItem = ex})
         AddExample ex       -> do
-          mod (\(LeuronRequest req)->Just $ LeuronRequest req{examples = Just $ maybe [ex] (\examples->examples <> [ex]) req.examples})
-          modSt (_{exampleItem = ""})
-          pure next
-        EditExample idx new -> pure next
-        DeleteExample idx   -> pure next
+          if ex == ""
+             then pure next
+             else do
+               mod (\(LeuronRequest req)->Just $ LeuronRequest req{examples = Just $ maybe [ex] (\examples->examples <> [ex]) req.examples})
+               modSt (_{exampleItem = ""})
+               pure next
+        EditExample idx new -> do
+          if new == ""
+             then pure next
+             else mod (\(LeuronRequest req)->Just $ LeuronRequest req{examples = maybe Nothing (modifyAt idx (const new)) req.examples})
+        DeleteExample idx   -> mod (\(LeuronRequest req)->Just $ LeuronRequest req{examples = maybe Nothing (deleteAt idx) req.examples})
         ClearExamples       -> mod $ set (\req -> _LeuronRequest .. examples_ .~ Nothing $ req)
 
         SetData d           -> do
