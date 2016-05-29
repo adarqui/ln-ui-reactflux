@@ -37,8 +37,8 @@ import LN.T                            ( LeuronPackResponse, LeuronResponse
 
 
 
-renderView_Leurons_Show :: Int -> State -> ComponentHTML Input
-renderView_Leurons_Show leuron_id st =
+renderView_Leurons_Show :: Int -> Int -> State -> ComponentHTML Input
+renderView_Leurons_Show resource_id leuron_id st =
 
   case st.currentLeuron, getLoading l_currentLeuron st.loading of
        _, true          -> renderLoading
@@ -56,8 +56,8 @@ renderView_Leurons_Show' pack st =
 --      H.p [P.class_ B.textCenter] [H.text (leuron.description)]
     ],
     H.div [P.class_ B.container] [
-      linkToP_Glyph' (Leurons (EditI leuron.id) []) B.glyphiconPencil,
-      linkToP_Glyph' (Leurons (DeleteI leuron.id) []) B.glyphiconTrash
+      linkToP_Glyph' (ResourcesLeurons leuron.resourceId (EditI leuron.id) []) B.glyphiconPencil,
+      linkToP_Glyph' (ResourcesLeurons leuron.resourceId (DeleteI leuron.id) []) B.glyphiconTrash
     ],
     H.div [P.class_ B.container] [
       renderLeuron leuron'

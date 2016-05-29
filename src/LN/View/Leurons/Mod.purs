@@ -37,8 +37,8 @@ import LN.T
 
 
 
-renderView_Leurons_Delete :: Int -> State -> ComponentHTML Input
-renderView_Leurons_Delete leuron_id st =
+renderView_Leurons_Delete :: Int -> Int -> State -> ComponentHTML Input
+renderView_Leurons_Delete resource_id leuron_id st =
 
   case st.currentLeuron, getLoading l_currentLeuron st.loading of
        _, true          -> renderLoading
@@ -56,26 +56,26 @@ renderView_Leurons_Delete' pack st =
 
 
 renderView_Leurons_New :: Int -> State -> ComponentHTML Input
-renderView_Leurons_New resource_id = renderView_Leurons_Mod (Just resource_id) Nothing
+renderView_Leurons_New resource_id = renderView_Leurons_Mod resource_id Nothing
 
 
 
-renderView_Leurons_Edit :: Int -> State -> ComponentHTML Input
-renderView_Leurons_Edit leuron_id = renderView_Leurons_Mod Nothing (Just leuron_id)
+renderView_Leurons_Edit :: Int -> Int -> State -> ComponentHTML Input
+renderView_Leurons_Edit resource_id leuron_id = renderView_Leurons_Mod resource_id (Just leuron_id)
 
 
 
-renderView_Leurons_Mod :: Maybe Int -> Maybe Int -> State -> ComponentHTML Input
-renderView_Leurons_Mod m_resource_id m_leuron_id st =
+renderView_Leurons_Mod :: Int -> Maybe Int -> State -> ComponentHTML Input
+renderView_Leurons_Mod resource_id m_leuron_id st =
   case st.currentLeuronRequest, st.currentLeuronRequestSt, getLoading l_currentLeuron st.loading of
     _, _, true                         -> renderLoading
-    Just leuron_req, Just lst, false   -> renderView_Leurons_Mod' m_resource_id m_leuron_id leuron_req lst st
+    Just leuron_req, Just lst, false   -> renderView_Leurons_Mod' resource_id m_leuron_id leuron_req lst st
     _, _, false                        -> H.div_ [H.p_ [H.text "Leurons_Mod: unexpected error."]]
 
 
 
-renderView_Leurons_Mod' :: Maybe Int -> Maybe Int -> LeuronRequest -> LeuronRequestState -> State -> ComponentHTML Input
-renderView_Leurons_Mod' m_resource_id m_leuron_id leuron_req lst st =
+renderView_Leurons_Mod' :: Int -> Maybe Int -> LeuronRequest -> LeuronRequestState -> State -> ComponentHTML Input
+renderView_Leurons_Mod' resource_id m_leuron_id leuron_req lst st =
   H.div_ [
 
       H.h2_ [ H.text "Add Leuron" ]
@@ -279,13 +279,13 @@ TODO FIXME
 -}
 
 
-  , case m_resource_id, m_leuron_id of
-         Just resource_id, Nothing -> simpleInfoButton "Create" (cLeuronMod $ Save resource_id)
-         Nothing, Just leuron_id   -> simpleInfoButton "Save" (cLeuronMod $ EditP leuron_id)
-         _, _                      -> H.p_ [H.text "unexpected error."]
+  , case m_leuron_id of
+         Nothing         -> simpleInfoButton "Create" (cLeuronMod $ Save resource_id)
+         Just leuron_id  -> simpleInfoButton "Save" (cLeuronMod $ EditP leuron_id)
+         _               -> H.p_ [H.text "unexpected error."]
 
   -- show a list of recently added leurons
-  , H.ul_ $ map (\id_ -> H.li_ [linkToP [] (Leurons (ShowI id_) []) (show id_)]) lst.ids
+  , H.ul_ $ map (\id_ -> H.li_ [linkToP [] (ResourcesLeurons resource_id (ShowI id_) []) (show id_)]) lst.ids
 
   ]
   where

@@ -233,48 +233,48 @@ eval_Goto eval (Goto route next) = do
 
 
 
-    (Leurons Index params) -> do
-      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
-      maybe
-        (pure unit)
-        (\(Tuple k offset) -> do
-          pageInfo <- gets _.leuronsPageInfo
-          modify (_{ leuronsPageInfo = pageInfo { currentPage = maybe 1 id (fromString offset) } })
-          pure unit)
-        moffset
-      eval (GetLeurons next) $> unit
-
-    (Leurons New params) -> do
-      -- Important: don't over-write leuron request state.. we want to hold on to that info to make our lives easier
-      -- when adding leurons fast
-      lst <- gets _.currentLeuronRequestSt
-      modify (_{ currentLeuronRequest = Just defaultLeuronRequest, currentLeuronRequestSt = Just $ maybe defaultLeuronRequestState id lst })
-      pure unit
-
-    (Leurons (EditI leuron_id) params)   -> do
-      eval (GetLeuronId leuron_id next)
-      m_pack <- gets _.currentLeuron
-      case m_pack of
-           Nothing                          -> pure unit
-           Just (LeuronPackResponse pack) -> do
-             -- TODO FIXME: St's TyLeuronType needs to match source
-             let
-               leuron = pack.leuron ^. _LeuronResponse
-               lst    = defaultLeuronRequestState { ty = leuronToTyLeuron leuron.dataP }
-             modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron, currentLeuronRequestSt = Just lst })
-             pure unit
-
-    (Leurons (DeleteI leuron_id) params) -> do
-      eval (GetLeuronId leuron_id next)
-      m_pack <- gets _.currentLeuron
-      case m_pack of
-           Nothing                          -> pure unit
-           Just (LeuronPackResponse pack) -> do
-             modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron })
-             pure unit
-
-    (Leurons (ShowI leuron_id) params) -> eval (GetLeuronId leuron_id next) $> unit
-
+--    (Leurons Index params) -> do
+--      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
+--      maybe
+--        (pure unit)
+--        (\(Tuple k offset) -> do
+--          pageInfo <- gets _.leuronsPageInfo
+--          modify (_{ leuronsPageInfo = pageInfo { currentPage = maybe 1 id (fromString offset) } })
+--          pure unit)
+--        moffset
+--      eval (GetLeurons next) $> unit
+--
+--    (Leurons New params) -> do
+--      -- Important: don't over-write leuron request state.. we want to hold on to that info to make our lives easier
+--      -- when adding leurons fast
+--      lst <- gets _.currentLeuronRequestSt
+--      modify (_{ currentLeuronRequest = Just defaultLeuronRequest, currentLeuronRequestSt = Just $ maybe defaultLeuronRequestState id lst })
+--      pure unit
+--
+--    (Leurons (EditI leuron_id) params)   -> do
+--      eval (GetLeuronId leuron_id next)
+--      m_pack <- gets _.currentLeuron
+--      case m_pack of
+--           Nothing                          -> pure unit
+--           Just (LeuronPackResponse pack) -> do
+--             -- TODO FIXME: St's TyLeuronType needs to match source
+--             let
+--               leuron = pack.leuron ^. _LeuronResponse
+--               lst    = defaultLeuronRequestState { ty = leuronToTyLeuron leuron.dataP }
+--             modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron, currentLeuronRequestSt = Just lst })
+--             pure unit
+--
+--    (Leurons (DeleteI leuron_id) params) -> do
+--      eval (GetLeuronId leuron_id next)
+--      m_pack <- gets _.currentLeuron
+--      case m_pack of
+--           Nothing                          -> pure unit
+--           Just (LeuronPackResponse pack) -> do
+--             modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron })
+--             pure unit
+--
+--    (Leurons (ShowI leuron_id) params) -> eval (GetLeuronId leuron_id next) $> unit
+--
 
 
     (Users Index params) -> do

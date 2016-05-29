@@ -104,9 +104,9 @@ renderView (Resources (DeleteI resource_id) params) = renderView_Resources_Delet
 
 renderView (ResourcesLeurons resource_id Index params)                    = renderView_Resources_Leurons_Index resource_id
 renderView (ResourcesLeurons resource_id New params)                      = renderView_Leurons_New resource_id
-renderView (ResourcesLeurons resource_id (EditI leuron_id) params)        = renderView_Leurons_Edit leuron_id
-renderView (ResourcesLeurons resource_id (ShowI leuron_id) params)        = renderView_Leurons_Show leuron_id
-renderView (ResourcesLeurons resource_id (DeleteI leuron_id) params)      = renderView_Leurons_Delete leuron_id
+renderView (ResourcesLeurons resource_id (EditI leuron_id) params)        = renderView_Leurons_Edit resource_id leuron_id
+renderView (ResourcesLeurons resource_id (ShowI leuron_id) params)        = renderView_Leurons_Show resource_id leuron_id
+renderView (ResourcesLeurons resource_id (DeleteI leuron_id) params)      = renderView_Leurons_Delete resource_id leuron_id
 
 
 
@@ -117,8 +117,8 @@ renderView (ResourcesSiftLeuronsRandom resource_id params)                = rend
 
 
 
-renderView (Leurons Index params)              = renderView_Leurons_Index
-renderView (Leurons (ShowI resource_id) params) = renderView_Leurons_Show resource_id
+-- renderView (Leurons Index params)              = renderView_Leurons_Index
+-- renderView (Leurons (ShowI resource_id) params) = renderView_Leurons_Show resource_id
 
 
 

@@ -95,7 +95,7 @@ data Routes
   | ResourcesSiftLeurons Int Params
   | ResourcesSiftLeuronsLinear Int CRUD Params
   | ResourcesSiftLeuronsRandom Int Params
-  | Leurons CRUD Params
+--  | Leurons CRUD Params
   | Login
   | Logout
   | NotFound
@@ -155,7 +155,7 @@ instance routesHasLink :: HasLink Routes where
   link (ResourcesSiftLeuronsLinear resource_id crud params) = Tuple ("#/resources/" <> show resource_id <> "/sift/linear" <> (fst $ link crud)) (fixParams params)
   link (ResourcesSiftLeuronsRandom resource_id params) = Tuple ("#/resources/" <> show resource_id <> "/sift/random") (fixParams params)
 
-  link (Leurons crud params) = Tuple ("#/leurons" ++ (fst $ link crud)) (fixParams params)
+--  link (Leurons crud params) = Tuple ("#/leurons" ++ (fst $ link crud)) (fixParams params)
 
   link Login = Tuple "/auth/login" M.empty
   link Logout = Tuple "/auth/logout" M.empty
@@ -376,14 +376,14 @@ instance routesHasCrumb :: HasCrumb Routes where
 
 
 
-  crumb (Leurons Index params) =
-    [Tuple (Leurons Index params) "Leurons"]
-
-  crumb (Leurons (ShowI leuron_id) params) =
-    [
-      Tuple (Leurons Index params) "Leurons",
-      Tuple (Leurons (ShowI leuron_id) params) (show leuron_id)
-    ]
+--  crumb (Leurons Index params) =
+--    [Tuple (Leurons Index params) "Leurons"]
+--
+--  crumb (Leurons (ShowI leuron_id) params) =
+--    [
+--      Tuple (Leurons Index params) "Leurons",
+--      Tuple (Leurons (ShowI leuron_id) params) (show leuron_id)
+--    ]
 
 
 
@@ -429,7 +429,7 @@ instance routesShow :: Show Routes where
   show (ResourcesSiftLeurons resource_id params) = "#/resources/" <> show resource_id <> "/sift/..."
   show (ResourcesSiftLeuronsLinear resource_id crud params) = "#/resources/" <> show resource_id <> "/sift/linear/..."
   show (ResourcesSiftLeuronsRandom resource_id params) = "#/resources/" <> show resource_id <> "/sift/random"
-  show (Leurons crud params) = "#/leurons/..."
+--  show (Leurons crud params) = "#/leurons/..."
   show Login = "/auth/login"
   show Logout = "/auth/logout"
   show NotFound = "#/404"
@@ -487,7 +487,7 @@ links =
   , ResourcesSiftLeurons 1 []
   , ResourcesSiftLeuronsLinear 1 Index []
   , ResourcesSiftLeuronsRandom 1 []
-  , Leurons Index []
+--  , Leurons Index []
   , Login
   , Logout
   ]

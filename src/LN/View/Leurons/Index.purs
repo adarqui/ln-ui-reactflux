@@ -71,7 +71,7 @@ renderLeurons st =
                   renderGravatarForUser Small (usersMapLookup_ToUser st leuron.userId)
                 ]
               , H.div [P.class_ B.colSm6] [
-                    linkToP [] (Leurons (Show $ show leuron.id) []) (show leuron.id)
+                    linkToP [] (ResourcesLeurons leuron.resourceId (ShowI leuron.id) []) (show leuron.id)
                   , H.p_ [H.text $ show leuron.createdAt]
 --                  , H.p_ [H.text leuron.description]
                 ]
