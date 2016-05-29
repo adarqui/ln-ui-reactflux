@@ -124,249 +124,226 @@ instance routesHasLink :: HasLink Routes where
 
 instance routesHasCrumb :: HasCrumb Routes where
 
+  crumb route st =
 
-  crumb Home _ = [Tuple Home "Home"]
+    case route of
 
+      Home   -> [Tuple Home "Home"]
+      About  -> [Tuple About "About"]
+      Me     -> [Tuple Me "Me"]
+      Errors -> [Tuple Errors "Errors"]
+      Portal -> [Tuple Portal "Portal"]
 
-  crumb About _ = [Tuple About "About"]
+      Organizations Index params ->
+        [
+          Tuple (Organizations Index params) "Organizations"
+        ]
 
+      Organizations (Show org) params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org
+        ]
 
-  crumb Me _ = [Tuple Me "Me"]
+      OrganizationsForums org (Show forum) params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) params) forum
+        ]
 
+      OrganizationsForumsBoards org forum (Show board) params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) params) board
+        ]
 
-  crumb Errors _ = [Tuple Errors "Errors"]
-
-
-  crumb Portal _ = [Tuple Portal "Portal"]
-
-
-
-  crumb (Organizations Index params) _ =
-    [ Tuple (Organizations Index params) "Organizations" ]
-
-  crumb (Organizations (Show org) params) _ =
-    [
-      Tuple (Organizations Index params) "Organizations",
-      Tuple (Organizations (Show $ slash org) params) org
-    ]
-
-  crumb (OrganizationsForums org (Show forum) params) _ =
-    [
-      Tuple (Organizations Index params) "Organizations",
-      Tuple (Organizations (Show $ slash org) params) org,
-      Tuple (OrganizationsForums org (Show $ slash forum) params) forum
-    ]
-
-  crumb (OrganizationsForumsBoards org forum (Show board) params) _ =
-    [
-      Tuple (Organizations Index params) "Organizations",
-      Tuple (Organizations (Show $ slash org) params) org,
-      Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
-      Tuple (OrganizationsForumsBoards org forum (Show $ slash board) params) board
-    ]
-
-  crumb (OrganizationsForumsBoardsThreads org forum board (Show thread) params) _ =
-    [
-      Tuple (Organizations Index params) "Organizations",
-      Tuple (Organizations (Show $ slash org) params) org,
-      Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
-      Tuple (OrganizationsForumsBoards org forum (Show $ slash board) []) board,
-      Tuple (OrganizationsForumsBoardsThreads org forum board (Show $ slash thread) params) thread
-    ]
+      OrganizationsForumsBoardsThreads org forum board (Show thread) params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) []) board,
+          Tuple (OrganizationsForumsBoardsThreads org forum board (Show $ slash thread) params) thread
+        ]
 
 
 
-  crumb (Users Index params) _ =
-    [
-      Tuple (Users Index params) "Users"
-    ]
+      Users Index params ->
+        [
+          Tuple (Users Index params) "Users"
+        ]
 
-  crumb (Users (Show user) params) _ =
-    [
-      Tuple (Users Index params) "Users",
-      Tuple (Users (Show $ slash user) params) user
-    ]
-
-
-
-  crumb (UsersProfile user params) _ =
-    [
-      Tuple (Users Index params) "Users",
-      Tuple (Users (Show $ slash user) []) user,
-      Tuple (UsersProfile (slash user) params) "Profile"
-    ]
-
-  crumb (UsersSettings user params) _ =
-    [
-      Tuple (Users Index params) "Users",
-      Tuple (Users (Show $ slash user) []) user,
-      Tuple (UsersSettings (slash user) params) "Settings"
-    ]
-
-  crumb (UsersPMs user params) _ =
-    [
-      Tuple (Users Index []) "Users",
-      Tuple (Users (Show $ slash user) []) user,
-      Tuple (UsersPMs (slash user) params) "PMs"
-    ]
-
-  crumb (UsersThreads user params) _ =
-    [
-      Tuple (Users Index []) "Users",
-      Tuple (Users (Show $ slash user) []) user,
-      Tuple (UsersThreads (slash user) params) "Threads"
-    ]
-
-  crumb (UsersThreadPosts user params) _ =
-    [
-      Tuple (Users Index []) "Users",
-      Tuple (Users (Show $ slash user) []) user,
-      Tuple (UsersThreadPosts (slash user) params) "ThreadPosts"
-    ]
-
-  crumb (UsersWorkouts user params) _ =
-    [
-      Tuple (Users Index []) "Users",
-      Tuple (Users (Show $ slash user) []) user,
-      Tuple (UsersWorkouts (slash user) params) "Workouts"
-    ]
-
-  crumb (UsersResources user params) _ =
-    [
-      Tuple (Users Index []) "Users",
-      Tuple (Users (Show $ slash user) []) user,
-      Tuple (UsersResources (slash user) params) "Resources"
-    ]
-
-  crumb (UsersLeurons user params) _ =
-    [
-      Tuple (Users Index []) "Users",
-      Tuple (Users (Show $ slash user) []) user,
-      Tuple (UsersLeurons (slash user) params) "Leurons"
-    ]
-
-  crumb (UsersLikes user params) _ =
-    [
-      Tuple (Users Index []) "Users",
-      Tuple (Users (Show $ slash user) []) user,
-      Tuple (UsersLikes (slash user) params) "Likes"
-    ]
+      Users (Show user) params ->
+        [
+          Tuple (Users Index params) "Users",
+          Tuple (Users (Show $ slash user) params) user
+        ]
 
 
 
-  crumb (Resources Index params) _ =
-    [Tuple (Resources Index params) "Resources"]
+      UsersProfile user params ->
+        [
+          Tuple (Users Index params) "Users",
+          Tuple (Users (Show $ slash user) []) user,
+          Tuple (UsersProfile (slash user) params) "Profile"
+        ]
 
-  crumb (Resources New params) _ =
-    [Tuple (Resources Index params) "Resources"]
+      UsersSettings user params ->
+        [
+          Tuple (Users Index params) "Users",
+          Tuple (Users (Show $ slash user) []) user,
+          Tuple (UsersSettings (slash user) params) "Settings"
+        ]
 
-  crumb (Resources (EditI resource_id) params) st =
-    [
-      Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
-        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource
-    ]
+      UsersPMs user params ->
+        [
+          Tuple (Users Index []) "Users",
+          Tuple (Users (Show $ slash user) []) user,
+          Tuple (UsersPMs (slash user) params) "PMs"
+        ]
 
-  crumb (Resources (DeleteI resource_id) params) st =
-    [
-      Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
-        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource
-    ]
+      UsersThreads user params ->
+        [
+          Tuple (Users Index []) "Users",
+          Tuple (Users (Show $ slash user) []) user,
+          Tuple (UsersThreads (slash user) params) "Threads"
+        ]
 
-  crumb (Resources (ShowI resource_id) params) st =
-    [
-      Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
-        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource
-    ]
+      UsersThreadPosts user params ->
+        [
+          Tuple (Users Index []) "Users",
+          Tuple (Users (Show $ slash user) []) user,
+          Tuple (UsersThreadPosts (slash user) params) "ThreadPosts"
+        ]
 
+      UsersWorkouts user params ->
+        [
+          Tuple (Users Index []) "Users",
+          Tuple (Users (Show $ slash user) []) user,
+          Tuple (UsersWorkouts (slash user) params) "Workouts"
+        ]
 
+      UsersResources user params ->
+        [
+          Tuple (Users Index []) "Users",
+          Tuple (Users (Show $ slash user) []) user,
+          Tuple (UsersResources (slash user) params) "Resources"
+        ]
 
-  crumb (ResourcesLeurons resource_id Index params) st =
-    [
-      Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
-        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
-      Tuple (ResourcesLeurons resource_id Index params) "Leurons"
-    ]
+      UsersLeurons user params ->
+        [
+          Tuple (Users Index []) "Users",
+          Tuple (Users (Show $ slash user) []) user,
+          Tuple (UsersLeurons (slash user) params) "Leurons"
+        ]
 
-  crumb (ResourcesLeurons resource_id New params) st =
-    [
-      Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
-        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
-      Tuple (ResourcesLeurons resource_id Index params) "Leurons"
-    ]
-
-  crumb (ResourcesLeurons resource_id (EditI leuron_id) params) st =
-    [
-      Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
-        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
-      Tuple (ResourcesLeurons resource_id Index params) "Leurons",
-      Tuple (ResourcesLeurons resource_id (ShowI leuron_id) params) (show leuron_id)
-    ]
-
-  crumb (ResourcesLeurons resource_id (DeleteI leuron_id) params) st =
-    [
-      Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
-        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
-      Tuple (ResourcesLeurons resource_id Index params) "Leurons",
-      Tuple (ResourcesLeurons resource_id (ShowI leuron_id) params) (show leuron_id)
-    ]
-
-  crumb (ResourcesLeurons resource_id (ShowI leuron_id) params) st =
-    [
-      Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
-        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
-      Tuple (ResourcesLeurons resource_id Index params) "Leurons",
-      Tuple (ResourcesLeurons resource_id (ShowI leuron_id) params) (show leuron_id)
-    ]
+      UsersLikes user params ->
+        [
+          Tuple (Users Index []) "Users",
+          Tuple (Users (Show $ slash user) []) user,
+          Tuple (UsersLikes (slash user) params) "Likes"
+        ]
 
 
 
-  crumb (ResourcesSiftLeurons resource_id params) st =
-    [
-      Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
-        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
-      Tuple (ResourcesSiftLeurons resource_id params) "Sift"
-    ]
+      Resources Index params ->
+        [Tuple (Resources Index params) "Resources"]
 
-  crumb (ResourcesSiftLeuronsRandom resource_id params) st =
-    [
-      Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
-        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
-      Tuple (ResourcesSiftLeurons resource_id params) "Sift"
-    ]
+      Resources New params ->
+        [Tuple (Resources Index params) "Resources"]
 
-  crumb (ResourcesSiftLeuronsLinear resource_id _ params) st =
-    [
-      Tuple (Resources Index params) "Resources",
-      Tuple (Resources (ShowI resource_id) params) $ maybe (show resource_id)
-        (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource,
-      Tuple (ResourcesSiftLeurons resource_id params) "Sift",
-      Tuple (ResourcesSiftLeuronsLinear resource_id Index params) "Linear"
-    ]
+      Resources (EditI resource_id) params ->
+        [
+          Tuple (Resources Index params) "Resources",
+          resource_pretty resource_id params
+        ]
 
+      Resources (DeleteI resource_id) params ->
+        [
+          Tuple (Resources Index params) "Resources",
+          resource_pretty resource_id params
+        ]
 
-
---  crumb (Leurons Index params) =
---    [Tuple (Leurons Index params) "Leurons"]
---
---  crumb (Leurons (ShowI leuron_id) params) =
---    [
---      Tuple (Leurons Index params) "Leurons",
---      Tuple (Leurons (ShowI leuron_id) params) (show leuron_id)
---    ]
+      Resources (ShowI resource_id) params ->
+        [
+          Tuple (Resources Index params) "Resources",
+          resource_pretty resource_id params
+        ]
 
 
 
-  crumb _ _ = [Tuple NotFound "Error"]
+      ResourcesLeurons resource_id Index params ->
+        [
+          Tuple (Resources Index params) "Resources",
+          resource_pretty resource_id params,
+          Tuple (ResourcesLeurons resource_id Index params) "Leurons"
+        ]
+
+      ResourcesLeurons resource_id New params ->
+        [
+          Tuple (Resources Index params) "Resources",
+          resource_pretty resource_id params,
+          Tuple (ResourcesLeurons resource_id Index params) "Leurons"
+        ]
+
+      ResourcesLeurons resource_id (EditI leuron_id) params ->
+        [
+          Tuple (Resources Index params) "Resources",
+          resource_pretty resource_id params,
+          Tuple (ResourcesLeurons resource_id Index params) "Leurons",
+          Tuple (ResourcesLeurons resource_id (ShowI leuron_id) params) (show leuron_id)
+        ]
+
+      ResourcesLeurons resource_id (DeleteI leuron_id) params ->
+        [
+          Tuple (Resources Index params) "Resources",
+          resource_pretty resource_id params,
+          Tuple (ResourcesLeurons resource_id Index params) "Leurons",
+          Tuple (ResourcesLeurons resource_id (ShowI leuron_id) params) (show leuron_id)
+        ]
+
+      ResourcesLeurons resource_id (ShowI leuron_id) params ->
+        [
+          Tuple (Resources Index params) "Resources",
+          resource_pretty resource_id params,
+          Tuple (ResourcesLeurons resource_id Index params) "Leurons",
+          Tuple (ResourcesLeurons resource_id (ShowI leuron_id) params) (show leuron_id)
+        ]
+
+
+
+      ResourcesSiftLeurons resource_id params ->
+        [
+          Tuple (Resources Index params) "Resources",
+          resource_pretty resource_id params,
+          Tuple (ResourcesSiftLeurons resource_id params) "Sift"
+        ]
+
+      ResourcesSiftLeuronsRandom resource_id params ->
+        [
+          Tuple (Resources Index params) "Resources",
+          resource_pretty resource_id params,
+          Tuple (ResourcesSiftLeurons resource_id params) "Sift"
+        ]
+
+      ResourcesSiftLeuronsLinear resource_id _ params ->
+        [
+          Tuple (Resources Index params) "Resources",
+          resource_pretty resource_id params,
+          Tuple (ResourcesSiftLeurons resource_id params) "Sift",
+          Tuple (ResourcesSiftLeuronsLinear resource_id Index params) "Linear"
+        ]
+
+
+      _ -> [Tuple NotFound "Error"]
+
+    where
+    resource_pretty resource_id params =
+      Tuple (Resources (ShowI resource_id) params)
+        $ maybe (show resource_id) (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource
 
 
 
