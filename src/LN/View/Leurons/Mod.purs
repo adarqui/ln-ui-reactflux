@@ -304,7 +304,7 @@ TODO FIXME
       textArea_Label "Fact" "fact" v.fact (E.input (\s -> cLeuronMod $ SetData $ LnFactList $ FactList v{fact=s})),
       textArea_LabelWithButton "List" "fact" lst.factList_listItem "Add"
         (E.input (\s -> cLeuronMod $ SetSt $ lst{factList_listItem=s}))
-        (E.input_ (cLeuronMod $ SetData $ LnFactList $ FactList v{list=nub $ v.list<>[lst.factList_listItem]})),
+        (E.input_ (cLeuronMod $ SetData $ LnFactList $ FactList v{factList_listItem="", list=nub $ v.list<>[lst.factList_listItem]})),
       H.div_ $
         map (\(Tuple idx fact) ->
           textArea_DeleteEdit
