@@ -78,7 +78,7 @@ renderView_Leurons_Mod' :: Maybe Int -> Maybe Int -> LeuronRequest -> LeuronRequ
 renderView_Leurons_Mod' m_resource_id m_leuron_id leuron_req lst st =
   H.div_ [
 
-      H.h1_ [ H.text "Add Leuron" ]
+      H.h2_ [ H.text "Add Leuron" ]
 
 --    , H.h2_ [ H.text $ "For resource: " <> resource.resourceTitle ]
 
@@ -288,17 +288,17 @@ TODO FIXME
   ]
   where
 
-  empty = H.h1_ [H.text "NONE"]
+  empty = H.h2_ [H.text "NONE"]
 
   fact (Fact v) =
     H.p_ [
-      H.h1_ [H.text "Fact"],
+      H.h2_ [H.text "Fact"],
       textArea_Label "Fact" "fact" v.text (E.input (\s -> cLeuronMod $ SetData $ LnFact $ mkFact s))
     ]
 
   factList (FactList v) =
     H.p_ [
-      H.h1_ [H.text "FactList"],
+      H.h2_ [H.text "FactList"],
       textArea_Label "Fact" "fact" v.fact (E.input (\s -> cLeuronMod $ SetData $ LnFactList $ FactList v{fact=s})),
       textArea_LabelWithButton "List" "fact" lst.factList_listItem "Add"
         (E.input (\s -> cLeuronMod $ SetSt $ lst{factList_listItem=s}))
@@ -314,14 +314,14 @@ TODO FIXME
 
   card (Card v) =
     H.p_ [
-      H.h1_ [H.text "Card"],
+      H.h2_ [H.text "Card"],
       textArea_Label "Front" "front" v.front (E.input (\s -> cLeuronMod $ SetData $ LnCard $ Card v{front=s})),
       textArea_Label "Back" "back" v.back (E.input (\s -> cLeuronMod $ SetData $ LnCard $ Card v{back=s}))
     ]
 
   dcard (DCard v) =
     H.p_ [
-      H.h1_ [H.text "DCard"],
+      H.h2_ [H.text "DCard"],
       textArea_Label "Front" "front" v.front (E.input (\s -> cLeuronMod $ SetData $ LnDCard $ DCard v{front=s})),
       textArea_Label "Back" "back" v.back (E.input (\s -> cLeuronMod $ SetData $ LnDCard $ DCard v{back=s}))
     ]
@@ -330,28 +330,28 @@ TODO FIXME
 
   acronym (Acronym v) =
     H.p_ [
-      H.h1_ [H.text "Acronym"],
+      H.h2_ [H.text "Acronym"],
       textArea_Label "Abbreviation" "abbreviation" v.abbreviation (E.input (\s -> cLeuronMod $ SetData $ LnAcronym $ Acronym v{abbreviation=s})),
       textArea_Label "Meaning" "meaning" v.meaning (E.input (\s -> cLeuronMod $ SetData $ LnAcronym $ Acronym v{meaning=s}))
     ]
 
   synonym (Synonym v) =
     H.p_ [
-      H.h1_ [H.text "Synonym"],
+      H.h2_ [H.text "Synonym"],
       textArea_Label "A" "a" v.a (E.input (\s -> cLeuronMod $ SetData $ LnSynonym $ Synonym v{a=s})),
       textArea_Label "B" "b" v.b (E.input (\s -> cLeuronMod $ SetData $ LnSynonym $ Synonym v{b=s}))
     ]
 
   antonym (Antonym v) =
     H.p_ [
-      H.h1_ [H.text "Antonym"],
+      H.h2_ [H.text "Antonym"],
       textArea_Label "A" "a" v.a (E.input (\s -> cLeuronMod $ SetData $ LnAntonym $ Antonym v{a=s})),
       textArea_Label "B" "b" v.b (E.input (\s -> cLeuronMod $ SetData $ LnAntonym $ Antonym v{b=s}))
     ]
 
   qa (QA v) =
     H.p_ [
-      H.h1_ [H.text "QA"],
+      H.h2_ [H.text "QA"],
       textArea_Label "Question" "question" v.question (E.input (\s -> cLeuronMod $ SetData $ LnQA $ QA v{question=s})),
       textArea_Label "Answer" "answer" v.answer (E.input (\s -> cLeuronMod $ SetData $ LnQA $ QA v{answer=s}))
     ]
