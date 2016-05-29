@@ -148,15 +148,17 @@ renderView_Leurons_Mod' m_resource_id m_leuron_id leuron_req lst st =
 
 
   -- Examples
---  , textArea_LabelWithButton "Examples" "Example" "" "Add" (E.input ModifyLeuronExamples) (E.input_ AddLeuronExamples)
+  , textArea_LabelWithButton "Examples" "Example" "" "Add"
+      (E.input (cLeuronMod <<< SetExample))
+      (E.input_ (cLeuronMod $ AddExample lst.exampleItem))
 
   , H.div_ $
-      map (\example ->
+      map (\(Tuple idx example) ->
         textArea_DeleteEdit
           example
-          (E.input (\new -> cLeuronMod $ EditExample 0 new))
-          (E.input_ (cLeuronMod $ DeleteExample 0)) -- TODO FIXME
-      ) $ maybe [] id leuron.examples
+          (E.input (\new -> cLeuronMod $ EditExample idx new))
+          (E.input_ (cLeuronMod $ DeleteExample idx))
+      ) $ seqArrayFrom $ maybe [] id leuron.examples
 
 
 

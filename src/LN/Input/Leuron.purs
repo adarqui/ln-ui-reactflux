@@ -38,6 +38,7 @@ data Leuron_Mod
   | EditPage Int
   | RemovePage
 
+  | SetExample String
   | AddExample String
   | EditExample Int String
   | DeleteExample Int

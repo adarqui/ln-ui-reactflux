@@ -30,7 +30,7 @@ import LN.T                          ( LeuronPackResponses(..), LeuronPackRespon
                                      , LeuronResponse(..)
                                      , LeuronRequest(..)
                                      , _LeuronRequest
-                                     , title_, section_
+                                     , title_, description_, section_, examples_, page_
                                      , LeuronData(..)
                                      , Param(..), SortOrderBy(..))
 
@@ -117,20 +117,42 @@ eval_Leuron eval (CompLeuron sub next) = do
   case sub of
     InputLeuron_Mod q -> do
       case q of
+
         SetTitle title      -> mod $ set (\req -> _LeuronRequest .. title_ .~ Just title $ req)
+        EditTitle title     -> pure next
+        RemoveTitle         -> pure next
+
+        SetDescription desc  -> mod $ set (\req -> _LeuronRequest .. description_ .~ Just desc $ req)
+        EditDescription desc -> pure next
+        RemoveDescription    -> pure next
+
         SetSection section  -> mod $ set (\req -> _LeuronRequest .. section_ .~ Just section $ req)
+        EditSection section -> pure next
+        RemoveSection       -> pure next
+
+--        SetPage page        -> mod $ set (\req -> _LeuronRequest .. page_ .~ Just page $ req)
+--        EditPage page       -> pure next
+--        RemovePage          -> pure next
+
+        SetExample ex       -> modSt (_{exampleItem = ex})
+        AddExample ex       -> do
+          mod (\(LeuronRequest req)->Just $ LeuronRequest req{examples = Just $ maybe [ex] (\examples->examples <> [ex]) req.examples})
+          modSt (_{exampleItem = ""})
+          pure next
+        EditExample idx new -> pure next
+        DeleteExample idx   -> pure next
+        ClearExamples       -> mod $ set (\req -> _LeuronRequest .. examples_ .~ Nothing $ req)
+
         SetData d           -> do
           mod $ set (\(LeuronRequest req) -> LeuronRequest req{ dataP = d })
-          modify (\st->st { currentLeuronRequestSt = maybe Nothing (Just <<< leuronRequestStateFromLeuronData d) st.currentLeuronRequestSt }) $> next
+          modSt (leuronRequestStateFromLeuronData d) $> next
 
-        SetType ty          -> do
-          modify (\st->st{ currentLeuronRequestSt = maybe Nothing (\lst -> Just $ lst{ty = ty}) st.currentLeuronRequestSt }) $> next
+        SetType ty          -> modSt (_{ty = ty}) $> next
 
         -- We need this because there are ancillary items associated with LeuronData types, on the front end
         -- for example, an item that being edited prior to its inclusing in a list
         -- ie, factList_listItem is eventually added to factList.list
-        SetSt lst           -> do
-          modify (\st->st { currentLeuronRequestSt = Just lst }) $> next
+        SetSt lst           -> modSt (const lst) $> next
 
         Save resource_id   -> do
 
@@ -143,10 +165,7 @@ eval_Leuron eval (CompLeuron sub next) = do
                  e_leuron <- rd $ postLeuron_ByResourceId' resource_id req
                  case e_leuron of
                       Left err                      -> eval (AddErrorApi "eval_Leuron(Save)::postLeuron'" err next)
-                      Right (LeuronResponse leuron) -> do
-                        modify (\st->st{ currentLeuronRequestSt = maybe Nothing (\lst -> Just $ lst{ids = leuron.id : lst.ids}) st.currentLeuronRequestSt })
-                        pure next
---                        eval (Goto (Leurons (ShowI leuron.id) []) next)
+                      Right (LeuronResponse leuron) -> modSt (\lst-> lst{ids = leuron.id : lst.ids}) $> next
 
         EditP leuron_id    -> do
 
@@ -170,3 +189,4 @@ eval_Leuron eval (CompLeuron sub next) = do
   append (Just arr) a = Just $ nub $ arr <> [a]
   set v req                = Just (v req)
   mod new                  = modify (\st->st{ currentLeuronRequest = maybe Nothing new st.currentLeuronRequest }) $> next
+  modSt new                = modify (\st->st{ currentLeuronRequestSt = maybe Nothing (Just <<< new) st.currentLeuronRequestSt }) $> next

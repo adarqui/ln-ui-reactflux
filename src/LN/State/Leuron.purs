@@ -42,6 +42,7 @@ import LN.T               ( TyLeuron(..)
 
 type LeuronRequestState = {
   ty                :: TyLeuron,
+  exampleItem       :: String,
   fact              :: Fact,
   factList          :: FactList,
   factList_listItem :: String,
@@ -64,6 +65,7 @@ type LeuronRequestState = {
 defaultLeuronRequestState :: LeuronRequestState
 defaultLeuronRequestState = {
   ty:                TyLnFact,
+  exampleItem:       "",
   fact:              defaultFact,
   factList:          defaultFactList,
   factList_listItem: "",
