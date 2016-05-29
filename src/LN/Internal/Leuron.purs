@@ -5,7 +5,17 @@ module LN.Internal.Leuron (
   defaultFact,
   defaultFactList,
   defaultCard,
-  defaultDCard
+  defaultDCard,
+  defaultDCardX,
+  defaultAcronym,
+  defaultSynonym,
+  defaultAntonym,
+  defaultTemplate,
+  defaultImageAssociation,
+  defaultLinearDemo,
+  defaultTable,
+  defaultScript,
+  defaultQA
 ) where
 
 
@@ -18,7 +28,17 @@ import LN.T                        (LeuronRequest, mkLeuronRequest, LeuronData(.
                                    , mkFact, Fact
                                    , mkFactList, FactList
                                    , mkCard, Card
-                                   , mkDCard, DCard)
+                                   , mkDCard, DCard
+                                   , mkDCardX, DCardX
+                                   , mkAcronym, Acronym
+                                   , mkSynonym, Synonym
+                                   , mkAntonym, Antonym
+                                   , mkTemplate, Template
+                                   , mkImageAssociation, ImageAssociation
+                                   , mkLinearDemo, LinearDemo
+                                   , mkTable, Table
+                                   , mkScript, Script
+                                   , mkQA, QA)
 
 
 
@@ -74,3 +94,53 @@ defaultCard = mkCard "" ""
 
 defaultDCard :: DCard
 defaultDCard = mkDCard "" ""
+
+
+
+defaultDCardX :: DCardX
+defaultDCardX = mkDCardX [] []
+
+
+
+defaultAcronym :: Acronym
+defaultAcronym = mkAcronym "" ""
+
+
+
+defaultSynonym :: Synonym
+defaultSynonym = mkSynonym "" ""
+
+
+
+defaultAntonym :: Antonym
+defaultAntonym = mkAntonym "" ""
+
+
+
+defaultTemplate :: Template
+defaultTemplate = mkTemplate "" []
+
+
+
+defaultImageAssociation :: ImageAssociation
+defaultImageAssociation = mkImageAssociation [] [] []
+
+
+
+defaultLinearDemo :: LinearDemo
+defaultLinearDemo = mkLinearDemo "" []
+
+
+
+defaultTable :: Table
+defaultTable = mkTable "" [] []
+
+
+
+defaultScript :: Script
+defaultScript = mkScript "" "" ""
+
+
+
+defaultQA :: QA
+defaultQA = mkQA "" ""
