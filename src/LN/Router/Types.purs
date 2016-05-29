@@ -342,6 +342,22 @@ instance routesHasCrumb :: HasCrumb Routes where
       Tuple (ResourcesLeurons resource_id Index params) "Leurons"
     ]
 
+  crumb (ResourcesLeurons resource_id (EditI leuron_id) params) =
+    [
+      Tuple (Resources Index params) "Resources",
+      Tuple (Resources (ShowI resource_id) params) (show resource_id),
+      Tuple (ResourcesLeurons resource_id Index params) "Leurons",
+      Tuple (ResourcesLeurons resource_id (ShowI leuron_id) params) (show leuron_id)
+    ]
+
+  crumb (ResourcesLeurons resource_id (DeleteI leuron_id) params) =
+    [
+      Tuple (Resources Index params) "Resources",
+      Tuple (Resources (ShowI resource_id) params) (show resource_id),
+      Tuple (ResourcesLeurons resource_id Index params) "Leurons",
+      Tuple (ResourcesLeurons resource_id (ShowI leuron_id) params) (show leuron_id)
+    ]
+
   crumb (ResourcesLeurons resource_id (ShowI leuron_id) params) =
     [
       Tuple (Resources Index params) "Resources",

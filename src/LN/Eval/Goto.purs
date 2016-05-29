@@ -19,7 +19,7 @@ import LN.Internal.Leuron     (defaultLeuronRequest, leuronToTyLeuron)
 import LN.Internal.Resource   (defaultResourceRequest, resourceTypeToTyResourceType)
 import LN.Router.Link         (updateUrl)
 import LN.Router.Types        (Routes(..), CRUD(..))
-import LN.State.Leuron        (defaultLeuronRequestState)
+import LN.State.Leuron        (defaultLeuronRequestState, leuronRequestStateFromLeuronData)
 import LN.State.Resource      (defaultResourceRequestState)
 import LN.T
 
@@ -200,9 +200,10 @@ eval_Goto eval (Goto route next) = do
            Nothing                          -> pure unit
            Just (LeuronPackResponse pack) -> do
              -- TODO FIXME: St's TyLeuronType needs to match source
+             m_lst <- gets _.currentLeuronRequestSt
              let
                leuron = pack.leuron ^. _LeuronResponse
-               lst    = defaultLeuronRequestState { ty = leuronToTyLeuron leuron.dataP }
+               lst    = leuronRequestStateFromLeuronData leuron.dataP (maybe defaultLeuronRequestState id m_lst)
              modify (_{ currentLeuronRequest = Just $ leuronResponseToLeuronRequest pack.leuron, currentLeuronRequestSt = Just lst })
              pure unit
 

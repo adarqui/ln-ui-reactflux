@@ -68,7 +68,22 @@ instance leuronSiftShow :: Show LeuronSift where
 leuronToTyLeuron :: LeuronData -> TyLeuron
 leuronToTyLeuron ld =
   case ld of
-       _ -> TyLnEmpty
+       LnEmpty              -> TyLnEmpty
+       LnFact _             -> TyLnFact
+       LnFactList _         -> TyLnFactList
+       LnCard _             -> TyLnCard
+       LnDCard _            -> TyLnDCard
+       LnDCardX _           -> TyLnDCardX
+       LnAcronym _          -> TyLnAcronym
+       LnSynonym _          -> TyLnSynonym
+       LnAntonym _          -> TyLnAntonym
+       LnTemplate _         -> TyLnTemplate
+       LnImageAssociation _ -> TyLnImageAssociation
+       LnLinearDemo _       -> TyLnLinearDemo
+       LnTable _            -> TyLnTable
+       LnScript _           -> TyLnScript
+       LnQA _               -> TyLnQA
+       _                    -> TyLnEmpty
 
 
 
