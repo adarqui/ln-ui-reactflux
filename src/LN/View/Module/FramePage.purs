@@ -1,5 +1,5 @@
-module LN.View.Module.Loading (
-  renderLoading
+module LN.View.Module.FramePage (
+  renderFramePage
 ) where
 
 
@@ -13,8 +13,8 @@ import LN.Input.Types                  (Input)
 
 
 
-renderLoading :: ComponentHTML Input
-renderLoading =
+renderFramePage :: ComponentHTML Input
+renderFramePage =
   H.div_ [
-    H.img [P.src "https://leuro.adarq.org/static/img/loading/2.gif"]
+    H.iframe [P.src "http://dev.stephendiehl.com/hask/#flags"]
   ]

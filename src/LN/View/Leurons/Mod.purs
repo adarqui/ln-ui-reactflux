@@ -82,7 +82,7 @@ renderView_Leurons_Mod' resource_id m_leuron_id leuron_req lst st =
 
 --    , H.h2_ [ H.text $ "For resource: " <> resource.resourceTitle ]
 
-
+   , create_or_save
 
   -- LeuronData
 
@@ -279,16 +279,17 @@ TODO FIXME
 -}
 
 
-  , case m_leuron_id of
-         Nothing         -> simpleInfoButton "Create" (cLeuronMod $ Save resource_id)
-         Just leuron_id  -> simpleInfoButton "Save" (cLeuronMod $ EditP leuron_id)
-         _               -> H.p_ [H.text "unexpected error."]
+  , create_or_save
 
   -- show a list of recently added leurons
   , H.ul_ $ map (\id_ -> H.li_ [linkToP [] (ResourcesLeurons resource_id (ShowI id_) []) (show id_)]) lst.ids
-
   ]
   where
+
+  create_or_save = case m_leuron_id of
+         Nothing         -> simpleInfoButton "Create" (cLeuronMod $ Save resource_id)
+         Just leuron_id  -> simpleInfoButton "Save" (cLeuronMod $ EditP leuron_id)
+         _               -> H.p_ [H.text "unexpected error."]
 
   empty = H.h2_ [H.text "NONE"]
 
@@ -359,4 +360,3 @@ TODO FIXME
     ]
 
   leuron   = unwrapLeuronRequest leuron_req
---  resource = unwrapResourceResponse st.resource

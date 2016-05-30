@@ -2,7 +2,11 @@
 [-] fix the damn logout/login navbar section.. it squishes too early.
 [-] everything needs proper breadcrumbs
 
-breadcrumbs: Resources / 117
+[x] breadcrumbs: Resources / 117
 - should be Resources -> What I Wish I Knew When Learning Haskell
 ..
 - how am I going to do that with my current Crumb setup? Might need to modify that to include a string... heh
+
+[-] optional horizontal iframe when adding leurons, need this bad:
+
+[-] ability to order leurons (via sift) by section etc.. need a section order so things can be written out of place.

@@ -5,7 +5,6 @@ module LN.State.Leuron (
 ) where
 
 
-
 import LN.Internal.Leuron ( defaultFact
                           , defaultFactList
                           , defaultCard
