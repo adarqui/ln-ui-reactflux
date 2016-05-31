@@ -15,7 +15,7 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, ($), (<>))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Link                  (linkToP_Classes)
+import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
@@ -60,9 +60,15 @@ renderView_Organizations_Show' pack st =
 
 
 forums :: String -> State -> ComponentHTML Input
-forums name st =
+forums org_name st =
   H.div [P.class_ B.pageHeader] [
+
     H.h1 [P.class_ B.textCenter] [ H.text "Forums" ],
+
+    H.div [P.classes [B.clearfix, B.container]] [
+      linkToP_Glyph' (OrganizationsForums org_name New []) B.glyphiconPlus
+    ],
+
     H.div [P.class_ B.listUnstyled] $
       map (\forum_pack ->
         let forum = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse in
@@ -72,7 +78,7 @@ forums name st =
               H.p_ [H.text "icon"]
             ],
             H.div [P.class_ B.colXs6] [
-              H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForums name (Show forum.name) []) forum.name],
+              H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForums org_name (Show forum.name) []) forum.name],
               H.p_ [H.text $ maybe "No description." id forum.description]
             ],
             H.div [P.class_ B.colXs2] [
@@ -81,8 +87,11 @@ forums name st =
               H.p_ [H.text "posts"],
               H.p_ [H.text "views"]
             ],
-            H.div [P.class_ B.colXs3] [
+            H.div [P.class_ B.colXs2] [
               H.p_ [H.text "created-at"]
+            ],
+            H.div [P.class_ B.colXs1] [
+              H.div [P.class_ B.container] [linkToP_Glyph' (OrganizationsForums org_name (EditI forum.id) []) B.glyphiconPencil]
             ]
           ]
         ])
