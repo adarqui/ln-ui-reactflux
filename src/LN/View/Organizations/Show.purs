@@ -15,7 +15,7 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, ($), (<>))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph')
+import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
@@ -39,7 +39,11 @@ renderView_Organizations_Show' pack st =
   H.div [P.class_ B.containerFluid] [
     H.div [P.class_ B.pageHeader] [
       H.h1 [P.class_ B.textCenter] [ H.text organization.name ],
-      H.p [P.class_ B.textCenter] [ H.text $ maybe "" id organization.description ]
+      H.p [P.class_ B.textCenter] [ H.text $ maybe "" id organization.description ],
+      H.div_ [
+        H.div_ [linkToP [] (Organizations (EditI organization.id) []) "edit"],
+        H.div_ [linkToP [] (Organizations (DeleteI organization.id) []) "delete"]
+      ]
     ],
     H.div [P.class_ B.container] [
       H.div [P.class_ B.pageHeader] [
@@ -66,7 +70,7 @@ forums org_name st =
     H.h1 [P.class_ B.textCenter] [ H.text "Forums" ],
 
     H.div [P.classes [B.clearfix, B.container]] [
-      linkToP_Glyph' (OrganizationsForums org_name New []) B.glyphiconPlus
+      H.div_ [linkToP [] (OrganizationsForums org_name New []) "add-forum"]
     ],
 
     H.div [P.class_ B.listUnstyled] $
@@ -91,7 +95,8 @@ forums org_name st =
               H.p_ [H.text "created-at"]
             ],
             H.div [P.class_ B.colXs1] [
-              H.div [P.class_ B.container] [linkToP_Glyph' (OrganizationsForums org_name (EditI forum.id) []) B.glyphiconPencil]
+              H.div_ [linkToP [] (OrganizationsForums org_name (EditI forum.id) []) "edit"],
+              H.div_ [linkToP [] (OrganizationsForums org_name (EditI forum.id) []) "delete"]
             ]
           ]
         ])

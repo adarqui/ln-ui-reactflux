@@ -51,8 +51,10 @@ renderView_Organizations_Forums_Boards_Show'
 renderView_Organizations_Forums_Boards_Show' org_pack forum_pack board_pack st =
   H.div [P.class_ B.containerFluid] [
     H.div [P.class_ B.pageHeader] [
-        H.h2_ [H.text board.name]
-      , H.p [P.class_ B.lead] [H.text board_desc]
+      H.h2_ [H.text board.name],
+      H.p [P.class_ B.lead] [H.text board_desc],
+      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (EditI 0) []) "edit"],
+      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (EditI 0) []) "delete"]
     ],
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullRight]] [renderCreateThread st.compCreateThread]],
@@ -70,6 +72,9 @@ renderThreads :: String -> String -> String -> State -> ComponentHTML Input
 renderThreads org_name forum_name board_name st =
   H.div_ [
       renderPageNumbers st.threadsPageInfo st.currentPage
+
+    , H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org_name forum_name board_name New []) "new-thread"]
+
     , H.ul [P.class_ B.listUnstyled] $
         map (\pack ->
           let
@@ -82,7 +87,9 @@ renderThreads org_name forum_name board_name st =
           H.li_ [
             H.div [P.class_ B.row] [
                 H.div [P.class_ B.colXs1] [
-                  renderGravatarForUser Small (usersMapLookup_ToUser st thread.userId)
+                  renderGravatarForUser Small (usersMapLookup_ToUser st thread.userId),
+                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org_name forum_name board_name (EditI 0) []) "edit"],
+                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org_name forum_name board_name (DeleteI 0) []) "delete"]
                 ]
               , H.div [P.class_ B.colXs6] [
                     H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread.name) []) thread.name]

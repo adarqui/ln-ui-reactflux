@@ -6,6 +6,7 @@ module LN.View.Users.Index (
 
 import Daimyo.Data.ArrayList        (listToArray)
 import Data.Map                     as M
+import Data.Maybe                   (Maybe(..))
 import Halogen                      (ComponentHTML)
 import Optic.Core                   ((^.), (..))
 import Prelude                      (map, ($))
@@ -22,7 +23,7 @@ import LN.View.Module.EntityListing (renderEntityListing)
 
 renderView_Users_Index :: State -> ComponentHTML Input
 renderView_Users_Index st =
-  renderEntityListing "Users" (
+  renderEntityListing "Users" Nothing (
     map (\pack ->
       let user = pack ^. _UserSanitizedPackResponse .. user_ ^. _UserSanitizedResponse
       in

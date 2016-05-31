@@ -6,6 +6,7 @@ module LN.View.Organizations.Index (
 
 import Daimyo.Data.ArrayList        (listToArray)
 import Data.Map                     as M
+import Data.Maybe                   (Maybe(..))
 import Halogen                      (ComponentHTML)
 import Optic.Core                   ((^.), (..))
 import Prelude                      (map, ($))
@@ -23,7 +24,7 @@ import LN.View.Module.EntityListing (renderEntityListing)
 
 renderView_Organizations_Index :: State -> ComponentHTML Input
 renderView_Organizations_Index st =
-  renderEntityListing "Organizations" (
+  renderEntityListing "Organizations" (Just $ Organizations New []) (
     map (\pack ->
       let org = pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
       in

@@ -5,6 +5,7 @@ module LN.View.Module.EntityListing (
 
 
 
+import Data.Maybe                            (Maybe(..))
 import Halogen                               (ComponentHTML)
 import Halogen.HTML.Indexed                  as H
 import Halogen.HTML.Properties.Indexed       as P
@@ -12,16 +13,20 @@ import Halogen.Themes.Bootstrap3             as B
 import Prelude                               (map, ($))
 
 import LN.Input.Types                        (Input)
-import LN.Router.Link                        (linkTo', linkTo)
+import LN.Router.Link                        (linkTo', linkTo, linkToP)
+import LN.Router.Types                       (Routes(..))
 import LN.State.Entity                       (Entity)
 
 
 
-renderEntityListing :: String -> Array Entity -> ComponentHTML Input -> ComponentHTML Input
-renderEntityListing title entities page_numbers =
+renderEntityListing :: String -> Maybe Routes -> Array Entity -> ComponentHTML Input -> ComponentHTML Input
+renderEntityListing title m_new entities page_numbers =
   H.div [P.class_ B.containerFluid] [
       H.div [P.class_ B.pageHeader] [
-        H.h1 [P.class_ B.textCenter] [H.text title]
+        H.h1 [P.class_ B.textCenter] [H.text title],
+        case m_new of
+             Nothing  -> H.div_ []
+             Just new -> H.div_ [linkToP [] new "new"]
       ]
     , page_numbers
     , H.div [P.class_ B.container] [

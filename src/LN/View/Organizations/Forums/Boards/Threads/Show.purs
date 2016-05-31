@@ -17,7 +17,7 @@ import Prelude                         (id, show, map, ($), (<>), (-))
 
 import LN.Input.Types                  (Input (..))
 import LN.Input.ThreadPost             (InputThreadPost (..))
-import LN.Router.Link                  (linkTo)
+import LN.Router.Link                  (linkTo, linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup, usersMapLookup_ToNick, usersMapLookup_ToUser)
@@ -62,7 +62,10 @@ renderView_Organizations_Forums_Boards_Threads_Show'
 renderView_Organizations_Forums_Boards_Threads_Show' org_pack forum_pack board_pack thread_pack st =
   H.div [P.class_ B.containerFluid] [
     H.div [P.class_ B.pageHeader] [
-        H.h2_ [H.text thread.name]
+      H.h2_ [H.text thread.name],
+        H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (EditI 0) []) "sticky"],
+        H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (EditI 0) []) "edit"],
+        H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (DeleteI 0) []) "delete"]
     ],
     H.div [] [renderPosts org.name forum.name board.name thread.name st]
   ]
@@ -94,12 +97,16 @@ renderPosts org_name forum_name board_name thread_name st =
                   , renderGravatarForUser Medium (usersMapLookup_ToUser st post.userId)
                   , displayUserStats (usersMapLookup st post.userId)
                 ]
-              , H.div [P.class_ B.colXs9] [
+              , H.div [P.class_ B.colXs8] [
                     linkTo (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (Show $ show post.id)) (thread_name <> "/" <> show post.id)
                   , H.p_ [H.text $ show post.createdAt]
                   , H.p_ [H.text "quote / reply"]
                   , displayPostData post.body
                   , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup st post.userId)]
+                ]
+              , H.div [P.class_ B.colXs1] [
+                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (EditI 0)) "edit"],
+                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (DeleteI 0)) "delete"]
                 ]
               , H.div [P.class_ B.colXs1] [
                     renderLike Ent_ThreadPost post.id pack'.like pack'.star

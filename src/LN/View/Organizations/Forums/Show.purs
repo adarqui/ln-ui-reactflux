@@ -15,7 +15,7 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, negate, ($), (<>))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Link                  (linkToP, linkToP_Classes)
+import LN.Router.Link                  (linkToP, linkToP_Classes, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
@@ -46,10 +46,19 @@ renderView_Organizations_Forums_Show'
   :: OrganizationPackResponse -> ForumPackResponse -> State -> ComponentHTML Input
 renderView_Organizations_Forums_Show' org_pack forum_pack st =
   H.div [P.class_ B.containerFluid] [
+
     H.div [P.class_ B.pageHeader] [
-        H.h2_ [H.text forum.name]
-      , H.p [P.class_ B.lead] [H.text forum_desc]
+      H.h2_ [H.text forum.name],
+      linkToP [] (OrganizationsForums org.name (EditI 0) []) "edit",
+      H.p [P.class_ B.lead] [H.text forum_desc],
+      linkToP [] (OrganizationsForumsBoards org.name forum.name (EditI 0) []) "edit"
     ],
+
+    H.div [P.class_ B.container] [
+      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name New []) "add-board"],
+      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (DeleteI 0) []) "delete-board"]
+    ],
+
     H.div [] [renderBoards org.name forum.name st]
   ]
   where
@@ -74,7 +83,12 @@ renderBoards org_name forum_name st =
       H.li_ [
         H.div [P.class_ B.row] [
             H.div [P.class_ B.colXs1] [
-                H.p_ [H.text "icon"]
+              H.p_ [H.text "icon"],
+              H.div [P.class_ B.container] [
+                H.div_ [linkToP [] (OrganizationsForumsBoards org_name forum_name (EditI 0) []) "edit"],
+                H.div_ [linkToP [] (OrganizationsForumsBoards org_name forum_name New []) "new-board"],
+                H.div_ [linkToP [] (OrganizationsForumsBoards org_name forum_name (DeleteI 0) []) "delete-board"]
+              ]
             ]
           , H.div [P.class_ B.colXs5] [
                 H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoards org_name forum_name (Show $ board.name) []) board.name]
