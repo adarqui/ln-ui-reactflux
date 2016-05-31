@@ -24,6 +24,7 @@ import LN.Router.Class.Params
 import LN.Router.Class.Link
 import LN.Router.Class.OrderBy
 import LN.State.Internal.Types     (InternalState)
+-- import LN.State.Types              (DriverCh)
 
 
 
@@ -69,7 +70,7 @@ instance eqRoute :: Eq Routes where eq = gEq
 
 
 class HasCrumb a where
-  crumb :: a -> InternalState Routes -> Array (Tuple Routes String)
+  crumb :: a -> InternalState Routes Int -> Array (Tuple Routes String)
 
 
 

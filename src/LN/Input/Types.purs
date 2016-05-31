@@ -1,6 +1,8 @@
 module LN.Input.Types (
   Input (..),
   -- helpers
+  cForum,
+  cForumMod,
   cResource,
   cResourceMod,
   cLeuron,
@@ -14,6 +16,7 @@ import Purescript.Api.Helpers  (ApiError)
 import Prelude                 (Unit, unit, (<<<))
 
 import LN.Input.CreateThread   (InputCreateThread)
+import LN.Input.Forum          (InputForum(..), Forum_Mod)
 import LN.Input.Leuron         (InputLeuron(..), Leuron_Mod)
 import LN.Input.Like           (InputLike)
 import LN.Input.Star           (InputStar)
@@ -81,6 +84,8 @@ data Input a
 
   | ConnectSocket a
 
+  | CompForum InputForum a
+
   | CompThreadPost InputThreadPost a
 
   | CompCreateThread InputCreateThread a
@@ -104,11 +109,24 @@ data Input a
 -- | Helpers for "components" and "subcomponents"
 --
 
+cForum :: forall a. InputForum -> a -> Input a
+cForum il next = CompForum il next
+
+cForumMod :: forall a. Forum_Mod -> a -> Input a
+cForumMod lm next = CompForum (InputForum_Mod lm) next
+
+cForumNop :: forall a. a -> Input a
+cForumNop next = CompForum InputForum_Nop next
+
+
+
+
 cResource :: forall a. InputResource -> a -> Input a
 cResource ir next = CompResource ir next
 
 cResourceMod :: forall a. Resource_Mod -> a -> Input a
 cResourceMod rm next = CompResource (InputResource_Mod rm) next
+
 
 
 

@@ -1,5 +1,6 @@
 module LN.State.Types (
   State,
+  DriverCh,
   initialState
 ) where
 
@@ -32,50 +33,66 @@ import LN.T
 
 
 
-type State = InternalState Routes
+type State    = InternalState Routes (AVar (Input Unit))
+
+
+
+type DriverCh = AVar (Input Unit)
 
 
 
 initialState :: AVar (Input Unit) -> State
 initialState ch =
-  { currentPage:           Home
-  , me:                    Nothing
-  , meId:                  0
-  , errors:                []
-  , users:                 M.empty
-  , usersMap:              M.empty
-  , organizations:         M.empty
-  , teams:                 M.empty
-  , forums:                M.empty
-  , boards:                M.empty
-  , threads:               M.empty
-  , threadPosts:           M.empty
-  , resources:             M.empty
-  , leurons:               M.empty
---  , workouts:            M.empty
-  , currentOrganization:   Nothing
-  , currentUser:           Nothing
---  , currentTeam:         Nothing
-  , currentForum:          Nothing
-  , currentBoard:          Nothing
-  , currentThread:         Nothing
-  , currentThreadPost:     Nothing
-  , currentResource:       Nothing
-  , currentResourceRequest: Nothing
-  , currentResourceRequestSt: Nothing
-  , currentLeuron:         Nothing
-  , currentLeuronRequest:  Nothing
-  , currentLeuronRequestSt: Nothing
---  , currentWorkout:      Nothing
-  , currentPageInfo:       defaultPageInfo
-  , organizationsPageInfo: defaultPageInfo_Organizations
-  , usersPageInfo:         defaultPageInfo_Users
+  { currentPage:                  Home
+  , me:                           Nothing
+  , meId:                         0
+  , errors:                       []
+  , users:                        M.empty
+  , usersMap:                     M.empty
+  , organizations:                M.empty
+  , teams:                        M.empty
+  , forums:                       M.empty
+  , boards:                       M.empty
+  , threads:                      M.empty
+  , threadPosts:                  M.empty
+  , resources:                    M.empty
+  , leurons:                      M.empty
+--  , workouts:                   M.empty
+  , currentOrganization:          Nothing
+  , currentOrganizationRequest:   Nothing
+  , currentOrganizationRequestSt: Nothing
+  , currentUser:                  Nothing
+  , currentTeam:                  Nothing
+  , currentTeamRequest:           Nothing
+  , currentTeamRequestSt:         Nothing
+  , currentForum:                 Nothing
+  , currentForumRequest:          Nothing
+  , currentForumRequestSt:        Nothing
+  , currentBoard:                 Nothing
+  , currentBoardRequest:          Nothing
+  , currentBoardRequestSt:        Nothing
+  , currentThread:                Nothing
+  , currentThreadRequest:         Nothing
+  , currentThreadRequestSt:       Nothing
+  , currentThreadPost:            Nothing
+  , currentThreadPostRequest:     Nothing
+  , currentThreadPostRequestSt:   Nothing
+  , currentResource:              Nothing
+  , currentResourceRequest:       Nothing
+  , currentResourceRequestSt:     Nothing
+  , currentLeuron:                Nothing
+  , currentLeuronRequest:         Nothing
+  , currentLeuronRequestSt:       Nothing
+--  , currentWorkout:             Nothing
+  , currentPageInfo:              defaultPageInfo
+  , organizationsPageInfo:        defaultPageInfo_Organizations
+  , usersPageInfo:                defaultPageInfo_Users
   -- need dsc by modifiedAt !!!!!!!! TODO FIXME
-  , threadsPageInfo:       defaultPageInfo_Threads
-  , threadPostsPageInfo:   defaultPageInfo_ThreadPosts
-  , resourcesPageInfo:     defaultPageInfo_Resources
-  , leuronsPageInfo:       defaultPageInfo_Leurons
-  , compCreateThread:      Nothing
---  , driverCh:              ch
-  , loading:               defaultLoadingMap
+  , threadsPageInfo:              defaultPageInfo_Threads
+  , threadPostsPageInfo:          defaultPageInfo_ThreadPosts
+  , resourcesPageInfo:            defaultPageInfo_Resources
+  , leuronsPageInfo:              defaultPageInfo_Leurons
+  , compCreateThread:             Nothing
+  , driverCh:                     ch
+  , loading:                      defaultLoadingMap
   }
