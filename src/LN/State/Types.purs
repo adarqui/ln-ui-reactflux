@@ -33,7 +33,8 @@ import LN.T
 
 
 
-type State    = InternalState Routes (AVar (Input Unit))
+-- type State    = InternalState Routes DriverCh -- TODO FIXME CYCLIC
+type State = InternalState Routes
 
 
 
@@ -93,6 +94,6 @@ initialState ch =
   , resourcesPageInfo:            defaultPageInfo_Resources
   , leuronsPageInfo:              defaultPageInfo_Leurons
   , compCreateThread:             Nothing
-  , driverCh:                     ch
+--  , driverCh:                     ch
   , loading:                      defaultLoadingMap
   }

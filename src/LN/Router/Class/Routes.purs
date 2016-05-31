@@ -70,7 +70,7 @@ instance eqRoute :: Eq Routes where eq = gEq
 
 
 class HasCrumb a where
-  crumb :: a -> InternalState Routes Int -> Array (Tuple Routes String)
+  crumb :: a -> InternalState Routes -> Array (Tuple Routes String)
 
 
 

@@ -54,7 +54,7 @@ renderView_Forums_New organization_id = renderView_Forums_Mod organization_id No
 
 
 
-renderView_Forums_Edit :: Int -> State -> ComponentHTML Input
+renderView_Forums_Edit :: Int -> Int -> State -> ComponentHTML Input
 renderView_Forums_Edit organization_id forum_id = renderView_Forums_Mod organization_id (Just forum_id)
 
 
@@ -63,13 +63,13 @@ renderView_Forums_Mod :: Int -> Maybe Int -> State -> ComponentHTML Input
 renderView_Forums_Mod organization_id m_forum_id st =
   case st.currentForumRequest, st.currentForumRequestSt, getLoading l_currentForum st.loading of
     _, _, true                         -> renderLoading
-    Just forum_req, Just rst, false    -> renderView_Forums_Mod' organization_id m_forum_id forum_req rst st
+    Just forum_req, Just f_st, false   -> renderView_Forums_Mod' organization_id m_forum_id forum_req f_st st
     _, _, false                        -> H.div_ [H.p_ [H.text "Forums_Mod: unexpected error."]]
 
 
 
 renderView_Forums_Mod' :: Int -> Maybe Int -> ForumRequest -> ForumRequestState -> State -> ComponentHTML Input
-renderView_Forums_Mod' organization_id m_forum_id forum_req rst st =
+renderView_Forums_Mod' organization_id m_forum_id forum_req f_st st =
   H.div_ [
 
     H.h1_ [ H.text "Add Forum" ]

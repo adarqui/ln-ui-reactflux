@@ -6,29 +6,22 @@ module LN.State.Internal.Types (
 
 -- import Control.Monad.Aff.AVar       (AVar())
 import Data.Map                     as M
-import Data.Maybe                   (Maybe(..))
+import Data.Maybe                   (Maybe)
 import Data.Tuple                   (Tuple)
-import Prelude                      (Unit)
 
 import LN.Component.CreateThread    (Comp_CreateThread_State)
 -- import LN.Input.Types               (Input)
 -- import LN.Router.Types              (Routes(..))
-import LN.State.Leuron              (LeuronRequestState, defaultLeuronRequestState)
-import LN.State.Loading             (LoadingMap, defaultLoadingMap)
-import LN.State.Resource            (ResourceRequestState, defaultResourceRequestState)
-import LN.State.PageInfo            ( PageInfo
-                                    , defaultPageInfo
-                                    , defaultPageInfo_Organizations
-                                    , defaultPageInfo_Users
-                                    , defaultPageInfo_Threads
-                                    , defaultPageInfo_ThreadPosts
-                                    , defaultPageInfo_Resources
-                                    , defaultPageInfo_Leurons)
+import LN.State.Forum               (ForumRequestState)
+import LN.State.Leuron              (LeuronRequestState)
+import LN.State.Loading             (LoadingMap)
+import LN.State.Resource            (ResourceRequestState)
+import LN.State.PageInfo            (PageInfo)
 import LN.T
 
 
 
-type InternalState routes driver_ch =
+type InternalState routes {- TODO FIXME: driver_ch-} =
   { currentPage                  :: routes
   , me                           :: Maybe UserPackResponse
   , meId                         :: Int
@@ -54,7 +47,7 @@ type InternalState routes driver_ch =
   , currentUser                  :: Maybe UserSanitizedPackResponse
   , currentForum                 :: Maybe ForumPackResponse
   , currentForumRequest          :: Maybe ForumRequest
-  , currentForumRequestSt        :: Maybe Int
+  , currentForumRequestSt        :: Maybe ForumRequestState
   , currentBoard                 :: Maybe BoardPackResponse
   , currentBoardRequest          :: Maybe BoardRequest
   , currentBoardRequestSt        :: Maybe Int
@@ -79,7 +72,7 @@ type InternalState routes driver_ch =
   , resourcesPageInfo            :: PageInfo
   , leuronsPageInfo              :: PageInfo
   , compCreateThread             :: Maybe Comp_CreateThread_State
-  , driverCh                     :: driver_ch
+--  , driverCh                     :: driver_ch
 --  , driverCh                   :: AVar (Input Unit)
   , loading                      :: LoadingMap
   }
