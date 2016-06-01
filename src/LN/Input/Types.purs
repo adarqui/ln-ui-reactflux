@@ -7,6 +7,8 @@ module LN.Input.Types (
   cTeamMod,
   cForum,
   cForumMod,
+  cBoard,
+  cBoardMod,
   cResource,
   cResourceMod,
   cLeuron,
@@ -18,6 +20,7 @@ import Data.Foreign            (ForeignError)
 import Purescript.Api.Helpers  (ApiError)
 import Prelude                 (Unit, unit, (<<<))
 
+import LN.Input.Board          (InputBoard(..), Board_Mod)
 import LN.Input.CreateThread   (InputCreateThread)
 import LN.Input.Forum          (InputForum(..), Forum_Mod)
 import LN.Input.Leuron         (InputLeuron(..), Leuron_Mod)
@@ -89,12 +92,13 @@ data Input a
 
   | ConnectSocket a
 
-  | CompForum          InputForum        a
-  | CompThreadPost     InputThreadPost   a
   | CompCreateThread   InputCreateThread a
   | CompOrderBy        InputOrderBy      a
   | CompOrganization   InputOrganization a
   | CompTeam           InputTeam         a
+  | CompForum          InputForum        a
+  | CompBoard          InputBoard        a
+  | CompThreadPost     InputThreadPost   a
   | CompProfile        InputProfile      a
   | CompLike           InputLike         a
   | CompStar           InputStar         a
@@ -129,6 +133,14 @@ cForum il next = CompForum il next
 
 cForumMod :: forall a. Forum_Mod -> a -> Input a
 cForumMod lm next = CompForum (InputForum_Mod lm) next
+
+
+
+cBoard :: forall a. InputBoard -> a -> Input a
+cBoard il next = CompBoard il next
+
+cBoardMod :: forall a. Board_Mod -> a -> Input a
+cBoardMod lm next = CompBoard (InputBoard_Mod lm) next
 
 
 
