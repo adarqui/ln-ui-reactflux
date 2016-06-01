@@ -84,8 +84,11 @@ instance routesHasLink :: HasLink Routes where
 
   link Portal = Tuple "#/portal" M.empty
 
-  link (Organizations Index params) = Tuple "#/organizations" (fixParams params)
-  link (Organizations crud params) = Tuple ("#" ++ (fst $ link crud)) (fixParams params)
+  link (Organizations Index params)                 = Tuple "#/organizations" (fixParams params)
+  link (Organizations crud@(New) params)            = Tuple ("#/organizations" <> (fst $ link crud)) (fixParams params)
+  link (Organizations crud@(EditI org_id) params)   = Tuple ("#/organizations" <> (fst $ link crud)) (fixParams params)
+  link (Organizations crud@(DeleteI org_id) params) = Tuple ("#/organizations" <> (fst $ link crud)) (fixParams params)
+  link (Organizations crud@(Show org_name) params)  = Tuple ("#" ++ (fst $ link crud)) (fixParams params)
 
   link (OrganizationsForums org crud params) = Tuple ("#/" <> org <> "/f" <> (fst $ link crud)) (fixParams params)
 
