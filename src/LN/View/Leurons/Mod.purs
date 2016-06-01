@@ -26,7 +26,7 @@ import LN.Helpers.Array                (seqArrayFrom)
 -- import LN.Internal.Leuron
 --import LN.Input.Leuron
 import LN.Input.Leuron                 (Leuron_Mod(..))
-import LN.Input.Types                  (Input, cLeuronMod, cLeuronNop)
+import LN.Input.Types                  (Input, cLeuronMod)
 import LN.Router.Link                  (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                (getLoading, l_currentLeuron)

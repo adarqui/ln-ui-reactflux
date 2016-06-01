@@ -3,14 +3,12 @@ module LN.Input.Types (
   -- helpers
   cOrganization,
   cOrganizationMod,
-  cOrganizationNop,
   cForum,
   cForumMod,
   cResource,
   cResourceMod,
   cLeuron,
-  cLeuronMod,
-  cLeuronNop
+  cLeuronMod
 ) where
 
 
@@ -121,9 +119,6 @@ cOrganization il next = CompOrganization il next
 cOrganizationMod :: forall a. Organization_Mod -> a -> Input a
 cOrganizationMod lm next = CompOrganization (InputOrganization_Mod lm) next
 
-cOrganizationNop :: forall a. a -> Input a
-cOrganizationNop next = CompOrganization InputOrganization_Nop next
-
 
 
 cForum :: forall a. InputForum -> a -> Input a
@@ -131,10 +126,6 @@ cForum il next = CompForum il next
 
 cForumMod :: forall a. Forum_Mod -> a -> Input a
 cForumMod lm next = CompForum (InputForum_Mod lm) next
-
-cForumNop :: forall a. a -> Input a
-cForumNop next = CompForum InputForum_Nop next
-
 
 
 
@@ -146,12 +137,8 @@ cResourceMod rm next = CompResource (InputResource_Mod rm) next
 
 
 
-
 cLeuron :: forall a. InputLeuron -> a -> Input a
 cLeuron il next = CompLeuron il next
 
 cLeuronMod :: forall a. Leuron_Mod -> a -> Input a
 cLeuronMod lm next = CompLeuron (InputLeuron_Mod lm) next
-
-cLeuronNop :: forall a. a -> Input a
-cLeuronNop next = CompLeuron InputLeuron_Nop next
