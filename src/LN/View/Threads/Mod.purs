@@ -2,7 +2,11 @@ module LN.View.Threads.Mod (
   renderView_Threads_Delete,
   renderView_Threads_New,
   renderView_Threads_Edit,
-  renderView_Threads_Mod
+  renderView_Threads_Mod,
+
+  renderView_Threads_DeleteS,
+  renderView_Threads_NewS,
+  renderView_Threads_EditS
 ) where
 
 
@@ -85,3 +89,19 @@ renderView_Threads_Mod' organization_id m_thread_id thread_req f_st st =
          Nothing         -> simpleInfoButton "Create" (cThreadMod $ Save organization_id)
          Just thread_id   -> simpleInfoButton "Save" (cThreadMod $ EditP thread_id)
          _               -> H.p_ [H.text "unexpected error."]
+
+
+
+
+renderView_Threads_DeleteS :: String -> State -> ComponentHTML Input
+renderView_Threads_DeleteS thread_name st = H.div_ [H.text "DeleteS"]
+
+
+
+renderView_Threads_NewS :: State -> ComponentHTML Input
+renderView_Threads_NewS st = H.div_ [H.text "NewS"]
+
+
+
+renderView_Threads_EditS :: String -> State -> ComponentHTML Input
+renderView_Threads_EditS thread_name st = H.div_ [H.text "EditS"]

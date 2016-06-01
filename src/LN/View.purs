@@ -48,7 +48,9 @@ import LN.View.Boards.Mod                        ( renderView_Boards_New, render
                                                  , renderView_Boards_DeleteS)
 
 import LN.View.Threads.Mod                       ( renderView_Threads_New, renderView_Threads_Edit
-                                                 , renderView_Threads_Delete)
+                                                 , renderView_Threads_Delete
+                                                 , renderView_Threads_NewS, renderView_Threads_EditS
+                                                 , renderView_Threads_DeleteS)
 
 import LN.View.ThreadPosts.Mod                   ( renderView_ThreadPosts_New, renderView_ThreadPosts_Edit
                                                  , renderView_ThreadPosts_Delete)
@@ -116,22 +118,22 @@ renderView (OrganizationsForums org_name (Show forum_name) params)   = renderVie
 
 
 renderView (OrganizationsForumsBoards org_name forum_name New params)                 =
-  renderView_Boards_NewS org_name forum_name forum_name
+  renderView_Boards_NewS
 renderView (OrganizationsForumsBoards org_name forum_name (Edit board_name) params)   =
-  renderView_Boards_EditS org_name forum_name board_name
+  renderView_Boards_EditS board_name
 renderView (OrganizationsForumsBoards org_name forum_name (Delete board_name) params) =
-  renderView_Boards_DeleteS org_name forum_name board_name
+  renderView_Boards_DeleteS board_name
 renderView (OrganizationsForumsBoards org_name forum_name (Show board_name) params)   =
   renderView_Organizations_Forums_Boards_Show board_name
 
 
 
 renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name New params)                  =
-  renderView_Threads_NewS org_name forum_name board_name
+  renderView_Threads_NewS
 renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Edit thread_name) params)   =
-  renderView_Threads_EditS org_name forum_name board_name thread_name
+  renderView_Threads_EditS thread_name
 renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Delete thread_name) params) =
-  renderView_Threads_DeleteS org_name forum_name board_name thread_name
+  renderView_Threads_DeleteS thread_name
 renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params)   =
   renderView_Organizations_Forums_Boards_Threads_Show thread_name
 

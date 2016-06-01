@@ -92,15 +92,15 @@ renderView_Boards_Mod' organization_id m_board_id board_req f_st st =
 
 
 
-renderView_Boards_DeleteS :: String -> String -> State -> ComponentHTML Input
-renderView_Boards_DeleteS forum_name board_name st = H.div_ [H.text "DeleteS"]
+renderView_Boards_DeleteS :: String -> State -> ComponentHTML Input
+renderView_Boards_DeleteS board_name st = H.div_ [H.text "DeleteS"]
 
 
 
-renderView_Boards_NewS :: String -> State -> ComponentHTML Input
-renderView_Boards_NewS forum_name st = H.div_ [H.text "NewS"]
+renderView_Boards_NewS :: State -> ComponentHTML Input
+renderView_Boards_NewS st = H.div_ [H.text "NewS"]
 
 
 
-renderView_Boards_EditS :: String -> String -> State -> ComponentHTML Input
-renderView_Boards_EditS forum_name board_name st = H.div_ [H.text "EditS"]
+renderView_Boards_EditS :: String -> State -> ComponentHTML Input
+renderView_Boards_EditS board_name st = H.div_ [H.text "EditS"]
