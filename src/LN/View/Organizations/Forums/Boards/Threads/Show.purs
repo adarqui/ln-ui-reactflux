@@ -98,15 +98,15 @@ renderPosts org_name forum_name board_name thread_name st =
                   , displayUserStats (usersMapLookup st post.userId)
                 ]
               , H.div [P.class_ B.colXs8] [
-                    linkTo (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (Show $ show post.id)) (thread_name <> "/" <> show post.id)
+                    linkTo (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (Show $ show post.id) []) (thread_name <> "/" <> show post.id)
                   , H.p_ [H.text $ show post.createdAt]
                   , H.p_ [H.text "quote / reply"]
                   , displayPostData post.body
                   , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup st post.userId)]
                 ]
               , H.div [P.class_ B.colXs1] [
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (EditI 0)) "edit"],
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (DeleteI 0)) "delete"]
+                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (EditI 0) []) "edit"],
+                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (DeleteI 0) []) "delete"]
                 ]
               , H.div [P.class_ B.colXs1] [
                     renderLike Ent_ThreadPost post.id pack'.like pack'.star

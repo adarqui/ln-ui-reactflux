@@ -47,7 +47,7 @@ links =
   , OrganizationsForums "adarq" Index []
   , OrganizationsForumsBoards "adarq" "forum" Index []
   , OrganizationsForumsBoardsThreads "adarq" "forum" "board" Index []
-  , OrganizationsForumsBoardsThreadsPosts "adarq" "forum" "board" "thread" Index
+  , OrganizationsForumsBoardsThreadsPosts "adarq" "forum" "board" "thread" Index []
 
   , Users Index []
   , UsersProfile "adarq" []

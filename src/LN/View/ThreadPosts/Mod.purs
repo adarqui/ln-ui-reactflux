@@ -30,8 +30,8 @@ import LN.T
 
 
 
-renderView_ThreadPosts_Delete :: Int -> Int -> State -> ComponentHTML Input
-renderView_ThreadPosts_Delete organization_id threadPost_id st =
+renderView_ThreadPosts_Delete :: Int -> State -> ComponentHTML Input
+renderView_ThreadPosts_Delete threadPost_id st =
 
   case st.currentThreadPost, getLoading l_currentThreadPost st.loading of
        _, true          -> renderLoading
@@ -48,27 +48,27 @@ renderView_ThreadPosts_Delete' pack st =
 
 
 
-renderView_ThreadPosts_New :: Int -> State -> ComponentHTML Input
-renderView_ThreadPosts_New organization_id = renderView_ThreadPosts_Mod organization_id Nothing
+renderView_ThreadPosts_New :: State -> ComponentHTML Input
+renderView_ThreadPosts_New = renderView_ThreadPosts_Mod Nothing
 
 
 
-renderView_ThreadPosts_Edit :: Int -> Int -> State -> ComponentHTML Input
-renderView_ThreadPosts_Edit organization_id threadPost_id = renderView_ThreadPosts_Mod organization_id (Just threadPost_id)
+renderView_ThreadPosts_Edit :: Int -> State -> ComponentHTML Input
+renderView_ThreadPosts_Edit threadPost_id = renderView_ThreadPosts_Mod (Just threadPost_id)
 
 
 
-renderView_ThreadPosts_Mod :: Int -> Maybe Int -> State -> ComponentHTML Input
-renderView_ThreadPosts_Mod organization_id m_threadPost_id st =
+renderView_ThreadPosts_Mod :: Maybe Int -> State -> ComponentHTML Input
+renderView_ThreadPosts_Mod m_threadPost_id st =
   case st.currentThreadPostRequest, st.currentThreadPostRequestSt, getLoading l_currentThreadPost st.loading of
     _, _, true                         -> renderLoading
-    Just threadPost_req, Just f_st, false   -> renderView_ThreadPosts_Mod' organization_id m_threadPost_id threadPost_req f_st st
+    Just threadPost_req, Just f_st, false   -> renderView_ThreadPosts_Mod' m_threadPost_id threadPost_req f_st st
     _, _, false                        -> H.div_ [H.p_ [H.text "ThreadPosts_Mod: unexpected error."]]
 
 
 
-renderView_ThreadPosts_Mod' :: Int -> Maybe Int -> ThreadPostRequest -> ThreadPostRequestState -> State -> ComponentHTML Input
-renderView_ThreadPosts_Mod' organization_id m_threadPost_id threadPost_req f_st st =
+renderView_ThreadPosts_Mod' :: Maybe Int -> ThreadPostRequest -> ThreadPostRequestState -> State -> ComponentHTML Input
+renderView_ThreadPosts_Mod' m_threadPost_id threadPost_req f_st st =
   H.div_ [
 
     H.h1_ [ H.text "Add ThreadPost" ]
@@ -82,6 +82,6 @@ renderView_ThreadPosts_Mod' organization_id m_threadPost_id threadPost_req f_st 
   threadPost    = unwrapThreadPostRequest threadPost_req
   save     = maybe "Create" (const "Save") m_threadPost_id
   create_or_save = case m_threadPost_id of
-         Nothing         -> simpleInfoButton "Create" (cThreadPostMod $ Save organization_id)
-         Just threadPost_id   -> simpleInfoButton "Save" (cThreadPostMod $ EditP threadPost_id)
+--         Nothing         -> simpleInfoButton "Create" (cThreadPostMod $ Save organization_id)
+--         Just threadPost_id   -> simpleInfoButton "Save" (cThreadPostMod $ EditP threadPost_id)
          _               -> H.p_ [H.text "unexpected error."]

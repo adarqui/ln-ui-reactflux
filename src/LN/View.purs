@@ -36,6 +36,7 @@ import LN.View.Organizations.Show                       (renderView_Organization
 import LN.View.Organizations.Forums.Show                (renderView_Organizations_Forums_Show)
 import LN.View.Organizations.Forums.Boards.Show         (renderView_Organizations_Forums_Boards_Show)
 import LN.View.Organizations.Forums.Boards.Threads.Show (renderView_Organizations_Forums_Boards_Threads_Show)
+import LN.View.Organizations.Forums.Boards.Threads.ThreadPosts.Show (renderView_Organizations_Forums_Boards_Threads_ThreadPosts_Show)
 
 import LN.View.Forums.Mod                        ( renderView_Forums_New, renderView_Forums_Edit
                                                  , renderView_Forums_Delete
@@ -136,6 +137,17 @@ renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Del
   renderView_Threads_DeleteS thread_name
 renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params)   =
   renderView_Organizations_Forums_Boards_Threads_Show thread_name
+
+
+
+renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name New params)               =
+  renderView_ThreadPosts_New
+renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (EditI post_id) params)   =
+  renderView_ThreadPosts_Edit post_id
+renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (DeleteI post_id) params) =
+  renderView_ThreadPosts_Delete post_id
+renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post_id) params)   =
+  renderView_Organizations_Forums_Boards_Threads_ThreadPosts_Show post_id
 
 
 

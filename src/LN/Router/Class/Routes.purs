@@ -38,7 +38,7 @@ data Routes
   | OrganizationsForums String CRUD Params
   | OrganizationsForumsBoards String String CRUD Params
   | OrganizationsForumsBoardsThreads String String String CRUD Params
-  | OrganizationsForumsBoardsThreadsPosts String String String String CRUD
+  | OrganizationsForumsBoardsThreadsPosts String String String String CRUD Params
   | Users CRUD Params
   | UsersProfile String Params
   | UsersSettings String Params
@@ -101,8 +101,8 @@ instance routesHasLink :: HasLink Routes where
   link (OrganizationsForumsBoardsThreads org forum board crud params) =
     Tuple ("#/" <> org <> "/" <> forum <> "/" <> board <> (fst $ link crud)) (fixParams params)
 
-  link (OrganizationsForumsBoardsThreadsPosts org forum board thread crud) =
-    Tuple ("#/" <> org <> "/" <> forum <> "/" <> board <> "/" <> thread <> (fst $ link crud)) M.empty
+  link (OrganizationsForumsBoardsThreadsPosts org forum board thread crud params) =
+    Tuple ("#/" <> org <> "/" <> forum <> "/" <> board <> "/" <> thread <> (fst $ link crud)) (fixParams params)
 
   link (Users Index params)           = Tuple "#/u" (fixParams params)
   link (Users crud params)            = Tuple ("#/u" ++ (fst $ link crud)) (fixParams params)
@@ -375,7 +375,7 @@ instance routesShow :: Show Routes where
   show (OrganizationsForums org crud params) = "#/" <> org <> "/f/..."
   show (OrganizationsForumsBoards org forum crud params) = "#/" <> org <> "/f/" <> forum <> "/b/" <> "..."
   show (OrganizationsForumsBoardsThreads org forum board crud params) = "#/" <> org <> "/f/" <> forum <> "/b/" <> board <> "/t/" <> "..."
-  show (OrganizationsForumsBoardsThreadsPosts org forum board thread crud) = "#/" <> org <> "/f/" <> forum <> "/" <> board <> "/" <> thread <> "/..."
+  show (OrganizationsForumsBoardsThreadsPosts org forum board thread crud params) = "#/" <> org <> "/f/" <> forum <> "/" <> board <> "/" <> thread <> "/..."
   show (Users crud params) = "#/u/..."
   show (UsersProfile user params) = "#/u/profile"
   show (UsersSettings user params) = "#/u/settings"
