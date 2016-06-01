@@ -23,8 +23,13 @@ import LN.T                 ( ThreadPackResponse(..)
 
 
 eval_ThreadPost :: EvalEff
+eval_ThreadPost eval (CompThreadPost InputThreadPost_Nop next) = pure next
+eval_ThreadPost eval (CompThreadPost InputThreadPost_Post next) = pure next
+eval_ThreadPost eval (CompThreadPost (InputThreadPost_SetBody m_body) next) = pure next
 
 
+{-
+TODO FIXME: Move this to the new ThreadPost_Mod style
 
 eval_ThreadPost eval (CompThreadPost InputThreadPost_Nop next) = do
   pure next
@@ -62,3 +67,4 @@ eval_ThreadPost eval (CompThreadPost (InputThreadPost_SetBody m_body) next) = do
          -- TODO FIXME: tags
          modify (_ { currentThreadPost = Just $ ThreadPostRequest { title: Nothing, body: PostDataBBCode body, tags: [], privateTags: [] } })
          pure next
+         -}

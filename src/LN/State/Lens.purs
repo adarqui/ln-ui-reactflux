@@ -157,7 +157,7 @@ stCurrentThread =
 
 
 
-stCurrentThreadPost :: LensP State (Maybe ThreadPostRequest)
+stCurrentThreadPost :: LensP State (Maybe ThreadPostPackResponse)
 stCurrentThreadPost =
   lens
     (_.currentThreadPost)

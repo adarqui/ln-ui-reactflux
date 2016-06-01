@@ -37,6 +37,18 @@ import LN.View.Organizations.Forums.Show                (renderView_Organization
 import LN.View.Organizations.Forums.Boards.Show         (renderView_Organizations_Forums_Boards_Show)
 import LN.View.Organizations.Forums.Boards.Threads.Show (renderView_Organizations_Forums_Boards_Threads_Show)
 
+import LN.View.Forums.Mod                        ( renderView_Forums_New, renderView_Forums_Edit
+                                                 , renderView_Forums_Delete)
+
+import LN.View.Boards.Mod                        ( renderView_Boards_New, renderView_Boards_Edit
+                                                 , renderView_Boards_Delete)
+
+import LN.View.Threads.Mod                       ( renderView_Threads_New, renderView_Threads_Edit
+                                                 , renderView_Threads_Delete)
+
+import LN.View.ThreadPosts.Mod                   ( renderView_ThreadPosts_New, renderView_ThreadPosts_Edit
+                                                 , renderView_ThreadPosts_Delete)
+
 import LN.View.Resources.Index                    (renderView_Resources_Index)
 import LN.View.Resources.Mod                      ( renderView_Resources_New, renderView_Resources_Edit
                                                   , renderView_Resources_Delete)
@@ -83,6 +95,7 @@ renderView (UsersLeurons user_name params)     = renderView_Users_Leurons user_n
 renderView (UsersLikes user_name params)       = renderView_Users_Likes user_name
 
 
+
 renderView (Organizations Index params)           = renderView_Organizations_Index
 renderView (Organizations New params)             = renderView_Organizations_New
 renderView (Organizations (EditI org_id) params)  = renderView_Organizations_Edit org_id
@@ -90,13 +103,33 @@ renderView (Organizations (DeleteI org_id) params)= renderView_Organizations_Del
 renderView (Organizations (Show org_name) params) = renderView_Organizations_Show org_name
 
 
-renderView (OrganizationsForums org_name (Show forum_name) params) = renderView_Organizations_Forums_Show forum_name
+
+renderView (OrganizationsForums org_name New params)                 = renderView_Forums_NewS org_name
+renderView (OrganizationsForums org_name (Edit forum_name) params)   = renderView_Forums_EditS org_name forum_name
+renderView (OrganizationsForums org_name (Delete forum_name) params) = renderView_Forums_DeleteS org_name forum_name
+renderView (OrganizationsForums org_name (Show forum_name) params)   = renderView_Organizations_Forums_Show forum_name
 
 
-renderView (OrganizationsForumsBoards org_name forum_name (Show board_name) params) = renderView_Organizations_Forums_Boards_Show board_name
+
+renderView (OrganizationsForumsBoards org_name forum_name New params)                 =
+  renderView_Boards_NewS org_name forum_name forum_name
+renderView (OrganizationsForumsBoards org_name forum_name (Edit board_name) params)   =
+  renderView_Boards_EditS org_name forum_name board_name
+renderView (OrganizationsForumsBoards org_name forum_name (Delete board_name) params) =
+  renderView_Boards_DeleteS org_name forum_name board_name
+renderView (OrganizationsForumsBoards org_name forum_name (Show board_name) params)   =
+  renderView_Organizations_Forums_Boards_Show board_name
 
 
-renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params) = renderView_Organizations_Forums_Boards_Threads_Show thread_name
+
+renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name New params)                  =
+  renderView_Threads_NewS org_name forum_name board_name
+renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Edit thread_name) params)   =
+  renderView_Threads_EditS org_name forum_name board_name thread_name
+renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Delete thread_name) params) =
+  renderView_Threads_DeleteS org_name forum_name board_name thread_name
+renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params)   =
+  renderView_Organizations_Forums_Boards_Threads_Show thread_name
 
 
 

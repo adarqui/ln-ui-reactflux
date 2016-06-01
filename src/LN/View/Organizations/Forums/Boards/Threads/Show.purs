@@ -155,7 +155,7 @@ renderPosts org_name forum_name board_name thread_name st =
   , renderPageNumbers st.threadPostsPageInfo st.currentPage
   ]
   where
-  body = maybe "" (\p -> postDataToBody $ p ^. _ThreadPostRequest .. body_) st.currentThreadPost
+  body = maybe "" (\p -> postDataToBody $ p ^. _ThreadPostRequest .. body_) st.currentThreadPostRequest
 
 
 

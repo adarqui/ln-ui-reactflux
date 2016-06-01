@@ -59,7 +59,7 @@ type InternalState routes {- TODO FIXME: driver_ch-} =
   , currentThread                :: Maybe ThreadPackResponse
   , currentThreadRequest         :: Maybe ThreadRequest
   , currentThreadRequestSt       :: Maybe ThreadRequestState
-  , currentThreadPost            :: Maybe ThreadPostRequest -- TODO FIXME: rename to something more appropriate
+  , currentThreadPost            :: Maybe ThreadPostPackResponse
   , currentThreadPostRequest     :: Maybe ThreadPostRequest
   , currentThreadPostRequestSt   :: Maybe ThreadPostRequestState
   , currentResource              :: Maybe ResourcePackResponse
