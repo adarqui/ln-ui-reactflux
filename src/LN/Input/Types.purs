@@ -31,6 +31,7 @@ import LN.Input.Organization   (InputOrganization(..), Organization_Mod)
 import LN.Input.Profile        (InputProfile)
 import LN.Input.Resource       (InputResource(..), Resource_Mod)
 import LN.Input.Team           (InputTeam(..), Team_Mod)
+import LN.Input.Thread         (InputThread(..), Thread_Mod)
 import LN.Input.ThreadPost     (InputThreadPost(..))
 import LN.Router.Class.Routes  (Routes)
 import LN.T
@@ -98,6 +99,7 @@ data Input a
   | CompTeam           InputTeam         a
   | CompForum          InputForum        a
   | CompBoard          InputBoard        a
+  | CompThread         InputThread       a
   | CompThreadPost     InputThreadPost   a
   | CompProfile        InputProfile      a
   | CompLike           InputLike         a
@@ -141,6 +143,14 @@ cBoard il next = CompBoard il next
 
 cBoardMod :: forall a. Board_Mod -> a -> Input a
 cBoardMod lm next = CompBoard (InputBoard_Mod lm) next
+
+
+
+cThread :: forall a. InputThread -> a -> Input a
+cThread il next = CompThread il next
+
+cThreadMod :: forall a. Thread_Mod -> a -> Input a
+cThreadMod lm next = CompThread (InputThread_Mod lm) next
 
 
 
