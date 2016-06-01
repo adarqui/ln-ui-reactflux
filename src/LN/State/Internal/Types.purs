@@ -15,6 +15,7 @@ import LN.Component.CreateThread    (Comp_CreateThread_State)
 import LN.State.Forum               (ForumRequestState)
 import LN.State.Leuron              (LeuronRequestState)
 import LN.State.Loading             (LoadingMap)
+import LN.State.Organization        (OrganizationRequestState)
 import LN.State.Resource            (ResourceRequestState)
 import LN.State.PageInfo            (PageInfo)
 import LN.T
@@ -40,7 +41,7 @@ type InternalState routes {- TODO FIXME: driver_ch-} =
 --  , pms                        :: Maybe (Array PmResponse)
   , currentOrganization          :: Maybe OrganizationPackResponse
   , currentOrganizationRequest   :: Maybe OrganizationRequest
-  , currentOrganizationRequestSt :: Maybe Int
+  , currentOrganizationRequestSt :: Maybe OrganizationRequestState
   , currentTeam                  :: Maybe TeamResponse
   , currentTeamRequest           :: Maybe TeamRequest
   , currentTeamRequestSt         :: Maybe Int

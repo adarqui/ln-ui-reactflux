@@ -1,6 +1,9 @@
 module LN.Input.Types (
   Input (..),
   -- helpers
+  cOrganization,
+  cOrganizationMod,
+  cOrganizationNop,
   cForum,
   cForumMod,
   cResource,
@@ -21,9 +24,10 @@ import LN.Input.Leuron         (InputLeuron(..), Leuron_Mod)
 import LN.Input.Like           (InputLike)
 import LN.Input.Star           (InputStar)
 import LN.Input.OrderBy        (InputOrderBy)
+import LN.Input.Organization   (InputOrganization(..), Organization_Mod)
 import LN.Input.Profile        (InputProfile)
 import LN.Input.Resource       (InputResource(..), Resource_Mod)
-import LN.Input.ThreadPost     (InputThreadPost)
+import LN.Input.ThreadPost     (InputThreadPost(..))
 import LN.Router.Class.Routes  (Routes)
 import LN.T
 
@@ -92,6 +96,8 @@ data Input a
 
   | CompOrderBy InputOrderBy a
 
+  | CompOrganization InputOrganization a
+
   | CompProfile InputProfile a
 
   | CompLike InputLike a
@@ -108,6 +114,17 @@ data Input a
 
 -- | Helpers for "components" and "subcomponents"
 --
+
+cOrganization :: forall a. InputOrganization -> a -> Input a
+cOrganization il next = CompOrganization il next
+
+cOrganizationMod :: forall a. Organization_Mod -> a -> Input a
+cOrganizationMod lm next = CompOrganization (InputOrganization_Mod lm) next
+
+cOrganizationNop :: forall a. a -> Input a
+cOrganizationNop next = CompOrganization InputOrganization_Nop next
+
+
 
 cForum :: forall a. InputForum -> a -> Input a
 cForum il next = CompForum il next
