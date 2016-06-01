@@ -2,7 +2,10 @@ module LN.View.Forums.Mod (
   renderView_Forums_Delete,
   renderView_Forums_New,
   renderView_Forums_Edit,
-  renderView_Forums_Mod
+  renderView_Forums_Mod,
+  renderView_Forums_DeleteS,
+  renderView_Forums_NewS,
+  renderView_Forums_EditS
 ) where
 
 
@@ -90,3 +93,19 @@ renderView_Forums_Mod' organization_id m_forum_id forum_req f_st st =
          Nothing         -> simpleInfoButton "Create" (cForumMod $ Save organization_id)
          Just forum_id   -> simpleInfoButton "Save" (cForumMod $ EditP forum_id)
          _               -> H.p_ [H.text "unexpected error."]
+
+
+
+
+renderView_Forums_DeleteS :: String -> String -> State -> ComponentHTML Input
+renderView_Forums_DeleteS organization_name forum_name st = H.div_ [H.text "DeleteS"]
+
+
+
+renderView_Forums_NewS :: String -> State -> ComponentHTML Input
+renderView_Forums_NewS organization_name st = H.div_ [H.text "NewS"]
+
+
+
+renderView_Forums_EditS :: String -> String -> State -> ComponentHTML Input
+renderView_Forums_EditS organization_name forum_name st = H.div_ [H.text "EditS"]

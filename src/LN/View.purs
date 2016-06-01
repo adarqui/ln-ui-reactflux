@@ -38,7 +38,9 @@ import LN.View.Organizations.Forums.Boards.Show         (renderView_Organization
 import LN.View.Organizations.Forums.Boards.Threads.Show (renderView_Organizations_Forums_Boards_Threads_Show)
 
 import LN.View.Forums.Mod                        ( renderView_Forums_New, renderView_Forums_Edit
-                                                 , renderView_Forums_Delete)
+                                                 , renderView_Forums_Delete
+                                                 , renderView_Forums_NewS, renderView_Forums_EditS
+                                                 , renderView_Forums_DeleteS)
 
 import LN.View.Boards.Mod                        ( renderView_Boards_New, renderView_Boards_Edit
                                                  , renderView_Boards_Delete)
