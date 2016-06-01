@@ -2,7 +2,11 @@ module LN.View.Boards.Mod (
   renderView_Boards_Delete,
   renderView_Boards_New,
   renderView_Boards_Edit,
-  renderView_Boards_Mod
+  renderView_Boards_Mod,
+
+  renderView_Boards_NewS,
+  renderView_Boards_EditS,
+  renderView_Boards_DeleteS
 ) where
 
 
@@ -85,3 +89,18 @@ renderView_Boards_Mod' organization_id m_board_id board_req f_st st =
          Nothing         -> simpleInfoButton "Create" (cBoardMod $ Save organization_id)
          Just board_id   -> simpleInfoButton "Save" (cBoardMod $ EditP board_id)
          _               -> H.p_ [H.text "unexpected error."]
+
+
+
+renderView_Boards_DeleteS :: String -> String -> State -> ComponentHTML Input
+renderView_Boards_DeleteS forum_name board_name st = H.div_ [H.text "DeleteS"]
+
+
+
+renderView_Boards_NewS :: String -> State -> ComponentHTML Input
+renderView_Boards_NewS forum_name st = H.div_ [H.text "NewS"]
+
+
+
+renderView_Boards_EditS :: String -> String -> State -> ComponentHTML Input
+renderView_Boards_EditS forum_name board_name st = H.div_ [H.text "EditS"]

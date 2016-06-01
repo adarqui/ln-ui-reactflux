@@ -43,7 +43,9 @@ import LN.View.Forums.Mod                        ( renderView_Forums_New, render
                                                  , renderView_Forums_DeleteS)
 
 import LN.View.Boards.Mod                        ( renderView_Boards_New, renderView_Boards_Edit
-                                                 , renderView_Boards_Delete)
+                                                 , renderView_Boards_Delete
+                                                 , renderView_Boards_NewS, renderView_Boards_EditS
+                                                 , renderView_Boards_DeleteS)
 
 import LN.View.Threads.Mod                       ( renderView_Threads_New, renderView_Threads_Edit
                                                  , renderView_Threads_Delete)
