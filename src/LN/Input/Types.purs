@@ -3,6 +3,8 @@ module LN.Input.Types (
   -- helpers
   cOrganization,
   cOrganizationMod,
+  cTeam,
+  cTeamMod,
   cForum,
   cForumMod,
   cResource,
@@ -25,6 +27,7 @@ import LN.Input.OrderBy        (InputOrderBy)
 import LN.Input.Organization   (InputOrganization(..), Organization_Mod)
 import LN.Input.Profile        (InputProfile)
 import LN.Input.Resource       (InputResource(..), Resource_Mod)
+import LN.Input.Team           (InputTeam(..), Team_Mod)
 import LN.Input.ThreadPost     (InputThreadPost(..))
 import LN.Router.Class.Routes  (Routes)
 import LN.T
@@ -86,25 +89,17 @@ data Input a
 
   | ConnectSocket a
 
-  | CompForum InputForum a
-
-  | CompThreadPost InputThreadPost a
-
-  | CompCreateThread InputCreateThread a
-
-  | CompOrderBy InputOrderBy a
-
-  | CompOrganization InputOrganization a
-
-  | CompProfile InputProfile a
-
-  | CompLike InputLike a
-
-  | CompStar InputStar a
-
-  | CompResource InputResource a
-
-  | CompLeuron InputLeuron a
+  | CompForum          InputForum        a
+  | CompThreadPost     InputThreadPost   a
+  | CompCreateThread   InputCreateThread a
+  | CompOrderBy        InputOrderBy      a
+  | CompOrganization   InputOrganization a
+  | CompTeam           InputTeam         a
+  | CompProfile        InputProfile      a
+  | CompLike           InputLike         a
+  | CompStar           InputStar         a
+  | CompResource       InputResource     a
+  | CompLeuron         InputLeuron       a
 
   | Nop a
 
@@ -118,6 +113,14 @@ cOrganization il next = CompOrganization il next
 
 cOrganizationMod :: forall a. Organization_Mod -> a -> Input a
 cOrganizationMod lm next = CompOrganization (InputOrganization_Mod lm) next
+
+
+
+cTeam :: forall a. InputTeam -> a -> Input a
+cTeam il next = CompTeam il next
+
+cTeamMod :: forall a. Team_Mod -> a -> Input a
+cTeamMod lm next = CompTeam (InputTeam_Mod lm) next
 
 
 
