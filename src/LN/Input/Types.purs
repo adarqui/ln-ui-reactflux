@@ -9,6 +9,10 @@ module LN.Input.Types (
   cForumMod,
   cBoard,
   cBoardMod,
+  cThread,
+  cThreadMod,
+  cThreadPost,
+  cThreadPostMod,
   cResource,
   cResourceMod,
   cLeuron,
@@ -32,7 +36,7 @@ import LN.Input.Profile        (InputProfile)
 import LN.Input.Resource       (InputResource(..), Resource_Mod)
 import LN.Input.Team           (InputTeam(..), Team_Mod)
 import LN.Input.Thread         (InputThread(..), Thread_Mod)
-import LN.Input.ThreadPost     (InputThreadPost(..))
+import LN.Input.ThreadPost     (InputThreadPost(..), ThreadPost_Mod)
 import LN.Router.Class.Routes  (Routes)
 import LN.T
 
@@ -151,6 +155,14 @@ cThread il next = CompThread il next
 
 cThreadMod :: forall a. Thread_Mod -> a -> Input a
 cThreadMod lm next = CompThread (InputThread_Mod lm) next
+
+
+
+cThreadPost :: forall a. InputThreadPost -> a -> Input a
+cThreadPost il next = CompThreadPost il next
+
+cThreadPostMod :: forall a. ThreadPost_Mod -> a -> Input a
+cThreadPostMod lm next = CompThreadPost (InputThreadPost_Mod lm) next
 
 
 
