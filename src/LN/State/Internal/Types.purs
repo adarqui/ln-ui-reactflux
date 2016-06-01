@@ -12,12 +12,16 @@ import Data.Tuple                   (Tuple)
 import LN.Component.CreateThread    (Comp_CreateThread_State)
 -- import LN.Input.Types               (Input)
 -- import LN.Router.Types              (Routes(..))
+import LN.State.Board               (BoardRequestState)
 import LN.State.Forum               (ForumRequestState)
 import LN.State.Leuron              (LeuronRequestState)
 import LN.State.Loading             (LoadingMap)
 import LN.State.Organization        (OrganizationRequestState)
 import LN.State.Resource            (ResourceRequestState)
 import LN.State.PageInfo            (PageInfo)
+import LN.State.Thread              (ThreadRequestState)
+import LN.State.ThreadPost          (ThreadPostRequestState)
+import LN.State.Team                (TeamRequestState)
 import LN.T
 
 
@@ -44,20 +48,20 @@ type InternalState routes {- TODO FIXME: driver_ch-} =
   , currentOrganizationRequestSt :: Maybe OrganizationRequestState
   , currentTeam                  :: Maybe TeamResponse
   , currentTeamRequest           :: Maybe TeamRequest
-  , currentTeamRequestSt         :: Maybe Int
+  , currentTeamRequestSt         :: Maybe TeamRequestState
   , currentUser                  :: Maybe UserSanitizedPackResponse
   , currentForum                 :: Maybe ForumPackResponse
   , currentForumRequest          :: Maybe ForumRequest
   , currentForumRequestSt        :: Maybe ForumRequestState
   , currentBoard                 :: Maybe BoardPackResponse
   , currentBoardRequest          :: Maybe BoardRequest
-  , currentBoardRequestSt        :: Maybe Int
+  , currentBoardRequestSt        :: Maybe BoardRequestState
   , currentThread                :: Maybe ThreadPackResponse
   , currentThreadRequest         :: Maybe ThreadRequest
-  , currentThreadRequestSt       :: Maybe Int
+  , currentThreadRequestSt       :: Maybe ThreadRequestState
   , currentThreadPost            :: Maybe ThreadPostRequest -- TODO FIXME: rename to something more appropriate
   , currentThreadPostRequest     :: Maybe ThreadPostRequest
-  , currentThreadPostRequestSt   :: Maybe Int
+  , currentThreadPostRequestSt   :: Maybe ThreadPostRequestState
   , currentResource              :: Maybe ResourcePackResponse
   , currentResourceRequest       :: Maybe ResourceRequest
   , currentResourceRequestSt     :: Maybe ResourceRequestState
