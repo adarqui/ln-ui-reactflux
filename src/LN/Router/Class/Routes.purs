@@ -75,10 +75,12 @@ class HasCrumb a where
 
 
 instance routesHasLink :: HasLink Routes where
-  link Home = Tuple "#/" M.empty
-  link About = Tuple "#/about" M.empty
 
-  link Me = Tuple "#/me" M.empty
+  link Home   = Tuple "#/"       M.empty
+
+  link About  = Tuple "#/about"  M.empty
+
+  link Me     = Tuple "#/me"     M.empty
 
   link Errors = Tuple "#/errors" M.empty
 
@@ -90,36 +92,41 @@ instance routesHasLink :: HasLink Routes where
   link (Organizations crud@(DeleteI org_id) params) = Tuple ("#/organizations" <> (fst $ link crud)) (fixParams params)
   link (Organizations crud@(Show org_name) params)  = Tuple ("#" ++ (fst $ link crud)) (fixParams params)
 
-  link (OrganizationsForums org crud params) = Tuple ("#/" <> org <> "/f" <> (fst $ link crud)) (fixParams params)
+  link (OrganizationsForums org crud params) =
+    Tuple ("#/" <> org <> (fst $ link crud)) (fixParams params)
 
-  link (OrganizationsForumsBoards org forum crud params) = Tuple ("#/" <> org <> "/f/" <> forum <> "/b" <> (fst $ link crud)) (fixParams params)
+  link (OrganizationsForumsBoards org forum crud params) =
+    Tuple ("#/" <> org <> "/" <> forum <> (fst $ link crud)) (fixParams params)
 
-  link (OrganizationsForumsBoardsThreads org forum board crud params) = Tuple ("#/" <> org <> "/f/" <> forum <> "/b/" <> board <> "/t" <> (fst $ link crud)) (fixParams params)
+  link (OrganizationsForumsBoardsThreads org forum board crud params) =
+    Tuple ("#/" <> org <> "/" <> forum <> "/" <> board <> (fst $ link crud)) (fixParams params)
 
-  link (OrganizationsForumsBoardsThreadsPosts org forum board thread crud) = Tuple ("#/" <> org <> "/f/" <> forum <> "/" <> board <> "/" <> thread <> (fst $ link crud)) M.empty
+  link (OrganizationsForumsBoardsThreadsPosts org forum board thread crud) =
+    Tuple ("#/" <> org <> "/" <> forum <> "/" <> board <> "/" <> thread <> (fst $ link crud)) M.empty
 
-  link (Users Index params) = Tuple "#/u" (fixParams params)
-  link (Users crud params) = Tuple ("#/u" ++ (fst $ link crud)) (fixParams params)
-  link (UsersProfile user params) = Tuple ("#/u/" <> user <> "/profile") (fixParams params)
-  link (UsersSettings user params) = Tuple ("#/u/" <> user <> "/settings") (fixParams params)
-  link (UsersPMs user params) = Tuple ("#/u/" <> user <> "/pms") (fixParams params)
-  link (UsersThreads user params) = Tuple ("#/u/" <> user <> "/threads") (fixParams params)
+  link (Users Index params)           = Tuple "#/u" (fixParams params)
+  link (Users crud params)            = Tuple ("#/u" ++ (fst $ link crud)) (fixParams params)
+  link (UsersProfile user params)     = Tuple ("#/u/" <> user <> "/profile") (fixParams params)
+  link (UsersSettings user params)    = Tuple ("#/u/" <> user <> "/settings") (fixParams params)
+  link (UsersPMs user params)         = Tuple ("#/u/" <> user <> "/pms") (fixParams params)
+  link (UsersThreads user params)     = Tuple ("#/u/" <> user <> "/threads") (fixParams params)
   link (UsersThreadPosts user params) = Tuple ("#/u/" <> user <> "/thread_posts") (fixParams params)
-  link (UsersWorkouts user params) = Tuple ("#/u/" <> user <> "/workouts") (fixParams params)
-  link (UsersResources user params) = Tuple ("#/u/" <> user <> "/resources") (fixParams params)
-  link (UsersLeurons user params) = Tuple ("#/u/" <> user <> "/leurons") (fixParams params)
-  link (UsersLikes user params) = Tuple ("#/u/" <> user <> "/likes") (fixParams params)
+  link (UsersWorkouts user params)    = Tuple ("#/u/" <> user <> "/workouts") (fixParams params)
+  link (UsersResources user params)   = Tuple ("#/u/" <> user <> "/resources") (fixParams params)
+  link (UsersLeurons user params)     = Tuple ("#/u/" <> user <> "/leurons") (fixParams params)
+  link (UsersLikes user params)       = Tuple ("#/u/" <> user <> "/likes") (fixParams params)
 
-  link (Resources crud params) = Tuple ("#/resources" ++ (fst $ link crud)) (fixParams params)
-  link (ResourcesLeurons resource_id crud params) = Tuple ("#/resources/" <> show resource_id <> "/leurons" <> (fst $ link crud)) (fixParams params)
+  link (Resources crud params)                              = Tuple ("#/resources" ++ (fst $ link crud)) (fixParams params)
+
+  link (ResourcesLeurons resource_id crud params)           = Tuple ("#/resources/" <> show resource_id <> "/leurons" <> (fst $ link crud)) (fixParams params)
   link (ResourcesSiftLeurons resource_id params) = Tuple ("#/resources/" <> show resource_id <> "/sift") (fixParams params)
   link (ResourcesSiftLeuronsLinear resource_id crud params) = Tuple ("#/resources/" <> show resource_id <> "/sift/linear" <> (fst $ link crud)) (fixParams params)
-  link (ResourcesSiftLeuronsRandom resource_id params) = Tuple ("#/resources/" <> show resource_id <> "/sift/random") (fixParams params)
+  link (ResourcesSiftLeuronsRandom resource_id params)      = Tuple ("#/resources/" <> show resource_id <> "/sift/random") (fixParams params)
 
 --  link (Leurons crud params) = Tuple ("#/leurons" ++ (fst $ link crud)) (fixParams params)
 
-  link Login = Tuple "/auth/login" M.empty
-  link Logout = Tuple "/auth/logout" M.empty
+  link Login    = Tuple "/auth/login" M.empty
+  link Logout   = Tuple "/auth/logout" M.empty
 
   link NotFound = Tuple "#/404" M.empty
 

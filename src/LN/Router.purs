@@ -110,13 +110,13 @@ routing =
       login <|>
       logout <|>
 
-      organizations_forums_boards_threads <|>
-      organizations_forums_boards <|>
-      organizations_forums <|>
       organizations_new <|>
       organizations_edit_int <|>
       organizations_delete_int <|>
       organizations_index <|>
+      organizations_forums_boards_threads <|>
+      organizations_forums_boards <|>
+      organizations_forums <|>
       organizations_show <|>
 
       home <|>
@@ -218,23 +218,29 @@ routing =
     organizations_forums =
       OrganizationsForums
       <$> (lit "" *> str)
-      <*> (lit "f" *> (Show <$> str))
+      <*> (Show <$> str1)
+-- xx     <*> (lit "f" *> (Show <$> str))
       <*> (params' <|> pure [])
 
     organizations_forums_boards =
       OrganizationsForumsBoards
       <$> (lit "" *> str)
-      <*> (lit "f" *> str)
-      <*> (lit "b" *> (Show <$> str))
+      <*> str1
+-- xx     <*> (lit "f" *> str)
+      <*> (Show <$> str1)
+-- xx      <*> (lit "b" *> (Show <$> str))
 --      <*> (Show <$> str)
       <*> (params' <|> pure [])
 
     organizations_forums_boards_threads =
       OrganizationsForumsBoardsThreads
       <$> (lit "" *> str)
-      <*> (lit "f" *> str)
-      <*> (lit "b" *> str)
-      <*> (lit "t" *> (Show <$> str))
+      <*> str1
+      <*> str1
+      <*> (Show <$> str1)
+-- xx      <*> (lit "f" *> str)
+-- xx     <*> (lit "b" *> str)
+-- xx     <*> (lit "t" *> (Show <$> str))
       <*> (params' <|> pure [])
 
 
