@@ -137,8 +137,15 @@ instance routesHasLink :: HasLink Routes where
 
   link Portal = Tuple "#/portal" M.empty
 
-  link (Organizations Index params) = Tuple "#/organizations" (fixParams params)
-  link (Organizations crud params) = Tuple ("#" ++ (fst $ link crud)) (fixParams params)
+  -- Organizations have varying routes.. index, new, edit, and delete must be prefixed with /organizations
+  -- However, Show follows the /org_name/... pattern
+  link (Organizations Index params)            = Tuple "#/organizations" (fixParams params)
+  link (Organizations New params)              = Tuple "#/organizations/new" (fixParams params)
+  link (Organizations (EditI org_id) params)   = Tuple ("#/organizations/_edit/" <> show org_id) (fixParams params)
+  link (Organizations (DeleteI org_id) params) = Tuple ("#/organizations/_delete/" <> show org_id) (fixParams params)
+
+  -- Show..
+  link (Organizations crud params)             = Tuple ("#" ++ (fst $ link crud)) (fixParams params)
 
   link (OrganizationsForums org crud params) = Tuple ("#/" <> org <> "/f" <> (fst $ link crud)) (fixParams params)
 

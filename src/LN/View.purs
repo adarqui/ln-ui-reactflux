@@ -30,13 +30,16 @@ import LN.View.Users.Likes       (renderView_Users_Likes)
 import LN.View.Four04            (renderView_404)
 
 import LN.View.Organizations.Index                      (renderView_Organizations_Index)
+import LN.View.Organizations.Mod                        ( renderView_Organizations_New, renderView_Organizations_Edit
+                                                        , renderView_Organizations_Delete)
 import LN.View.Organizations.Show                       (renderView_Organizations_Show)
 import LN.View.Organizations.Forums.Show                (renderView_Organizations_Forums_Show)
 import LN.View.Organizations.Forums.Boards.Show         (renderView_Organizations_Forums_Boards_Show)
 import LN.View.Organizations.Forums.Boards.Threads.Show (renderView_Organizations_Forums_Boards_Threads_Show)
 
 import LN.View.Resources.Index                    (renderView_Resources_Index)
-import LN.View.Resources.Mod                      (renderView_Resources_New, renderView_Resources_Edit, renderView_Resources_Delete)
+import LN.View.Resources.Mod                      ( renderView_Resources_New, renderView_Resources_Edit
+                                                  , renderView_Resources_Delete)
 import LN.View.Resources.Show                     (renderView_Resources_Show)
 import LN.View.Resources.Leurons.Index            (renderView_Resources_Leurons_Index)
 import LN.View.Resources.SiftLeurons              (renderView_Resources_SiftLeurons)
@@ -81,6 +84,9 @@ renderView (UsersLikes user_name params)       = renderView_Users_Likes user_nam
 
 
 renderView (Organizations Index params)           = renderView_Organizations_Index
+renderView (Organizations New params)             = renderView_Organizations_New
+renderView (Organizations (EditI org_id) params)  = renderView_Organizations_Edit org_id
+renderView (Organizations (DeleteI org_id) params)= renderView_Organizations_Delete org_id
 renderView (Organizations (Show org_name) params) = renderView_Organizations_Show org_name
 
 

@@ -114,6 +114,8 @@ routing =
       organizations_forums_boards <|>
       organizations_forums <|>
       organizations_new <|>
+      organizations_edit_int <|>
+      organizations_delete_int <|>
       organizations_index <|>
       organizations_show <|>
 
@@ -196,6 +198,16 @@ routing =
     organizations_new =
       Organizations
       <$> (lit "" *> lit "organizations" *> lit "new" *> pure New)
+      <*> (params' <|> pure [])
+
+    organizations_edit_int =
+      Organizations
+      <$> (lit "" *> lit "organizations" *> lit "_edit" *> (EditI <$> int))
+      <*> (params' <|> pure [])
+
+    organizations_delete_int =
+      Organizations
+      <$> (lit "" *> lit "organizations" *> lit "_delete" *> (DeleteI <$> int))
       <*> (params' <|> pure [])
 
     organizations_show =
