@@ -61,9 +61,9 @@ renderView_Organizations_Edit organization_id = renderView_Organizations_Mod (Ju
 renderView_Organizations_Mod :: Maybe Int -> State -> ComponentHTML Input
 renderView_Organizations_Mod m_organization_id st =
   case st.currentOrganizationRequest, st.currentOrganizationRequestSt, getLoading l_currentOrganization st.loading of
-    _, _, true                         -> renderLoading
+    _, _, true                              -> renderLoading
     Just organization_req, Just o_st, false -> renderView_Organizations_Mod' m_organization_id organization_req o_st st
-    _, _, false                        -> H.div_ [H.p_ [H.text "Organizations_Mod: unexpected error."]]
+    _, _, false                             -> H.div_ [H.p_ [H.text "Organizations_Mod: unexpected error."]]
 
 
 

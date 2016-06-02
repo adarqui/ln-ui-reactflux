@@ -19,6 +19,7 @@ import LN.Internal.Leuron     (defaultLeuronRequest, leuronToTyLeuron)
 import LN.Internal.Resource   (defaultResourceRequest, resourceTypeToTyResourceType)
 import LN.Router.Link         (updateUrl)
 import LN.Router.Types        (Routes(..), CRUD(..))
+import LN.State.Organization  (defaultOrganizationRequestState)
 import LN.State.Leuron        (defaultLeuronRequestState, leuronRequestStateFromLeuronData)
 import LN.State.Resource      (defaultResourceRequestState)
 import LN.T
@@ -46,6 +47,19 @@ eval_Goto eval (Goto route next) = do
 
 
     (Organizations Index params) -> eval  (GetOrganizations next) $> unit
+
+    (Organizations (EditI org_id) params) -> do
+--      eval (GetOrganizationId org_id next)
+      m_pack <- gets _.currentOrganization
+      case m_pack of
+           Nothing                              -> pure unit
+           Just (OrganizationPackResponse pack) -> do
+             m_o_st <- gets _.currentOrganizationRequestSt
+             let
+               org  = pack.organization ^. _OrganizationResponse
+               o_st = maybe defaultOrganizationRequestState id m_o_st
+             modify (_{ currentOrganizationRequest = Just $ organizationResponseToOrganizationRequest pack.organization, currentOrganizationRequestSt = Just o_st })
+             pure unit
 
     (Organizations (Show org_name) params) -> eval (GetOrganization org_name next) $> unit
 

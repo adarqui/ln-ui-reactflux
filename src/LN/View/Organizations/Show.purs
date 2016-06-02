@@ -17,6 +17,7 @@ import Prelude                         (id, map, ($), (<>))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.State.Loading                (getLoading, l_currentOrganization)
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Forums.Show             (renderView_Forums_Show)
@@ -29,9 +30,10 @@ import LN.T                            ( OrganizationPackResponse
 renderView_Organizations_Show :: String -> State -> ComponentHTML Input
 renderView_Organizations_Show org_name st =
 
-  case st.currentOrganization of
-       Nothing   -> renderLoading
-       Just pack -> renderView_Organizations_Show' pack st
+  case st.currentOrganization, getLoading l_currentOrganization st.loading of
+       _, true          -> renderLoading
+       Nothing, false   -> H.div_ [H.text "organization unavailable"]
+       Just pack, false -> renderView_Organizations_Show' pack st
 
 
 
