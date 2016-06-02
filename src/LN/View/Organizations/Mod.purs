@@ -20,11 +20,13 @@ import Prelude                         (id, map, show, const, ($), (<<<))
 import LN.Halogen.Util
 import LN.Helpers.Array                (seqArrayFrom)
 import LN.Helpers.JSON                 (decodeString)
-import LN.Input.Organization           ()
+import LN.Input.Organization           (Organization_Mod(..))
 import LN.Input.Types                  (Input(..), cOrganizationMod)
+import LN.Router.Class.Routes          (Routes(..))
 import LN.State.Loading                (getLoading, l_currentOrganization)
 import LN.State.Organization           (OrganizationRequestState)
 import LN.State.Types                  (State)
+import LN.View.Helpers                 (buttons_SaveEditCancel)
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
 
@@ -73,14 +75,12 @@ renderView_Organizations_Mod' m_organization_id organization_req o_st st =
 
     H.h1_ [ H.text "Add Organization" ]
 
---  , input_Label "Title" "Title" organization.title P.InputText (E.input (cOrganizationMod <<< Organization_Mod_SetTitle))
+  , input_Label "Name" "Name" organization.name P.InputText (E.input (cOrganizationMod <<< SetName))
 
---  , textArea_Label "Description" "Description" organization.description (E.input (cOrganizationMod <<< Organization_Mod_SetDescription))
+--  , textArea_Label "Description" "Description" organization.description (E.input (cOrganizationMod <<< SetDescription))
 
-  --
--- , simpleInfoButton save (cOrganizationMod $ Organization_Mod_Save m_organization_id)
+  , buttons_SaveEditCancel m_organization_id (cOrganizationMod Create) (cOrganizationMod <<< EditP) About
 
   ]
   where
   organization = unwrapOrganizationRequest organization_req
-  save     = maybe "Create" (const "Save") m_organization_id

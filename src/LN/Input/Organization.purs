@@ -18,7 +18,7 @@ data InputOrganization
 
 
 data Organization_Mod
-  = SetTitle String
+  = SetName String
 
   | SetDescription String
   | RemoveDescription
@@ -29,5 +29,5 @@ data Organization_Mod
 
   | SetEmail String
 
-  | Save Int
+  | Create
   | EditP Int
