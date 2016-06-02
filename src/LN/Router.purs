@@ -114,9 +114,11 @@ routing =
       organizations_edit_int <|>
       organizations_delete_int <|>
       organizations_index <|>
+      organizations_forums_boards_threads_posts_new <|>
       organizations_forums_boards_threads_new <|>
       organizations_forums_boards_new <|>
       organizations_forums_new <|>
+      organizations_forums_boards_threads_posts <|>
       organizations_forums_boards_threads <|>
       organizations_forums_boards <|>
       organizations_forums <|>
@@ -239,6 +241,15 @@ routing =
       <*> (lit "new" *> pure New)
       <*> (params' <|> pure [])
 
+    organizations_forums_boards_threads_posts_new =
+      OrganizationsForumsBoardsThreadsPosts
+      <$> (lit "" *> str)
+      <*> str1
+      <*> str1
+      <*> str1
+      <*> (lit "new" *> pure New)
+      <*> (params' <|> pure [])
+
     organizations_forums =
       OrganizationsForums
       <$> (lit "" *> str)
@@ -260,6 +271,14 @@ routing =
       <*> (Show <$> str1)
       <*> (params' <|> pure [])
 
+    organizations_forums_boards_threads_posts =
+      OrganizationsForumsBoardsThreadsPosts
+      <$> (lit "" *> str)
+      <*> str1
+      <*> str1
+      <*> str1
+      <*> (ShowI <$> int)
+      <*> (params' <|> pure [])
 
 
     resources_leurons_index =

@@ -56,15 +56,17 @@ import LN.View.Threads.Mod                       ( renderView_Threads_New, rende
 import LN.View.ThreadPosts.Mod                   ( renderView_ThreadPosts_New, renderView_ThreadPosts_Edit
                                                  , renderView_ThreadPosts_Delete)
 
-import LN.View.Resources.Index                    (renderView_Resources_Index)
-import LN.View.Resources.Mod                      ( renderView_Resources_New, renderView_Resources_Edit
-                                                  , renderView_Resources_Delete)
-import LN.View.Resources.Show                     (renderView_Resources_Show)
-import LN.View.Resources.Leurons.Index            (renderView_Resources_Leurons_Index)
-import LN.View.Resources.SiftLeurons              (renderView_Resources_SiftLeurons)
-import LN.View.Resources.SiftLeuronsLinear.Index  (renderView_Resources_SiftLeuronsLinear_Index)
-import LN.View.Resources.SiftLeuronsLinear.Show   (renderView_Resources_SiftLeuronsLinear_Show)
-import LN.View.Resources.SiftLeuronsRandom        (renderView_Resources_SiftLeuronsRandom)
+import LN.View.ThreadPosts.Show                  (renderView_ThreadPosts_ShowI)
+
+import LN.View.Resources.Index                   (renderView_Resources_Index)
+import LN.View.Resources.Mod                     ( renderView_Resources_New, renderView_Resources_Edit
+                                                 , renderView_Resources_Delete)
+import LN.View.Resources.Show                    (renderView_Resources_Show)
+import LN.View.Resources.Leurons.Index           (renderView_Resources_Leurons_Index)
+import LN.View.Resources.SiftLeurons             (renderView_Resources_SiftLeurons)
+import LN.View.Resources.SiftLeuronsLinear.Index (renderView_Resources_SiftLeuronsLinear_Index)
+import LN.View.Resources.SiftLeuronsLinear.Show  (renderView_Resources_SiftLeuronsLinear_Show)
+import LN.View.Resources.SiftLeuronsRandom       (renderView_Resources_SiftLeuronsRandom)
 
 import LN.View.Leurons.Index               (renderView_Leurons_Index)
 import LN.View.Leurons.Show                (renderView_Leurons_Show)
@@ -147,7 +149,7 @@ renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name
 renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (DeleteI post_id) params) =
   renderView_ThreadPosts_Delete post_id
 renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post_id) params)   =
-  renderView_Organizations_Forums_Boards_Threads_ThreadPosts_Show post_id
+  renderView_ThreadPosts_ShowI post_id
 
 
 

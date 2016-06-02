@@ -98,7 +98,7 @@ renderPosts org_name forum_name board_name thread_name st =
                   , displayUserStats (usersMapLookup st post.userId)
                 ]
               , H.div [P.class_ B.colXs8] [
-                    linkTo (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (Show $ show post.id) []) (thread_name <> "/" <> show post.id)
+                    linkTo (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post.id) []) (thread_name <> "/" <> show post.id)
                   , H.p_ [H.text $ show post.createdAt]
                   , H.p_ [H.text "quote / reply"]
                   , displayPostData post.body
