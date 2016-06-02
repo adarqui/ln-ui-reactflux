@@ -19,6 +19,7 @@ import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
+import LN.View.Forums.Show             (renderView_Forums_Show)
 import LN.T                            ( OrganizationPackResponse
                                        , _OrganizationPackResponse, _OrganizationResponse, organization_
                                        , _ForumPackResponse, _ForumResponse, forum_)
@@ -51,7 +52,7 @@ renderView_Organizations_Show' pack st =
         H.p_ [ H.h4_ [H.text "Company:", H.small_ [H.text $ " " <> organization.company]]],
         H.p_ [ H.h4_ [H.text "Location:", H.small_ [H.text $ " " <> organization.location]]]
       ],
-      forums organization.name st,
+      renderView_Forums_Show st,
       H.p_ [ H.h4_ [H.text "Members"]],
       H.p_ [ H.h4_ [H.text "teams"]],
       H.p_ [ H.h4_ [H.text "activity"]],
@@ -60,45 +61,3 @@ renderView_Organizations_Show' pack st =
   ]
   where
   organization = pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-
-
-
-forums :: String -> State -> ComponentHTML Input
-forums org_name st =
-  H.div [P.class_ B.pageHeader] [
-
-    H.h1 [P.class_ B.textCenter] [ H.text "Forums" ],
-
-    H.div [P.classes [B.clearfix, B.container]] [
-      H.div_ [linkToP [] (OrganizationsForums org_name New []) "add-forum"]
-    ],
-
-    H.div [P.class_ B.listUnstyled] $
-      map (\forum_pack ->
-        let forum = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse in
-        H.li_ [
-          H.div [P.class_ B.row] [
-            H.div [P.class_ B.colXs1] [
-              H.p_ [H.text "icon"]
-            ],
-            H.div [P.class_ B.colXs6] [
-              H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForums org_name (Show forum.name) []) forum.name],
-              H.p_ [H.text $ maybe "No description." id forum.description]
-            ],
-            H.div [P.class_ B.colXs2] [
-              H.p_ [H.text "boards"],
-              H.p_ [H.text "threads"],
-              H.p_ [H.text "posts"],
-              H.p_ [H.text "views"]
-            ],
-            H.div [P.class_ B.colXs2] [
-              H.p_ [H.text "created-at"]
-            ],
-            H.div [P.class_ B.colXs1] [
-              H.div_ [linkToP [] (OrganizationsForums org_name (EditI forum.id) []) "edit"],
-              H.div_ [linkToP [] (OrganizationsForums org_name (EditI forum.id) []) "delete"]
-            ]
-          ]
-        ])
-        $ listToArray $ M.values st.forums
-  ]
