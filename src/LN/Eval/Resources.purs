@@ -29,7 +29,8 @@ import LN.Input.Resource             (InputResource(..), Resource_Mod(..))
 import LN.Input.Types                (Input(..))
 import LN.Internal.Resource          (resourceTypeToTyResourceType)
 import LN.Router.Types               (Routes(..), CRUD(..))
-import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron, l_currentResource, l_resources)
+import LN.State.Loading              (l_currentLeuron, l_currentResource, l_resources)
+import LN.State.Loading.Helpers      (getLoading, setLoading, clearLoading)
 import LN.State.Resource             (ResourceRequestState, defaultResourceRequestState)
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          ( Param(..), SortOrderBy(..)
@@ -58,11 +59,11 @@ eval_GetResources eval (GetResources next) = do
       let new_page_info = runPageInfo counts page_info
 
       modify (_{ resourcesPageInfo = new_page_info.pageInfo })
-      modify (\st->st{loading = setLoading l_resources st.loading})
+      modify $ setLoading l_resources
 
       e_resource_packs <- rd $ getResourcePacks new_page_info.params
 
-      modify (\st->st{loading = clearLoading l_resources st.loading})
+      modify $ clearLoading l_resources
 
       case e_resource_packs of
            Left err                                     -> eval (AddErrorApi "eval_GetResources::getResourcePacks" err next)
@@ -83,11 +84,11 @@ eval_GetResourceId :: EvalEff
 eval_GetResourceId eval (GetResourceId resource_id next) = do
 
   modify (_{ currentResource = Nothing })
-  modify (\st->st{loading = setLoading l_currentResource st.loading})
+  modify $ setLoading l_currentResource
 
   e_pack <- rd $ getResourcePack' resource_id
 
-  modify (\st->st{loading = clearLoading l_currentResource st.loading})
+  modify $ clearLoading l_currentResource
 
   case e_pack of
     Left err   -> pure next
@@ -112,11 +113,11 @@ eval_GetResourceLeuronLinear :: EvalEff
 eval_GetResourceLeuronLinear eval (GetResourceLeuronLinear resource_id offset next) = do
 
   modify (_{ currentLeuron = Nothing })
-  modify (\st->st{loading = setLoading l_currentLeuron st.loading})
+  modify $ setLoading l_currentLeuron
 
   e_packs <- rd $ getLeuronPacks_ByResourceId [Limit 1, Offset offset, SortOrder SortOrderBy_Asc] resource_id
 
-  modify (\st->st{loading = clearLoading l_currentLeuron st.loading})
+  modify $ clearLoading l_currentLeuron
 
   case e_packs of
     Left err                          -> eval (AddErrorApi "eval_GetResourceLeuronLinear::getLeuronPacks_ByResourceId" err next)
@@ -131,11 +132,11 @@ eval_GetResourceLeuronRandom :: EvalEff
 eval_GetResourceLeuronRandom eval (GetResourceLeuronRandom resource_id next) = do
 
   modify (_{ currentLeuron = Nothing })
-  modify (\st->st{loading = setLoading l_currentLeuron st.loading})
+  modify $ setLoading l_currentLeuron
 
   e_packs <- rd $ getLeuronPacks_ByResourceId [Limit 1, SortOrder SortOrderBy_Rnd] resource_id
 
-  modify (\st->st{loading = clearLoading l_currentLeuron st.loading})
+  modify $ clearLoading l_currentLeuron
 
   case e_packs of
     Left err                          -> eval (AddErrorApi "eval_GetResourceLeuronRandom::getLeuronPacks_ByResourceId" err next)
