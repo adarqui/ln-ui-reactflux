@@ -13,7 +13,7 @@ import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, map, ($), (<>))
+import Prelude                         (id, map, show, ($), (<>), (/=))
 
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
@@ -59,7 +59,10 @@ renderView_Forums_Show' org_pack st =
             ],
             H.div [P.class_ B.colXs6] [
               H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForums org.name (Show forum.name) []) forum.name],
-              H.p_ [H.text $ maybe "No description." id forum.description]
+              H.p_ [H.text $ maybe "No description." id forum.description],
+              if forum.tags /= []
+                 then H.p_ [H.text $ show forum.tags]
+                 else H.div_ []
             ],
             H.div [P.class_ B.colXs2] [
               H.p_ [H.text "boards"],
@@ -71,8 +74,8 @@ renderView_Forums_Show' org_pack st =
               H.p_ [H.text "created-at"]
             ],
             H.div [P.class_ B.colXs1] [
-              H.div_ [linkToP [] (OrganizationsForums org.name (EditI forum.id) []) "edit"],
-              H.div_ [linkToP [] (OrganizationsForums org.name (EditI forum.id) []) "delete"]
+              H.div_ [linkToP [] (OrganizationsForums org.name (Edit $ show forum.id) []) "edit"],
+              H.div_ [linkToP [] (OrganizationsForums org.name (Delete $ show forum.id) []) "delete"]
             ]
           ]
         ])

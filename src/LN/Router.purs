@@ -118,6 +118,14 @@ routing =
       organizations_forums_boards_threads_new <|>
       organizations_forums_boards_new <|>
       organizations_forums_new <|>
+      organizations_forums_boards_threads_posts_edit <|>
+      organizations_forums_boards_threads_edit <|>
+      organizations_forums_boards_edit <|>
+      organizations_forums_edit <|>
+      organizations_forums_boards_threads_posts_delete <|>
+      organizations_forums_boards_threads_delete <|>
+      organizations_forums_boards_delete <|>
+      organizations_forums_delete <|>
       organizations_forums_boards_threads_posts <|>
       organizations_forums_boards_threads <|>
       organizations_forums_boards <|>
@@ -249,6 +257,72 @@ routing =
       <*> str1
       <*> (lit "new" *> pure New)
       <*> (params' <|> pure [])
+
+
+
+    organizations_forums_edit =
+      OrganizationsForums
+      <$> (lit "" *> str)
+      <*> (lit "_edit" *> (Edit <$> str1))
+      <*> (params' <|> pure [])
+
+    organizations_forums_boards_edit =
+      OrganizationsForumsBoards
+      <$> (lit "" *> str)
+      <*> str1
+      <*> (lit "_edit" *> (Edit <$> str1))
+      <*> (params' <|> pure [])
+
+    organizations_forums_boards_threads_edit =
+      OrganizationsForumsBoardsThreads
+      <$> (lit "" *> str)
+      <*> str1
+      <*> str1
+      <*> (lit "_edit" *> (Edit <$> str1))
+      <*> (params' <|> pure [])
+
+    organizations_forums_boards_threads_posts_edit =
+      OrganizationsForumsBoardsThreadsPosts
+      <$> (lit "" *> str)
+      <*> str1
+      <*> str1
+      <*> str1
+      <*> (lit "_edit" *> (Edit <$> str1))
+      <*> (params' <|> pure [])
+
+
+
+    organizations_forums_delete =
+      OrganizationsForums
+      <$> (lit "" *> str)
+      <*> (lit "_delete" *> (Delete <$> str1))
+      <*> (params' <|> pure [])
+
+    organizations_forums_boards_delete =
+      OrganizationsForumsBoards
+      <$> (lit "" *> str)
+      <*> str1
+      <*> (lit "_delete" *> (Delete <$> str1))
+      <*> (params' <|> pure [])
+
+    organizations_forums_boards_threads_delete =
+      OrganizationsForumsBoardsThreads
+      <$> (lit "" *> str)
+      <*> str1
+      <*> str1
+      <*> (lit "_delete" *> (Delete <$> str1))
+      <*> (params' <|> pure [])
+
+    organizations_forums_boards_threads_posts_delete =
+      OrganizationsForumsBoardsThreadsPosts
+      <$> (lit "" *> str)
+      <*> str1
+      <*> str1
+      <*> str1
+      <*> (lit "_delete" *> (Delete <$> str1))
+      <*> (params' <|> pure [])
+
+
 
     organizations_forums =
       OrganizationsForums

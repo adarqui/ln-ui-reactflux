@@ -61,7 +61,10 @@ eval_Goto eval (Goto route next) = do
              modify (_{ currentOrganizationRequest = Just $ organizationResponseToOrganizationRequest pack.organization, currentOrganizationRequestSt = Just o_st })
              pure unit
 
-    (Organizations (Show org_name) params) -> eval (GetOrganization org_name next) $> unit
+    (Organizations (Show org_name) params) -> do
+      eval (GetOrganization org_name next)
+      eval (GetForumsForOrg org_name next)
+      pure unit
 
 
 
