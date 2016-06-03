@@ -26,7 +26,7 @@ resourceTypeToTyResourceType type_ =
 
 
 defaultResourceRequest :: ResourceRequest
-defaultResourceRequest = mkResourceRequest "" "" SourceNone Nothing [] [] Public 0 Nothing Nothing
+defaultResourceRequest = mkResourceRequest "" "" SourceNone Nothing [] [] Public 0 Nothing Nothing Nothing []
 
 
 
