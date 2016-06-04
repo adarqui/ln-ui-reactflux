@@ -19,11 +19,11 @@ import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
 import LN.Input.Types                  (Input(..))
-import LN.State.Loading                ( setLoading, clearLoading
-                                       , l_currentOrganization, l_organizations
+import LN.State.Loading                ( l_currentOrganization, l_organizations
                                        , l_currentForum
                                        , l_currentBoard
                                        , l_currentThread)
+import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.State.Organization           (OrganizationRequestState, defaultOrganizationRequestState)
 import LN.T                            ( OrganizationPackResponses(..), OrganizationPackResponse(..)
                                        , ForumPackResponse(..)
@@ -37,11 +37,11 @@ eval_GetOrganizations eval (GetOrganizations next) = do
 
   modify (_{ organizations = (M.empty :: M.Map Int OrganizationPackResponse) })
 
-  modify (\st->st{loading = setLoading l_organizations st.loading})
+  modify $ setLoading l_organizations
 
   e_organizations <- rd $ getOrganizationPacks'
 
-  modify (\st->st{loading = clearLoading l_organizations st.loading})
+  modify $ clearLoading l_organizations
 
   case e_organizations of
 
@@ -64,13 +64,11 @@ eval_GetOrganization eval (GetOrganization org_name next) = do
 
   modify (_{ currentOrganization = Nothing })
 
--- TODO FIXME  eval (GetForumsForOrg org_name next)
-
-  modify (\st->st{loading = setLoading l_currentOrganization st.loading})
+  modify $ setLoading l_currentOrganization
 
   e_org <- rd $ ApiS.getOrganizationPack' org_name
 
-  modify (\st->st{loading = clearLoading l_currentOrganization st.loading})
+  modify $ clearLoading l_currentOrganization
   case e_org of
 
     Left err   -> eval (AddErrorApi "eval_GetOrganization::ApiS.getOrganizationPack'" err next)
@@ -86,11 +84,11 @@ eval_GetOrganizationForum eval (GetOrganizationForum org_name forum_name next) =
 
   modify (_{ currentForum = Nothing })
 
-  modify (\st->st{loading = setLoading l_currentForum st.loading})
+  modify $ setLoading l_currentForum
 
   e_forum <- rd $ ApiS.getForumPack_ByOrganizationName' forum_name org_name
 
-  modify (\st->st{loading = clearLoading l_currentForum st.loading})
+  modify $ clearLoading l_currentForum
 
   case e_forum of
 
@@ -116,11 +114,11 @@ eval_GetOrganizationForumBoard eval (GetOrganizationForumBoard org_name forum_na
   where
   go (ForumPackResponse forum_pack) = do
 
-    modify (\st->st{loading = setLoading l_currentBoard st.loading})
+    modify $ setLoading l_currentBoard
 
     e_board <- rd $ ApiS.getBoardPack_ByForumId' board_name forum_pack.forumId
 
-    modify (\st->st{loading = clearLoading l_currentBoard st.loading})
+    modify $ clearLoading l_currentBoard
 
     case e_board of
 
@@ -146,11 +144,11 @@ eval_GetOrganizationForumBoardThread eval (GetOrganizationForumBoardThread org_n
   where
   go (BoardPackResponse pack) = do
 
-    modify (\st->st{loading = setLoading l_currentThread st.loading})
+    modify $ setLoading l_currentThread
 
     e_thread <- rd $ ApiS.getThreadPack_ByBoardId' thread_name pack.boardId
 
-    modify (\st->st{loading = clearLoading l_currentThread st.loading})
+    modify $ clearLoading l_currentThread
 
     case e_thread of
 

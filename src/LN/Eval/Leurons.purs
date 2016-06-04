@@ -24,7 +24,8 @@ import LN.Helpers.Map                (idmapFrom)
 import LN.Input.Leuron               (InputLeuron(..), Leuron_Mod(..))
 import LN.Input.Types                (Input(..))
 import LN.State.Leuron               (leuronRequestStateFromLeuronData)
-import LN.State.Loading              (setLoading, clearLoading, l_currentLeuron, l_leurons)
+import LN.State.Loading              (l_currentLeuron, l_leurons)
+import LN.State.Loading.Helpers      (setLoading, clearLoading)
 import LN.State.PageInfo             (runPageInfo)
 import LN.T                          ( LeuronPackResponses(..), LeuronPackResponse(..)
                                      , LeuronResponse(..)
@@ -51,11 +52,11 @@ eval_GetLeurons eval (GetLeurons next) = do
       let new_page_info = runPageInfo counts page_info
 
       modify (_{ leuronsPageInfo = new_page_info.pageInfo })
-      modify (\st->st{loading = setLoading l_leurons st.loading})
+      modify $ setLoading l_leurons
 
       e_leuron_packs <- rd $ getLeuronPacks new_page_info.params
 
-      modify (\st->st{loading = clearLoading l_leurons st.loading})
+      modify $ clearLoading l_leurons
 
       case e_leuron_packs of
            Left err                                 -> eval (AddErrorApi "eval_GetLeurons::getLeuronPacks" err next)
@@ -78,11 +79,11 @@ eval_GetLeuronId :: EvalEff
 eval_GetLeuronId eval (GetLeuronId leuron_id next) = do
 
   modify (_{ currentLeuron = Nothing })
-  modify (\st->st{loading = setLoading l_currentLeuron st.loading})
+  modify $ setLoading l_currentLeuron
 
   e_pack <- rd $ getLeuronPack' leuron_id
 
-  modify (\st->st{loading = clearLoading l_currentLeuron st.loading})
+  modify $ clearLoading l_currentLeuron
 
   case e_pack of
     Left err   -> eval (AddErrorApi "eval_GetLeuronId::getLeuronPack'" err next)
@@ -96,11 +97,11 @@ eval_GetLeuronRandom :: EvalEff
 eval_GetLeuronRandom eval (GetLeuronRandom next) = do
 
   modify (_{ currentLeuron = Nothing })
-  modify (\st->st{loading = setLoading l_currentLeuron st.loading})
+  modify $ setLoading l_currentLeuron
 
   e_packs <- rd $ getLeuronPacks [Limit 1, SortOrder SortOrderBy_Rnd]
 
-  modify (\st->st{loading = clearLoading l_currentLeuron st.loading})
+  modify $ clearLoading l_currentLeuron
 
   case e_packs of
     Left err                          -> eval (AddErrorApi "eval_GetLeuronRandom::getLeuronPacks" err next)
