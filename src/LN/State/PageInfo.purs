@@ -90,9 +90,9 @@ defaultPageInfo_Workouts = defaultPageInfo -- { orderBy = OrderBy_CreatedAt }
 
 
 type RunPageInfo = {
-  count :: Int,
+  count    :: Int,
   pageInfo :: PageInfo,
-  params :: Array Param
+  params   :: Array Param
 }
 
 

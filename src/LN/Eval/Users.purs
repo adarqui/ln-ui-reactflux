@@ -52,7 +52,9 @@ eval_GetUsers eval (GetUsers next) = do
             users_map = idmapFrom (\(UserSanitizedPackResponse p) -> p.userId) user_packs.userSanitizedPackResponses
 
           -- TODO FIXME: merge this with pre-existing users? union? correct?
-          modify (\st -> st{ users = M.union st.users users_map })
+          -- BUG: this union causes the page not to update... add these users to usersMap, but users itself needs to be fresh
+          -- modify (\st -> st{ users = M.union st.users users_map })
+          modify (\st -> st { users = users_map })
           pure next
 
 
