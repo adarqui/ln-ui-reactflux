@@ -21,18 +21,18 @@ data InputResource
 
 
 data Resource_Mod
-  = Resource_Mod_SetDisplayName String
-  | Resource_Mod_SetDescription String
-  | Resource_Mod_SetSource ResourceType
-  | Resource_Mod_AddAuthor String
-  | Resource_Mod_DelAuthor Int
-  | Resource_Mod_EditAuthor Int String
-  | Resource_Mod_AddCategory (Array String)
-  | Resource_Mod_DelCategory Int
-  | Resource_Mod_EditCategory Int (Array String)
-  | Resource_Mod_SetVisibility Visibility
-  | Resource_Mod_AddUrl String
-  | Resource_Mod_DelUrl Int
-  | Resource_Mod_EditUrl Int String
-  | Resource_Mod_Save (Maybe Int)
+  = SetDisplayName String
+  | SetDescription String
+  | SetSource ResourceType
+  | AddAuthor String
+  | DeleteAuthor Int
+  | EditAuthor Int String
+  | AddCategory (Array String)
+  | DeleteCategory Int
+  | EditCategory Int (Array String)
+  | SetVisibility Visibility
+  | AddUrl String
+  | DeleteUrl Int
+  | EditUrl Int String
+  | Save (Maybe Int)
   | Resource_ModState_SetTyResourceType TyResourceType

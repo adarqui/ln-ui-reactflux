@@ -19,7 +19,7 @@ import LN.Router.Link                  (linkToP, linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
-import LN.View.Module.CreateThread     (renderCreateThread)
+-- import LN.View.Module.CreateThread     (renderCreateThread)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.OrderBy          (renderOrderBy)
@@ -57,7 +57,7 @@ renderView_Organizations_Forums_Boards_Show' org_pack forum_pack board_pack st =
       H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (EditI 0) []) "delete"]
     ],
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
-    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullRight]] [renderCreateThread st.compCreateThread]],
+--    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullRight]] [renderCreateThread st.compCreateThread]],
     H.div [] [renderThreads org.name forum.name board.name st]
   ]
   where

@@ -21,7 +21,7 @@ import LN.Halogen.Util
 import LN.Helpers.Array                (seqArrayFrom)
 import LN.Helpers.JSON                 (decodeString)
 import LN.Internal.Resource            (resourceTypeToTyResourceType, unwrapResourceSource)
-import LN.Input.Resource
+import LN.Input.Resource               (InputResource(..), Resource_Mod(..))
 import LN.Input.Types                  (Input(..), cResourceMod)
 import LN.State.Loading                (getLoading, l_currentResource)
 import LN.State.Resource               (ResourceRequestState)
@@ -74,9 +74,9 @@ renderView_Resources_Mod' m_resource_id resource_req rst st =
 
     H.h1_ [ H.text "Add Resource" ]
 
-  , input_Label "Name" "Name" resource.displayName P.InputText (E.input (cResourceMod <<< Resource_Mod_SetDisplayName))
+  , input_Label "Name" "Name" resource.displayName P.InputText (E.input (cResourceMod <<< SetDisplayName))
 
-  , textArea_Label "Description" "Description" resource.description (E.input (cResourceMod <<< Resource_Mod_SetDescription))
+  , textArea_Label "Description" "Description" resource.description (E.input (cResourceMod <<< SetDescription))
 
   --
   -- ResourceSource
@@ -86,14 +86,14 @@ renderView_Resources_Mod' m_resource_id resource_req rst st =
 
     , case rst.source of
            TySourceNone -> H.p_ [H.text "NONE"]
-           TyURL        -> H.p_ [input_Label "URL" "url" (unwrapResourceSource resource.source) P.InputUrl (E.input (\url -> cResourceMod $ Resource_Mod_SetSource (URL url)))]
-           TyISBN       -> H.p_ [input_Label "ISBN" "isbn" (unwrapResourceSource resource.source) P.InputText (E.input (\isbn -> cResourceMod $ Resource_Mod_SetSource (ISBN isbn)))]
+           TyURL        -> H.p_ [input_Label "URL" "url" (unwrapResourceSource resource.source) P.InputUrl (E.input (\url -> cResourceMod $ SetSource (URL url)))]
+           TyISBN       -> H.p_ [input_Label "ISBN" "isbn" (unwrapResourceSource resource.source) P.InputText (E.input (\isbn -> cResourceMod $ SetSource (ISBN isbn)))]
 
   --
   -- ResourceAuthor
   --
 
-  , input_Label "Author" "Author" "" P.InputText  (E.input (cResourceMod <<< Resource_Mod_AddAuthor))
+  , input_Label "Author" "Author" "" P.InputText  (E.input (cResourceMod <<< AddAuthor))
 
   , case resource.author of
          Nothing -> H.div_ []
@@ -102,30 +102,30 @@ renderView_Resources_Mod' m_resource_id resource_req rst st =
               input_DeleteEdit
                 P.InputText
                 author
-                (E.input (\new -> (cResourceMod $ Resource_Mod_EditAuthor idx new)))
-                (E.input_ (cResourceMod $ Resource_Mod_DelAuthor idx))
+                (E.input (\new -> (cResourceMod $ EditAuthor idx new)))
+                (E.input_ (cResourceMod $ DeleteAuthor idx))
               ) $ seqArrayFrom authors
 
   --
   -- ResourceCategories
   --
 
-  , input_Label "Categories" "Category" "" P.InputText  (E.input (cResourceMod <<< Resource_Mod_AddCategory <<< maybe [] id <<< decodeString))
+  , input_Label "Categories" "Category" "" P.InputText  (E.input (cResourceMod <<< AddCategory <<< maybe [] id <<< decodeString))
 
   , H.div_ $
       map (\(Tuple idx category) ->
         input_DeleteEdit
           P.InputText
           (show category)
-          (E.input (\new -> cResourceMod $ Resource_Mod_EditCategory idx (maybe [] id $ decodeString new)))
-          (E.input_ (cResourceMod $ Resource_Mod_DelCategory idx))
+          (E.input (\new -> cResourceMod $ EditCategory idx (maybe [] id $ decodeString new)))
+          (E.input_ (cResourceMod $ DeleteCategory idx))
       ) $ seqArrayFrom resource.categories
 
   --
   -- ResourceVisibility
   --
 
-  , radioMenu "Visibility" "resource-viz" [Public, Private] (cResourceMod <<< Resource_Mod_SetVisibility) resource.visibility
+  , radioMenu "Visibility" "resource-viz" [Public, Private] (cResourceMod <<< SetVisibility) resource.visibility
 
   , case resource.visibility of
          Public  -> H.p_ [H.text "Public"]
@@ -135,7 +135,7 @@ renderView_Resources_Mod' m_resource_id resource_req rst st =
   -- ResourceUrls
   --
 
-  , input_Label "Urls" "Url" "" P.InputText  (E.input (cResourceMod <<< Resource_Mod_AddUrl))
+  , input_Label "Urls" "Url" "" P.InputText  (E.input (cResourceMod <<< AddUrl))
 
   , case resource.urls of
          Nothing -> H.div_ []
@@ -144,11 +144,11 @@ renderView_Resources_Mod' m_resource_id resource_req rst st =
               input_DeleteEdit
                 P.InputUrl
                 url
-                (E.input (\new -> cResourceMod $ Resource_Mod_EditUrl idx new))
-                (E.input_ (cResourceMod $ Resource_Mod_DelUrl idx))
+                (E.input (\new -> cResourceMod $ EditUrl idx new))
+                (E.input_ (cResourceMod $ DeleteUrl idx))
               ) $ seqArrayFrom urls
 
- , simpleInfoButton save (cResourceMod $ Resource_Mod_Save m_resource_id)
+ , simpleInfoButton save (cResourceMod $ Save m_resource_id)
 
   ]
   where

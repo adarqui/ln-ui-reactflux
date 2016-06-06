@@ -22,10 +22,8 @@ module LN.Input.Types (
 
 import Data.Foreign            (ForeignError)
 import Purescript.Api.Helpers  (ApiError)
-import Prelude                 (Unit, unit, (<<<))
 
 import LN.Input.Board          (InputBoard(..), Board_Mod)
-import LN.Input.CreateThread   (InputCreateThread)
 import LN.Input.Forum          (InputForum(..), Forum_Mod)
 import LN.Input.Leuron         (InputLeuron(..), Leuron_Mod)
 import LN.Input.Like           (InputLike)
@@ -97,7 +95,6 @@ data Input a
 
   | ConnectSocket a
 
-  | CompCreateThread   InputCreateThread a
   | CompOrderBy        InputOrderBy      a
   | CompOrganization   InputOrganization a
   | CompTeam           InputTeam         a

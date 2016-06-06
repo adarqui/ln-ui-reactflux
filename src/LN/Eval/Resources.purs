@@ -154,36 +154,36 @@ eval_Resource eval (CompResource sub next) = do
   case sub of
    InputResource_Mod q -> do
      case q of
-       Resource_Mod_SetDisplayName name   -> mod $ set (\req -> _ResourceRequest .. displayName_ .~ name $ req)
+       SetDisplayName name   -> mod $ set (\req -> _ResourceRequest .. displayName_ .~ name $ req)
 
-       Resource_Mod_SetDescription desc   -> mod $ set (\req -> _ResourceRequest .. description_ .~ desc $ req)
+       SetDescription desc   -> mod $ set (\req -> _ResourceRequest .. description_ .~ desc $ req)
 
-       Resource_Mod_SetSource source      -> mod $ set (\req -> _ResourceRequest .. source_ .~ source $ req)
+       SetSource source      -> mod $ set (\req -> _ResourceRequest .. source_ .~ source $ req)
 
-       Resource_Mod_AddAuthor author'     -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ author = append req.author author' })
+       AddAuthor author'     -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ author = append req.author author' })
 
-       Resource_Mod_DelAuthor idx         -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ author = maybe req.author (deleteAt idx) req.author })
+       DeleteAuthor idx      -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ author = maybe req.author (deleteAt idx) req.author })
 
-       Resource_Mod_EditAuthor idx author -> mod $ set (\(ResourceRequest req) -> ResourceRequest req { author = maybe req.author (modifyAt idx (const author)) req.author })
+       EditAuthor idx author -> mod $ set (\(ResourceRequest req) -> ResourceRequest req { author = maybe req.author (modifyAt idx (const author)) req.author })
 
-       Resource_Mod_AddCategory cat       -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ categories = req.categories <> [cat] })
+       AddCategory cat       -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ categories = req.categories <> [cat] })
 
-       Resource_Mod_DelCategory idx       -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ categories = maybe req.categories id $ deleteAt idx req.categories })
+       DeleteCategory idx    -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ categories = maybe req.categories id $ deleteAt idx req.categories })
 
-       Resource_Mod_EditCategory idx cat  -> mod $ set (\(ResourceRequest req) -> ResourceRequest req { categories = maybe req.categories id $ modifyAt idx (const cat) req.categories })
+       EditCategory idx cat  -> mod $ set (\(ResourceRequest req) -> ResourceRequest req { categories = maybe req.categories id $ modifyAt idx (const cat) req.categories })
 
-       Resource_Mod_SetVisibility viz     -> mod $ set (\req -> _ResourceRequest ..  visibility_ .~ viz $ req)
+       SetVisibility viz     -> mod $ set (\req -> _ResourceRequest ..  visibility_ .~ viz $ req)
 
-       Resource_Mod_AddUrl url            -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ urls = append req.urls url })
+       AddUrl url            -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ urls = append req.urls url })
 
-       Resource_Mod_DelUrl idx            -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ author = maybe req.urls (deleteAt idx) req.urls })
+       DeleteUrl idx         -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ author = maybe req.urls (deleteAt idx) req.urls })
 
-       Resource_Mod_EditUrl idx url       -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ urls = maybe req.urls (deleteAt idx) req.urls })
+       EditUrl idx url       -> mod $ set (\(ResourceRequest req) -> ResourceRequest req{ urls = maybe req.urls (deleteAt idx) req.urls })
 
        Resource_ModState_SetTyResourceType source   -> do
          modify (\st->st{ currentResourceRequestSt = maybe Nothing (\rst -> Just $ rst{source = source}) st.currentResourceRequestSt }) $> next
 
-       Resource_Mod_Save m_resource_id    -> do
+       Save m_resource_id    -> do
 
          m_req <- gets _.currentResourceRequest
 

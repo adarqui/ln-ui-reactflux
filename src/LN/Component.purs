@@ -25,11 +25,9 @@ import LN.Eval.Socket
 import LN.Eval.Nop
 
 -- Components
-import LN.Eval.CreateThread
 import LN.Eval.Like
 import LN.Eval.Star
 import LN.Eval.OrderBy
-import LN.Eval.ThreadPost
 import LN.Eval.Profile
 
 
@@ -103,13 +101,13 @@ ui = component render eval
 
   -- Components
 
+  eval z@(CompThread _ _)                             = eval_Thread eval z
   eval z@(CompThreadPost _ _)                         = eval_ThreadPost eval z
-  eval z@(CompCreateThread _ _)                       = eval_CreateThread eval z
-  eval z@(CompLike _ _)                               = eval_Like eval z
-  eval z@(CompStar _ _)                               = eval_Star eval z
-  eval z@(CompOrderBy _ _)                            = eval_OrderBy eval z
   eval z@(CompProfile _ _)                            = eval_Profile eval z
   eval z@(CompResource _ _)                           = eval_Resource eval z
   eval z@(CompLeuron _ _)                             = eval_Leuron eval z
+  eval z@(CompLike _ _)                               = eval_Like eval z
+  eval z@(CompStar _ _)                               = eval_Star eval z
+  eval z@(CompOrderBy _ _)                            = eval_OrderBy eval z
 
   eval z@(Nop _)                                      = eval_Nop eval z

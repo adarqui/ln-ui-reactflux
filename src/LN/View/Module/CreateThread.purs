@@ -1,6 +1,5 @@
-module LN.View.Module.CreateThread (
-  renderCreateThread
-) where
+module LN.View.Module.CreateThread where
+--  renderCreateThread
 
 
 
@@ -12,12 +11,13 @@ import Halogen.HTML.Events.Indexed        as E
 import Halogen.Themes.Bootstrap3          as B
 import Prelude                            (($))
 
-import LN.Component.CreateThread          (Comp_CreateThread_State)
-import LN.Input.CreateThread              (InputCreateThread(..))
+-- import LN.Component.CreateThread          (Comp_CreateThread_State)
+-- import LN.Input.CreateThread              (InputCreateThread(..))
 import LN.Input.Types                     (Input(..))
 
 
 
+{-
 renderCreateThread :: Maybe Comp_CreateThread_State -> ComponentHTML Input
 renderCreateThread mcomp =
   H.div [P.class_ B.row] [
@@ -40,3 +40,4 @@ renderCreateThread mcomp =
   ]
   where
   name = maybe "" (\comp -> comp.name) mcomp
+-}

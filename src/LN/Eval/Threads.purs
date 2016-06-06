@@ -1,7 +1,9 @@
 module LN.Eval.Threads (
   eval_GetThreads,
-  eval_GetThreadsForBoard
+  eval_GetThreadsForBoard,
+  eval_Thread
 ) where
+
 
 
 import Halogen                         (gets, modify)
@@ -12,6 +14,7 @@ import Prelude                         (bind, pure, map, ($), (<>))
 
 import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
+import LN.Input.Thread                 (InputThread(..), Thread_Mod(..))
 import LN.Input.Types                  (Input(..))
 import LN.State.PageInfo               (runPageInfo)
 import LN.Api                          (getThreadPacks_ByBoardId, rd, getThreadsCount_ByBoardId')
@@ -57,3 +60,12 @@ eval_GetThreadsForBoard eval (GetThreadsForBoard board_id next) = do
 
           modify (_{ threads = threads_map })
           pure next
+
+
+
+eval_Thread :: EvalEff
+eval_Thread eval (CompThread sub next) = do
+  case sub of
+    InputThread_Mod q -> do
+      case q of
+        _ -> pure next

@@ -20,8 +20,7 @@ data InputThread
 data Thread_Mod
   = SetName String
 
-  | SetDescription String
-  | RemoveDescription
+  | SetDescription (Maybe String)
 
   | SetSticky Boolean
 
