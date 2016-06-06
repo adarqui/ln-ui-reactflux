@@ -20,12 +20,8 @@ data InputForum
 
 data Forum_Mod
   = SetDisplayName String
-  | EditDisplayName String
-  | RemoveDisplayName
 
   | SetDescription String
-  | EditDescription String
-  | RemoveDescription
 
   | Save Int -- save to organization_id
   | EditP Int -- edit forum_id

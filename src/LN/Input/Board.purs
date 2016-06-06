@@ -20,8 +20,7 @@ data InputBoard
 data Board_Mod
   = SetTitle String
 
-  | SetDescription String
-  | RemoveDescription
+  | SetDescription (Maybe String)
 
   | Save Int
   | EditP Int
