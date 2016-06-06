@@ -39,7 +39,7 @@ import LN.T                          ( Param(..), SortOrderBy(..)
                                      , _ResourceResponse
                                      , ResourceRequest(..), ResourceResponse(..)
                                      , _ResourceRequest
-                                     , title_, description_, source_, visibility_
+                                     , displayName_, description_, source_, visibility_
                                      , LeuronPackResponses(..))
 
 
@@ -154,7 +154,7 @@ eval_Resource eval (CompResource sub next) = do
   case sub of
    InputResource_Mod q -> do
      case q of
-       Resource_Mod_SetTitle title        -> mod $ set (\req -> _ResourceRequest .. title_ .~ title $ req)
+       Resource_Mod_SetDisplayName name   -> mod $ set (\req -> _ResourceRequest .. displayName_ .~ name $ req)
 
        Resource_Mod_SetDescription desc   -> mod $ set (\req -> _ResourceRequest .. description_ .~ desc $ req)
 

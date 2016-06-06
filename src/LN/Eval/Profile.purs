@@ -19,7 +19,7 @@ import LN.T               (UserPackResponse(..), _UserPackResponse
                           , ProfileResponse(..), _ProfileResponse
                           , ProfileGender(..)
                           , profile_, id_, gender_, birthdate_, signature_, website_, location_
-                          , profileResponseToRequest)
+                          , profileResponseToProfileRequest)
 
 
 
@@ -40,7 +40,7 @@ eval_Profile eval (CompProfile InputProfile_Post next) = do
        Just me -> do
          let
            profile_id  = me ^. _UserPackResponse .. profile_ ^. _ProfileResponse .. id_
-           profile_req = (profileResponseToRequest $ me ^. _UserPackResponse .. profile_)
+           profile_req = (profileResponseToProfileRequest $ me ^. _UserPackResponse .. profile_)
 
          rd $ putUserProfile' profile_id profile_req
          pure next

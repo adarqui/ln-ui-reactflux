@@ -354,7 +354,7 @@ instance routesHasCrumb :: HasCrumb Routes where
     where
     resource_pretty resource_id params =
       Tuple (Resources (ShowI resource_id) params)
-        $ maybe (show resource_id) (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. title_) st.currentResource
+        $ maybe (show resource_id) (\pack -> pack ^. _ResourcePackResponse .. resource_ ^. _ResourceResponse .. displayName_) st.currentResource
 
 
 

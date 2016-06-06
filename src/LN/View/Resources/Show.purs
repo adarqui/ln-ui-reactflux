@@ -36,7 +36,7 @@ renderView_Resources_Show' :: ResourcePackResponse -> State -> ComponentHTML Inp
 renderView_Resources_Show' pack st =
   H.div [P.class_ B.containerFluid] [
     H.div [P.class_ B.pageHeader] [
-      H.h1 [P.class_ B.textCenter] [H.text (resource.title)],
+      H.h1 [P.class_ B.textCenter] [H.text (resource.displayName)],
       H.p [P.class_ B.textCenter] [H.text (resource.description)]
     ],
     H.div [P.class_ B.container] [

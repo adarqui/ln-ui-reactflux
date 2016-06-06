@@ -21,7 +21,7 @@ data InputResource
 
 
 data Resource_Mod
-  = Resource_Mod_SetTitle String
+  = Resource_Mod_SetDisplayName String
   | Resource_Mod_SetDescription String
   | Resource_Mod_SetSource ResourceType
   | Resource_Mod_AddAuthor String

@@ -45,7 +45,7 @@ eval_CreateThread eval (CompCreateThread InputCreateThread_Create next) = do
   go st board comp = do
 
     let
-      thread_request = mkThreadRequest comp.name Nothing false false Nothing Nothing []
+      thread_request = mkThreadRequest comp.name Nothing false false Nothing Nothing [] 0
       board_id       = board ^. _BoardPackResponse .. boardId_
 
     e_thread <- rd $ postThread_ByBoardId' board_id thread_request

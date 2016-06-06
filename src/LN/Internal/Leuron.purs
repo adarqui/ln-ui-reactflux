@@ -88,7 +88,7 @@ leuronToTyLeuron ld =
 
 
 defaultLeuronRequest :: LeuronRequest
-defaultLeuronRequest = mkLeuronRequest LnEmpty Nothing Nothing Nothing Nothing Nothing Nothing [] Nothing Nothing [] Nothing
+defaultLeuronRequest = mkLeuronRequest LnEmpty Nothing Nothing Nothing Nothing Nothing Nothing [] Nothing Nothing [] Nothing 0
 
 
 

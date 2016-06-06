@@ -19,9 +19,9 @@ data InputForum
 
 
 data Forum_Mod
-  = SetName String
-  | EditName String
-  | RemoveName
+  = SetDisplayName String
+  | EditDisplayName String
+  | RemoveDisplayName
 
   | SetDescription String
   | EditDescription String

@@ -74,7 +74,7 @@ renderView_Resources_Mod' m_resource_id resource_req rst st =
 
     H.h1_ [ H.text "Add Resource" ]
 
-  , input_Label "Title" "Title" resource.title P.InputText (E.input (cResourceMod <<< Resource_Mod_SetTitle))
+  , input_Label "Name" "Name" resource.displayName P.InputText (E.input (cResourceMod <<< Resource_Mod_SetDisplayName))
 
   , textArea_Label "Description" "Description" resource.description (E.input (cResourceMod <<< Resource_Mod_SetDescription))
 

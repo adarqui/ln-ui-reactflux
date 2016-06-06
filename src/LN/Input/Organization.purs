@@ -18,7 +18,7 @@ data InputOrganization
 
 
 data Organization_Mod
-  = SetName String
+  = SetDisplayName String
 
   | SetDescription String
   | RemoveDescription

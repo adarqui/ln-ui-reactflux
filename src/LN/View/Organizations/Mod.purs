@@ -75,7 +75,7 @@ renderView_Organizations_Mod' m_organization_id organization_req o_st st =
 
     H.h1_ [ H.text "Add Organization" ]
 
-  , input_Label "Name" "Name" organization.name P.InputText (E.input (cOrganizationMod <<< SetName))
+  , input_Label "Name" "Name" organization.displayName P.InputText (E.input (cOrganizationMod <<< SetDisplayName))
 
 --  , textArea_Label "Description" "Description" organization.description (E.input (cOrganizationMod <<< SetDescription))
 

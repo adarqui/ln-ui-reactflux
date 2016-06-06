@@ -35,7 +35,7 @@ eval_Like :: EvalEff
 
 
 eval_Like eval (CompLike (InputLike_Like ent ent_id mlike) next) = do
-  let like_req = mkLikeRequest Like Nothing
+  let like_req = mkLikeRequest Like Nothing 0
   st <- get
   lr <- liftAff' $ boomLike st mlike ent ent_id like_req
   case lr of
@@ -47,7 +47,7 @@ eval_Like eval (CompLike (InputLike_Like ent ent_id mlike) next) = do
 
 
 eval_Like eval (CompLike (InputLike_Neutral ent ent_id mlike) next) = do
-  let like_req = mkLikeRequest Neutral Nothing
+  let like_req = mkLikeRequest Neutral Nothing 0
   st <- get
   lr <- liftAff' $ boomLike st mlike ent ent_id like_req
   case lr of
@@ -59,7 +59,7 @@ eval_Like eval (CompLike (InputLike_Neutral ent ent_id mlike) next) = do
 
 
 eval_Like eval (CompLike (InputLike_Dislike ent ent_id mlike) next) = do
-  let like_req = mkLikeRequest Dislike Nothing
+  let like_req = mkLikeRequest Dislike Nothing 0
   st <- get
   lr <- liftAff' $ boomLike st mlike ent ent_id like_req
   case lr of

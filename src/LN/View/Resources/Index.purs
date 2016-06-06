@@ -75,7 +75,7 @@ resources st =
                   renderGravatarForUser Small (usersMapLookup_ToUser st resource.userId)
                 ]
               , H.div [P.class_ B.colXs7] [
-                    H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (Resources (Show $ show resource.id) []) resource.title]
+                    H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (Resources (Show $ show resource.id) []) resource.displayName]
                   , H.p_ [H.text $ show resource.createdAt]
                   , H.p_ [H.text $ resource.description]
                 ]

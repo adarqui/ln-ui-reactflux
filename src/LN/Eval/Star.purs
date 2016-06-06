@@ -34,7 +34,7 @@ eval_Star :: EvalEff
 
 
 eval_Star eval (CompStar (InputStar ent ent_id mstar) next) = do
-  let star_req = mkStarRequest Nothing
+  let star_req = mkStarRequest Nothing 0
   st <- get
   lr <- liftAff' $ boomStar st mstar ent ent_id star_req
   case lr of

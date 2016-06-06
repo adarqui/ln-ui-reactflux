@@ -80,7 +80,7 @@ renderView_Forums_Mod' organization_id m_forum_id forum_req f_st st =
 
   , create_or_save
 
-  , input_Label "Name" "Name" forum.name P.InputText (E.input (cForumMod <<< SetName))
+  , input_Label "Name" "Name" forum.displayName P.InputText (E.input (cForumMod <<< SetDisplayName))
 
   , textArea_Label "Description" "Description" (maybe "" id forum.description) (E.input (cForumMod <<< SetDescription))
 
