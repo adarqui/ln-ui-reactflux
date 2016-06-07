@@ -50,3 +50,6 @@ loading:
 
 scroll down buttons:
 - buttons to go to the bottom of the page?
+
+social buttons for bootstrap:
+- https://lipis.github.io/bootstrap-social/
