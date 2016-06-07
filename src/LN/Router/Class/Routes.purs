@@ -93,16 +93,16 @@ instance routesHasLink :: HasLink Routes where
   link (Organizations crud@(Show org_name) params)  = Tuple ("#" ++ (fst $ link crud)) (fixParams params)
 
   link (OrganizationsForums org crud params) =
-    Tuple ("#/" <> org <> (fst $ link crud)) (fixParams params)
+    Tuple ("#/" <> org <> "/f" <> (fst $ link crud)) (fixParams params)
 
   link (OrganizationsForumsBoards org forum crud params) =
-    Tuple ("#/" <> org <> "/" <> forum <> (fst $ link crud)) (fixParams params)
+    Tuple ("#/" <> org <> "/f/" <> forum <> (fst $ link crud)) (fixParams params)
 
   link (OrganizationsForumsBoardsThreads org forum board crud params) =
-    Tuple ("#/" <> org <> "/" <> forum <> "/" <> board <> (fst $ link crud)) (fixParams params)
+    Tuple ("#/" <> org <> "/f/" <> forum <> "/" <> board <> (fst $ link crud)) (fixParams params)
 
   link (OrganizationsForumsBoardsThreadsPosts org forum board thread crud params) =
-    Tuple ("#/" <> org <> "/" <> forum <> "/" <> board <> "/" <> thread <> (fst $ link crud)) (fixParams params)
+    Tuple ("#/" <> org <> "/f/" <> forum <> "/" <> board <> "/" <> thread <> (fst $ link crud)) (fixParams params)
 
   link (Users Index params)           = Tuple "#/u" (fixParams params)
   link (Users crud params)            = Tuple ("#/u" ++ (fst $ link crud)) (fixParams params)

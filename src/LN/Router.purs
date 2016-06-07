@@ -231,20 +231,20 @@ routing =
     organizations_forums_new =
       OrganizationsForums
       <$> (lit "" *> str)
-      <*> (lit "new" *> pure New)
+      <*> (lit "f" *> lit "new" *> pure New)
       <*> (params' <|> pure [])
 
     organizations_forums_boards_new =
       OrganizationsForumsBoards
       <$> (lit "" *> str)
-      <*> str1
+      <*> (lit "f" *> str1)
       <*> (lit "new" *> pure New)
       <*> (params' <|> pure [])
 
     organizations_forums_boards_threads_new =
       OrganizationsForumsBoardsThreads
       <$> (lit "" *> str)
-      <*> str1
+      <*> (lit "f" *> str1)
       <*> str1
       <*> (lit "new" *> pure New)
       <*> (params' <|> pure [])
@@ -252,7 +252,7 @@ routing =
     organizations_forums_boards_threads_posts_new =
       OrganizationsForumsBoardsThreadsPosts
       <$> (lit "" *> str)
-      <*> str1
+      <*> (lit "f" *> str1)
       <*> str1
       <*> str1
       <*> (lit "new" *> pure New)
@@ -263,20 +263,20 @@ routing =
     organizations_forums_edit =
       OrganizationsForums
       <$> (lit "" *> str)
-      <*> (lit "_edit" *> (Edit <$> str1))
+      <*> (lit "f" *> lit "_edit" *> (Edit <$> str1))
       <*> (params' <|> pure [])
 
     organizations_forums_boards_edit =
       OrganizationsForumsBoards
       <$> (lit "" *> str)
-      <*> str1
+      <*> (lit "f" *> str1)
       <*> (lit "_edit" *> (Edit <$> str1))
       <*> (params' <|> pure [])
 
     organizations_forums_boards_threads_edit =
       OrganizationsForumsBoardsThreads
       <$> (lit "" *> str)
-      <*> str1
+      <*> (lit "f" *> str1)
       <*> str1
       <*> (lit "_edit" *> (Edit <$> str1))
       <*> (params' <|> pure [])
@@ -284,7 +284,7 @@ routing =
     organizations_forums_boards_threads_posts_edit =
       OrganizationsForumsBoardsThreadsPosts
       <$> (lit "" *> str)
-      <*> str1
+      <*> (lit "f" *> str1)
       <*> str1
       <*> str1
       <*> (lit "_edit" *> (Edit <$> str1))
@@ -295,20 +295,20 @@ routing =
     organizations_forums_delete =
       OrganizationsForums
       <$> (lit "" *> str)
-      <*> (lit "_delete" *> (Delete <$> str1))
+      <*> (lit "f" *> lit "_delete" *> (Delete <$> str1))
       <*> (params' <|> pure [])
 
     organizations_forums_boards_delete =
       OrganizationsForumsBoards
       <$> (lit "" *> str)
-      <*> str1
+      <*> (lit "f" *> str1)
       <*> (lit "_delete" *> (Delete <$> str1))
       <*> (params' <|> pure [])
 
     organizations_forums_boards_threads_delete =
       OrganizationsForumsBoardsThreads
       <$> (lit "" *> str)
-      <*> str1
+      <*> (lit "f" *> str1)
       <*> str1
       <*> (lit "_delete" *> (Delete <$> str1))
       <*> (params' <|> pure [])
@@ -316,7 +316,7 @@ routing =
     organizations_forums_boards_threads_posts_delete =
       OrganizationsForumsBoardsThreadsPosts
       <$> (lit "" *> str)
-      <*> str1
+      <*> (lit "f" *> str1)
       <*> str1
       <*> str1
       <*> (lit "_delete" *> (Delete <$> str1))
@@ -327,20 +327,20 @@ routing =
     organizations_forums =
       OrganizationsForums
       <$> (lit "" *> str)
-      <*> (Show <$> str1)
+      <*> (lit "f" *> (Show <$> str1))
       <*> (params' <|> pure [])
 
     organizations_forums_boards =
       OrganizationsForumsBoards
       <$> (lit "" *> str)
-      <*> str1
+      <*> (lit "f" *> str1)
       <*> (Show <$> str1)
       <*> (params' <|> pure [])
 
     organizations_forums_boards_threads =
       OrganizationsForumsBoardsThreads
       <$> (lit "" *> str)
-      <*> str1
+      <*> (lit "f" *> str1)
       <*> str1
       <*> (Show <$> str1)
       <*> (params' <|> pure [])
@@ -348,7 +348,7 @@ routing =
     organizations_forums_boards_threads_posts =
       OrganizationsForumsBoardsThreadsPosts
       <$> (lit "" *> str)
-      <*> str1
+      <*> (lit "f" *> str1)
       <*> str1
       <*> str1
       <*> (ShowI <$> int)
