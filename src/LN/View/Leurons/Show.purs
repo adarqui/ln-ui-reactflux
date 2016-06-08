@@ -16,7 +16,7 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (show, map, ($))
 
 import LN.Input.Types                  (Input)
-import LN.Router.Link                  (linkTo, linkToP_Glyph')
+import LN.Router.Link                  (linkTo, linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                (getLoading, l_currentLeuron)
 import LN.State.Types                  (State)
@@ -56,8 +56,8 @@ renderView_Leurons_Show' pack st =
 --      H.p [P.class_ B.textCenter] [H.text (leuron.description)]
     ],
     H.div [P.class_ B.container] [
-      linkToP_Glyph' (ResourcesLeurons leuron.resourceId (EditI leuron.id) []) B.glyphiconPencil,
-      linkToP_Glyph' (ResourcesLeurons leuron.resourceId (DeleteI leuron.id) []) B.glyphiconTrash
+      linkToP [] (ResourcesLeurons leuron.resourceId (EditI leuron.id) []) "edit",
+      linkToP [] (ResourcesLeurons leuron.resourceId (DeleteI leuron.id) []) "delete"
     ],
     H.div [P.class_ B.container] [
       renderLeuron leuron'
