@@ -92,7 +92,7 @@ renderThreads org_name forum_name board_name st =
                   H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org_name forum_name board_name (DeleteI 0) []) "delete"]
                 ]
               , H.div [P.class_ B.colXs6] [
-                    H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread.name) []) thread.name]
+                    H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread.name) []) thread.displayName]
                   , H.p_ [H.text "page-numbers"]
                   , H.p_ [H.text $ show thread.createdAt]
                 ]

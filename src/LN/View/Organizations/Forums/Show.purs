@@ -91,7 +91,7 @@ renderBoards org_name forum_name st =
               ]
             ]
           , H.div [P.class_ B.colXs5] [
-                H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoards org_name forum_name (Show $ board.name) []) board.name]
+                H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoards org_name forum_name (Show $ board.name) []) board.displayName]
               , H.p_ [H.text $ maybe "No description." id board.description]
             ]
           , H.div [P.class_ B.colXs1] [
