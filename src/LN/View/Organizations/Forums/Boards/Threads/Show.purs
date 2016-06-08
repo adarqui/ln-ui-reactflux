@@ -21,6 +21,7 @@ import LN.Router.Link                  (linkTo, linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup, usersMapLookup_ToNick, usersMapLookup_ToUser)
+import LN.View.ThreadPosts.Show        (renderView_ThreadPosts_Show)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.Like             (renderLike)
@@ -67,133 +68,10 @@ renderView_Organizations_Forums_Boards_Threads_Show' org_pack forum_pack board_p
         H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (EditI 0) []) "edit"],
         H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (DeleteI 0) []) "delete"]
     ],
-    H.div [] [renderPosts org.name forum.name board.name thread.name st]
+    H.div [] [renderView_ThreadPosts_Show st]
   ]
   where
   org    = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
   forum  = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
   board  = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
   thread = thread_pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse
-
-
-
-
-renderPosts :: String -> String -> String -> String -> State -> ComponentHTML Input
-renderPosts org_name forum_name board_name thread_name st =
-  H.div_ [
-      renderPageNumbers st.threadPostsPageInfo st.currentPage
-    , H.ul [P.class_ B.listUnstyled] (
-        (map (\pack ->
-          let
-            pack' = pack ^. _ThreadPostPackResponse
-            post  = pack ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse
-            stats = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse
-          in
-          H.li_ [
-
-            H.div [P.class_ B.row] [
-                H.div [P.class_ B.colXs2] [
-                    H.p_ [linkTo (Users (Show (usersMapLookup_ToNick st post.userId)) []) (usersMapLookup_ToNick st post.userId)]
-                  , renderGravatarForUser Medium (usersMapLookup_ToUser st post.userId)
-                  , displayUserStats (usersMapLookup st post.userId)
-                ]
-              , H.div [P.class_ B.colXs8] [
-                    linkTo (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post.id) []) (thread_name <> "/" <> show post.id)
-                  , H.p_ [H.text $ show post.createdAt]
-                  , H.p_ [H.text "quote / reply"]
-                  , displayPostData post.body
-                  , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup st post.userId)]
-                ]
-              , H.div [P.class_ B.colXs1] [
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (EditI 0) []) "edit"],
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (DeleteI 0) []) "delete"]
-                ]
-              , H.div [P.class_ B.colXs1] [
-                    renderLike Ent_ThreadPost post.id pack'.like pack'.star
-                  , displayPostStats (ThreadPostStatResponse stats)
-                ]
-            ]
-
-          ]
-        ) $ listToArray $ M.values st.threadPosts)
-        <>
-        -- INPUT FORM AT THE BOTTOM
-        [H.li_ [
-          H.div [P.class_ B.row] [
-              H.div [P.class_ B.colXs2] [
-                H.p_ [H.text "1"]
-              ]
-            , H.div [P.class_ B.colXs9] [
-                H.p_ [H.text "2"]
-              , H.div [P.class_ B.well] [
-                -- TODO FIXME , need to fix this input form, doesnt do anything
-                     H.a [P.href "#"] [H.text "Bold"]
-                  ,  H.a [P.href "#"] [H.text "Youtube"]
-                  ,  H.textarea [
-                       P.class_ B.formControl,
-                       P.rows 10,
-                       P.value body,
-                       E.onValueChange $ E.input (\v -> CompThreadPost (InputThreadPost_SetBody $ Just v))
-                     ]
-                -- TODO FIXME , need to style these buttons properly etc
-                  , H.a [
-                      P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg],
-                      E.onClick $ E.input (\v -> CompThreadPost InputThreadPost_Post)
-                    ] [H.text "send"]
-                  , H.a [
-                      P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg],
-                      E.onClick $ E.input (\v -> CompThreadPost (InputThreadPost_SetBody Nothing))
-                    ] [H.text "cancel"]
-                  , H.a [P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg]] [H.text "preview"]
-                ]
-              ]
-            , H.div [P.class_ B.colXs1] [
-                H.p_ [H.text "3"]
-              ]
-         ]
-        ]])
-  , renderPageNumbers st.threadPostsPageInfo st.currentPage
-  ]
-  where
-  body = maybe "" (\p -> postDataToBody $ p ^. _ThreadPostRequest .. body_) st.currentThreadPostRequest
-
-
-
-displayUserStats :: Maybe UserSanitizedPackResponse -> HTML _ _
-displayUserStats Nothing = H.p_ [H.text "No stats."]
-displayUserStats (Just user) =
-  H.div_ [
-    H.p_ [H.text $ "respect: " <> show stats.respect],
-    H.p_ [H.text $ "threads: " <> show stats.threads],
-    H.p_ [H.text $ "posts: " <> show stats.threadPosts],
-    H.p_ [H.text $ "workouts: " <> show stats.workouts],
-    H.p_ [H.text $ "resources: " <> show stats.resources],
-    H.p_ [H.text $ "leurons: " <> show stats.leurons]
-  ]
-  where
-  stats = user ^. _UserSanitizedPackResponse .. stat_ ^. _UserSanitizedStatResponse
-
-
-
-displayPostStats :: ThreadPostStatResponse -> HTML _ _
-displayPostStats (ThreadPostStatResponse stats) =
-  H.div_ [
-      H.p_ [H.text $ "score: " <> (show $ stats.likes - stats.dislikes)]
-    , H.p_ [H.text $ "up: " <> show stats.likes]
-    , H.p_ [H.text $ "neutral: " <> show stats.neutral]
-    , H.p_ [H.text $ "down: " <> show stats.dislikes]
-    , H.p_ [H.text $ "stars: " <> show stats.stars]
-    , H.p_ [H.text $ "views: " <> show stats.views]
-  ]
-
-
-
-postDataToBody :: PostData -> String
-postDataToBody (PostDataBBCode v) = v
-postDataToBody _                  = ""
-
-
-
-displayPostData :: PostData -> ComponentHTML Input
-displayPostData (PostDataBBCode v) = H.pre_ [H.text v]
-displayPostData _                  = H.p_ [H.text "unknown post body"]
