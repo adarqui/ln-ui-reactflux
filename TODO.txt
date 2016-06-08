@@ -1,3 +1,4 @@
+misc goals:
 [-] make sure every "error" in an Eval routine gets logged
 [-] fix the damn logout/login navbar section.. it squishes too early.
 [-] everything needs proper breadcrumbs
@@ -10,3 +11,31 @@
 [-] optional horizontal iframe when adding leurons, need this bad:
 
 [-] ability to order leurons (via sift) by section etc.. need a section order so things can be written out of place.
+
+- need an A favicon, and an A logo/background
+- pretty "login/register" page
+- set title on every url change
+
+
+
+06/08/2016 goals:
+- create/edit organization
+- create/edit forum
+- create/edit board
+- create/edit thread
+- create/edit post
+
+
+
+06/09/2016 goals:
+- like, star
+
+
+
+06/10/2016 goals:
+- pm's
+
+
+
+06/11/2016 goals:
+- async db queries experiment
