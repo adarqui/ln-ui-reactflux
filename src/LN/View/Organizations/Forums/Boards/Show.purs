@@ -20,6 +20,7 @@ import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
 -- import LN.View.Module.CreateThread     (renderCreateThread)
+import LN.View.Threads.Show            (renderView_Threads_Show)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.OrderBy          (renderOrderBy)
@@ -57,62 +58,10 @@ renderView_Organizations_Forums_Boards_Show' org_pack forum_pack board_pack st =
       H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (EditI 0) []) "delete"]
     ],
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
---    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullRight]] [renderCreateThread st.compCreateThread]],
-    H.div [] [renderThreads org.name forum.name board.name st]
+    H.div [] [renderView_Threads_Show st]
   ]
   where
   org        = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
   forum      = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
   board      = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
   board_desc = maybe "No description." id board.description
-
-
-
-renderThreads :: String -> String -> String -> State -> ComponentHTML Input
-renderThreads org_name forum_name board_name st =
-  H.div_ [
-      renderPageNumbers st.threadsPageInfo st.currentPage
-
-    , H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org_name forum_name board_name New []) "new-thread"]
-
-    , H.ul [P.class_ B.listUnstyled] $
-        map (\pack ->
-          let
-            thread_pack = pack ^. _ThreadPackResponse
-            thread      = pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse
-            stat        = pack ^. _ThreadPackResponse .. stat_ ^. _ThreadStatResponse
-            post        = pack ^. _ThreadPackResponse .. latestThreadPost_
-            user        = pack ^. _ThreadPackResponse .. latestThreadPostUser_
-          in
-          H.li_ [
-            H.div [P.class_ B.row] [
-                H.div [P.class_ B.colXs1] [
-                  renderGravatarForUser Small (usersMapLookup_ToUser st thread.userId),
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org_name forum_name board_name (EditI 0) []) "edit"],
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org_name forum_name board_name (DeleteI 0) []) "delete"]
-                ]
-              , H.div [P.class_ B.colXs6] [
-                    H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread.name) []) thread.displayName]
-                  , H.p_ [H.text "page-numbers"]
-                  , H.p_ [H.text $ show thread.createdAt]
-                ]
-              , H.div [P.class_ B.colXs1] [
-                  H.p_ [H.text $ show stat.threadPosts <> " posts"]
-                ]
-              , H.div [P.class_ B.colXs1] [
-                  H.p_ [H.text $ show stat.views <> " views"]
-                ]
-              , H.div [P.class_ B.colXs3] [
-                case post, user of
-                     Just (ThreadPostResponse post'), Just (UserSanitizedResponse user') ->
-                       H.div_ [
-                         H.p_ [H.text $ user'.nick],
-                         H.p_ [H.text $ show post'.createdAt]
-                       ]
-                     _, _ -> H.div_ [ H.p_ [H.text "No posts."]]
-              ]
-            ]
-          ])
-        $ listToArray $ M.values st.threads
-    , renderPageNumbers st.threadsPageInfo st.currentPage
-  ]
