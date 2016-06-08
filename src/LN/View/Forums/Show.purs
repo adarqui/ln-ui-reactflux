@@ -33,9 +33,9 @@ import LN.T                            ( ForumPackResponse
 renderView_Forums_Show :: State -> ComponentHTML Input
 renderView_Forums_Show st =
 
-  case st.currentOrganization  of
+  case st.currentOrganization of
        Just org_pack -> renderView_Forums_Show' org_pack st
-       _  -> renderLoading
+       _             -> renderLoading
 
 
 
