@@ -32,6 +32,7 @@ import LN.State.Loading                ( l_currentOrganization, l_organizations
                                        , l_currentThread)
 import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.State.Organization           (OrganizationRequestState, defaultOrganizationRequestState)
+import LN.T.Internal.Convert           (organizationResponseToOrganizationRequest)
 import LN.T                            ( OrganizationPackResponses(..), OrganizationPackResponse(..)
                                        , OrganizationResponse(..)
                                        , _OrganizationRequest, OrganizationRequest(..), displayName_, description_, company_, location_
@@ -227,6 +228,23 @@ eval_Organization eval (CompOrganization sub next) = do
                         eval (Goto (Organizations (Show organization.name) []) next)
 
                _, _  -> eval (AddError "eval_Organization(Create)" "Organization request doesn't exist" next)
+
+        EditP org_id -> do
+
+          m_req <- gets _.currentOrganizationRequest
+
+          case m_req of
+               Nothing  -> eval (AddError "eval_Organization(Edit)" "Organization request doesn't exist" next)
+               Just req -> do
+
+                 e_org <- rd $ putOrganization' org_id req
+
+                 case e_org of
+                      Left err  -> eval (AddErrorApi "eval_Organization(Edit)::putOrganization" err next)
+                      Right org -> do
+
+                        modify (\st->st{ currentOrganizationRequest = Just $ organizationResponseToOrganizationRequest org })
+                        pure next
 
     _   -> pure next
 
