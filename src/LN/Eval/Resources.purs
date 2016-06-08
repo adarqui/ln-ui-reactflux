@@ -215,5 +215,5 @@ eval_Resource eval (CompResource sub next) = do
  append Nothing a    = Just [a]
  append (Just arr) a = Just $ nub $ arr <> [a]
  set' ref value request   = Just (_ResourceRequest .. ref .~ value $ request) -- unused.. this is nicer, but only typechecks for String
- set v req                = Just (v req)
- mod new                  = modify (\st->st{ currentResourceRequest = maybe Nothing new st.currentResourceRequest }) $> next
+ set v req           = Just (v req)
+ mod new             = modify (\st->st{ currentResourceRequest = maybe Nothing new st.currentResourceRequest }) $> next

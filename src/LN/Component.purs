@@ -62,6 +62,7 @@ ui = component render eval
 
   eval z@(GetOrganizations _)                         = eval_GetOrganizations eval z
   eval z@(GetOrganization _ _)                        = eval_GetOrganization eval z
+  eval z@(GetOrganizationId _ _)                      = eval_GetOrganizationId eval z
   eval z@(GetOrganizationForum _ _ _)                 = eval_GetOrganizationForum eval z
   eval z@(GetOrganizationForumBoard _ _ _ _)          = eval_GetOrganizationForumBoard eval z
   eval z@(GetOrganizationForumBoardThread _  _ _ _ _) = eval_GetOrganizationForumBoardThread eval z
@@ -101,6 +102,7 @@ ui = component render eval
 
   -- Components
 
+  eval z@(CompOrganization _ _)                       = eval_Organization eval z
   eval z@(CompThread _ _)                             = eval_Thread eval z
   eval z@(CompThreadPost _ _)                         = eval_ThreadPost eval z
   eval z@(CompProfile _ _)                            = eval_Profile eval z

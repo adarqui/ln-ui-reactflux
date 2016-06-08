@@ -1,24 +1,31 @@
 module LN.Eval.Organizations (
   eval_GetOrganizations,
   eval_GetOrganization,
+  eval_GetOrganizationId,
   eval_GetOrganizationForum,
   eval_GetOrganizationForumBoard,
-  eval_GetOrganizationForumBoardThread
+  eval_GetOrganizationForumBoardThread,
+  eval_Organization
 ) where
 
 
 
+import Data.Array                      (head, deleteAt, modifyAt, nub)
 import Data.Either                     (Either(..))
+import Data.Functor                    (($>))
 import Data.Map                        as M
-import Data.Maybe                      (Maybe(..))
+import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (gets, modify)
-import Prelude                         (bind, pure, ($))
+import Optic.Core                      ((^.), (..), (.~))
+import Prelude                         (class Eq, bind, pure, ($), (<>))
 
-import LN.Api                          (rd, getOrganizationPacks')
+import LN.Api                          (rd, getOrganizationPacks', getOrganizationPack', postOrganization', putOrganization')
 import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
+import LN.Input.Organization           (InputOrganization(..), Organization_Mod(..))
 import LN.Input.Types                  (Input(..))
+import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                ( l_currentOrganization, l_organizations
                                        , l_currentForum
                                        , l_currentBoard
@@ -26,6 +33,9 @@ import LN.State.Loading                ( l_currentOrganization, l_organizations
 import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.State.Organization           (OrganizationRequestState, defaultOrganizationRequestState)
 import LN.T                            ( OrganizationPackResponses(..), OrganizationPackResponse(..)
+                                       , OrganizationResponse(..)
+                                       , _OrganizationRequest, OrganizationRequest(..), displayName_, description_, company_, location_
+                                       , _UserPackResponse, _UserResponse, user_, email_
                                        , ForumPackResponse(..)
                                        , BoardPackResponse(..)
                                        , ThreadPackResponse(..))
@@ -69,9 +79,31 @@ eval_GetOrganization eval (GetOrganization org_name next) = do
   e_org <- rd $ ApiS.getOrganizationPack' org_name
 
   modify $ clearLoading l_currentOrganization
+
   case e_org of
 
     Left err   -> eval (AddErrorApi "eval_GetOrganization::ApiS.getOrganizationPack'" err next)
+
+    Right pack -> do
+      modify (_{ currentOrganization = Just pack })
+      pure next
+
+
+
+eval_GetOrganizationId :: EvalEff
+eval_GetOrganizationId eval (GetOrganizationId org_id next) = do
+
+  modify (_{ currentOrganization = Nothing })
+
+  modify $ setLoading l_currentOrganization
+
+  e_org <- rd $ getOrganizationPack' org_id
+
+  modify $ clearLoading l_currentOrganization
+
+  case e_org of
+
+    Left err   -> eval (AddErrorApi "eval_GetOrganizationId::getOrganizationPack'" err next)
 
     Right pack -> do
       modify (_{ currentOrganization = Just pack })
@@ -158,3 +190,49 @@ eval_GetOrganizationForumBoardThread eval (GetOrganizationForumBoardThread org_n
         modify (_{ currentThread = Just pack })
         eval (GetThreadPostsForThread thread.threadId next)
         pure next
+
+
+
+eval_Organization :: EvalEff
+eval_Organization eval (CompOrganization sub next) = do
+
+  m_me <- gets _.me
+
+  case sub of
+    InputOrganization_Mod q -> do
+      case q of
+        SetDisplayName name -> mod $ set (\req -> _OrganizationRequest .. displayName_ .~ name $ req)
+
+        SetDescription s    -> mod $ set (\req -> _OrganizationRequest .. description_ .~ Just s $ req)
+
+        RemoveDescription   -> mod $ set (\req -> _OrganizationRequest .. description_ .~ Nothing $ req)
+
+        SetCompany company  -> mod $ set (\req -> _OrganizationRequest .. company_ .~ company $ req)
+
+        SetLocation location-> mod $ set (\req -> _OrganizationRequest .. location_ .~ location $ req)
+
+        Create    -> do
+
+          m_req <- gets _.currentOrganizationRequest
+
+          case m_req, m_me of
+
+               Just (OrganizationRequest req), Just me -> do
+
+                 e_organization <- rd $ postOrganization' (OrganizationRequest req{ email = me ^. _UserPackResponse .. user_ ^. _UserResponse .. email_ })
+
+                 case e_organization of
+                      Left err                                   -> eval (AddErrorApi "eval_Organization(Create)::postOrganization'" err next)
+                      Right (OrganizationResponse organization) -> do
+                        eval (Goto (Organizations (Show organization.name) []) next)
+
+               _, _  -> eval (AddError "eval_Organization(Create)" "Organization request doesn't exist" next)
+
+    _   -> pure next
+
+ where
+ append :: forall a. Eq a => Maybe (Array a) -> a -> Maybe (Array a)
+ append Nothing a    = Just [a]
+ append (Just arr) a = Just $ nub $ arr <> [a]
+ set v req           = Just (v req)
+ mod new             = modify (\st->st{ currentOrganizationRequest = maybe Nothing new st.currentOrganizationRequest }) $> next

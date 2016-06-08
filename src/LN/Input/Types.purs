@@ -57,6 +57,7 @@ data Input a
 
   | GetOrganizations a
   | GetOrganization String a
+  | GetOrganizationId Int a
   | GetOrganizationForum String String a
   | GetOrganizationForumBoard String String String a
   | GetOrganizationForumBoardThread String String String String a

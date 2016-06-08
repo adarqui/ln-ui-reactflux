@@ -27,7 +27,5 @@ data Organization_Mod
 
   | SetLocation String
 
-  | SetEmail String
-
   | Create
   | EditP Int

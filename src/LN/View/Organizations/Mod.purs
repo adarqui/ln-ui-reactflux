@@ -79,6 +79,15 @@ renderView_Organizations_Mod' m_organization_id organization_req o_st st =
 
 --  , textArea_Label "Description" "Description" organization.description (E.input (cOrganizationMod <<< SetDescription))
 
+  , input_Label "Company" "Company" organization.company P.InputText (E.input (cOrganizationMod <<< SetCompany))
+
+  , input_Label "Location" "Location" organization.location P.InputText (E.input (cOrganizationMod <<< SetLocation))
+
+  -- , membership
+  -- , visibility
+  -- , tags
+  -- , icon
+
   , buttons_SaveEditCancel m_organization_id (cOrganizationMod Create) (cOrganizationMod <<< EditP) About
 
   ]

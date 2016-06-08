@@ -4,24 +4,25 @@ module LN.Eval.Goto (
 
 
 
-import Daimyo.Data.Array      (elemBy)
-import Data.Functor           (($>))
-import Data.Maybe             (Maybe(..), maybe)
-import Data.Int               (fromString)
-import Data.Tuple             (Tuple(..))
-import Halogen                (get, gets, modify, liftAff')
-import Optic.Core             ((^.),(..))
-import Prelude                (show, bind, pure, unit, id, (==), (/=), (<), ($))
+import Daimyo.Data.Array        (elemBy)
+import Data.Functor             (($>))
+import Data.Maybe               (Maybe(..), maybe)
+import Data.Int                 (fromString)
+import Data.Tuple               (Tuple(..))
+import Halogen                  (get, gets, modify, liftAff')
+import Optic.Core               ((^.),(..))
+import Prelude                  (show, bind, pure, unit, id, (==), (/=), (<), ($))
 
-import LN.Component.Types     (EvalEff)
-import LN.Input.Types         (Input(..))
-import LN.Internal.Leuron     (defaultLeuronRequest, leuronToTyLeuron)
-import LN.Internal.Resource   (defaultResourceRequest, resourceTypeToTyResourceType)
-import LN.Router.Link         (updateUrl)
-import LN.Router.Types        (Routes(..), CRUD(..))
-import LN.State.Organization  (defaultOrganizationRequestState)
-import LN.State.Leuron        (defaultLeuronRequestState, leuronRequestStateFromLeuronData)
-import LN.State.Resource      (defaultResourceRequestState)
+import LN.Component.Types       (EvalEff)
+import LN.Input.Types           (Input(..))
+import LN.Internal.Organization (defaultOrganizationRequest)
+import LN.Internal.Leuron       (defaultLeuronRequest, leuronToTyLeuron)
+import LN.Internal.Resource     (defaultResourceRequest, resourceTypeToTyResourceType)
+import LN.Router.Link           (updateUrl)
+import LN.Router.Types          (Routes(..), CRUD(..))
+import LN.State.Organization    (defaultOrganizationRequestState)
+import LN.State.Leuron          (defaultLeuronRequestState, leuronRequestStateFromLeuronData)
+import LN.State.Resource        (defaultResourceRequestState)
 import LN.T
 
 
@@ -48,6 +49,11 @@ eval_Goto eval (Goto route next) = do
 
     (Organizations Index params) -> eval  (GetOrganizations next) $> unit
 
+    (Organizations New params) -> do
+      modify (_{ currentOrganizationRequest = Just defaultOrganizationRequest, currentOrganizationRequestSt = Just defaultOrganizationRequestState })
+      pure unit
+
+
     (Organizations (EditI org_id) params) -> do
 --      eval (GetOrganizationId org_id next)
       m_pack <- gets _.currentOrganization
@@ -59,6 +65,15 @@ eval_Goto eval (Goto route next) = do
                org  = pack.organization ^. _OrganizationResponse
                o_st = maybe defaultOrganizationRequestState id m_o_st
              modify (_{ currentOrganizationRequest = Just $ organizationResponseToOrganizationRequest pack.organization, currentOrganizationRequestSt = Just o_st })
+             pure unit
+
+    (Organizations (DeleteI organization_id) params) -> do
+      eval (GetOrganizationId organization_id next)
+      m_pack <- gets _.currentOrganization
+      case m_pack of
+           Nothing                          -> pure unit
+           Just (OrganizationPackResponse pack) -> do
+             modify (_{ currentOrganizationRequest = Just $ organizationResponseToOrganizationRequest pack.organization })
              pure unit
 
     (Organizations (Show org_name) params) -> do
