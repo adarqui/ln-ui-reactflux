@@ -103,6 +103,7 @@ ui = component render eval
   -- Components
 
   eval z@(CompOrganization _ _)                       = eval_Organization eval z
+  eval z@(CompForum _ _)                              = eval_Forum eval z
   eval z@(CompThread _ _)                             = eval_Thread eval z
   eval z@(CompThreadPost _ _)                         = eval_ThreadPost eval z
   eval z@(CompProfile _ _)                            = eval_Profile eval z

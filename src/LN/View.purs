@@ -114,8 +114,8 @@ renderView (Organizations (Show org_name) params) = renderView_Organizations_Sho
 
 
 renderView (OrganizationsForums org_name New params)                 = renderView_Forums_NewS
-renderView (OrganizationsForums org_name (Edit forum_name) params)   = renderView_Forums_EditS forum_name
-renderView (OrganizationsForums org_name (Delete forum_name) params) = renderView_Forums_DeleteS forum_name
+renderView (OrganizationsForums org_name (Edit forum_name) params)   = renderView_Forums_EditS
+renderView (OrganizationsForums org_name (Delete forum_name) params) = renderView_Forums_DeleteS
 renderView (OrganizationsForums org_name (Show forum_name) params)   = renderView_Organizations_Forums_Show forum_name
 
 

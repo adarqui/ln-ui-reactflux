@@ -27,9 +27,11 @@ import LN.Helpers.JSON                 (decodeString)
 import LN.Internal.Forum               ()
 import LN.Input.Forum                  (Forum_Mod(..))
 import LN.Input.Types                  (Input(..), cForumMod)
+import LN.Router.Class.Routes          (Routes(..))
 import LN.State.Loading                (getLoading, l_currentForum)
 import LN.State.Forum                  (ForumRequestState)
 import LN.State.Types                  (State)
+import LN.View.Helpers                 (buttons_CreateEditCancel)
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
 
@@ -78,35 +80,50 @@ renderView_Forums_Mod' organization_id m_forum_id forum_req f_st st =
 
     H.h1_ [ H.text "Add Forum" ]
 
-  , create_or_save
-
   , input_Label "Name" "Name" forum.displayName P.InputText (E.input (cForumMod <<< SetDisplayName))
 
   , textArea_Label "Description" "Description" (maybe "" id forum.description) (E.input (cForumMod <<< SetDescription))
 
-  , create_or_save
+  , buttons_CreateEditCancel m_forum_id (cForumMod $ Create organization_id) (cForumMod <<< EditP) About
 
   ]
   where
   forum    = unwrapForumRequest forum_req
-  save     = maybe "Create" (const "Save") m_forum_id
-  create_or_save = case m_forum_id of
-         Nothing         -> simpleInfoButton "Create" (cForumMod $ Save organization_id)
-         Just forum_id   -> simpleInfoButton "Save" (cForumMod $ EditP forum_id)
-         _               -> H.p_ [H.text "unexpected error."]
 
 
 
+renderView_Forums_DeleteS :: State -> ComponentHTML Input
+renderView_Forums_DeleteS st =
 
-renderView_Forums_DeleteS :: String -> State -> ComponentHTML Input
-renderView_Forums_DeleteS forum_name st = H.div_ [H.text "DeleteS"]
+  case st.currentOrganization, st.currentForum of
+
+    Just org_pack, Just forum_pack ->
+      renderView_Forums_Delete
+        (org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. id_)
+        (forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse .. id_)
+        st
+
+    _, _       -> H.div_ [H.text "error"]
 
 
 
 renderView_Forums_NewS :: State -> ComponentHTML Input
-renderView_Forums_NewS st = H.div_ [H.text "NewS"]
+renderView_Forums_NewS st =
+  case st.currentOrganization of
+    Nothing       -> H.div_ [H.text "error"]
+    Just org_pack -> renderView_Forums_New (org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. id_) st
 
 
 
-renderView_Forums_EditS :: String -> State -> ComponentHTML Input
-renderView_Forums_EditS forum_name st = H.div_ [H.text "EditS"]
+renderView_Forums_EditS :: State -> ComponentHTML Input
+renderView_Forums_EditS st =
+
+  case st.currentOrganization, st.currentForum of
+
+    Just org_pack, Just forum_pack ->
+      renderView_Forums_Edit
+        (org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. id_)
+        (forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse .. id_)
+        st
+
+    _, _       -> H.div_ [H.text "error"]

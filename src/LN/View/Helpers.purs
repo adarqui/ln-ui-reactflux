@@ -1,5 +1,5 @@
 module LN.View.Helpers (
-  buttons_SaveEditCancel
+  buttons_CreateEditCancel
 ) where
 
 
@@ -28,14 +28,13 @@ import LN.T                            ( OrganizationPackResponse
 
 
 
--- buttons_CreateSaveCancel :: Maybe Int -> Maybe Int -> (Int -> Input) -> (Int -> Input) -> Routes -> ComponentHTML Input
-buttons_SaveEditCancel m_save_id save edit cancel =
+buttons_CreateEditCancel m_edit_id save edit cancel =
   H.div_ [
     save_or_edit,
     simpleInfoButton "Cancel" (Goto cancel)
   ]
   where
   save_or_edit =
-    case m_save_id of
-         Nothing -> simpleInfoButton "Create" save
-         Just id' -> simpleInfoButton "Save" (edit id')
+    case m_edit_id of
+         Nothing      -> simpleInfoButton "Create" save
+         Just edit_id -> simpleInfoButton "Save" (edit edit_id)

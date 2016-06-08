@@ -16,11 +16,13 @@ import Prelude                  (show, bind, pure, unit, id, (==), (/=), (<), ($
 import LN.Component.Types       (EvalEff)
 import LN.Input.Types           (Input(..))
 import LN.Internal.Organization (defaultOrganizationRequest)
+import LN.Internal.Forum        (defaultForumRequest)
 import LN.Internal.Leuron       (defaultLeuronRequest, leuronToTyLeuron)
 import LN.Internal.Resource     (defaultResourceRequest, resourceTypeToTyResourceType)
 import LN.Router.Link           (updateUrl)
 import LN.Router.Types          (Routes(..), CRUD(..))
 import LN.State.Organization    (defaultOrganizationRequestState)
+import LN.State.Forum           (defaultForumRequestState)
 import LN.State.Leuron          (defaultLeuronRequestState, leuronRequestStateFromLeuronData)
 import LN.State.Resource        (defaultResourceRequestState)
 import LN.T
@@ -82,6 +84,9 @@ eval_Goto eval (Goto route next) = do
       pure unit
 
 
+    (OrganizationsForums org_name New params) -> do
+      modify (_{ currentForumRequest = Just defaultForumRequest, currentForumRequestSt = Just defaultForumRequestState })
+      pure unit
 
     (OrganizationsForums org_name (Show forum_name) params) -> do
       -- TODO FIXME

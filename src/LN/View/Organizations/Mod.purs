@@ -26,7 +26,7 @@ import LN.Router.Class.Routes          (Routes(..))
 import LN.State.Loading                (getLoading, l_currentOrganization)
 import LN.State.Organization           (OrganizationRequestState)
 import LN.State.Types                  (State)
-import LN.View.Helpers                 (buttons_SaveEditCancel)
+import LN.View.Helpers                 (buttons_CreateEditCancel)
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
 
@@ -88,7 +88,7 @@ renderView_Organizations_Mod' m_organization_id organization_req o_st st =
   -- , tags
   -- , icon
 
-  , buttons_SaveEditCancel m_organization_id (cOrganizationMod Create) (cOrganizationMod <<< EditP) About
+  , buttons_CreateEditCancel m_organization_id (cOrganizationMod Create) (cOrganizationMod <<< EditP) About
 
   ]
   where
