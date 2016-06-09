@@ -62,7 +62,8 @@ eval_Goto eval (Goto route next) = do
       pure unit
 
 
-    (Organizations (EditI org_id) params) -> do
+    (Organizations (Edit org_name) params) -> do
+      eval (GetOrganization org_name next)
       m_pack <- gets _.currentOrganization
       case m_pack of
            Nothing                              -> pure unit
@@ -74,8 +75,8 @@ eval_Goto eval (Goto route next) = do
              modify (_{ currentOrganizationRequest = Just $ organizationResponseToOrganizationRequest pack.organization, currentOrganizationRequestSt = Just o_st })
              pure unit
 
-    (Organizations (DeleteI organization_id) params) -> do
-      eval (GetOrganizationId organization_id next)
+    (Organizations (Delete org_name) params) -> do
+      eval (GetOrganization org_name next)
       m_pack <- gets _.currentOrganization
       case m_pack of
            Nothing                          -> pure unit

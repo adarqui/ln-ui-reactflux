@@ -44,8 +44,8 @@ renderView_Organizations_Show' pack st =
       H.h1 [P.class_ B.textCenter] [ H.text organization.name ],
       H.p [P.class_ B.textCenter] [ H.text $ maybe "" id organization.description ],
       H.div_ [
-        H.div_ [linkToP [] (Organizations (EditI organization.id) []) "edit"],
-        H.div_ [linkToP [] (Organizations (DeleteI organization.id) []) "delete"]
+        H.div_ [linkToP [] (Organizations (Edit organization.name) []) "edit"],
+        H.div_ [linkToP [] (Organizations (Delete organization.name) []) "delete"]
       ]
     ],
     H.div [P.class_ B.container] [

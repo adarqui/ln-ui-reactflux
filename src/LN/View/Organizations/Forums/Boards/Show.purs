@@ -54,8 +54,8 @@ renderView_Organizations_Forums_Boards_Show' org_pack forum_pack board_pack st =
     H.div [P.class_ B.pageHeader] [
       H.h2_ [H.text board.name],
       H.p [P.class_ B.lead] [H.text board_desc],
-      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (EditI board.id) []) "edit"],
-      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (EditI board.id) []) "delete"]
+      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (Edit board.name) []) "edit"],
+      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (Delete board.name) []) "delete"]
     ],
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
     H.div [] [renderView_Threads_Show st]

@@ -64,9 +64,9 @@ renderView_Organizations_Forums_Boards_Threads_Show' org_pack forum_pack board_p
   H.div [P.class_ B.containerFluid] [
     H.div [P.class_ B.pageHeader] [
       H.h2_ [H.text thread.name],
-        H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (EditI thread.id) []) "sticky"],
-        H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (EditI thread.id) []) "edit"],
-        H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (DeleteI thread.id) []) "delete"]
+        H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) []) "sticky"],
+        H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) []) "edit"],
+        H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) []) "delete"]
     ],
     H.div [] [renderView_ThreadPosts_Show st]
   ]

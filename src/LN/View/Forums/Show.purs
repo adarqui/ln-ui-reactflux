@@ -74,8 +74,8 @@ renderView_Forums_Show' org_pack st =
               H.p_ [H.text "created-at"]
             ],
             H.div [P.class_ B.colXs1] [
-              H.div_ [linkToP [] (OrganizationsForums org.name (EditI forum.id) []) "edit"],
-              H.div_ [linkToP [] (OrganizationsForums org.name (DeleteI forum.id) []) "delete"]
+              H.div_ [linkToP [] (OrganizationsForums org.name (Edit forum.name) []) "edit"],
+              H.div_ [linkToP [] (OrganizationsForums org.name (Delete forum.name) []) "delete"]
             ]
           ]
         ])

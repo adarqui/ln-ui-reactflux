@@ -50,7 +50,7 @@ renderView_Organizations_Forums_Show' org_pack forum_pack st =
 
     H.div [P.class_ B.pageHeader] [
       H.h2_ [H.text forum.name],
-      linkToP [] (OrganizationsForums org.name (EditI forum.id) []) "edit",
+      linkToP [] (OrganizationsForums org.name (Edit forum.name) []) "edit",
       H.p [P.class_ B.lead] [H.text forum_desc]
     ],
 
