@@ -127,7 +127,7 @@ eval_Goto eval (Goto route next) = do
       modify (_{ currentBoardRequest = Just defaultBoardRequest, currentBoardRequestSt = Just defaultBoardRequestState })
       pure unit
 
-    (OrganizationsForumsBoards org_name forum_ (EditI board_id) params) -> do
+    (OrganizationsForumsBoards org_name forum_name (EditI board_id) params) -> do
       m_pack <- gets _.currentBoard
       case m_pack of
            Nothing                              -> pure unit
@@ -188,6 +188,30 @@ eval_Goto eval (Goto route next) = do
       eval (GetOrganizationForumBoard org_name forum_name board_name next) $> unit
 
 
+
+    (OrganizationsForumsBoardsThreads org_name forum_name board_name New params) -> do
+      modify (_{ currentThreadRequest = Just defaultThreadRequest, currentThreadRequestSt = Just defaultThreadRequestState })
+      pure unit
+
+    (OrganizationsForumsBoardsThreads org_name forum_name board_name (EditI thread_id) params) -> do
+      m_pack <- gets _.currentThread
+      case m_pack of
+           Nothing                              -> pure unit
+           Just (ThreadPackResponse pack) -> do
+             m_o_st <- gets _.currentThreadRequestSt
+             let
+               org  = pack.thread ^. _ThreadResponse
+               o_st = maybe defaultThreadRequestState id m_o_st
+             modify (_{ currentThreadRequest = Just $ threadResponseToThreadRequest pack.thread, currentThreadRequestSt = Just o_st })
+             pure unit
+
+    (OrganizationsForumsBoardsThreads org_name forum_name board_name (DeleteI thread_id) params) -> do
+      m_pack <- gets _.currentThread
+      case m_pack of
+           Nothing                          -> pure unit
+           Just (ThreadPackResponse pack) -> do
+             modify (_{ currentThreadRequest = Just $ threadResponseToThreadRequest pack.thread })
+             pure unit
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params) -> do
       -- TODO FIXME
