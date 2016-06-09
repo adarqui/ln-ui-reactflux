@@ -32,8 +32,8 @@ renderView_Organizations_Show org_name st =
 
   case st.currentOrganization, getLoading l_currentOrganization st.loading of
        _, true          -> renderLoading
-       Nothing, false   -> H.div_ [H.text "organization unavailable"]
        Just pack, false -> renderView_Organizations_Show' pack st
+       _, _             -> H.div_ [H.text "organization unavailable"]
 
 
 

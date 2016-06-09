@@ -2,7 +2,11 @@ module LN.View.Organizations.Mod (
   renderView_Organizations_Delete,
   renderView_Organizations_New,
   renderView_Organizations_Edit,
-  renderView_Organizations_Mod
+  renderView_Organizations_Mod,
+
+  renderView_Organizations_DeleteS,
+  renderView_Organizations_NewS,
+  renderView_Organizations_EditS
 ) where
 
 
@@ -32,8 +36,8 @@ import LN.T
 
 
 
-renderView_Organizations_Delete :: Int -> State -> ComponentHTML Input
-renderView_Organizations_Delete organization_id st =
+renderView_Organizations_Delete :: State -> ComponentHTML Input
+renderView_Organizations_Delete st =
 
   case st.currentOrganization, getLoading l_currentOrganization st.loading of
        _, true          -> renderLoading
@@ -93,3 +97,27 @@ renderView_Organizations_Mod' m_organization_id organization_req o_st st =
   ]
   where
   organization = unwrapOrganizationRequest organization_req
+
+
+
+renderView_Organizations_DeleteS :: State -> ComponentHTML Input
+renderView_Organizations_DeleteS = renderView_Organizations_Delete
+
+
+
+renderView_Organizations_NewS :: State -> ComponentHTML Input
+renderView_Organizations_NewS = renderView_Organizations_New
+
+
+
+renderView_Organizations_EditS :: State -> ComponentHTML Input
+renderView_Organizations_EditS st =
+
+  case st.currentOrganization of
+
+    Just org_pack ->
+      renderView_Organizations_Edit
+        (org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. id_)
+        st
+
+    _            -> H.div_ [H.text "error"]
