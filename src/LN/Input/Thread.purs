@@ -18,9 +18,10 @@ data InputThread
 
 
 data Thread_Mod
-  = SetName String
+  = SetDisplayName String
 
-  | SetDescription (Maybe String)
+  | SetDescription String
+  | RemoveDescription
 
   | SetSticky Boolean
 
@@ -28,5 +29,5 @@ data Thread_Mod
 
   | SetPoll Boolean
 
-  | Save Int
-  | EditP Int
+  | Create Int  -- via board_id
+  | EditP Int   -- via thread_id

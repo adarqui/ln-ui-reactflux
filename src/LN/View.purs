@@ -134,9 +134,9 @@ renderView (OrganizationsForumsBoards org_name forum_name (Show board_name) para
 renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name New params)                  =
   renderView_Threads_NewS
 renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Edit thread_name) params)   =
-  renderView_Threads_EditS thread_name
+  renderView_Threads_EditS
 renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Delete thread_name) params) =
-  renderView_Threads_DeleteS thread_name
+  renderView_Threads_DeleteS
 renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params)   =
   renderView_Organizations_Forums_Boards_Threads_Show thread_name
 
