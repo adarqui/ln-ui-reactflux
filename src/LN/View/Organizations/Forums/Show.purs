@@ -50,14 +50,12 @@ renderView_Organizations_Forums_Show' org_pack forum_pack st =
 
     H.div [P.class_ B.pageHeader] [
       H.h2_ [H.text forum.name],
-      linkToP [] (OrganizationsForums org.name (EditI 0) []) "edit",
-      H.p [P.class_ B.lead] [H.text forum_desc],
-      linkToP [] (OrganizationsForumsBoards org.name forum.name (EditI 0) []) "edit"
+      linkToP [] (OrganizationsForums org.name (EditI forum.id) []) "edit",
+      H.p [P.class_ B.lead] [H.text forum_desc]
     ],
 
     H.div [P.class_ B.container] [
-      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name New []) "add-board"],
-      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (DeleteI 0) []) "delete-board"]
+      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name New []) "add-board"]
     ],
 
     H.div [] [renderView_Boards_Show st]

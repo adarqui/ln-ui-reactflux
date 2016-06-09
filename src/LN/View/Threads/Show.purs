@@ -65,8 +65,8 @@ renderView_Threads_Show' org_pack forum_pack board_pack st =
             H.div [P.class_ B.row] [
                 H.div [P.class_ B.colXs1] [
                   renderGravatarForUser Small (usersMapLookup_ToUser st thread.userId),
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (EditI 0) []) "edit"],
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (DeleteI 0) []) "delete"]
+                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (EditI thread.id) []) "edit"],
+                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (DeleteI thread.id) []) "delete"]
                 ]
               , H.div [P.class_ B.colXs6] [
                     H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Show thread.name) []) thread.displayName]

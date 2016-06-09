@@ -60,9 +60,9 @@ renderView_Boards_Show' org_pack forum_pack st =
             H.div [P.class_ B.colXs1] [
               H.p_ [H.text "icon"],
               H.div [P.class_ B.container] [
-                H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (EditI 0) []) "edit"],
+                H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (EditI board.id) []) "edit"],
                 H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name New []) "new-board"],
-                H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (DeleteI 0) []) "delete-board"]
+                H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (DeleteI board.id) []) "delete-board"]
               ]
             ]
           , H.div [P.class_ B.colXs5] [

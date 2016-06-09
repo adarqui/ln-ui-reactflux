@@ -80,8 +80,8 @@ renderView_ThreadPosts_Show' org_pack forum_pack board_pack thread_pack st =
                   , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup st post.userId)]
                 ]
               , H.div [P.class_ B.colXs1] [
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI 0) []) "edit"],
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI 0) []) "delete"]
+                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) []) "edit"],
+                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) []) "delete"]
                 ]
               , H.div [P.class_ B.colXs1] [
                     renderLike Ent_ThreadPost post.id pack'.like pack'.star
