@@ -61,7 +61,6 @@ eval_Goto eval (Goto route next) = do
       modify (_{ currentOrganizationRequest = Just defaultOrganizationRequest, currentOrganizationRequestSt = Just defaultOrganizationRequestState })
       pure unit
 
-
     (Organizations (Edit org_name) params) -> do
       eval (GetOrganization org_name next)
       m_pack <- gets _.currentOrganization
@@ -90,11 +89,14 @@ eval_Goto eval (Goto route next) = do
       pure unit
 
 
+
     (OrganizationsForums org_name New params) -> do
       modify (_{ currentForumRequest = Just defaultForumRequest, currentForumRequestSt = Just defaultForumRequestState })
       pure unit
 
-    (OrganizationsForums org_name (EditI forum_id) params) -> do
+    (OrganizationsForums org_name (Edit forum_name) params) -> do
+      eval (GetOrganization org_name next)
+      eval (GetOrganizationForum org_name forum_name next)
       m_pack <- gets _.currentForum
       case m_pack of
            Nothing                              -> pure unit
@@ -106,8 +108,9 @@ eval_Goto eval (Goto route next) = do
              modify (_{ currentForumRequest = Just $ forumResponseToForumRequest pack.forum, currentForumRequestSt = Just o_st })
              pure unit
 
-    (OrganizationsForums org_name (DeleteI organization_id) params) -> do
---      eval (GetForumId forum_id next)
+    (OrganizationsForums org_name (Delete forum_name) params) -> do
+      eval (GetOrganization org_name next)
+      eval (GetOrganizationForum org_name forum_name next)
       m_pack <- gets _.currentForum
       case m_pack of
            Nothing                          -> pure unit
@@ -124,11 +127,15 @@ eval_Goto eval (Goto route next) = do
       eval (GetOrganizationForum org_name forum_name next) $> unit
 
 
+
     (OrganizationsForumsBoards org_name forum_name New params) -> do
       modify (_{ currentBoardRequest = Just defaultBoardRequest, currentBoardRequestSt = Just defaultBoardRequestState })
       pure unit
 
-    (OrganizationsForumsBoards org_name forum_name (EditI board_id) params) -> do
+    (OrganizationsForumsBoards org_name forum_name (Edit board_name) params) -> do
+      eval (GetOrganization org_name next)
+      eval (GetOrganizationForum org_name forum_name next)
+      eval (GetOrganizationForumBoard org_name forum_name board_name next)
       m_pack <- gets _.currentBoard
       case m_pack of
            Nothing                              -> pure unit
@@ -140,8 +147,10 @@ eval_Goto eval (Goto route next) = do
              modify (_{ currentBoardRequest = Just $ boardResponseToBoardRequest pack.board, currentBoardRequestSt = Just o_st })
              pure unit
 
-    (OrganizationsForumsBoards org_name forum_name (DeleteI board_id) params) -> do
---      eval (GetBoardId forum_id next)
+    (OrganizationsForumsBoards org_name forum_name (Delete board_name) params) -> do
+      eval (GetOrganization org_name next)
+      eval (GetOrganizationForum org_name forum_name next)
+      eval (GetOrganizationForumBoard org_name forum_name board_name next)
       m_pack <- gets _.currentBoard
       case m_pack of
            Nothing                          -> pure unit
@@ -194,7 +203,11 @@ eval_Goto eval (Goto route next) = do
       modify (_{ currentThreadRequest = Just defaultThreadRequest, currentThreadRequestSt = Just defaultThreadRequestState })
       pure unit
 
-    (OrganizationsForumsBoardsThreads org_name forum_name board_name (EditI thread_id) params) -> do
+    (OrganizationsForumsBoardsThreads org_name forum_name board_name (Edit thread_name) params) -> do
+      eval (GetOrganization org_name next)
+      eval (GetOrganizationForum org_name forum_name next)
+      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
       m_pack <- gets _.currentThread
       case m_pack of
            Nothing                              -> pure unit
@@ -206,7 +219,11 @@ eval_Goto eval (Goto route next) = do
              modify (_{ currentThreadRequest = Just $ threadResponseToThreadRequest pack.thread, currentThreadRequestSt = Just o_st })
              pure unit
 
-    (OrganizationsForumsBoardsThreads org_name forum_name board_name (DeleteI thread_id) params) -> do
+    (OrganizationsForumsBoardsThreads org_name forum_name board_name (Delete thread_name) params) -> do
+      eval (GetOrganization org_name next)
+      eval (GetOrganizationForum org_name forum_name next)
+      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
       m_pack <- gets _.currentThread
       case m_pack of
            Nothing                          -> pure unit
