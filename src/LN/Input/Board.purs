@@ -18,9 +18,18 @@ data InputBoard
 
 
 data Board_Mod
-  = SetTitle String
+  = SetDisplayName String
 
-  | SetDescription (Maybe String)
+  | SetDescription String
+  | RemoveDescription
 
-  | Save Int
-  | EditP Int
+  | SetIcon String
+  | RemoveIcon
+
+  | AddTag String
+  | EditTag Int String
+  | DeleteTag Int
+  | ClearTags
+
+  | Create Int -- TODO FIXME: needs to be a forum id OR board id
+  | EditP Int  -- edit board_id

@@ -184,12 +184,65 @@ instance routesHasCrumb :: HasCrumb Routes where
           Tuple (Organizations (Show $ slash org) params) org
         ]
 
+
+
+      OrganizationsForumsBoards org forum New params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum
+        ]
+
+      OrganizationsForumsBoards org forum (Edit board) params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) params) board
+        ]
+
+      OrganizationsForumsBoards org forum (Delete board) params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) params) board
+        ]
+
       OrganizationsForumsBoards org forum (Show board) params ->
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show $ slash org) params) org,
           Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
           Tuple (OrganizationsForumsBoards org forum (Show $ slash board) params) board
+        ]
+
+
+
+      OrganizationsForumsBoardsThreads org forum board New params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) []) board
+        ]
+
+      OrganizationsForumsBoardsThreads org forum board (Edit thread) params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) []) board,
+          Tuple (OrganizationsForumsBoardsThreads org forum board (Show $ slash thread) params) thread
+        ]
+
+      OrganizationsForumsBoardsThreads org forum board (Delete thread) params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) []) board,
+          Tuple (OrganizationsForumsBoardsThreads org forum board (Show $ slash thread) params) thread
         ]
 
       OrganizationsForumsBoardsThreads org forum board (Show thread) params ->
