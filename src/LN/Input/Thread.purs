@@ -29,5 +29,8 @@ data Thread_Mod
 
   | SetPoll Boolean
 
+  | SetIcon String
+  | RemoveIcon
+
   | Create Int  -- via board_id
   | EditP Int   -- via thread_id

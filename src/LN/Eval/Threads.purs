@@ -6,18 +6,26 @@ module LN.Eval.Threads (
 
 
 
-import Halogen                         (gets, modify)
-import Data.Array                      (catMaybes)
+import Data.Array                      (head, deleteAt, modifyAt, nub, catMaybes)
 import Data.Either                     (Either(..))
+import Data.Functor                    (($>))
 import Data.Map                        as M
-import Prelude                         (bind, pure, map, ($), (<>))
+import Data.Maybe                      (Maybe(..), maybe)
+import Halogen                         (gets, modify)
+import Optic.Core                      ((^.), (..), (.~))
+import Prelude                         (class Eq, bind, pure, map, ($), (<>))
 
+import LN.Api                          (getThreadPacks_ByBoardId, rd, getThreadsCount_ByBoardId', getThreadPack', postThread_ByBoardId', putThread')
 import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
 import LN.Input.Thread                 (InputThread(..), Thread_Mod(..))
 import LN.Input.Types                  (Input(..))
+import LN.State.Loading                (l_currentThread)
+import LN.State.Loading.Helpers        (setLoading, clearLoading)
+import LN.Router.Class.Routes          (Routes(..))
+import LN.Router.Class.CRUD            (CRUD(..))
 import LN.State.PageInfo               (runPageInfo)
-import LN.Api                          (getThreadPacks_ByBoardId, rd, getThreadsCount_ByBoardId')
+import LN.T.Internal.Convert           (threadResponseToThreadRequest)
 import LN.T
 
 
@@ -65,7 +73,66 @@ eval_GetThreadsForBoard eval (GetThreadsForBoard board_id next) = do
 
 eval_Thread :: EvalEff
 eval_Thread eval (CompThread sub next) = do
+
+  org_pack   <- gets _.currentOrganization
+  forum_pack <- gets _.currentForum
+  board_pack <- gets _.currentBoard
+  let
+    org_name   = maybe "unknown" (\org -> org ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. name_) org_pack
+    forum_name = maybe "unknown" (\org -> org ^. _ForumPackResponse .. forum_ ^. _ForumResponse .. name_) forum_pack
+    board_name = maybe "unknown" (\org -> org ^. _BoardPackResponse .. board_ ^. _BoardResponse .. name_) board_pack
+
   case sub of
     InputThread_Mod q -> do
       case q of
-        _ -> pure next
+        SetDisplayName name -> mod $ set (\req -> _ThreadRequest .. displayName_ .~ name $ req)
+
+        SetDescription s    -> mod $ set (\req -> _ThreadRequest .. description_ .~ Just s $ req)
+        RemoveDescription   -> mod $ set (\req -> _ThreadRequest .. description_ .~ Nothing $ req)
+
+        SetIcon s           -> mod $ set (\req -> _ThreadRequest .. icon_ .~ Just s $ req)
+        RemoveIcon          -> mod $ set (\req -> _ThreadRequest .. icon_ .~ Nothing $ req)
+
+        Create board_id     -> do
+
+          m_req <- gets _.currentThreadRequest
+
+          case m_req of
+
+               Just req -> do
+
+                 e_thread <- rd $ postThread_ByBoardId' board_id req
+
+                 case e_thread of
+                      Left err                      -> eval (AddErrorApi "eval_Thread(Create)::postThread'" err next)
+                      Right (ThreadResponse thread) -> eval (Goto (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread.name) []) next)
+
+
+               _        -> eval (AddError "eval_Thread(Create)" "Thread request doesn't exist" next)
+
+
+        EditP thread_id -> do
+
+          m_req <- gets _.currentThreadRequest
+
+          case m_req of
+               Nothing  -> eval (AddError "eval_Thread(Edit)" "Thread request doesn't exist" next)
+               Just req -> do
+
+                 e_org <- rd $ putThread' thread_id req
+
+                 case e_org of
+                      Left err  -> eval (AddErrorApi "eval_Thread(Edit)::putThread" err next)
+                      Right org -> do
+
+                        modify (\st->st{ currentThreadRequest = Just $ threadResponseToThreadRequest org })
+                        pure next
+
+    _   -> pure next
+
+ where
+ append :: forall a. Eq a => Maybe (Array a) -> a -> Maybe (Array a)
+ append Nothing a    = Just [a]
+ append (Just arr) a = Just $ nub $ arr <> [a]
+ set v req           = Just (v req)
+ mod new             = modify (\st->st{ currentThreadRequest = maybe Nothing new st.currentThreadRequest }) $> next
