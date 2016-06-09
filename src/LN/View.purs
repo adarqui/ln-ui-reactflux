@@ -77,20 +77,26 @@ import LN.View.Leurons.Mod                 (renderView_Leurons_New, renderView_L
 renderView :: Routes -> State -> ComponentHTML Input
 
 
+
 renderView Home   = const $ renderView_Home
+
 
 
 renderView About  = const $ renderView_About
 
 
+
 renderView Errors = renderView_Errors
+
 
 
 renderView Portal = const $ renderView_Portal
 
 
+
 renderView (Users Index params)            = renderView_Users_Index
 renderView (Users (Show user_name) params) = renderView_Users_Show user_name
+
 
 
 renderView (UsersProfile user_name params)     = renderView_Users_Profile user_name

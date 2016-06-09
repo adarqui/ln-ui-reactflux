@@ -55,7 +55,7 @@ eval_Goto eval (Goto route next) = do
 
 
 
-    (Organizations Index params) -> eval  (GetOrganizations next) $> unit
+    (Organizations Index params) -> eval (GetOrganizations next) $> unit
 
     (Organizations New params) -> do
       modify (_{ currentOrganizationRequest = Just defaultOrganizationRequest, currentOrganizationRequestSt = Just defaultOrganizationRequestState })
