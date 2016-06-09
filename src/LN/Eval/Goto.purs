@@ -17,12 +17,18 @@ import LN.Component.Types       (EvalEff)
 import LN.Input.Types           (Input(..))
 import LN.Internal.Organization (defaultOrganizationRequest)
 import LN.Internal.Forum        (defaultForumRequest)
+import LN.Internal.Board        (defaultBoardRequest)
+import LN.Internal.Thread       (defaultThreadRequest)
+import LN.Internal.ThreadPost   (defaultThreadPostRequest)
 import LN.Internal.Leuron       (defaultLeuronRequest, leuronToTyLeuron)
 import LN.Internal.Resource     (defaultResourceRequest, resourceTypeToTyResourceType)
 import LN.Router.Link           (updateUrl)
 import LN.Router.Types          (Routes(..), CRUD(..))
 import LN.State.Organization    (defaultOrganizationRequestState)
 import LN.State.Forum           (defaultForumRequestState)
+import LN.State.Board           (defaultBoardRequestState)
+import LN.State.Thread          (defaultThreadRequestState)
+import LN.State.ThreadPost      (defaultThreadPostRequestState)
 import LN.State.Leuron          (defaultLeuronRequestState, leuronRequestStateFromLeuronData)
 import LN.State.Resource        (defaultResourceRequestState)
 import LN.T
@@ -57,7 +63,6 @@ eval_Goto eval (Goto route next) = do
 
 
     (Organizations (EditI org_id) params) -> do
---      eval (GetOrganizationId org_id next)
       m_pack <- gets _.currentOrganization
       case m_pack of
            Nothing                              -> pure unit
@@ -88,6 +93,27 @@ eval_Goto eval (Goto route next) = do
       modify (_{ currentForumRequest = Just defaultForumRequest, currentForumRequestSt = Just defaultForumRequestState })
       pure unit
 
+    (OrganizationsForums org_name (EditI forum_id) params) -> do
+      m_pack <- gets _.currentForum
+      case m_pack of
+           Nothing                              -> pure unit
+           Just (ForumPackResponse pack) -> do
+             m_o_st <- gets _.currentForumRequestSt
+             let
+               org  = pack.forum ^. _ForumResponse
+               o_st = maybe defaultForumRequestState id m_o_st
+             modify (_{ currentForumRequest = Just $ forumResponseToForumRequest pack.forum, currentForumRequestSt = Just o_st })
+             pure unit
+
+    (OrganizationsForums org_name (DeleteI organization_id) params) -> do
+--      eval (GetForumId forum_id next)
+      m_pack <- gets _.currentForum
+      case m_pack of
+           Nothing                          -> pure unit
+           Just (ForumPackResponse pack) -> do
+             modify (_{ currentForumRequest = Just $ forumResponseToForumRequest pack.forum })
+             pure unit
+
     (OrganizationsForums org_name (Show forum_name) params) -> do
       -- TODO FIXME
       if (org_name /= (maybe "" (\v -> v ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. name_) st.currentOrganization))
@@ -97,6 +123,30 @@ eval_Goto eval (Goto route next) = do
       eval (GetOrganizationForum org_name forum_name next) $> unit
 
 
+    (OrganizationsForumsBoards org_name forum_name New params) -> do
+      modify (_{ currentBoardRequest = Just defaultBoardRequest, currentBoardRequestSt = Just defaultBoardRequestState })
+      pure unit
+
+    (OrganizationsForumsBoards org_name forum_ (EditI board_id) params) -> do
+      m_pack <- gets _.currentBoard
+      case m_pack of
+           Nothing                              -> pure unit
+           Just (BoardPackResponse pack) -> do
+             m_o_st <- gets _.currentBoardRequestSt
+             let
+               org  = pack.board ^. _BoardResponse
+               o_st = maybe defaultBoardRequestState id m_o_st
+             modify (_{ currentBoardRequest = Just $ boardResponseToBoardRequest pack.board, currentBoardRequestSt = Just o_st })
+             pure unit
+
+    (OrganizationsForumsBoards org_name forum_name (DeleteI board_id) params) -> do
+--      eval (GetBoardId forum_id next)
+      m_pack <- gets _.currentBoard
+      case m_pack of
+           Nothing                          -> pure unit
+           Just (BoardPackResponse pack) -> do
+             modify (_{ currentBoardRequest = Just $ boardResponseToBoardRequest pack.board })
+             pure unit
 
     (OrganizationsForumsBoards org_name forum_name (Show board_name) params) -> do
       -- TODO FIXME

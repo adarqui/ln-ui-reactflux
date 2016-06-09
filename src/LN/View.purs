@@ -123,9 +123,9 @@ renderView (OrganizationsForums org_name (Show forum_name) params)   = renderVie
 renderView (OrganizationsForumsBoards org_name forum_name New params)                 =
   renderView_Boards_NewS
 renderView (OrganizationsForumsBoards org_name forum_name (Edit board_name) params)   =
-  renderView_Boards_EditS board_name
+  renderView_Boards_EditS
 renderView (OrganizationsForumsBoards org_name forum_name (Delete board_name) params) =
-  renderView_Boards_DeleteS board_name
+  renderView_Boards_DeleteS
 renderView (OrganizationsForumsBoards org_name forum_name (Show board_name) params)   =
   renderView_Organizations_Forums_Boards_Show board_name
 

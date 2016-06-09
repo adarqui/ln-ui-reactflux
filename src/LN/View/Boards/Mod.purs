@@ -34,8 +34,8 @@ import LN.T
 
 
 
-renderView_Boards_Delete :: Int -> Int -> State -> ComponentHTML Input
-renderView_Boards_Delete organization_id board_id st =
+renderView_Boards_Delete :: State -> ComponentHTML Input
+renderView_Boards_Delete st =
 
   case st.currentBoard, getLoading l_currentBoard st.loading of
        _, true          -> renderLoading
@@ -52,55 +52,55 @@ renderView_Boards_Delete' pack st =
 
 
 
-renderView_Boards_New :: Int -> State -> ComponentHTML Input
-renderView_Boards_New organization_id = renderView_Boards_Mod organization_id Nothing
+renderView_Boards_New :: State -> ComponentHTML Input
+renderView_Boards_New = renderView_Boards_Mod Nothing
 
 
 
-renderView_Boards_Edit :: Int -> Int -> State -> ComponentHTML Input
-renderView_Boards_Edit organization_id board_id = renderView_Boards_Mod organization_id (Just board_id)
+renderView_Boards_Edit :: Int -> State -> ComponentHTML Input
+renderView_Boards_Edit board_id = renderView_Boards_Mod (Just board_id)
 
 
 
-renderView_Boards_Mod :: Int -> Maybe Int -> State -> ComponentHTML Input
-renderView_Boards_Mod organization_id m_board_id st =
+renderView_Boards_Mod :: Maybe Int -> State -> ComponentHTML Input
+renderView_Boards_Mod m_board_id st =
   case st.currentBoardRequest, st.currentBoardRequestSt, getLoading l_currentBoard st.loading of
     _, _, true                         -> renderLoading
-    Just board_req, Just f_st, false   -> renderView_Boards_Mod' organization_id m_board_id board_req f_st st
+    Just board_req, Just f_st, false   -> renderView_Boards_Mod' m_board_id board_req f_st st
     _, _, false                        -> H.div_ [H.p_ [H.text "Boards_Mod: unexpected error."]]
 
 
 
-renderView_Boards_Mod' :: Int -> Maybe Int -> BoardRequest -> BoardRequestState -> State -> ComponentHTML Input
-renderView_Boards_Mod' organization_id m_board_id board_req f_st st =
+renderView_Boards_Mod' :: Maybe Int -> BoardRequest -> BoardRequestState -> State -> ComponentHTML Input
+renderView_Boards_Mod' m_board_id board_req f_st st =
   H.div_ [
 
     H.h1_ [ H.text "Add Board" ]
 
-  , create_or_save
-
-  , create_or_save
-
   ]
   where
   board    = unwrapBoardRequest board_req
-  save     = maybe "Create" (const "Save") m_board_id
-  create_or_save = case m_board_id of
-         Nothing         -> simpleInfoButton "Create" (cBoardMod $ Save organization_id)
-         Just board_id   -> simpleInfoButton "Save" (cBoardMod $ EditP board_id)
-         _               -> H.p_ [H.text "unexpected error."]
 
 
 
-renderView_Boards_DeleteS :: String -> State -> ComponentHTML Input
-renderView_Boards_DeleteS board_name st = H.div_ [H.text "DeleteS"]
+renderView_Boards_DeleteS :: State -> ComponentHTML Input
+renderView_Boards_DeleteS = renderView_Boards_Delete
 
 
 
 renderView_Boards_NewS :: State -> ComponentHTML Input
-renderView_Boards_NewS st = H.div_ [H.text "NewS"]
+renderView_Boards_NewS = renderView_Boards_New
 
 
 
-renderView_Boards_EditS :: String -> State -> ComponentHTML Input
-renderView_Boards_EditS board_name st = H.div_ [H.text "EditS"]
+renderView_Boards_EditS :: State -> ComponentHTML Input
+renderView_Boards_EditS st =
+
+  case st.currentOrganization, st.currentBoard of
+
+    Just org_pack, Just board_pack ->
+      renderView_Boards_Edit
+        (board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse .. id_)
+        st
+
+    _, _       -> H.div_ [H.text "error"]
