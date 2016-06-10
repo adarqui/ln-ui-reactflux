@@ -134,7 +134,7 @@ renderView (Organizations Index params)             = renderView_Organizations_I
 renderView (Organizations New params)               = renderView_Organizations_NewS
 renderView (Organizations (Edit org_name) params)   = renderView_Organizations_EditS
 renderView (Organizations (Delete org_name) params) = renderView_Organizations_DeleteS
-renderView (Organizations (Show org_name) params)   = renderView_Organizations_Show org_name
+renderView (Organizations (Show org_name) params)   = renderView_Organizations_Show
 
 
 
@@ -146,8 +146,8 @@ renderView (OrganizationsForums org_name (Show forum_name) params)   = renderVie
 
 
 
-renderView (OrganizationsForumsBoards org_name forum_name Index params)                 =
-  renderView_Boards_Index
+renderView (OrganizationsForumsBoards org_name forum_name Index params)               =
+  renderView_Forums_Show
 renderView (OrganizationsForumsBoards org_name forum_name New params)                 =
   renderView_Boards_NewS
 renderView (OrganizationsForumsBoards org_name forum_name (Edit board_name) params)   =

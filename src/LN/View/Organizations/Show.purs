@@ -29,8 +29,8 @@ import LN.T                            ( OrganizationPackResponse
 
 
 
-renderView_Organizations_Show :: String -> State -> ComponentHTML Input
-renderView_Organizations_Show org_name st =
+renderView_Organizations_Show :: State -> ComponentHTML Input
+renderView_Organizations_Show st =
 
   case st.currentOrganization, getLoading l_currentOrganization st.loading of
        _, true              -> renderLoading

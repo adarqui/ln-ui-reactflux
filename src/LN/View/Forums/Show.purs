@@ -8,7 +8,7 @@ module LN.View.Forums.Show (
 import Daimyo.Data.ArrayList           (listToArray)
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
-import Halogen                         (ComponentHTML)
+import Halogen                         (ComponentHTML, HTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
@@ -19,6 +19,7 @@ import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
+import LN.View.Boards.Index            (renderView_Boards_Index')
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( ForumPackResponse
                                        , _ForumPackResponse, _ForumResponse, organization_
@@ -33,53 +34,36 @@ import LN.T                            ( ForumPackResponse
 renderView_Forums_Show :: State -> ComponentHTML Input
 renderView_Forums_Show st =
 
-  case st.currentOrganization of
-       Just org_pack -> renderView_Forums_Show' org_pack st
-       _             -> renderLoading
+  case st.currentOrganization, st.currentForum of
+
+       Just org_pack, Just forum_pack ->
+         renderView_Forums_Show' org_pack forum_pack (renderView_Boards_Index' org_pack forum_pack st.boards)
+
+       _, _                           -> renderLoading
 
 
 
-renderView_Forums_Show' :: OrganizationPackResponse -> State -> ComponentHTML Input
-renderView_Forums_Show' org_pack st =
-  H.div [P.class_ B.pageHeader] [
+renderView_Forums_Show'
+  :: OrganizationPackResponse
+  -> ForumPackResponse
+  -> HTML _ _
+  -> ComponentHTML Input
+renderView_Forums_Show' org_pack forum_pack plumbing_boards =
+  H.div [P.class_ B.containerFluid] [
 
-    H.h1 [P.class_ B.textCenter] [ H.text "Forums" ],
-
-    H.div [P.classes [B.clearfix, B.container]] [
-      H.div_ [linkToP [] (OrganizationsForums org.name New []) "add-forum"]
+    H.div [P.class_ B.pageHeader] [
+      H.h2_ [H.text forum.name],
+      linkToP [] (OrganizationsForums org.name (Edit forum.name) []) "edit",
+      H.p [P.class_ B.lead] [H.text forum_desc]
     ],
 
-    H.div [P.class_ B.listUnstyled] $
-      map (\forum_pack ->
-        let forum = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse in
-        H.li_ [
-          H.div [P.class_ B.row] [
-            H.div [P.class_ B.colXs1] [
-              H.p_ [H.text "icon"]
-            ],
-            H.div [P.class_ B.colXs6] [
-              H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForums org.name (Show forum.name) []) forum.displayName],
-              H.p_ [H.text $ maybe "No description." id forum.description],
-              if forum.tags /= []
-                 then H.p_ [H.text $ show forum.tags]
-                 else H.div_ []
-            ],
-            H.div [P.class_ B.colXs2] [
-              H.p_ [H.text "boards"],
-              H.p_ [H.text "threads"],
-              H.p_ [H.text "posts"],
-              H.p_ [H.text "views"]
-            ],
-            H.div [P.class_ B.colXs2] [
-              H.p_ [H.text "created-at"]
-            ],
-            H.div [P.class_ B.colXs1] [
-              H.div_ [linkToP [] (OrganizationsForums org.name (Edit forum.name) []) "edit"],
-              H.div_ [linkToP [] (OrganizationsForums org.name (Delete forum.name) []) "delete"]
-            ]
-          ]
-        ])
-        $ listToArray $ M.values st.forums
+    H.div [P.class_ B.container] [
+      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name New []) "add-board"]
+    ],
+
+    H.div [] [plumbing_boards]
   ]
   where
-  org = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  org        = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  forum      = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
+  forum_desc = maybe "No description." id forum.description
