@@ -119,13 +119,14 @@ eval_Thread eval (CompThread sub next) = do
                Nothing  -> eval (AddError "eval_Thread(Edit)" "Thread request doesn't exist" next)
                Just req -> do
 
-                 e_org <- rd $ putThread' thread_id req
+                 e_thread <- rd $ putThread' thread_id req
 
-                 case e_org of
-                      Left err  -> eval (AddErrorApi "eval_Thread(Edit)::putThread" err next)
-                      Right org -> do
+                 case e_thread of
+                      Left err     -> eval (AddErrorApi "eval_Thread(Edit)::putThread" err next)
+                      Right thread -> do
 
-                        modify (\st->st{ currentThreadRequest = Just $ threadResponseToThreadRequest org })
+                        modify (\st->st{ currentThreadRequest = Just $ threadResponseToThreadRequest thread })
+                        eval (Goto (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show $ thread ^. _ThreadResponse .. name_) []) next)
                         pure next
 
     _   -> pure next

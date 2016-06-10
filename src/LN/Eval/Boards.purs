@@ -29,6 +29,7 @@ import LN.T                            (BoardPackResponses(..), BoardPackRespons
                                        , ForumPackResponse(..)
                                        , _ForumPackResponse, forum_, _ForumResponse, name_
                                        , BoardResponse(..)
+                                       , _BoardResponse, name_
                                        , BoardRequest(..)
                                        , _BoardRequest, displayName_, description_, icon_, tags_, guard_
                                        , _OrganizationPackResponse, _OrganizationResponse, organization_, name_)
@@ -103,13 +104,13 @@ eval_Board eval (CompBoard sub next) = do
                Nothing  -> eval (AddError "eval_Board(Edit)" "Board request doesn't exist" next)
                Just req -> do
 
-                 e_org <- rd $ putBoard' board_id req
+                 e_board <- rd $ putBoard' board_id req
 
-                 case e_org of
-                      Left err  -> eval (AddErrorApi "eval_Board(Edit)::putBoard" err next)
-                      Right org -> do
-
-                        modify (\st->st{ currentBoardRequest = Just $ boardResponseToBoardRequest org })
+                 case e_board of
+                      Left err    -> eval (AddErrorApi "eval_Board(Edit)::putBoard" err next)
+                      Right board -> do
+                        modify (\st->st{ currentBoardRequest = Just $ boardResponseToBoardRequest board })
+                        eval (Goto (OrganizationsForumsBoards org_name forum_name (Show $ board ^. _BoardResponse .. name_) []) next)
                         pure next
 
     _   -> pure next

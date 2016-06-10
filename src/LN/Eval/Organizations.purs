@@ -37,6 +37,7 @@ import LN.State.Organization           (OrganizationRequestState, defaultOrganiz
 import LN.T.Internal.Convert           (organizationResponseToOrganizationRequest)
 import LN.T                            ( OrganizationPackResponses(..), OrganizationPackResponse(..)
                                        , OrganizationResponse(..)
+                                       , _OrganizationResponse, name_
                                        , _OrganizationRequest, OrganizationRequest(..), displayName_, description_, company_, location_
                                        , _UserPackResponse, _UserResponse, user_, email_
                                        , ForumPackResponse(..)
@@ -268,6 +269,7 @@ eval_Organization eval (CompOrganization sub next) = do
                       Right org -> do
 
                         modify (\st->st{ currentOrganizationRequest = Just $ organizationResponseToOrganizationRequest org })
+                        eval (Goto (Organizations (Show $ org ^. _OrganizationResponse .. name_) []) next)
                         pure next
 
     _   -> pure next

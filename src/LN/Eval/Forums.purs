@@ -27,6 +27,7 @@ import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.T.Internal.Convert           (forumResponseToForumRequest)
 import LN.T                            ( ForumPackResponses(..), ForumPackResponse(..)
                                        , ForumResponse(..)
+                                       , _ForumResponse, name_
                                        , ForumRequest(..)
                                        , _ForumRequest, displayName_, description_, icon_, tags_, visibility_, guard_
                                        , _OrganizationPackResponse, _OrganizationResponse, organization_, name_)
@@ -98,13 +99,14 @@ eval_Forum eval (CompForum sub next) = do
                Nothing  -> eval (AddError "eval_Forum(Edit)" "Forum request doesn't exist" next)
                Just req -> do
 
-                 e_org <- rd $ putForum' forum_id req
+                 e_forum <- rd $ putForum' forum_id req
 
-                 case e_org of
-                      Left err  -> eval (AddErrorApi "eval_Forum(Edit)::putForum" err next)
-                      Right org -> do
+                 case e_forum of
+                      Left err    -> eval (AddErrorApi "eval_Forum(Edit)::putForum" err next)
+                      Right forum -> do
 
-                        modify (\st->st{ currentForumRequest = Just $ forumResponseToForumRequest org })
+                        modify (\st->st{ currentForumRequest = Just $ forumResponseToForumRequest forum })
+                        eval (Goto (OrganizationsForums org_name (Show $ forum ^. _ForumResponse .. name_) []) next)
                         pure next
 
     _   -> pure next
