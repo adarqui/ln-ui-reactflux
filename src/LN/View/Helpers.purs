@@ -78,7 +78,13 @@ module LN.View.Helpers (
   glyphButtonLinkLg_Pencil,
 
   buttonGroup_Horizontal,
-  buttonGroup_Vertical
+  buttonGroup_Vertical,
+
+  buttonGroup_HorizontalSm1,
+  buttonGroup_VerticalSm1,
+
+  buttonGroup_Horizontal',
+  buttonGroup_Vertical'
 ) where
 
 
@@ -238,3 +244,16 @@ glyphButtonLinkLg_Pencil    = glyphButtonLink_Pencil B.btnLg
 
 buttonGroup_Horizontal xs = H.div_ xs
 buttonGroup_Vertical xs   = H.div_ xs
+
+
+
+buttonGroup_HorizontalSm1 = buttonGroup_Horizontal' B.colSm1
+buttonGroup_VerticalSm1 = buttonGroup_Vertical' B.colSm1
+
+
+
+buttonGroup_Horizontal' sz xs =
+  H.div [P.class_ B.row] [H.div [P.class_ sz] xs]
+
+buttonGroup_Vertical' sz xs =
+  H.div [P.class_ B.row] [H.div [P.class_ sz] xs]
