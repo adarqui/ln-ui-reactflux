@@ -38,13 +38,13 @@ renderLike ent ent_id m_like m_star =
 
   H.div [P.class_ B.row] [
 
-    glyphButtonDef_ArrowUp colorLike "like" $ CompLike (InputLike_Like ent ent_id m_like),
-    glyphButtonDef_Minus colorNeutral "neutral" $ CompLike (InputLike_Neutral ent ent_id m_like),
-    glyphButtonDef_ArrowDown colorDislike "dislike" $ CompLike (InputLike_Dislike ent ent_id m_like),
+    glyphButtonDef_ArrowUp colorLike $ CompLike (InputLike_Like ent ent_id m_like),
+    glyphButtonDef_Minus colorNeutral $ CompLike (InputLike_Neutral ent ent_id m_like),
+    glyphButtonDef_ArrowDown colorDislike $ CompLike (InputLike_Dislike ent ent_id m_like),
 
     (case m_star of
-         Nothing   -> glyphButtonDef_StarEmpty colorStar "star"
-         Just star -> glyphButtonDef_Star colorStar "unstar") $ CompStar (InputStar ent ent_id m_star)
+         Nothing   -> glyphButtonDef_StarEmpty colorStar
+         Just star -> glyphButtonDef_Star colorStar) $ CompStar (InputStar ent ent_id m_star)
   ]
 
   where

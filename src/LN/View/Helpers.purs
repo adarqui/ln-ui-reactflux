@@ -39,6 +39,44 @@ module LN.View.Helpers (
   glyphButtonLg_Trash,
   glyphButtonLg_Pencil,
 
+  glyphButtonLink,
+
+  glyphButtonLink_ArrowUp,
+  glyphButtonLink_ArrowDown,
+  glyphButtonLink_Plus,
+  glyphButtonLink_Minus,
+  glyphButtonLink_Star,
+  glyphButtonLink_StarEmpty,
+  glyphButtonLink_Trash,
+  glyphButtonLink_Pencil,
+
+  glyphButtonLinkDef_ArrowUp,
+  glyphButtonLinkDef_ArrowDown,
+  glyphButtonLinkDef_Plus,
+  glyphButtonLinkDef_Minus,
+  glyphButtonLinkDef_Star,
+  glyphButtonLinkDef_StarEmpty,
+  glyphButtonLinkDef_Trash,
+  glyphButtonLinkDef_Pencil,
+
+  glyphButtonLinkSm_ArrowUp,
+  glyphButtonLinkSm_ArrowDown,
+  glyphButtonLinkSm_Plus,
+  glyphButtonLinkSm_Minus,
+  glyphButtonLinkSm_Star,
+  glyphButtonLinkSm_StarEmpty,
+  glyphButtonLinkSm_Trash,
+  glyphButtonLinkSm_Pencil,
+
+  glyphButtonLinkLg_ArrowUp,
+  glyphButtonLinkLg_ArrowDown,
+  glyphButtonLinkLg_Plus,
+  glyphButtonLinkLg_Minus,
+  glyphButtonLinkLg_Star,
+  glyphButtonLinkLg_StarEmpty,
+  glyphButtonLinkLg_Trash,
+  glyphButtonLinkLg_Pencil,
+
   buttonGroup_Horizontal,
   buttonGroup_Vertical
 ) where
@@ -58,7 +96,7 @@ import Prelude                         (id, map, ($), (<>))
 
 import LN.Halogen.Util
 import LN.Input.Types                  (Input(..))
-import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
+import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP, linkToHref)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                (getLoading, l_currentOrganization)
 import LN.State.Types                  (State)
@@ -83,7 +121,7 @@ buttons_CreateEditCancel m_edit_id save edit cancel =
 
 
 
-glyphButton glyph sz attrs alt handler =
+glyphButton glyph sz attrs handler =
   H.span [P.class_ B.inputGroupBtn] [
     H.button [
       attrs,
@@ -139,5 +177,64 @@ glyphButtonLg_Pencil    = glyphButton_Pencil B.btnLg
 
 
 
-buttonGroup_Horizontal = []
-buttonGroup_Vertical = []
+-- MAN WTF DO MY GLYPH ICONS KEEP VIBRATING?
+--
+-- glyphButtonLink glyph sz params link =
+--  H.span [P.class_ B.inputGroupBtn] [
+--    H.a [
+--      linkToHref link,
+--      P.classes [B.btn, B.btnDefault, sz]
+--    ] [H.span [P.classes [B.glyphicon, glyph]] []]
+--  ]
+
+glyphButtonLink glyph sz link =
+  glyphButton glyph sz (P.classes []) $ Goto link
+
+
+
+glyphButtonLink_ArrowUp   = glyphButtonLink B.glyphiconArrowUp
+glyphButtonLink_ArrowDown = glyphButtonLink B.glyphiconArrowDown
+glyphButtonLink_Plus      = glyphButtonLink B.glyphiconPlus
+glyphButtonLink_Minus     = glyphButtonLink B.glyphiconMinus
+glyphButtonLink_Star      = glyphButtonLink B.glyphiconStar
+glyphButtonLink_StarEmpty = glyphButtonLink B.glyphiconStarEmpty
+glyphButtonLink_Trash     = glyphButtonLink B.glyphiconTrash
+glyphButtonLink_Pencil    = glyphButtonLink B.glyphiconPencil
+
+
+
+glyphButtonLinkDef_ArrowUp   = glyphButtonLinkSm_ArrowUp
+glyphButtonLinkDef_ArrowDown = glyphButtonLinkSm_ArrowDown
+glyphButtonLinkDef_Plus      = glyphButtonLinkSm_Plus
+glyphButtonLinkDef_Minus     = glyphButtonLinkSm_Minus
+glyphButtonLinkDef_Star      = glyphButtonLinkSm_Star
+glyphButtonLinkDef_StarEmpty = glyphButtonLinkSm_StarEmpty
+glyphButtonLinkDef_Trash     = glyphButtonLinkSm_Trash
+glyphButtonLinkDef_Pencil    = glyphButtonLinkSm_Pencil
+
+
+
+glyphButtonLinkSm_ArrowUp   = glyphButtonLink_ArrowUp B.btnSm
+glyphButtonLinkSm_ArrowDown = glyphButtonLink_ArrowDown B.btnSm
+glyphButtonLinkSm_Plus      = glyphButtonLink_Plus B.btnSm
+glyphButtonLinkSm_Minus     = glyphButtonLink_Minus B.btnSm
+glyphButtonLinkSm_Star      = glyphButtonLink_Star B.btnSm
+glyphButtonLinkSm_StarEmpty = glyphButtonLink_StarEmpty B.btnSm
+glyphButtonLinkSm_Trash     = glyphButtonLink_Trash B.btnSm
+glyphButtonLinkSm_Pencil    = glyphButtonLink_Pencil B.btnSm
+
+
+
+glyphButtonLinkLg_ArrowUp   = glyphButtonLink_ArrowUp B.btnLg
+glyphButtonLinkLg_ArrowDown = glyphButtonLink_ArrowDown B.btnLg
+glyphButtonLinkLg_Plus      = glyphButtonLink_Plus B.btnLg
+glyphButtonLinkLg_Minus     = glyphButtonLink_Minus B.btnLg
+glyphButtonLinkLg_Star      = glyphButtonLink_Star B.btnLg
+glyphButtonLinkLg_StarEmpty = glyphButtonLink_StarEmpty B.btnLg
+glyphButtonLinkLg_Trash     = glyphButtonLink_Trash B.btnLg
+glyphButtonLinkLg_Pencil    = glyphButtonLink_Pencil B.btnLg
+
+
+
+buttonGroup_Horizontal xs = H.div_ xs
+buttonGroup_Vertical xs   = H.div_ xs

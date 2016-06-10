@@ -232,6 +232,37 @@ eval_Goto eval (Goto route next) = do
              modify (_{ currentThreadRequest = Just $ threadResponseToThreadRequest pack.thread })
              pure unit
 
+    (OrganizationsForumsBoardsThreads org_name forum_name board_name Index params) -> do
+
+      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
+      maybe
+        (pure unit)
+        (\(Tuple k offset) -> do
+          pageInfo <- gets _.threadsPageInfo
+          modify (_{ threadsPageInfo = pageInfo { currentPage = maybe 1 id (fromString offset) } })
+          pure unit)
+        moffset
+
+      let morder = elemBy (\(Tuple k v) -> k == show ParamTag_Order) params
+      maybe
+        (pure unit)
+        (\(Tuple k order_by) -> do
+          pageInfo <- gets _.threadsPageInfo
+          modify (_{ threadsPageInfo = pageInfo { order = orderFromString order_by } })
+          pure unit)
+        morder
+
+      let msort_order = elemBy (\(Tuple k v) -> k == show ParamTag_SortOrder) params
+      maybe
+        (pure unit)
+        (\(Tuple k order) -> do
+          pageInfo <- gets _.threadsPageInfo
+          modify (_{ threadsPageInfo = pageInfo { sortOrder = sortOrderFromString order } })
+          pure unit)
+        msort_order
+
+--      eval (GetOrganizationForumBoard org_name forum_name board_name next) $> unit
+
     (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params) -> do
       eval (GetOrganization org_name next)
       eval (GetOrganizationForum org_name forum_name next)

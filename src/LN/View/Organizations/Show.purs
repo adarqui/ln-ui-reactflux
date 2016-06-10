@@ -19,10 +19,12 @@ import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                (getLoading, l_currentOrganization)
 import LN.State.Types                  (State)
+import LN.View.Helpers
 import LN.View.Module.Loading          (renderLoading)
-import LN.View.Forums.Show             (renderView_Forums_Show)
+import LN.View.Forums.Index            (renderView_Forums_Index')
 import LN.T                            ( OrganizationPackResponse
                                        , _OrganizationPackResponse, _OrganizationResponse, organization_
+                                       , ForumPackResponse
                                        , _ForumPackResponse, _ForumResponse, forum_)
 
 
@@ -31,21 +33,23 @@ renderView_Organizations_Show :: String -> State -> ComponentHTML Input
 renderView_Organizations_Show org_name st =
 
   case st.currentOrganization, getLoading l_currentOrganization st.loading of
-       _, true          -> renderLoading
-       Just pack, false -> renderView_Organizations_Show' pack st
-       _, _             -> H.div_ [H.text "organization unavailable"]
+       _, true              -> renderLoading
+       Just org_pack, false -> renderView_Organizations_Show' org_pack st.forums
+       _, _                 -> H.div_ [H.text "organization unavailable"]
 
 
 
-renderView_Organizations_Show' :: OrganizationPackResponse -> State -> ComponentHTML Input
-renderView_Organizations_Show' pack st =
+renderView_Organizations_Show' :: OrganizationPackResponse -> M.Map Int ForumPackResponse -> ComponentHTML Input
+renderView_Organizations_Show' org_pack forum_packs =
   H.div [P.class_ B.containerFluid] [
     H.div [P.class_ B.pageHeader] [
       H.h1 [P.class_ B.textCenter] [ H.text organization.name ],
       H.p [P.class_ B.textCenter] [ H.text $ maybe "" id organization.description ],
       H.div_ [
-        H.div_ [linkToP [] (Organizations (Edit organization.name) []) "edit"],
-        H.div_ [linkToP [] (Organizations (Delete organization.name) []) "delete"]
+        buttonGroup_Horizontal [
+          glyphButtonLinkDef_Pencil $ Organizations (Edit organization.name) [],
+          glyphButtonLinkDef_Trash $ Organizations (Delete organization.name) []
+        ]
       ]
     ],
     H.div [P.class_ B.container] [
@@ -54,7 +58,7 @@ renderView_Organizations_Show' pack st =
         H.p_ [ H.h4_ [H.text "Company:", H.small_ [H.text $ " " <> organization.company]]],
         H.p_ [ H.h4_ [H.text "Location:", H.small_ [H.text $ " " <> organization.location]]]
       ],
-      renderView_Forums_Show st,
+      renderView_Forums_Index' org_pack forum_packs,
       H.p_ [ H.h4_ [H.text "Members"]],
       H.p_ [ H.h4_ [H.text "teams"]],
       H.p_ [ H.h4_ [H.text "activity"]],
@@ -62,4 +66,4 @@ renderView_Organizations_Show' pack st =
     ]
   ]
   where
-  organization = pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  organization = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
