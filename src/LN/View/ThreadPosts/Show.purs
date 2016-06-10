@@ -14,10 +14,10 @@ import Halogen.HTML.Properties.Indexed as P
 import Halogen.HTML.Events.Indexed     as E
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, show, map, ($), (<>), (-))
+import Prelude                         (id, show, map, ($), (<>), (-), (<<<))
 
-import LN.Input.Types                  (Input (..))
-import LN.Input.ThreadPost             (InputThreadPost (..))
+import LN.Input.Types                  (Input(..), cThreadPostMod)
+import LN.Input.ThreadPost             (InputThreadPost(..), ThreadPost_Mod(..))
 import LN.Router.Link                  (linkTo, linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
@@ -108,16 +108,16 @@ renderView_ThreadPosts_Show' org_pack forum_pack board_pack thread_pack st =
                        P.class_ B.formControl,
                        P.rows 10,
                        P.value body,
-                       E.onValueChange $ E.input (\v -> CompThreadPost (InputThreadPost_SetBody $ Just v))
+                       E.onValueChange $ E.input (cThreadPostMod <<< SetBody)
                      ]
                 -- TODO FIXME , need to style these buttons properly etc
                   , H.a [
                       P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg],
-                      E.onClick $ E.input (\v -> CompThreadPost InputThreadPost_Post)
+                      E.onClick $ E.input_ (cThreadPostMod $ Create thread.id)
                     ] [H.text "send"]
                   , H.a [
                       P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg],
-                      E.onClick $ E.input (\v -> CompThreadPost (InputThreadPost_SetBody Nothing))
+                      E.onClick $ E.input_ (cThreadPostMod RemoveBody)
                     ] [H.text "cancel"]
                   , H.a [P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg]] [H.text "preview"]
                 ]

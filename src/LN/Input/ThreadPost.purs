@@ -10,9 +10,7 @@ import Data.Maybe (Maybe)
 
 
 data InputThreadPost
-  = InputThreadPost_Post
-  | InputThreadPost_SetBody (Maybe String)
-  | InputThreadPost_Mod ThreadPost_Mod
+  = InputThreadPost_Mod ThreadPost_Mod
   | InputThreadPost_Nop
 
 
@@ -34,5 +32,5 @@ data ThreadPost_Mod
   | DeletePrivateTag Int
   | ClearPrivateTags
 
-  | Save Int
-  | EditP Int
+  | Create Int -- TODO FIXME: create based on thread_id or thread_post_id
+  | EditP Int  -- via thread_post_id

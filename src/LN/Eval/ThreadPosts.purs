@@ -7,18 +7,25 @@ module LN.Eval.ThreadPosts (
 
 
 
-import Halogen               (gets, modify)
-import Data.Either           (Either(..))
-import Data.Map              as M
-import Optic.Core            ((^.), (..))
-import Prelude               (bind, pure, map, ($))
-import LN.Component.Types    (EvalEff)
-import LN.Input.ThreadPost   (InputThreadPost(..), ThreadPost_Mod(..))
-import LN.Input.Types        (Input(..))
-import LN.Helpers.Map        (mergeMapArray)
-import LN.State.PageInfo     (runPageInfo)
-import LN.Api.Internal       (getThreadPostsCount_ByThreadId' , getThreadPostPacks_ByThreadId)
-import LN.Api.Helpers        (rd)
+import Data.Array             (head, deleteAt, modifyAt, nub)
+import Data.Either            (Either(..))
+import Data.Functor           (($>))
+import Data.Map               as M
+import Data.Maybe             (Maybe(..), maybe)
+import Halogen                (gets, modify)
+import Optic.Core             ((^.), (..), (.~))
+import Prelude                (class Eq, bind, pure, map, ($), (<>))
+
+import LN.Api.Internal        (getThreadPostsCount_ByThreadId' , getThreadPostPacks_ByThreadId, getThreadPostPack', postThreadPost_ByThreadId', putThreadPost')
+import LN.Api.Helpers         (rd)
+import LN.Component.Types     (EvalEff)
+import LN.Input.ThreadPost    (InputThreadPost(..), ThreadPost_Mod(..))
+import LN.Input.Types         (Input(..))
+import LN.Router.Class.Routes (Routes(..))
+import LN.Router.Class.CRUD   (CRUD(..))
+import LN.Helpers.Map         (mergeMapArray)
+import LN.State.PageInfo      (runPageInfo)
+import LN.T.Internal.Convert  (threadPostResponseToThreadPostRequest)
 import LN.T
 
 
@@ -73,7 +80,63 @@ eval_GetThreadPostsForThread eval (GetThreadPostsForThread thread_id next) = do
 
 eval_ThreadPost :: EvalEff
 eval_ThreadPost eval (CompThreadPost sub next) = do
+  org_pack    <- gets _.currentOrganization
+  forum_pack  <- gets _.currentForum
+  board_pack  <- gets _.currentBoard
+  thread_pack <- gets _.currentThread
+  let
+    org_name    = maybe "unknown" (\org -> org ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. name_) org_pack
+    forum_name  = maybe "unknown" (\forum -> forum ^. _ForumPackResponse .. forum_ ^. _ForumResponse .. name_) forum_pack
+    board_name  = maybe "unknown" (\board -> board ^. _BoardPackResponse .. board_ ^. _BoardResponse .. name_) board_pack
+    thread_name = maybe "unknown" (\thread -> thread ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse .. name_) thread_pack
+
   case sub of
     InputThreadPost_Mod q -> do
       case q of
-        _ -> pure next
+--        SetDisplayName name -> mod $ set (\req -> _ThreadPostRequest .. displayName_ .~ name $ req)
+        SetBody text -> mod $ set (\req -> _ThreadPostRequest .. body_ .~ PostDataBBCode text $ req)
+
+        Create thread_id     -> do
+
+          m_req <- gets _.currentThreadPostRequest
+
+          case m_req of
+
+               Just req -> do
+
+                 e_post <- rd $ postThreadPost_ByThreadId' thread_id req
+
+                 case e_post of
+                      Left err                        -> eval (AddErrorApi "eval_ThreadPost(Create)::postThreadPost'" err next)
+                      Right (ThreadPostResponse post) -> eval (Goto (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post.id) []) next)
+
+
+               _        -> eval (AddError "eval_ThreadPost(Create)" "ThreadPost request doesn't exist" next)
+
+
+
+        EditP thread_post_id -> do
+
+          m_req <- gets _.currentThreadPostRequest
+
+          case m_req of
+               Nothing  -> eval (AddError "eval_ThreadPost(Edit)" "ThreadPost request doesn't exist" next)
+               Just req -> do
+
+                 e_post <- rd $ putThreadPost' thread_post_id req
+
+                 case e_post of
+                      Left err  -> eval (AddErrorApi "eval_ThreadPost(Edit)::putThreadPost" err next)
+                      Right post -> do
+
+                        modify (\st->st{ currentThreadPostRequest = Just $ threadPostResponseToThreadPostRequest post })
+                        pure next
+
+    _   -> pure next
+
+ where
+ append :: forall a. Eq a => Maybe (Array a) -> a -> Maybe (Array a)
+ append Nothing a    = Just [a]
+ append (Just arr) a = Just $ nub $ arr <> [a]
+ set v req           = Just (v req)
+ mod new             = modify (\st->st{ currentThreadPostRequest = maybe Nothing new st.currentThreadPostRequest }) $> next
