@@ -45,12 +45,14 @@ renderView_Organizations_Show' org_pack forum_packs =
     H.div [P.class_ B.pageHeader] [
       H.h1 [P.class_ B.textCenter] [ H.text organization.name ],
       H.p [P.class_ B.textCenter] [ H.text $ maybe "" id organization.description ],
-      H.div_ [
+
+      H.div [P.class_ B.row] [H.div [P.class_ B.colSm1] [
         buttonGroup_Horizontal [
           glyphButtonLinkDef_Pencil $ Organizations (Edit organization.name) [],
           glyphButtonLinkDef_Trash $ Organizations (Delete organization.name) []
         ]
-      ]
+      ]]
+
     ],
     H.div [P.class_ B.container] [
       H.div [P.class_ B.pageHeader] [
