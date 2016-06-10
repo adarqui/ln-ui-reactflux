@@ -155,7 +155,8 @@ renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name
 renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (DeleteI post_id) params) =
   renderView_ThreadPosts_Delete post_id
 renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post_id) params)   =
-  renderView_ThreadPosts_Show
+  renderView_Organizations_Forums_Boards_Threads_Show thread_name
+--  renderView_ThreadPosts_Show
 
 
 

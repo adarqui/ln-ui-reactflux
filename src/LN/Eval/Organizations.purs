@@ -167,27 +167,6 @@ eval_GetOrganizationForumBoard eval (GetOrganizationForumBoard org_name forum_na
 
 
 
-eval_GetOrganizationForumBoardThreadPost :: EvalEff
-eval_GetOrganizationForumBoardThreadPost eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next) = do
-
-  modify (_{ currentThreadPost = Nothing })
-
-  modify $ setLoading l_currentThreadPost
-
-  e_post <- rd $ getThreadPostPack' post_id
-
-  modify $ clearLoading l_currentThreadPost
-
-  case e_post of
-
-    Left err                                 -> eval (AddErrorApi "eval_getOrganizationForumBoardThreadPost::getThreadPostPack'" err next)
-
-    Right pack@(ThreadPostPackResponse post) -> do
-      modify (_{ currentThreadPost = Just pack })
-      pure next
-
-
-
 eval_GetOrganizationForumBoardThread :: EvalEff
 eval_GetOrganizationForumBoardThread eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) = do
 
@@ -215,6 +194,27 @@ eval_GetOrganizationForumBoardThread eval (GetOrganizationForumBoardThread org_n
         modify (_{ currentThread = Just pack })
         eval (GetThreadPostsForThread thread.threadId next)
         pure next
+
+
+
+eval_GetOrganizationForumBoardThreadPost :: EvalEff
+eval_GetOrganizationForumBoardThreadPost eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next) = do
+
+  modify (_{ currentThreadPost = Nothing })
+
+  modify $ setLoading l_currentThreadPost
+
+  e_post <- rd $ getThreadPostPack' post_id
+
+  modify $ clearLoading l_currentThreadPost
+
+  case e_post of
+
+    Left err                                 -> eval (AddErrorApi "eval_getOrganizationForumBoardThreadPost::getThreadPostPack'" err next)
+
+    Right pack@(ThreadPostPackResponse post) -> do
+      modify (_{ currentThreadPost = Just pack })
+      pure next
 
 
 
