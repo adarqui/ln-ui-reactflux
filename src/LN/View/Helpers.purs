@@ -37,7 +37,10 @@ module LN.View.Helpers (
   glyphButtonLg_Star,
   glyphButtonLg_StarEmpty,
   glyphButtonLg_Trash,
-  glyphButtonLg_Pencil
+  glyphButtonLg_Pencil,
+
+  buttonGroup_Horizontal,
+  buttonGroup_Vertical
 ) where
 
 
@@ -133,3 +136,8 @@ glyphButtonLg_Star      = glyphButton_Star B.btnLg
 glyphButtonLg_StarEmpty = glyphButton_StarEmpty B.btnLg
 glyphButtonLg_Trash     = glyphButton_Trash B.btnLg
 glyphButtonLg_Pencil    = glyphButton_Pencil B.btnLg
+
+
+
+buttonGroup_Horizontal = []
+buttonGroup_Vertical = []
