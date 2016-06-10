@@ -19,6 +19,7 @@ import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
+import LN.View.Helpers
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( Param(..)
                                        , OrganizationPackResponse, ForumPackResponse
@@ -44,7 +45,11 @@ renderView_Boards_Index st =
 
 
 
-renderView_Boards_Index' :: OrganizationPackResponse -> ForumPackResponse -> M.Map Int BoardPackResponse -> ComponentHTML Input
+renderView_Boards_Index'
+  :: OrganizationPackResponse
+  -> ForumPackResponse
+  -> M.Map Int BoardPackResponse
+  -> ComponentHTML Input
 renderView_Boards_Index' org_pack forum_pack board_packs =
   H.ul [P.class_ B.listUnstyled] $
     map (\pack ->
@@ -61,9 +66,11 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
             H.div [P.class_ B.colXs1] [
               H.p_ [H.text "icon"],
               H.div [P.class_ B.container] [
-                H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (Edit board.name) []) "edit"],
-                H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name New []) "new-board"],
-                H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (Delete board.name) []) "delete-board"]
+                buttonGroup_VerticalSm1 [
+                  glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) [],
+                  glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New [],
+                  glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) []
+                ]
               ]
             ]
           , H.div [P.class_ B.colXs5] [

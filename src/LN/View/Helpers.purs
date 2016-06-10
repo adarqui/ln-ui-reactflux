@@ -124,14 +124,14 @@ buttons_CreateEditCancel m_edit_id save edit cancel =
 
 
 glyphButton glyph sz attrs handler =
-  H.span [P.class_ B.inputGroupBtn] [
+--  H.span [P.class_ B.inputGroupBtn] [
     H.button [
       attrs,
 --      P.alt alt,
       P.classes [B.btn, B.btnDefault, sz],
       E.onClick $ E.input_ handler
     ] [H.span [P.classes [B.glyphicon, glyph]] []]
-  ]
+--  ]
 
 
 
@@ -252,4 +252,4 @@ buttonGroup_Horizontal' sz xs =
   H.div [P.class_ B.row] [H.div [P.class_ sz] xs]
 
 buttonGroup_Vertical' sz xs =
-  H.div [P.class_ B.row] [H.div [P.class_ sz] xs]
+  H.div [P.classes [B.btnGroupVertical]] xs
