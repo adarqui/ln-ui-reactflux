@@ -19,6 +19,7 @@ import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
+import LN.View.Helpers
 import LN.View.Boards.Index            (renderView_Boards_Index')
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( ForumPackResponse
@@ -53,12 +54,14 @@ renderView_Forums_Show' org_pack forum_pack plumbing_boards =
 
     H.div [P.class_ B.pageHeader] [
       H.h2_ [H.text forum.name],
-      linkToP [] (OrganizationsForums org.name (Edit forum.name) []) "edit",
-      H.p [P.class_ B.lead] [H.text forum_desc]
-    ],
+      H.p [P.class_ B.lead] [H.text forum_desc],
 
-    H.div [P.class_ B.container] [
-      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name New []) "add-board"]
+      buttonGroup_HorizontalSm1 [
+        glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) [],
+        glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New [],
+        glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) []
+      ]
+
     ],
 
     H.div [] [plumbing_boards]
