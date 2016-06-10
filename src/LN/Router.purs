@@ -118,15 +118,15 @@ routing =
       organizations_forums_boards_threads_new <|>
       organizations_forums_boards_new <|>
       organizations_forums_new <|>
-      organizations_forums_boards_threads_posts_edit <|>
+      organizations_forums_boards_threads_posts_edit_int <|>
       organizations_forums_boards_threads_edit <|>
       organizations_forums_boards_edit <|>
       organizations_forums_edit <|>
-      organizations_forums_boards_threads_posts_delete <|>
+      organizations_forums_boards_threads_posts_delete_int <|>
       organizations_forums_boards_threads_delete <|>
       organizations_forums_boards_delete <|>
       organizations_forums_delete <|>
-      organizations_forums_boards_threads_posts <|>
+      organizations_forums_boards_threads_posts_int <|>
       organizations_forums_boards_threads <|>
       organizations_forums_boards <|>
       organizations_forums <|>
@@ -283,13 +283,13 @@ routing =
       <*> (lit "_edit" *> (Edit <$> str1))
       <*> (params' <|> pure [])
 
-    organizations_forums_boards_threads_posts_edit =
+    organizations_forums_boards_threads_posts_edit_int =
       OrganizationsForumsBoardsThreadsPosts
       <$> (lit "" *> str)
       <*> (lit "f" *> str1)
       <*> str1
       <*> str1
-      <*> (lit "_edit" *> (Edit <$> str1))
+      <*> (lit "_edit" *> (EditI <$> int))
       <*> (params' <|> pure [])
 
 
@@ -315,13 +315,13 @@ routing =
       <*> (lit "_delete" *> (Delete <$> str1))
       <*> (params' <|> pure [])
 
-    organizations_forums_boards_threads_posts_delete =
+    organizations_forums_boards_threads_posts_delete_int =
       OrganizationsForumsBoardsThreadsPosts
       <$> (lit "" *> str)
       <*> (lit "f" *> str1)
       <*> str1
       <*> str1
-      <*> (lit "_delete" *> (Delete <$> str1))
+      <*> (lit "_delete" *> (DeleteI <$> int))
       <*> (params' <|> pure [])
 
 
@@ -347,7 +347,7 @@ routing =
       <*> (Show <$> str1)
       <*> (params' <|> pure [])
 
-    organizations_forums_boards_threads_posts =
+    organizations_forums_boards_threads_posts_int =
       OrganizationsForumsBoardsThreadsPosts
       <$> (lit "" *> str)
       <*> (lit "f" *> str1)
@@ -355,6 +355,7 @@ routing =
       <*> str1
       <*> (ShowI <$> int)
       <*> (params' <|> pure [])
+
 
 
     resources_leurons_index =
