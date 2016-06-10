@@ -61,6 +61,7 @@ data Input a
   | GetOrganizationForum String String a
   | GetOrganizationForumBoard String String String a
   | GetOrganizationForumBoardThread String String String String a
+  | GetOrganizationForumBoardThreadPost String String String String Int a
 
   | GetTeams a
 

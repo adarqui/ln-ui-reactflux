@@ -262,6 +262,45 @@ eval_Goto eval (Goto route next) = do
 
 
 
+    -- 
+    (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name New params) -> do
+      modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState })
+      pure unit
+
+    (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (EditI post_id) params) -> do
+      eval (GetOrganization org_name next)
+      eval (GetOrganizationForum org_name forum_name next)
+      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
+      eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next)
+      m_pack <- gets _.currentThreadPost
+      case m_pack of
+           Nothing                              -> pure unit
+           Just (ThreadPostPackResponse pack) -> do
+             m_st <- gets _.currentThreadPostRequestSt
+             let
+               _st = maybe defaultThreadPostRequestState id m_st
+             modify (_{ currentThreadPostRequest = Just $ threadPostResponseToThreadPostRequest pack.threadPost, currentThreadPostRequestSt = Just _st })
+             pure unit
+
+    (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (DeleteI post_id) params) -> do
+      eval (GetOrganization org_name next)
+      eval (GetOrganizationForum org_name forum_name next)
+      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
+      eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next)
+      m_pack <- gets _.currentThreadPost
+      case m_pack of
+           Nothing                          -> pure unit
+           Just (ThreadPostPackResponse pack) -> do
+             modify (_{ currentThreadPostRequest = Just $ threadPostResponseToThreadPostRequest pack.threadPost })
+             pure unit
+
+    (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post_id) params) -> do
+      eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next) $> unit
+
+
+
     (Resources Index params) -> do
       let moffset = elemBy (\(Tuple k v) -> k == "offset") params
       maybe
@@ -272,6 +311,8 @@ eval_Goto eval (Goto route next) = do
           pure unit)
         moffset
       eval (GetResources next) $> unit
+
+
 
     (Resources New params) -> do
       modify (_{ currentResourceRequest = Just defaultResourceRequest, currentResourceRequestSt = Just defaultResourceRequestState })
