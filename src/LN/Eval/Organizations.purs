@@ -5,6 +5,7 @@ module LN.Eval.Organizations (
   eval_GetOrganizationForum,
   eval_GetOrganizationForumBoard,
   eval_GetOrganizationForumBoardThread,
+  eval_GetOrganizationForumBoardThreadPost,
   eval_Organization
 ) where
 
@@ -19,7 +20,7 @@ import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
 import Prelude                         (class Eq, bind, pure, ($), (<>))
 
-import LN.Api                          (rd, getOrganizationPacks', getOrganizationPack', postOrganization', putOrganization')
+import LN.Api                          (rd, getOrganizationPacks', getOrganizationPack', postOrganization', putOrganization', getThreadPostPack')
 import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
@@ -29,7 +30,8 @@ import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                ( l_currentOrganization, l_organizations
                                        , l_currentForum
                                        , l_currentBoard
-                                       , l_currentThread)
+                                       , l_currentThread
+                                       , l_currentThreadPost)
 import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.State.Organization           (OrganizationRequestState, defaultOrganizationRequestState)
 import LN.T.Internal.Convert           (organizationResponseToOrganizationRequest)
@@ -39,7 +41,8 @@ import LN.T                            ( OrganizationPackResponses(..), Organiza
                                        , _UserPackResponse, _UserResponse, user_, email_
                                        , ForumPackResponse(..)
                                        , BoardPackResponse(..)
-                                       , ThreadPackResponse(..))
+                                       , ThreadPackResponse(..)
+                                       , ThreadPostPackResponse(..))
 
 
 
@@ -161,6 +164,27 @@ eval_GetOrganizationForumBoard eval (GetOrganizationForumBoard org_name forum_na
         modify (_{ currentBoard = Just pack })
         eval (GetThreadsForBoard board.boardId next)
         pure next
+
+
+
+eval_GetOrganizationForumBoardThreadPost :: EvalEff
+eval_GetOrganizationForumBoardThreadPost eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next) = do
+
+  modify (_{ currentThreadPost = Nothing })
+
+  modify $ setLoading l_currentThreadPost
+
+  e_post <- rd $ getThreadPostPack' post_id
+
+  modify $ clearLoading l_currentThreadPost
+
+  case e_post of
+
+    Left err                                 -> eval (AddErrorApi "eval_getOrganizationForumBoardThreadPost::getThreadPostPack'" err next)
+
+    Right pack@(ThreadPostPackResponse post) -> do
+      modify (_{ currentThreadPost = Just pack })
+      pure next
 
 
 
