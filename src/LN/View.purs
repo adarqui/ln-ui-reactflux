@@ -47,7 +47,7 @@ import LN.View.Organizations.Forums.Boards.Threads.ThreadPosts.Show (renderView_
 
 
 import LN.View.Forums.Index                      (renderView_Forums_Index)
-
+import LN.View.Forums.Show                       (renderView_Forums_Show)
 import LN.View.Forums.Mod                        ( renderView_Forums_New, renderView_Forums_Edit
                                                  , renderView_Forums_Delete
                                                  , renderView_Forums_NewS, renderView_Forums_EditS
@@ -55,6 +55,8 @@ import LN.View.Forums.Mod                        ( renderView_Forums_New, render
 
 
 
+import LN.View.Boards.Index                      (renderView_Boards_Index)
+import LN.View.Boards.Show                       (renderView_Boards_Show)
 import LN.View.Boards.Mod                        ( renderView_Boards_New, renderView_Boards_Edit
                                                  , renderView_Boards_Delete
                                                  , renderView_Boards_NewS, renderView_Boards_EditS
@@ -63,9 +65,7 @@ import LN.View.Boards.Mod                        ( renderView_Boards_New, render
 
 
 import LN.View.Threads.Index                     (renderView_Threads_Index)
-
 import LN.View.Threads.Show                      (renderView_Threads_Show)
-
 import LN.View.Threads.Mod                       ( renderView_Threads_New, renderView_Threads_Edit
                                                  , renderView_Threads_Delete
                                                  , renderView_Threads_NewS, renderView_Threads_EditS
@@ -73,10 +73,9 @@ import LN.View.Threads.Mod                       ( renderView_Threads_New, rende
 
 
 
+import LN.View.ThreadPosts.Show                  (renderView_ThreadPosts_Show)
 import LN.View.ThreadPosts.Mod                   ( renderView_ThreadPosts_New, renderView_ThreadPosts_Edit
                                                  , renderView_ThreadPosts_Delete)
-
-import LN.View.ThreadPosts.Show                  (renderView_ThreadPosts_Show)
 
 import LN.View.Resources.Index                   (renderView_Resources_Index)
 import LN.View.Resources.Mod                     ( renderView_Resources_New, renderView_Resources_Edit
@@ -139,14 +138,16 @@ renderView (Organizations (Show org_name) params)   = renderView_Organizations_S
 
 
 
+renderView (OrganizationsForums org_name Index params)               = renderView_Forums_Index
 renderView (OrganizationsForums org_name New params)                 = renderView_Forums_NewS
 renderView (OrganizationsForums org_name (Edit forum_name) params)   = renderView_Forums_EditS
 renderView (OrganizationsForums org_name (Delete forum_name) params) = renderView_Forums_DeleteS
-renderView (OrganizationsForums org_name Index params)               = renderView_Forums_Index
-renderView (OrganizationsForums org_name (Show forum_name) params)   = renderView_Organizations_Forums_Show forum_name
+renderView (OrganizationsForums org_name (Show forum_name) params)   = renderView_Forums_Show
 
 
 
+renderView (OrganizationsForumsBoards org_name forum_name Index params)                 =
+  renderView_Boards_Index
 renderView (OrganizationsForumsBoards org_name forum_name New params)                 =
   renderView_Boards_NewS
 renderView (OrganizationsForumsBoards org_name forum_name (Edit board_name) params)   =
@@ -154,7 +155,7 @@ renderView (OrganizationsForumsBoards org_name forum_name (Edit board_name) para
 renderView (OrganizationsForumsBoards org_name forum_name (Delete board_name) params) =
   renderView_Boards_DeleteS
 renderView (OrganizationsForumsBoards org_name forum_name (Show board_name) params)   =
-  renderView_Organizations_Forums_Boards_Show board_name
+  renderView_Boards_Show
 
 
 

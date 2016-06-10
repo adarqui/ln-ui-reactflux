@@ -118,6 +118,10 @@ eval_Goto eval (Goto route next) = do
              modify (_{ currentForumRequest = Just $ forumResponseToForumRequest pack.forum })
              pure unit
 
+    (OrganizationsForums org_name Index params) -> do
+      eval (GetForumsForOrg org_name next)
+      pure unit
+
     (OrganizationsForums org_name (Show forum_name) params) -> do
       -- TODO FIXME
       if (org_name /= (maybe "" (\v -> v ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. name_) st.currentOrganization))
@@ -157,6 +161,11 @@ eval_Goto eval (Goto route next) = do
            Just (BoardPackResponse pack) -> do
              modify (_{ currentBoardRequest = Just $ boardResponseToBoardRequest pack.board })
              pure unit
+
+    (OrganizationsForumsBoards org_name forum_name Index params) -> do
+      eval (GetOrganization org_name next)
+      eval (GetOrganizationForum org_name forum_name next)
+      pure unit
 
     (OrganizationsForumsBoards org_name forum_name (Show board_name) params) -> do
       -- TODO FIXME

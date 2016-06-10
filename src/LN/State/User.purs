@@ -1,6 +1,7 @@
 module LN.State.User (
   usersMapLookup,
   usersMapLookup_ToUser,
+  usersMapLookup_ToUser',
   usersMapLookup_ToNick
 ) where
 
@@ -27,6 +28,12 @@ usersMapLookup st user_id =
 usersMapLookup_ToUser :: State -> Int -> Maybe UserSanitizedResponse
 usersMapLookup_ToUser st user_id =
   maybe Nothing (\user -> Just $ user ^. _UserSanitizedPackResponse .. user_) $ M.lookup user_id st.usersMap
+
+
+
+usersMapLookup_ToUser' :: M.Map Int UserSanitizedPackResponse -> Int -> Maybe UserSanitizedResponse
+usersMapLookup_ToUser' users_map user_id =
+  maybe Nothing (\user -> Just $ user ^. _UserSanitizedPackResponse .. user_) $ M.lookup user_id users_map
 
 
 

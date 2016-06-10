@@ -18,8 +18,9 @@ import Prelude                         (id, show, map, ($), (<>))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.State.PageInfo               (PageInfo)
 import LN.State.Types                  (State)
-import LN.State.User                   (usersMapLookup_ToUser)
+import LN.State.User                   (usersMapLookup_ToUser')
 -- import LN.View.Module.CreateThread     (renderCreateThread)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
 import LN.View.Module.Loading          (renderLoading)
@@ -28,6 +29,8 @@ import LN.View.Module.PageNumbers      (renderPageNumbers)
 import LN.T                            (BoardPackResponse, ForumPackResponse, OrganizationPackResponse
                                        , Size(Small), ThreadPostResponse(ThreadPostResponse)
                                        , UserSanitizedResponse(UserSanitizedResponse), latestThreadPostUser_
+                                       , ThreadPackResponse
+                                       , UserSanitizedPackResponse
                                        , _ThreadPackResponse, latestThreadPost_, _ThreadStatResponse, stat_
                                        , _ThreadResponse, thread_, _BoardResponse, board_, _BoardPackResponse
                                        , _ForumResponse, forum_, _ForumPackResponse, _OrganizationResponse
@@ -40,15 +43,26 @@ renderView_Threads_Index st =
 
   case st.currentOrganization, st.currentForum, st.currentBoard of
 
-       Just org_pack, Just forum_pack, Just board_pack -> renderView_Threads_Index' org_pack forum_pack board_pack st
+       Just org_pack, Just forum_pack, Just board_pack ->
+
+         renderView_Threads_Index' org_pack forum_pack board_pack st.threads st.threadsPageInfo st.currentPage st.users
+
        _,             _,               _               -> renderLoading
 
 
 
-renderView_Threads_Index' :: OrganizationPackResponse -> ForumPackResponse -> BoardPackResponse -> State -> ComponentHTML Input
-renderView_Threads_Index' org_pack forum_pack board_pack st =
+renderView_Threads_Index'
+  :: OrganizationPackResponse
+  -> ForumPackResponse
+  -> BoardPackResponse
+  -> M.Map Int ThreadPackResponse
+  -> PageInfo
+  -> Routes
+  -> M.Map Int UserSanitizedPackResponse
+  -> ComponentHTML Input
+renderView_Threads_Index' org_pack forum_pack board_pack thread_packs threads_page_info threads_route users_map =
   H.div_ [
-      renderPageNumbers st.threadsPageInfo st.currentPage
+      renderPageNumbers threads_page_info threads_route
 
     , H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name New []) "new-thread"]
 
@@ -64,7 +78,7 @@ renderView_Threads_Index' org_pack forum_pack board_pack st =
           H.li_ [
             H.div [P.class_ B.row] [
                 H.div [P.class_ B.colXs1] [
-                  renderGravatarForUser Small (usersMapLookup_ToUser st thread.userId),
+                  renderGravatarForUser Small (usersMapLookup_ToUser' users_map thread.userId),
                   H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) []) "edit"],
                   H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) []) "delete"]
                 ]
@@ -90,8 +104,8 @@ renderView_Threads_Index' org_pack forum_pack board_pack st =
               ]
             ]
           ])
-        $ listToArray $ M.values st.threads
-    , renderPageNumbers st.threadsPageInfo st.currentPage
+        $ listToArray $ M.values thread_packs
+    , renderPageNumbers threads_page_info threads_route
   ]
   where
   org   = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
