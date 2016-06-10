@@ -47,7 +47,7 @@ renderView_Forums_Index' org_pack forum_packs =
     H.h1 [P.class_ B.textCenter] [ H.text "Forums" ],
 
     H.div [P.classes [B.clearfix, B.container]] [
-      H.div_ [linkToP [] (OrganizationsForums org.name New []) "add-forum"]
+      glyphButtonLinkDef_Plus $ OrganizationsForums org.name New []
     ],
 
     H.div [P.class_ B.listUnstyled] $
