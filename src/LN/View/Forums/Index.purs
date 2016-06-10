@@ -19,6 +19,7 @@ import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
+import LN.View.Helpers
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( ForumPackResponse
                                        , _ForumPackResponse, _ForumResponse, organization_
@@ -74,8 +75,10 @@ renderView_Forums_Index' org_pack forum_packs =
               H.p_ [H.text "created-at"]
             ],
             H.div [P.class_ B.colXs1] [
-              H.div_ [linkToP [] (OrganizationsForums org.name (Edit forum.name) []) "edit"],
-              H.div_ [linkToP [] (OrganizationsForums org.name (Delete forum.name) []) "delete"]
+              buttonGroup_Horizontal [
+                glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) [],
+                glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) []
+              ]
             ]
           ]
         ])
