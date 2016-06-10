@@ -22,6 +22,7 @@ import LN.Router.Link                  (linkTo, linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup, usersMapLookup_ToNick, usersMapLookup_ToUser)
+import LN.View.ThreadPosts.Mod         (renderView_ThreadPosts_Mod, postDataToBody)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.Like             (renderLike)
@@ -93,40 +94,7 @@ renderView_ThreadPosts_Show' org_pack forum_pack board_pack thread_pack st =
         ) $ listToArray $ M.values st.threadPosts)
         <>
         -- INPUT FORM AT THE BOTTOM
-        [H.li_ [
-          H.div [P.class_ B.row] [
-              H.div [P.class_ B.colXs2] [
-                H.p_ [H.text "1"]
-              ]
-            , H.div [P.class_ B.colXs9] [
-                H.p_ [H.text "2"]
-              , H.div [P.class_ B.well] [
-                -- TODO FIXME , need to fix this input form, doesnt do anything
-                     H.a [P.href "#"] [H.text "Bold"]
-                  ,  H.a [P.href "#"] [H.text "Youtube"]
-                  ,  H.textarea [
-                       P.class_ B.formControl,
-                       P.rows 10,
-                       P.value body,
-                       E.onValueChange $ E.input (cThreadPostMod <<< SetBody)
-                     ]
-                -- TODO FIXME , need to style these buttons properly etc
-                  , H.a [
-                      P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg],
-                      E.onClick $ E.input_ (cThreadPostMod $ Create thread.id)
-                    ] [H.text "send"]
-                  , H.a [
-                      P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg],
-                      E.onClick $ E.input_ (cThreadPostMod RemoveBody)
-                    ] [H.text "cancel"]
-                  , H.a [P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg]] [H.text "preview"]
-                ]
-              ]
-            , H.div [P.class_ B.colXs1] [
-                H.p_ [H.text "3"]
-              ]
-         ]
-        ]])
+        [renderView_ThreadPosts_Mod Nothing st])
   , renderPageNumbers st.threadPostsPageInfo st.currentPage
   ]
   where
@@ -165,12 +133,6 @@ displayPostStats (ThreadPostStatResponse stats) =
     , H.p_ [H.text $ "stars: " <> show stats.stars]
     , H.p_ [H.text $ "views: " <> show stats.views]
   ]
-
-
-
-postDataToBody :: PostData -> String
-postDataToBody (PostDataBBCode v) = v
-postDataToBody _                  = ""
 
 
 

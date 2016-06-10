@@ -2,7 +2,8 @@ module LN.View.ThreadPosts.Mod (
   renderView_ThreadPosts_Delete,
   renderView_ThreadPosts_New,
   renderView_ThreadPosts_Edit,
-  renderView_ThreadPosts_Mod
+  renderView_ThreadPosts_Mod,
+  postDataToBody
 ) where
 
 
@@ -59,16 +60,16 @@ renderView_ThreadPosts_Edit threadPost_id = renderView_ThreadPosts_Mod (Just thr
 
 
 renderView_ThreadPosts_Mod :: Maybe Int -> State -> ComponentHTML Input
-renderView_ThreadPosts_Mod m_threadPost_id st =
+renderView_ThreadPosts_Mod m_post_id st =
   case st.currentThread, st.currentThreadPostRequest, st.currentThreadPostRequestSt, getLoading l_currentThreadPost st.loading of
     _, _, _, true                         -> renderLoading
-    Just thread, Just threadPost_req, Just f_st, false   -> renderView_ThreadPosts_Mod' thread m_threadPost_id threadPost_req f_st st
+    Just thread, Just threadPost_req, Just f_st, false   -> renderView_ThreadPosts_Mod' thread m_post_id threadPost_req f_st st
     _, _, _, false                        -> H.div_ [H.p_ [H.text "ThreadPosts_Mod: unexpected error."]]
 
 
 
 renderView_ThreadPosts_Mod' :: ThreadPackResponse -> Maybe Int -> ThreadPostRequest -> ThreadPostRequestState -> State -> ComponentHTML Input
-renderView_ThreadPosts_Mod' thread_pack m_threadPost_id threadPost_req f_st st =
+renderView_ThreadPosts_Mod' thread_pack m_post_id threadPost_req f_st st =
   H.div_ [
 
     H.h1_ [ H.text "Add ThreadPost" ]
@@ -93,7 +94,10 @@ renderView_ThreadPosts_Mod' thread_pack m_threadPost_id threadPost_req f_st st =
             -- TODO FIXME , need to style these buttons properly etc
               , H.a [
                   P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg],
-                  E.onClick $ E.input_ (cThreadPostMod $ Create thread.id)
+                  E.onClick $ E.input_ $
+                    case m_post_id of
+                         Nothing -> cThreadPostMod $ Create thread.id
+                         Just post_id -> cThreadPostMod $ EditP post_id
                 ] [H.text "send"]
               , H.a [
                   P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg],
