@@ -130,6 +130,7 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
                       Right post -> do
 
                         modify (\st->st{ currentThreadPostRequest = Just $ threadPostResponseToThreadPostRequest post })
+                        eval (Goto (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI thread_post_id) []) next)
                         pure next
 
     _   -> pure next
