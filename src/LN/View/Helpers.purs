@@ -1,6 +1,8 @@
 module LN.View.Helpers (
   buttons_CreateEditCancel,
+
   glyphButton,
+
   glyphButton_ArrowUp,
   glyphButton_ArrowDown,
   glyphButton_Plus,
@@ -8,7 +10,34 @@ module LN.View.Helpers (
   glyphButton_Star,
   glyphButton_StarEmpty,
   glyphButton_Trash,
-  glyphButton_Pencil
+  glyphButton_Pencil,
+
+  glyphButtonDef_ArrowUp,
+  glyphButtonDef_ArrowDown,
+  glyphButtonDef_Plus,
+  glyphButtonDef_Minus,
+  glyphButtonDef_Star,
+  glyphButtonDef_StarEmpty,
+  glyphButtonDef_Trash,
+  glyphButtonDef_Pencil,
+
+  glyphButtonSm_ArrowUp,
+  glyphButtonSm_ArrowDown,
+  glyphButtonSm_Plus,
+  glyphButtonSm_Minus,
+  glyphButtonSm_Star,
+  glyphButtonSm_StarEmpty,
+  glyphButtonSm_Trash,
+  glyphButtonSm_Pencil,
+
+  glyphButtonLg_ArrowUp,
+  glyphButtonLg_ArrowDown,
+  glyphButtonLg_Plus,
+  glyphButtonLg_Minus,
+  glyphButtonLg_Star,
+  glyphButtonLg_StarEmpty,
+  glyphButtonLg_Trash,
+  glyphButtonLg_Pencil
 ) where
 
 
@@ -51,12 +80,12 @@ buttons_CreateEditCancel m_edit_id save edit cancel =
 
 
 
-glyphButton glyph attrs alt handler =
+glyphButton glyph sz attrs alt handler =
   H.span [P.class_ B.inputGroupBtn] [
     H.button [
       attrs,
 --      P.alt alt,
-      P.classes [B.btn, B.btnDefault, B.btnLg],
+      P.classes [B.btn, B.btnDefault, sz],
       E.onClick $ E.input_ handler
     ] [H.span [P.classes [B.glyphicon, glyph]] []]
   ]
@@ -71,3 +100,36 @@ glyphButton_Star      = glyphButton B.glyphiconStar
 glyphButton_StarEmpty = glyphButton B.glyphiconStarEmpty
 glyphButton_Trash     = glyphButton B.glyphiconTrash
 glyphButton_Pencil    = glyphButton B.glyphiconPencil
+
+
+
+glyphButtonDef_ArrowUp   = glyphButtonSm_ArrowUp
+glyphButtonDef_ArrowDown = glyphButtonSm_ArrowDown
+glyphButtonDef_Plus      = glyphButtonSm_Plus
+glyphButtonDef_Minus     = glyphButtonSm_Minus
+glyphButtonDef_Star      = glyphButtonSm_Star
+glyphButtonDef_StarEmpty = glyphButtonSm_StarEmpty
+glyphButtonDef_Trash     = glyphButtonSm_Trash
+glyphButtonDef_Pencil    = glyphButtonSm_Pencil
+
+
+
+glyphButtonSm_ArrowUp   = glyphButton_ArrowUp B.btnSm
+glyphButtonSm_ArrowDown = glyphButton_ArrowDown B.btnSm
+glyphButtonSm_Plus      = glyphButton_Plus B.btnSm
+glyphButtonSm_Minus     = glyphButton_Minus B.btnSm
+glyphButtonSm_Star      = glyphButton_Star B.btnSm
+glyphButtonSm_StarEmpty = glyphButton_StarEmpty B.btnSm
+glyphButtonSm_Trash     = glyphButton_Trash B.btnSm
+glyphButtonSm_Pencil    = glyphButton_Pencil B.btnSm
+
+
+
+glyphButtonLg_ArrowUp   = glyphButton_ArrowUp B.btnLg
+glyphButtonLg_ArrowDown = glyphButton_ArrowDown B.btnLg
+glyphButtonLg_Plus      = glyphButton_Plus B.btnLg
+glyphButtonLg_Minus     = glyphButton_Minus B.btnLg
+glyphButtonLg_Star      = glyphButton_Star B.btnLg
+glyphButtonLg_StarEmpty = glyphButton_StarEmpty B.btnLg
+glyphButtonLg_Trash     = glyphButton_Trash B.btnLg
+glyphButtonLg_Pencil    = glyphButton_Pencil B.btnLg

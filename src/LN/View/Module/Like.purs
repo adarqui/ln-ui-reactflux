@@ -18,11 +18,11 @@ import Prelude                            (($), (<<<))
 import LN.Input.Like                      (InputLike(..))
 import LN.Input.Star                      (InputStar(..))
 import LN.Input.Types                     (Input(..))
-import LN.View.Helpers                    ( glyphButton_ArrowUp
-                                          , glyphButton_ArrowDown
-                                          , glyphButton_Minus
-                                          , glyphButton_Star
-                                          , glyphButton_StarEmpty
+import LN.View.Helpers                    ( glyphButtonDef_ArrowUp
+                                          , glyphButtonDef_ArrowDown
+                                          , glyphButtonDef_Minus
+                                          , glyphButtonDef_Star
+                                          , glyphButtonDef_StarEmpty
                                           )
 import LN.T                               ( Ent
                                           , LikeOpt(..)
@@ -38,13 +38,13 @@ renderLike ent ent_id m_like m_star =
 
   H.div [P.class_ B.row] [
 
-    glyphButton_ArrowUp colorLike "like" $ CompLike (InputLike_Like ent ent_id m_like),
-    glyphButton_Minus colorNeutral "neutral" $ CompLike (InputLike_Neutral ent ent_id m_like),
-    glyphButton_ArrowDown colorDislike "dislike" $ CompLike (InputLike_Dislike ent ent_id m_like),
+    glyphButtonDef_ArrowUp colorLike "like" $ CompLike (InputLike_Like ent ent_id m_like),
+    glyphButtonDef_Minus colorNeutral "neutral" $ CompLike (InputLike_Neutral ent ent_id m_like),
+    glyphButtonDef_ArrowDown colorDislike "dislike" $ CompLike (InputLike_Dislike ent ent_id m_like),
 
     (case m_star of
-         Nothing   -> glyphButton_StarEmpty colorStar "star"
-         Just star -> glyphButton_Star colorStar "unstar") $ CompStar (InputStar ent ent_id m_star)
+         Nothing   -> glyphButtonDef_StarEmpty colorStar "star"
+         Just star -> glyphButtonDef_Star colorStar "unstar") $ CompStar (InputStar ent ent_id m_star)
   ]
 
   where
