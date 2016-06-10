@@ -266,6 +266,14 @@ instance routesHasCrumb :: HasCrumb Routes where
 
 
 
+      OrganizationsForumsBoardsThreads org forum board Index params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) []) board
+        ]
+
       OrganizationsForumsBoardsThreads org forum board New params ->
         [
           Tuple (Organizations Index params) "Organizations",
@@ -302,6 +310,15 @@ instance routesHasCrumb :: HasCrumb Routes where
         ]
 
 
+
+      OrganizationsForumsBoardsThreadsPosts org forum board thread Index params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) []) board,
+          Tuple (OrganizationsForumsBoardsThreads org forum board (Show $ slash thread) []) thread
+        ]
 
       OrganizationsForumsBoardsThreadsPosts org forum board thread New params ->
         [

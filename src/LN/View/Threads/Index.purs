@@ -45,7 +45,7 @@ renderView_Threads_Index st =
 
        Just org_pack, Just forum_pack, Just board_pack ->
 
-         renderView_Threads_Index' org_pack forum_pack board_pack st.threads st.threadsPageInfo st.currentPage st.users
+         renderView_Threads_Index' org_pack forum_pack board_pack st.threads st.threadsPageInfo st.currentPage st.usersMap
 
        _,             _,               _               -> renderLoading
 

@@ -208,6 +208,12 @@ eval_Goto eval (Goto route next) = do
 
 
 
+    (OrganizationsForumsBoardsThreads org_name forum_name board_name Index params) -> do
+      eval (GetOrganization org_name next)
+      eval (GetOrganizationForum org_name forum_name next)
+      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+      pure unit
+
     (OrganizationsForumsBoardsThreads org_name forum_name board_name New params) -> do
       modify (_{ currentThreadRequest = Just defaultThreadRequest, currentThreadRequestSt = Just defaultThreadRequestState })
       pure unit
