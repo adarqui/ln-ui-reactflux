@@ -11,7 +11,7 @@ import Data.Maybe                      (Maybe(..), maybe)
 import Data.Tuple                      (Tuple(..))
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
-import Halogen.HTML.Events             as E
+import Halogen.HTML.Events.Indexed     as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
@@ -60,28 +60,62 @@ renderView_ThreadPosts_Edit threadPost_id = renderView_ThreadPosts_Mod (Just thr
 
 renderView_ThreadPosts_Mod :: Maybe Int -> State -> ComponentHTML Input
 renderView_ThreadPosts_Mod m_threadPost_id st =
-  case st.currentThreadPostRequest, st.currentThreadPostRequestSt, getLoading l_currentThreadPost st.loading of
-    _, _, true                         -> renderLoading
-    Just threadPost_req, Just f_st, false   -> renderView_ThreadPosts_Mod' m_threadPost_id threadPost_req f_st st
-    _, _, false                        -> H.div_ [H.p_ [H.text "ThreadPosts_Mod: unexpected error."]]
+  case st.currentThread, st.currentThreadPostRequest, st.currentThreadPostRequestSt, getLoading l_currentThreadPost st.loading of
+    _, _, _, true                         -> renderLoading
+    Just thread, Just threadPost_req, Just f_st, false   -> renderView_ThreadPosts_Mod' thread m_threadPost_id threadPost_req f_st st
+    _, _, _, false                        -> H.div_ [H.p_ [H.text "ThreadPosts_Mod: unexpected error."]]
 
 
 
-renderView_ThreadPosts_Mod' :: Maybe Int -> ThreadPostRequest -> ThreadPostRequestState -> State -> ComponentHTML Input
-renderView_ThreadPosts_Mod' m_threadPost_id threadPost_req f_st st =
+renderView_ThreadPosts_Mod' :: ThreadPackResponse -> Maybe Int -> ThreadPostRequest -> ThreadPostRequestState -> State -> ComponentHTML Input
+renderView_ThreadPosts_Mod' thread_pack m_threadPost_id threadPost_req f_st st =
   H.div_ [
 
     H.h1_ [ H.text "Add ThreadPost" ]
 
-  , create_or_save
-
-  , create_or_save
+  , H.li_ [
+      H.div [P.class_ B.row] [
+          H.div [P.class_ B.colXs2] [
+            H.p_ [H.text "1"]
+          ]
+        , H.div [P.class_ B.colXs9] [
+            H.p_ [H.text "2"]
+          , H.div [P.class_ B.well] [
+            -- TODO FIXME , need to fix this input form, doesnt do anything
+                 H.a [P.href "#"] [H.text "Bold"]
+              ,  H.a [P.href "#"] [H.text "Youtube"]
+              ,  H.textarea [
+                   P.class_ B.formControl,
+                   P.rows 10,
+                   P.value body,
+                   E.onValueChange $ E.input (cThreadPostMod <<< SetBody)
+                 ]
+            -- TODO FIXME , need to style these buttons properly etc
+              , H.a [
+                  P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg],
+                  E.onClick $ E.input_ (cThreadPostMod $ Create thread.id)
+                ] [H.text "send"]
+              , H.a [
+                  P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg],
+                  E.onClick $ E.input_ (cThreadPostMod RemoveBody)
+                ] [H.text "cancel"]
+              , H.a [P.classes [B.btn, B.btnPrimary, B.pullRight, B.btnLg]] [H.text "preview"]
+            ]
+          ]
+        , H.div [P.class_ B.colXs1] [
+            H.p_ [H.text "3"]
+          ]
+     ]
+    ]
 
   ]
   where
   threadPost    = unwrapThreadPostRequest threadPost_req
-  save     = maybe "Create" (const "Save") m_threadPost_id
-  create_or_save = case m_threadPost_id of
---         Nothing         -> simpleInfoButton "Create" (cThreadPostMod $ Save organization_id)
---         Just threadPost_id   -> simpleInfoButton "Save" (cThreadPostMod $ EditP threadPost_id)
-         _               -> H.p_ [H.text "unexpected error."]
+  body   = maybe "" (\p -> postDataToBody $ p ^. _ThreadPostRequest .. body_) st.currentThreadPostRequest
+  thread = thread_pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse
+
+
+
+postDataToBody :: PostData -> String
+postDataToBody (PostDataBBCode v) = v
+postDataToBody _                  = ""
