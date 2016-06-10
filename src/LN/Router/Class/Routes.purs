@@ -290,6 +290,47 @@ instance routesHasCrumb :: HasCrumb Routes where
 
 
 
+      OrganizationsForumsBoardsThreadsPosts org forum board thread New params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) []) board,
+          Tuple (OrganizationsForumsBoardsThreads org forum board (Show $ slash thread) []) thread
+        ]
+
+      OrganizationsForumsBoardsThreadsPosts org forum board thread (EditI post) params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) []) board,
+          Tuple (OrganizationsForumsBoardsThreads org forum board (Show $ slash thread) params) thread,
+          Tuple (OrganizationsForumsBoardsThreadsPosts org forum board thread (ShowI post) params) (show post)
+        ]
+
+      OrganizationsForumsBoardsThreadsPosts org forum board thread (DeleteI post) params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) []) board,
+          Tuple (OrganizationsForumsBoardsThreads org forum board (Show $ slash thread) params) thread,
+          Tuple (OrganizationsForumsBoardsThreadsPosts org forum board thread (ShowI post) params) (show post)
+        ]
+
+      OrganizationsForumsBoardsThreadsPosts org forum board thread (ShowI post) params ->
+        [
+          Tuple (Organizations Index params) "Organizations",
+          Tuple (Organizations (Show $ slash org) params) org,
+          Tuple (OrganizationsForums org (Show $ slash forum) []) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show $ slash board) []) board,
+          Tuple (OrganizationsForumsBoardsThreads org forum board (Show $ slash thread) params) thread,
+          Tuple (OrganizationsForumsBoardsThreadsPosts org forum board thread (ShowI post) params) (show post)
+        ]
+
+
+
       Users Index params ->
         [
           Tuple (Users Index params) "Users"
