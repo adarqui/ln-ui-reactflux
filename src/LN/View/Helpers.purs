@@ -249,7 +249,7 @@ buttonGroup_VerticalSm1 = buttonGroup_Vertical' B.colSm1
 
 
 buttonGroup_Horizontal' sz xs =
-  H.div [P.class_ B.row] [H.div [P.class_ sz] xs]
+  H.div [P.classes [B.btnGroup]] xs
 
 buttonGroup_Vertical' sz xs =
   H.div [P.classes [B.btnGroupVertical]] xs
