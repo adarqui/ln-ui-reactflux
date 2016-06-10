@@ -19,6 +19,7 @@ import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
+import LN.View.Helpers
 import LN.View.Threads.Index           (renderView_Threads_Index')
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.OrderBy          (renderOrderBy)
@@ -64,8 +65,12 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
     H.div [P.class_ B.pageHeader] [
       H.h2_ [H.text board.name],
       H.p [P.class_ B.lead] [H.text board_desc],
-      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (Edit board.name) []) "edit"],
-      H.div_ [linkToP [] (OrganizationsForumsBoards org.name forum.name (Delete board.name) []) "delete"]
+
+      buttonGroup_HorizontalSm1 [
+        glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) [],
+        glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New [],
+        glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) []
+      ]
     ],
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [
       renderOrderBy $ OrganizationsForumsBoards org.name forum.name (Show board.name) []

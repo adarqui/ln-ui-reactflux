@@ -22,6 +22,7 @@ import LN.State.PageInfo               (PageInfo)
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser')
 -- import LN.View.Module.CreateThread     (renderCreateThread)
+import LN.View.Helpers
 import LN.View.Module.Gravatar         (renderGravatarForUser)
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.OrderBy          (renderOrderBy)
@@ -64,8 +65,6 @@ renderView_Threads_Index' org_pack forum_pack board_pack thread_packs threads_pa
   H.div_ [
       renderPageNumbers threads_page_info threads_route
 
-    , H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name New []) "new-thread"]
-
     , H.ul [P.class_ B.listUnstyled] $
         map (\pack ->
           let
@@ -79,8 +78,13 @@ renderView_Threads_Index' org_pack forum_pack board_pack thread_packs threads_pa
             H.div [P.class_ B.row] [
                 H.div [P.class_ B.colXs1] [
                   renderGravatarForUser Small (usersMapLookup_ToUser' users_map thread.userId),
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) []) "edit"],
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) []) "delete"]
+
+                  buttonGroup_VerticalSm1 [
+
+                    glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) [],
+                    glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) []
+                  ]
+
                 ]
               , H.div [P.class_ B.colXs6] [
                     H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Show thread.name) []) thread.displayName]
