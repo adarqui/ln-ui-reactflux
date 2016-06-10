@@ -45,7 +45,8 @@ renderView_Boards_Show st =
 
        Just org_pack, Just forum_pack, Just board_pack ->
 
-         renderView_Boards_Show' org_pack forum_pack board_pack st.threads (H.div_ [])
+         renderView_Boards_Show' org_pack forum_pack board_pack st.threads $
+           renderView_Threads_Index' org_pack forum_pack board_pack st.threads st.threadsPageInfo st.currentPage st.usersMap
 
        _, _, _                                         -> renderLoading
 
