@@ -79,14 +79,14 @@ renderView_Threads_Index' org_pack forum_pack board_pack thread_packs threads_pa
                 H.div [P.class_ B.colXs1] [
                   renderGravatarForUser Small (usersMapLookup_ToUser' users_map thread.userId)
                 ]
-              , H.div [P.class_ B.colXs6] [
+              , H.div [P.class_ B.colXs5] [
                     H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Show thread.name) []) thread.displayName]
                   , H.p_ [H.text "page-numbers"]
                   , H.p_ [H.text $ show thread.createdAt]
                 ]
-              , H.div [P.class_ B.colXs1] [
-                  H.p_ [H.text $ "posts: " <> show stat.threadPosts],
-                  H.p_ [H.text $ "views: " <> show stat.views]
+              , H.div [P.class_ B.colXs2] [
+                  textBadge' "posts " (show stat.threadPosts),
+                  textBadge' "views " (show stat.views)
                 ]
               , H.div [P.class_ B.colXs3] [
                 case post, user of
