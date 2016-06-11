@@ -34,15 +34,9 @@ import LN.View.Four04            (renderView_404)
 
 
 import LN.View.Organizations.Index                      (renderView_Organizations_Index)
+import LN.View.Organizations.Show                       (renderView_Organizations_Show)
 import LN.View.Organizations.Mod                        ( renderView_Organizations_NewS, renderView_Organizations_EditS
                                                         , renderView_Organizations_DeleteS)
-
-
-import LN.View.Organizations.Show                       (renderView_Organizations_Show)
-import LN.View.Organizations.Forums.Show                (renderView_Organizations_Forums_Show)
-import LN.View.Organizations.Forums.Boards.Show         (renderView_Organizations_Forums_Boards_Show)
-import LN.View.Organizations.Forums.Boards.Threads.Show (renderView_Organizations_Forums_Boards_Threads_Show)
-import LN.View.Organizations.Forums.Boards.Threads.ThreadPosts.Show (renderView_Organizations_Forums_Boards_Threads_ThreadPosts_Show)
 
 
 
@@ -73,6 +67,7 @@ import LN.View.Threads.Mod                       ( renderView_Threads_New, rende
 
 
 
+import LN.View.ThreadPosts.Index                 (renderView_ThreadPosts_Index)
 import LN.View.ThreadPosts.Show                  (renderView_ThreadPosts_Show)
 import LN.View.ThreadPosts.Mod                   ( renderView_ThreadPosts_New, renderView_ThreadPosts_Edit
                                                  , renderView_ThreadPosts_Delete)
@@ -159,7 +154,7 @@ renderView (OrganizationsForumsBoards org_name forum_name (Show board_name) para
 
 
 
-renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name Index params)   =
+renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name Index params)                =
   renderView_Boards_Show
 renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name New params)                  =
   renderView_Threads_NewS
@@ -172,6 +167,8 @@ renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Sho
 
 
 
+renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name Index params)             =
+  renderView_ThreadPosts_Index
 renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name New params)               =
   renderView_ThreadPosts_New
 renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (EditI post_id) params)   =
@@ -179,8 +176,7 @@ renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name
 renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (DeleteI post_id) params) =
   renderView_ThreadPosts_Delete post_id
 renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post_id) params)   =
-  renderView_Organizations_Forums_Boards_Threads_Show thread_name
---  renderView_ThreadPosts_Show
+  renderView_Threads_Show
 
 
 

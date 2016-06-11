@@ -337,6 +337,29 @@ eval_Goto eval (Goto route next) = do
              modify (_{ currentThreadPostRequest = Just $ threadPostResponseToThreadPostRequest pack.threadPost })
              pure unit
 
+    (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name Index params) -> do
+      eval (GetOrganization org_name next)
+      eval (GetOrganizationForum org_name forum_name next)
+      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
+
+      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
+      maybe
+        (pure unit)
+        (\(Tuple k offset) -> do
+          pageInfo <- gets _.threadPostsPageInfo
+          modify (_{
+            threadPostsPageInfo = pageInfo
+            -- TODO FIXME: offset=-1 just makes us go to the last page
+              { currentPage = let off = maybe 1 id (fromString offset) in if off < 0 then pageInfo.totalPages else off }
+          })
+          pure unit)
+        moffset
+
+      modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState })
+
+      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) $> unit
+
     (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post_id) params) -> do
       eval (GetOrganization org_name next)
       eval (GetOrganizationForum org_name forum_name next)
