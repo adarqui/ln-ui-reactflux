@@ -1,6 +1,7 @@
 module LN.Input.Forum (
   InputForum (..),
-  Forum_Mod (..)
+  Forum_Mod (..),
+  Forum_Act (..)
 ) where
 
 
@@ -14,27 +15,38 @@ import LN.T              (Visibility)
 
 
 data InputForum
-  = InputForum_Nop1
+  = InputForum_Act Forum_Act
   | InputForum_Mod Forum_Mod
   | InputForum_Nop
 
 
 
 data Forum_Mod
-  = SetDisplayName String
+  = SetDisplayName    String
 
-  | SetDescription String
+  | SetDescription    String
   | RemoveDescription
 
-  | SetIcon String
+  | SetIcon           String
   | RemoveIcon
 
-  | AddTag String
-  | EditTag Int String
-  | DeleteTag Int
+  | AddTag            String
+  | EditTag           Int String
+  | DeleteTag         Int
   | ClearTags
 
-  | SetVisibility Visibility
+  | SetVisibility     Visibility
 
-  | Create Int  -- save to organization_id
-  | EditP Int   -- edit forum_id
+  | Create            Int  -- save to organization_id
+  | EditP             Int   -- edit forum_id
+
+
+
+data Forum_Act
+  = Nop
+  | Gets
+  | Gets_ByOrganizationId     Int
+  | Gets_ByOrganizationSid    String
+  | GetId                     Int
+  | GetSid_ByOrganizationId   Int Int
+  | GetSid_ByOrganizationSid  String Int

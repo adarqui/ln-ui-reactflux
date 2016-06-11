@@ -236,50 +236,14 @@ eval_Organization eval (CompOrganization sub next) = do
 
     InputOrganization_Mod q -> do
       case q of
-        SetDisplayName name -> mod $ set (\req -> _OrganizationRequest .. displayName_ .~ name $ req)
+        SetDisplayName name  -> mod $ set (\req -> _OrganizationRequest .. displayName_ .~ name $ req)
+        SetDescription s     -> mod $ set (\req -> _OrganizationRequest .. description_ .~ Just s $ req)
+        RemoveDescription    -> mod $ set (\req -> _OrganizationRequest .. description_ .~ Nothing $ req)
+        SetCompany company   -> mod $ set (\req -> _OrganizationRequest .. company_ .~ company $ req)
+        SetLocation location -> mod $ set (\req -> _OrganizationRequest .. location_ .~ location $ req)
+        Create               -> mod_create
+        EditP org_id         -> mod_edit org_id
 
-        SetDescription s    -> mod $ set (\req -> _OrganizationRequest .. description_ .~ Just s $ req)
-
-        RemoveDescription   -> mod $ set (\req -> _OrganizationRequest .. description_ .~ Nothing $ req)
-
-        SetCompany company  -> mod $ set (\req -> _OrganizationRequest .. company_ .~ company $ req)
-
-        SetLocation location-> mod $ set (\req -> _OrganizationRequest .. location_ .~ location $ req)
-
-        Create    -> do
-
-          m_req <- gets _.currentOrganizationRequest
-
-          case m_req, m_me of
-
-               Just (OrganizationRequest req), Just me -> do
-
-                 e_organization <- rd $ postOrganization' (OrganizationRequest req{ email = me ^. _UserPackResponse .. user_ ^. _UserResponse .. email_ })
-
-                 case e_organization of
-                      Left err                                   -> eval (AddErrorApi "eval_Organization(Create)::postOrganization'" err next)
-                      Right (OrganizationResponse organization) -> do
-                        eval (Goto (Organizations (Show organization.name) []) next)
-
-               _, _  -> eval (AddError "eval_Organization(Create)" "Organization request doesn't exist" next)
-
-        EditP org_id -> do
-
-          m_req <- gets _.currentOrganizationRequest
-
-          case m_req of
-               Nothing  -> eval (AddError "eval_Organization(Edit)" "Organization request doesn't exist" next)
-               Just req -> do
-
-                 e_org <- rd $ putOrganization' org_id req
-
-                 case e_org of
-                      Left err  -> eval (AddErrorApi "eval_Organization(Edit)::putOrganization" err next)
-                      Right org -> do
-
-                        modify (\st->st{ currentOrganizationRequest = Just $ organizationResponseToOrganizationRequest org })
-                        eval (Goto (Organizations (Show $ org ^. _OrganizationResponse .. name_) []) next)
-                        pure next
 
     _   -> pure next
 
@@ -330,3 +294,32 @@ eval_Organization eval (CompOrganization sub next) = do
       Right pack -> do
         modify (_{ currentOrganization = Just pack })
         pure next
+
+
+
+  mod_create = do
+    m_me  <- gets _.me
+    m_req <- gets _.currentOrganizationRequest
+    case m_req, m_me of
+         Just (OrganizationRequest req), Just me -> do
+           e_organization <- rd $ postOrganization' (OrganizationRequest req{ email = me ^. _UserPackResponse .. user_ ^. _UserResponse .. email_ })
+           case e_organization of
+                Left err                                  -> eval (AddErrorApi "eval_Organization(Mod/Create)::postOrganization'" err next)
+                Right (OrganizationResponse organization) -> do
+                  eval (Goto (Organizations (Show organization.name) []) next)
+         _, _  -> eval (AddError "eval_Organization(Mod/Create)" "Organization request doesn't exist" next)
+
+
+
+  mod_edit org_id = do
+    m_req <- gets _.currentOrganizationRequest
+    case m_req of
+         Nothing  -> eval (AddError "eval_Organization(Mod/Edit)" "Organization request doesn't exist" next)
+         Just req -> do
+           e_org <- rd $ putOrganization' org_id req
+           case e_org of
+                Left err  -> eval (AddErrorApi "eval_Organization(Mod/Edit)::putOrganization" err next)
+                Right org -> do
+                  modify (\st->st{ currentOrganizationRequest = Just $ organizationResponseToOrganizationRequest org })
+                  eval (Goto (Organizations (Show $ org ^. _OrganizationResponse .. name_) []) next)
+                  pure next

@@ -8,6 +8,7 @@ module LN.Input.Types (
   cTeamMod,
   cForum,
   cForumMod,
+  cForumAct,
   cBoard,
   cBoardMod,
   cThread,
@@ -25,7 +26,7 @@ import Data.Foreign            (ForeignError)
 import Purescript.Api.Helpers  (ApiError)
 
 import LN.Input.Board          (InputBoard(..), Board_Mod)
-import LN.Input.Forum          (InputForum(..), Forum_Mod)
+import LN.Input.Forum          (InputForum(..), Forum_Act, Forum_Mod)
 import LN.Input.Leuron         (InputLeuron(..), Leuron_Mod)
 import LN.Input.Like           (InputLike)
 import LN.Input.Star           (InputStar)
@@ -130,42 +131,45 @@ cOrganizationAct act next = CompOrganization (InputOrganization_Act act) next
 
 
 cTeam :: forall a. InputTeam -> a -> Input a
-cTeam il next = CompTeam il next
+cTeam sub next = CompTeam sub next
 
 cTeamMod :: forall a. Team_Mod -> a -> Input a
-cTeamMod lm next = CompTeam (InputTeam_Mod lm) next
+cTeamMod mod next = CompTeam (InputTeam_Mod mod) next
 
 
 
 cForum :: forall a. InputForum -> a -> Input a
-cForum il next = CompForum il next
+cForum sub next = CompForum sub next
 
 cForumMod :: forall a. Forum_Mod -> a -> Input a
-cForumMod lm next = CompForum (InputForum_Mod lm) next
+cForumMod mod next = CompForum (InputForum_Mod mod) next
+
+cForumAct :: forall a. Forum_Act -> a -> Input a
+cForumAct act next = CompForum (InputForum_Act act) next
 
 
 
 cBoard :: forall a. InputBoard -> a -> Input a
-cBoard il next = CompBoard il next
+cBoard sub next = CompBoard sub next
 
 cBoardMod :: forall a. Board_Mod -> a -> Input a
-cBoardMod lm next = CompBoard (InputBoard_Mod lm) next
+cBoardMod mod next = CompBoard (InputBoard_Mod mod) next
 
 
 
 cThread :: forall a. InputThread -> a -> Input a
-cThread il next = CompThread il next
+cThread sub next = CompThread sub next
 
 cThreadMod :: forall a. Thread_Mod -> a -> Input a
-cThreadMod lm next = CompThread (InputThread_Mod lm) next
+cThreadMod mod next = CompThread (InputThread_Mod mod) next
 
 
 
 cThreadPost :: forall a. InputThreadPost -> a -> Input a
-cThreadPost il next = CompThreadPost il next
+cThreadPost sub next = CompThreadPost sub next
 
 cThreadPostMod :: forall a. ThreadPost_Mod -> a -> Input a
-cThreadPostMod lm next = CompThreadPost (InputThreadPost_Mod lm) next
+cThreadPostMod mod next = CompThreadPost (InputThreadPost_Mod mod) next
 
 
 
@@ -178,7 +182,7 @@ cResourceMod rm next = CompResource (InputResource_Mod rm) next
 
 
 cLeuron :: forall a. InputLeuron -> a -> Input a
-cLeuron il next = CompLeuron il next
+cLeuron sub next = CompLeuron sub next
 
 cLeuronMod :: forall a. Leuron_Mod -> a -> Input a
-cLeuronMod lm next = CompLeuron (InputLeuron_Mod lm) next
+cLeuronMod mod next = CompLeuron (InputLeuron_Mod mod) next

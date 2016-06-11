@@ -16,6 +16,7 @@ import Prelude                  (show, bind, pure, unit, id, (==), (/=), (<), ($
 import LN.Component.Types       (EvalEff)
 import LN.Input.Types
 import LN.Input.Organization    as Organization
+import LN.Input.Forum           as Forum
 import LN.Internal.Organization (defaultOrganizationRequest)
 import LN.Internal.Forum        (defaultForumRequest)
 import LN.Internal.Board        (defaultBoardRequest)
@@ -86,7 +87,7 @@ eval_Goto eval (Goto route next) = do
 
     (Organizations (Show org_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetForumsForOrg org_name next)
+      eval (cForumAct (Forum.Gets_ByOrganizationSid org_name) next)
       pure unit
 
 

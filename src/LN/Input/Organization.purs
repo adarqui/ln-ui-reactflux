@@ -13,8 +13,8 @@ import LN.T
 
 
 data InputOrganization
-  = InputOrganization_Mod Organization_Mod
-  | InputOrganization_Act Organization_Act
+  = InputOrganization_Act Organization_Act
+  | InputOrganization_Mod Organization_Mod
   | InputOrganization_Nop
 
 
