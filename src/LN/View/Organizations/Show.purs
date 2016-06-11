@@ -52,18 +52,16 @@ renderView_Organizations_Show' org_pack forum_packs =
         ]
 
     ],
-    H.div [P.class_ B.container] [
-      H.div [P.class_ B.pageHeader] [
-        H.p_ [ H.h4_ [H.text "Name:", H.small_ [H.text $ " " <> organization.name]]],
-        H.p_ [ H.h4_ [H.text "Company:", H.small_ [H.text $ " " <> organization.company]]],
-        H.p_ [ H.h4_ [H.text "Location:", H.small_ [H.text $ " " <> organization.location]]]
-      ],
-      renderView_Forums_Index' org_pack forum_packs,
-      H.p_ [ H.h4_ [H.text "Members"]],
-      H.p_ [ H.h4_ [H.text "teams"]],
-      H.p_ [ H.h4_ [H.text "activity"]],
-      H.p_ [ H.h4_ [H.text "stats"]]
-    ]
+    H.div [P.class_ B.pageHeader] [
+      H.p_ [ H.h4_ [H.text "Name:", H.small_ [H.text $ " " <> organization.name]]],
+      H.p_ [ H.h4_ [H.text "Company:", H.small_ [H.text $ " " <> organization.company]]],
+      H.p_ [ H.h4_ [H.text "Location:", H.small_ [H.text $ " " <> organization.location]]]
+    ],
+    renderView_Forums_Index' org_pack forum_packs,
+    H.p_ [ H.h4_ [H.text "Members"]],
+    H.p_ [ H.h4_ [H.text "teams"]],
+    H.p_ [ H.h4_ [H.text "activity"]],
+    H.p_ [ H.h4_ [H.text "stats"]]
   ]
   where
   organization = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
