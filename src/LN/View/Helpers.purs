@@ -84,7 +84,13 @@ module LN.View.Helpers (
   buttonGroup_VerticalSm1,
 
   buttonGroup_Horizontal',
-  buttonGroup_Vertical'
+  buttonGroup_Vertical',
+
+  linkBadge,
+  linkBadge',
+
+  textBadge,
+  textBadge'
 ) where
 
 
@@ -253,3 +259,25 @@ buttonGroup_Horizontal' sz xs =
 
 buttonGroup_Vertical' sz xs =
   H.div [P.classes [B.btnGroupVertical]] xs
+
+
+
+
+linkBadge attrs text badge route =
+  H.a [
+    linkToHref route,
+    attrs
+  ] [H.text text, H.span [P.classes [B.badge]] [H.text badge]]
+
+
+
+linkBadge' = linkBadge (P.classes [])
+
+
+
+textBadge attrs text badge =
+  H.p_ [H.text text, H.span [P.classes [B.badge]] [H.text badge]]
+
+
+
+textBadge' = textBadge (P.classes [])

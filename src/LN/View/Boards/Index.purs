@@ -70,10 +70,11 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
                 H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoards org.name forum.name (Show $ board.name) []) board.displayName]
               , H.p_ [H.text $ maybe "No description." id board.description]
             ]
-          , H.div [P.class_ B.colXs1] [
-              H.div_ [H.p_ [H.text $ "threads: " <> show stat.threads]],
-              H.div_ [H.p_ [H.text $ "posts: " <> show stat.threadPosts]],
-              H.div_ [H.p_ [H.text $ "views: " <> show stat.views]]
+          , H.div [P.class_ B.colXs2] [
+              textBadge' "threads " (show stat.threads),
+              textBadge' "posts " (show stat.threadPosts),
+              textBadge' "views " (show stat.views)
+
             ]
           , H.div [P.class_ B.colXs3] [
               case thread, post, user of
@@ -88,7 +89,7 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
                       H.p_ [H.text "No posts."]
                     ]
             ]
-          , H.div [P.class_ B.colXs2] [
+          , H.div [P.class_ B.colXs1] [
               H.div [P.class_ B.container] [
                 buttonGroup_VerticalSm1 [
                   glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) [],
