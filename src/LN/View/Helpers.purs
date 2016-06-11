@@ -89,8 +89,8 @@ module LN.View.Helpers (
   linkBadge,
   linkBadge',
 
-  textBadge,
-  textBadge'
+  showBadge,
+  showBadge'
 ) where
 
 
@@ -104,7 +104,7 @@ import Halogen.HTML.Events.Indexed     as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, map, ($), (<>))
+import Prelude                         (id, map, show, ($), (<>))
 
 import LN.Halogen.Util
 import LN.Input.Types                  (Input(..))
@@ -275,9 +275,9 @@ linkBadge' = linkBadge (P.classes [])
 
 
 
-textBadge attrs text badge =
-  H.p_ [H.text text, H.span [P.classes [B.badge]] [H.text badge]]
+showBadge attrs text badge =
+  H.p_ [H.text text, H.span [P.classes [B.badge]] [H.text $ show badge]]
 
 
 
-textBadge' = textBadge (P.classes [])
+showBadge' = showBadge (P.classes [])

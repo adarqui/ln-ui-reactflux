@@ -53,3 +53,6 @@ scroll down buttons:
 
 social buttons for bootstrap:
 - https://lipis.github.io/bootstrap-social/
+
+need to align badges:
+- http://stackoverflow.com/questions/22688426/bootstrap-3-aligning-badges-in-a-list

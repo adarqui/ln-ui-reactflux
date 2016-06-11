@@ -71,9 +71,9 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
               , H.p_ [H.text $ maybe "No description." id board.description]
             ]
           , H.div [P.class_ B.colXs2] [
-              textBadge' "threads " (show stat.threads),
-              textBadge' "posts " (show stat.threadPosts),
-              textBadge' "views " (show stat.views)
+              showBadge' "threads " stat.threads,
+              showBadge' "posts "   stat.threadPosts,
+              showBadge' "views "   stat.views
 
             ]
           , H.div [P.class_ B.colXs3] [

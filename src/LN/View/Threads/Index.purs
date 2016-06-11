@@ -85,8 +85,8 @@ renderView_Threads_Index' org_pack forum_pack board_pack thread_packs threads_pa
                   , H.p_ [H.text $ show thread.createdAt]
                 ]
               , H.div [P.class_ B.colXs2] [
-                  textBadge' "posts " (show stat.threadPosts),
-                  textBadge' "views " (show stat.views)
+                  showBadge' "posts " stat.threadPosts,
+                  showBadge' "views " stat.views
                 ]
               , H.div [P.class_ B.colXs3] [
                 case post, user of

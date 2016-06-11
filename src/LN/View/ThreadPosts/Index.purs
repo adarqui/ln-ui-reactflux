@@ -128,12 +128,12 @@ displayUserStats :: Maybe UserSanitizedPackResponse -> HTML _ _
 displayUserStats Nothing = H.p_ [H.text "No stats."]
 displayUserStats (Just user) =
   H.div_ [
-    H.p_ [H.text $ "respect: " <> show stats.respect],
-    H.p_ [H.text $ "threads: " <> show stats.threads],
-    H.p_ [H.text $ "posts: " <> show stats.threadPosts],
-    H.p_ [H.text $ "workouts: " <> show stats.workouts],
-    H.p_ [H.text $ "resources: " <> show stats.resources],
-    H.p_ [H.text $ "leurons: " <> show stats.leurons]
+    showBadge' "respect "   stats.respect,
+    showBadge' "threads "   stats.threads,
+    showBadge' "posts "     stats.threadPosts,
+    showBadge' "workouts "  stats.workouts,
+    showBadge' "resources " stats.resources,
+    showBadge' "leurons "   stats.leurons
   ]
   where
   stats = user ^. _UserSanitizedPackResponse .. stat_ ^. _UserSanitizedStatResponse
@@ -143,12 +143,12 @@ displayUserStats (Just user) =
 displayPostStats :: ThreadPostStatResponse -> HTML _ _
 displayPostStats (ThreadPostStatResponse stats) =
   H.div_ [
-      H.p_ [H.text $ "score: " <> (show $ stats.likes - stats.dislikes)]
-    , H.p_ [H.text $ "up: " <> show stats.likes]
-    , H.p_ [H.text $ "neutral: " <> show stats.neutral]
-    , H.p_ [H.text $ "down: " <> show stats.dislikes]
-    , H.p_ [H.text $ "stars: " <> show stats.stars]
-    , H.p_ [H.text $ "views: " <> show stats.views]
+    showBadge' "score: "   $ stats.likes - stats.dislikes,
+    showBadge' "up: "      stats.likes,
+    showBadge' "neutral: " stats.neutral,
+    showBadge' "down: "    stats.dislikes,
+    showBadge' "stars: "   stats.stars,
+    showBadge' "views: "   stats.views
   ]
 
 
