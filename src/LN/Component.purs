@@ -60,18 +60,12 @@ ui = component render eval
   eval z@(GetUsers_MergeMap_ByUser _ _)               = eval_GetUsers_MergeMap_ByUser eval z
   eval z@(GetUsers_MergeMap_ByUserId _ _)             = eval_GetUsers_MergeMap_ByUserId eval z
 
-  eval z@(GetOrganizations _)                         = eval_GetOrganizations eval z
-  eval z@(GetOrganization _ _)                        = eval_GetOrganization eval z
-  eval z@(GetOrganizationId _ _)                      = eval_GetOrganizationId eval z
   eval z@(GetOrganizationForum _ _ _)                 = eval_GetOrganizationForum eval z
   eval z@(GetOrganizationForumBoard _ _ _ _)          = eval_GetOrganizationForumBoard eval z
   eval z@(GetOrganizationForumBoardThread _ _ _ _ _)  = eval_GetOrganizationForumBoardThread eval z
   eval z@(GetOrganizationForumBoardThreadPost _ _ _ _ _ _) = eval_GetOrganizationForumBoardThreadPost eval z
 
   eval z@(GetTeams _)                                 = eval_GetTeams eval z
-
-  eval z@(GetForums _)                                = eval_GetForums eval z
-  eval z@(GetForumsForOrg _ _)                        = eval_GetForumsForOrg eval z
 
   eval z@(GetBoards _)                                = eval_GetBoards eval z
   eval z@(GetBoardsForForum _ _)                      = eval_GetBoardsForForum eval z

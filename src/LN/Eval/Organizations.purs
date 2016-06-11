@@ -1,7 +1,4 @@
 module LN.Eval.Organizations (
-  eval_GetOrganizations,
-  eval_GetOrganization,
-  eval_GetOrganizationId,
   eval_GetOrganizationForum,
   eval_GetOrganizationForumBoard,
   eval_GetOrganizationForumBoardThread,
@@ -44,75 +41,6 @@ import LN.T                            ( OrganizationPackResponses(..), Organiza
                                        , BoardPackResponse(..)
                                        , ThreadPackResponse(..)
                                        , ThreadPostPackResponse(..))
-
-
-
-eval_GetOrganizations :: EvalEff
-eval_GetOrganizations eval (GetOrganizations next) = do
-
-  modify (_{ organizations = (M.empty :: M.Map Int OrganizationPackResponse) })
-
-  modify $ setLoading l_organizations
-
-  e_organizations <- rd $ getOrganizationPacks'
-
-  modify $ clearLoading l_organizations
-
-  case e_organizations of
-
-    Left err                                             -> eval (AddErrorApi "eval_GetOrganizations::getOrganizationPacks'" err next)
-
-    Right (OrganizationPackResponses organization_packs) -> do
-
-      let
-        organizations_map =
-          idmapFrom (\(OrganizationPackResponse pack) -> pack.organizationId) organization_packs.organizationPackResponses
-
-
-      modify (_{ organizations = organizations_map })
-      pure next
-
-
-
-eval_GetOrganization :: EvalEff
-eval_GetOrganization eval (GetOrganization org_name next) = do
-
-  modify (_{ currentOrganization = Nothing })
-
-  modify $ setLoading l_currentOrganization
-
-  e_org <- rd $ ApiS.getOrganizationPack' org_name
-
-  modify $ clearLoading l_currentOrganization
-
-  case e_org of
-
-    Left err   -> eval (AddErrorApi "eval_GetOrganization::ApiS.getOrganizationPack'" err next)
-
-    Right pack -> do
-      modify (_{ currentOrganization = Just pack })
-      pure next
-
-
-
-eval_GetOrganizationId :: EvalEff
-eval_GetOrganizationId eval (GetOrganizationId org_id next) = do
-
-  modify (_{ currentOrganization = Nothing })
-
-  modify $ setLoading l_currentOrganization
-
-  e_org <- rd $ getOrganizationPack' org_id
-
-  modify $ clearLoading l_currentOrganization
-
-  case e_org of
-
-    Left err   -> eval (AddErrorApi "eval_GetOrganizationId::getOrganizationPack'" err next)
-
-    Right pack -> do
-      modify (_{ currentOrganization = Just pack })
-      pure next
 
 
 

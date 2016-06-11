@@ -57,18 +57,12 @@ data Input a
   | GetUsers_MergeMap_ByUser (Array UserSanitizedResponse) a
   | GetUsers_MergeMap_ByUserId (Array Int) a
 
-  | GetOrganizations a
-  | GetOrganization String a
-  | GetOrganizationId Int a
   | GetOrganizationForum String String a
   | GetOrganizationForumBoard String String String a
   | GetOrganizationForumBoardThread String String String String a
   | GetOrganizationForumBoardThreadPost String String String String Int a
 
   | GetTeams a
-
-  | GetForums a
-  | GetForumsForOrg String a
 
   | GetBoards a
   | GetBoardsForForum Int a
