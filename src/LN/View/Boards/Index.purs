@@ -64,27 +64,16 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
       H.li_ [
         H.div [P.class_ B.row] [
             H.div [P.class_ B.colXs1] [
-              H.p_ [H.text "icon"],
-              H.div [P.class_ B.container] [
-                buttonGroup_VerticalSm1 [
-                  glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) [],
-                  glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New [],
-                  glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) []
-                ]
-              ]
+              H.p_ [H.text "icon"]
             ]
           , H.div [P.class_ B.colXs5] [
                 H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoards org.name forum.name (Show $ board.name) []) board.displayName]
               , H.p_ [H.text $ maybe "No description." id board.description]
             ]
           , H.div [P.class_ B.colXs1] [
-              H.p_ [H.text $ show stat.threads <> " threads"]
-            ]
-          , H.div [P.class_ B.colXs1] [
-              H.p_ [H.text $ show stat.threadPosts <> " posts"]
-            ]
-          , H.div [P.class_ B.colXs1] [
-              H.p_ [H.text $ show stat.views <> " views"]
+              H.div_ [H.p_ [H.text $ "threads: " <> show stat.threads]],
+              H.div_ [H.p_ [H.text $ "posts: " <> show stat.threadPosts]],
+              H.div_ [H.p_ [H.text $ "views: " <> show stat.views]]
             ]
           , H.div [P.class_ B.colXs3] [
               case thread, post, user of
@@ -98,7 +87,17 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
                     H.div_ [
                       H.p_ [H.text "No posts."]
                     ]
-          ]
+            ]
+          , H.div [P.class_ B.colXs2] [
+              H.div [P.class_ B.container] [
+                buttonGroup_VerticalSm1 [
+                  glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) [],
+                  glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New [],
+                  glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) []
+                ]
+              ]
+            ]
+
         ]
       ])
     $ listToArray $ M.values board_packs
