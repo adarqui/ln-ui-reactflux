@@ -1,8 +1,10 @@
 module LN.State.User (
   usersMapLookup,
+  usersMapLookup',
   usersMapLookup_ToUser,
   usersMapLookup_ToUser',
-  usersMapLookup_ToNick
+  usersMapLookup_ToNick,
+  usersMapLookup_ToNick'
 ) where
 
 
@@ -20,14 +22,17 @@ import LN.T                      (UserSanitizedPackResponse, UserSanitizedRespon
 
 
 usersMapLookup :: State -> Int -> Maybe UserSanitizedPackResponse
-usersMapLookup st user_id =
-  M.lookup user_id st.usersMap
+usersMapLookup st = usersMapLookup' st.usersMap
+
+
+
+usersMapLookup' :: M.Map Int UserSanitizedPackResponse  -> Int -> Maybe UserSanitizedPackResponse
+usersMapLookup' users_map user_id = M.lookup user_id users_map
 
 
 
 usersMapLookup_ToUser :: State -> Int -> Maybe UserSanitizedResponse
-usersMapLookup_ToUser st user_id =
-  maybe Nothing (\user -> Just $ user ^. _UserSanitizedPackResponse .. user_) $ M.lookup user_id st.usersMap
+usersMapLookup_ToUser st = usersMapLookup_ToUser' st.usersMap
 
 
 
@@ -38,5 +43,10 @@ usersMapLookup_ToUser' users_map user_id =
 
 
 usersMapLookup_ToNick :: State -> Int -> String
-usersMapLookup_ToNick st user_id =
-  maybe "unknown" (\user -> user ^. _UserSanitizedResponse .. nick_) (usersMapLookup_ToUser st user_id)
+usersMapLookup_ToNick st = usersMapLookup_ToNick' st.usersMap
+
+
+
+usersMapLookup_ToNick' :: M.Map Int UserSanitizedPackResponse -> Int -> String
+usersMapLookup_ToNick' users_map user_id =
+  maybe "unknown" (\user -> user ^. _UserSanitizedResponse .. nick_) (usersMapLookup_ToUser' users_map user_id)

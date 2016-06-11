@@ -40,13 +40,14 @@ import LN.T                            ( BoardPackResponse, ForumPackResponse, O
 renderView_Threads_Show :: State -> ComponentHTML Input
 renderView_Threads_Show st =
 
-  case st.currentOrganization, st.currentForum, st.currentBoard, st.currentThread of
+  case st.currentOrganization, st.currentForum, st.currentBoard, st.currentThread, st.currentThreadPostRequest, st.currentThreadPostRequestSt of
 
-       Just org_pack, Just forum_pack, Just board_pack, Just thread_pack ->
+       Just org_pack, Just forum_pack, Just board_pack, Just thread_pack, Just post_req, Just post_req_st ->
+
          renderView_Threads_Show' org_pack forum_pack board_pack thread_pack $
-           renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack st
+           renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack st.threadPosts st.threadPostsPageInfo st.currentPage st.usersMap post_req post_req_st
 
-       _,             _,               _,               _                -> renderLoading
+       _, _, _, _, _, _                -> renderLoading
 
 
 

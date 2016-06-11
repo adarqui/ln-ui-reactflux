@@ -20,10 +20,12 @@ import LN.Input.Types                  (Input(..), cThreadPostMod)
 import LN.Input.ThreadPost             (InputThreadPost(..), ThreadPost_Mod(..))
 import LN.Router.Link                  (linkTo, linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.State.ThreadPost             (ThreadPostRequestState)
+import LN.State.PageInfo               (PageInfo)
 import LN.State.Types                  (State)
-import LN.State.User                   (usersMapLookup, usersMapLookup_ToNick, usersMapLookup_ToUser)
+import LN.State.User                   (usersMapLookup', usersMapLookup_ToNick', usersMapLookup_ToUser')
 import LN.View.Helpers
-import LN.View.ThreadPosts.Mod         (renderView_ThreadPosts_Mod, postDataToBody)
+import LN.View.ThreadPosts.Mod         (renderView_ThreadPosts_Mod', postDataToBody)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.Like             (renderLike)
@@ -31,6 +33,8 @@ import LN.View.Module.PageNumbers      (renderPageNumbers)
 import LN.T                            ( Ent(..)
                                        , UserSanitizedPackResponse, ThreadPackResponse, BoardPackResponse
                                        , ForumPackResponse, OrganizationPackResponse, PostData(PostDataBBCode)
+                                       , ThreadPostPackResponse
+                                       , ThreadPostRequest
                                        , Size(Medium), ThreadPostStatResponse(ThreadPostStatResponse)
                                        , _UserSanitizedStatResponse, stat_, _UserSanitizedPackResponse
                                        , signature_, _ProfileResponse, profile_, _ThreadPostStatResponse
@@ -45,20 +49,30 @@ import LN.T                            ( Ent(..)
 renderView_ThreadPosts_Index :: State -> ComponentHTML Input
 renderView_ThreadPosts_Index st =
 
-  case st.currentOrganization, st.currentForum, st.currentBoard, st.currentThread of
+  case st.currentOrganization, st.currentForum, st.currentBoard, st.currentThread, st.currentThreadPostRequest, st.currentThreadPostRequestSt of
 
-       Just org_pack, Just forum_pack, Just board_pack, Just thread_pack ->
-         renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack st
+       Just org_pack, Just forum_pack, Just board_pack, Just thread_pack, Just post_req, Just post_req_st ->
+         renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack st.threadPosts st.threadPostsPageInfo st.currentPage st.usersMap post_req post_req_st
 
-       _,             _,               _,              _                 -> renderLoading
+       _, _, _, _, _ , _                 -> renderLoading
 
 
 
 renderView_ThreadPosts_Index'
-  :: OrganizationPackResponse -> ForumPackResponse -> BoardPackResponse -> ThreadPackResponse -> State -> ComponentHTML Input
-renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack st =
+  :: OrganizationPackResponse
+  -> ForumPackResponse
+  -> BoardPackResponse
+  -> ThreadPackResponse
+  -> M.Map Int ThreadPostPackResponse
+  -> PageInfo
+  -> Routes
+  -> M.Map Int UserSanitizedPackResponse
+  -> ThreadPostRequest
+  -> ThreadPostRequestState
+  -> ComponentHTML Input
+renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack post_packs posts_page_info posts_route users_map post_req post_req_st =
   H.div_ [
-      renderPageNumbers st.threadPostsPageInfo st.currentPage
+      renderPageNumbers posts_page_info posts_route
     , H.ul [P.class_ B.listUnstyled] (
         (map (\pack ->
           let
@@ -70,16 +84,16 @@ renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack st =
 
             H.div [P.class_ B.row] [
                 H.div [P.class_ B.colXs2] [
-                    H.p_ [linkTo (Users (Show (usersMapLookup_ToNick st post.userId)) []) (usersMapLookup_ToNick st post.userId)]
-                  , renderGravatarForUser Medium (usersMapLookup_ToUser st post.userId)
-                  , displayUserStats (usersMapLookup st post.userId)
+                    H.p_ [linkTo (Users (Show (usersMapLookup_ToNick' users_map post.userId)) []) (usersMapLookup_ToNick' users_map post.userId)]
+                  , renderGravatarForUser Medium (usersMapLookup_ToUser' users_map post.userId)
+                  , displayUserStats (usersMapLookup' users_map post.userId)
                 ]
               , H.div [P.class_ B.colXs8] [
                     linkTo (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (ShowI post.id) []) (thread.name <> "/" <> show post.id)
                   , H.p_ [H.text $ show post.createdAt]
                   , H.p_ [H.text "quote / reply"]
                   , displayPostData post.body
-                  , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup st post.userId)]
+                  , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup' users_map post.userId)]
                 ]
               , H.div [P.class_ B.colXs1] [
                     renderLike Ent_ThreadPost post.id pack'.like pack'.star
@@ -94,14 +108,14 @@ renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack st =
             ]
 
           ]
-        ) $ listToArray $ M.values st.threadPosts)
+        ) $ listToArray $ M.values post_packs)
         <>
         -- INPUT FORM AT THE BOTTOM
-        [renderView_ThreadPosts_Mod Nothing st])
-  , renderPageNumbers st.threadPostsPageInfo st.currentPage
+        [renderView_ThreadPosts_Mod' thread_pack Nothing post_req post_req_st])
+  , renderPageNumbers posts_page_info posts_route
   ]
   where
-  body   = maybe "" (\p -> postDataToBody $ p ^. _ThreadPostRequest .. body_) st.currentThreadPostRequest
+  body   = postDataToBody $ post_req ^. _ThreadPostRequest .. body_
   org    = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
   forum  = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
   board  = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
