@@ -228,7 +228,10 @@ eval_Organization eval (CompOrganization sub next) = do
 
     InputOrganization_Act q -> do
       case q of
-        Gets -> get_organizations
+        Gets            -> act_get_organizations
+        GetId org_id    -> act_get_organization_id org_id
+        GetSid org_name -> act_get_organization_sid org_name
+
 
 
     InputOrganization_Mod q -> do
@@ -281,32 +284,49 @@ eval_Organization eval (CompOrganization sub next) = do
     _   -> pure next
 
  where
- append :: forall a. Eq a => Maybe (Array a) -> a -> Maybe (Array a)
- append Nothing a    = Just [a]
- append (Just arr) a = Just $ nub $ arr <> [a]
- set v req           = Just (v req)
- mod new             = modify (\st->st{ currentOrganizationRequest = maybe Nothing new st.currentOrganizationRequest }) $> next
+  append :: forall a. Eq a => Maybe (Array a) -> a -> Maybe (Array a)
+  append Nothing a    = Just [a]
+  append (Just arr) a = Just $ nub $ arr <> [a]
+  set v req           = Just (v req)
+  mod new             = modify (\st->st{ currentOrganizationRequest = maybe Nothing new st.currentOrganizationRequest }) $> next
 
 
- get_organizations   = do
-   modify (_{ organizations = (M.empty :: M.Map Int OrganizationPackResponse) })
-
-   modify $ setLoading l_organizations
-
-   e_organizations <- rd $ getOrganizationPacks'
-
-   modify $ clearLoading l_organizations
-
-   case e_organizations of
-
-     Left err                                             -> eval (AddErrorApi "eval_GetOrganizations::getOrganizationPacks'" err next)
-
-     Right (OrganizationPackResponses organization_packs) -> do
-
-       let
-         organizations_map =
-           idmapFrom (\(OrganizationPackResponse pack) -> pack.organizationId) organization_packs.organizationPackResponses
+  act_get_organizations   = do
+    modify (_{ organizations = (M.empty :: M.Map Int OrganizationPackResponse) })
+    modify $ setLoading l_organizations
+    e_organizations <- rd $ getOrganizationPacks'
+    modify $ clearLoading l_organizations
+    case e_organizations of
+      Left err                                             -> eval (AddErrorApi "eval_Organizations(Act/Gets)::getOrganizationPacks'" err next)
+      Right (OrganizationPackResponses organization_packs) -> do
+        let
+          organizations_map =
+            idmapFrom (\(OrganizationPackResponse pack) -> pack.organizationId) organization_packs.organizationPackResponses
+        modify (_{ organizations = organizations_map })
+        pure next
 
 
-       modify (_{ organizations = organizations_map })
-       pure next
+
+  act_get_organization_id org_id = do
+    modify (_{ currentOrganization = Nothing })
+    modify $ setLoading l_currentOrganization
+    e_org <- rd $ getOrganizationPack' org_id
+    modify $ clearLoading l_currentOrganization
+    case e_org of
+      Left err   -> eval (AddErrorApi "eval_Organization(Act/GetId)::getOrganizationPack'" err next)
+      Right pack -> do
+        modify (_{ currentOrganization = Just pack })
+        pure next
+
+
+
+  act_get_organization_sid org_name = do
+    modify (_{ currentOrganization = Nothing })
+    modify $ setLoading l_currentOrganization
+    e_org <- rd $ ApiS.getOrganizationPack' org_name
+    modify $ clearLoading l_currentOrganization
+    case e_org of
+      Left err   -> eval (AddErrorApi "eval_Organization(Act/GetSid)::ApiS.getOrganizationPack'" err next)
+      Right pack -> do
+        modify (_{ currentOrganization = Just pack })
+        pure next

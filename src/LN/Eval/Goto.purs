@@ -63,20 +63,20 @@ eval_Goto eval (Goto route next) = do
       pure unit
 
     (Organizations (Edit org_name) params) -> do
-      eval (GetOrganization org_name next)
+      eval (cOrganizationAct (Organization.GetSid org_name) next)
       m_pack <- gets _.currentOrganization
       case m_pack of
            Nothing                              -> pure unit
            Just (OrganizationPackResponse pack) -> do
-             m_o_st <- gets _.currentOrganizationRequestSt
+             m_req_st <- gets _.currentOrganizationRequestSt
              let
-               org  = pack.organization ^. _OrganizationResponse
-               o_st = maybe defaultOrganizationRequestState id m_o_st
-             modify (_{ currentOrganizationRequest = Just $ organizationResponseToOrganizationRequest pack.organization, currentOrganizationRequestSt = Just o_st })
+               org    = pack.organization ^. _OrganizationResponse
+               req_st = maybe defaultOrganizationRequestState id m_req_st
+             modify (_{ currentOrganizationRequest = Just $ organizationResponseToOrganizationRequest pack.organization, currentOrganizationRequestSt = Just req_st })
              pure unit
 
     (Organizations (Delete org_name) params) -> do
-      eval (GetOrganization org_name next)
+      eval (cOrganizationAct (Organization.GetSid org_name) next)
       m_pack <- gets _.currentOrganization
       case m_pack of
            Nothing                          -> pure unit
@@ -85,7 +85,7 @@ eval_Goto eval (Goto route next) = do
              pure unit
 
     (Organizations (Show org_name) params) -> do
-      eval (GetOrganization org_name next)
+      eval (cOrganizationAct (Organization.GetSid org_name) next)
       eval (GetForumsForOrg org_name next)
       pure unit
 
