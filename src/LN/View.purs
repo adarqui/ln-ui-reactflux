@@ -168,7 +168,7 @@ renderView (OrganizationsForumsBoardsThreads org_name forum_name board_name (Sho
 
 
 renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name Index params)             =
-  renderView_ThreadPosts_Index
+  renderView_Threads_Show
 renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name New params)               =
   renderView_ThreadPosts_New
 renderView (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (EditI post_id) params)   =

@@ -21,6 +21,8 @@ import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
 -- import LN.View.Module.CreateThread     (renderCreateThread)
+import LN.View.Helpers
+import LN.View.ThreadPosts.Index       (renderView_ThreadPosts_Index')
 import LN.View.Module.Gravatar         (renderGravatarForUser)
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.OrderBy          (renderOrderBy)
@@ -40,7 +42,10 @@ renderView_Threads_Show st =
 
   case st.currentOrganization, st.currentForum, st.currentBoard, st.currentThread of
 
-       Just org_pack, Just forum_pack, Just board_pack, Just thread_pack -> renderView_Threads_Show' org_pack forum_pack board_pack thread_pack (H.div_ [])
+       Just org_pack, Just forum_pack, Just board_pack, Just thread_pack ->
+         renderView_Threads_Show' org_pack forum_pack board_pack thread_pack $
+           renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack st
+
        _,             _,               _,               _                -> renderLoading
 
 
@@ -51,8 +56,10 @@ renderView_Threads_Show' org_pack forum_pack board_pack thread_pack plumbing_pos
   H.div [P.class_ B.containerFluid] [
     H.div [P.class_ B.pageHeader] [
       H.h2_ [H.text thread.name],
-        H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) []) "edit"],
-        H.div_ [linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) []) "delete"]
+      buttonGroup_HorizontalSm1 [
+        glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) [],
+        glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) []
+      ]
     ],
     H.div [] [plumbing_posts]
   ]
