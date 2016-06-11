@@ -77,14 +77,7 @@ renderView_Threads_Index' org_pack forum_pack board_pack thread_packs threads_pa
           H.li_ [
             H.div [P.class_ B.row] [
                 H.div [P.class_ B.colXs1] [
-                  renderGravatarForUser Small (usersMapLookup_ToUser' users_map thread.userId),
-
-                  buttonGroup_VerticalSm1 [
-
-                    glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) [],
-                    glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) []
-                  ]
-
+                  renderGravatarForUser Small (usersMapLookup_ToUser' users_map thread.userId)
                 ]
               , H.div [P.class_ B.colXs6] [
                     H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Show thread.name) []) thread.displayName]
@@ -92,10 +85,8 @@ renderView_Threads_Index' org_pack forum_pack board_pack thread_packs threads_pa
                   , H.p_ [H.text $ show thread.createdAt]
                 ]
               , H.div [P.class_ B.colXs1] [
-                  H.p_ [H.text $ show stat.threadPosts <> " posts"]
-                ]
-              , H.div [P.class_ B.colXs1] [
-                  H.p_ [H.text $ show stat.views <> " views"]
+                  H.p_ [H.text $ "posts: " <> show stat.threadPosts],
+                  H.p_ [H.text $ "views: " <> show stat.views]
                 ]
               , H.div [P.class_ B.colXs3] [
                 case post, user of
@@ -105,7 +96,15 @@ renderView_Threads_Index' org_pack forum_pack board_pack thread_packs threads_pa
                          H.p_ [H.text $ show post'.createdAt]
                        ]
                      _, _ -> H.div_ [ H.p_ [H.text "No posts."]]
-              ]
+                ]
+              , H.div [P.class_ B.colXs1] [
+                  buttonGroup_VerticalSm1 [
+
+                    glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) [],
+                    glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) []
+                  ]
+
+                ]
             ]
           ])
         $ listToArray $ M.values thread_packs
