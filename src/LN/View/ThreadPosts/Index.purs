@@ -22,6 +22,7 @@ import LN.Router.Link                  (linkTo, linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup, usersMapLookup_ToNick, usersMapLookup_ToUser)
+import LN.View.Helpers
 import LN.View.ThreadPosts.Mod         (renderView_ThreadPosts_Mod, postDataToBody)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
 import LN.View.Module.Loading          (renderLoading)
@@ -81,12 +82,14 @@ renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack st =
                   , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup st post.userId)]
                 ]
               , H.div [P.class_ B.colXs1] [
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) []) "edit"],
-                  H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) []) "delete"]
-                ]
-              , H.div [P.class_ B.colXs1] [
                     renderLike Ent_ThreadPost post.id pack'.like pack'.star
                   , displayPostStats (ThreadPostStatResponse stats)
+                ]
+              , H.div [P.class_ B.colXs1] [
+                  buttonGroup_VerticalSm1 [
+                    glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) [],
+                    glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) []
+                  ]
                 ]
             ]
 
