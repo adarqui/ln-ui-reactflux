@@ -14,7 +14,8 @@ import Optic.Core               ((^.),(..))
 import Prelude                  (show, bind, pure, unit, id, (==), (/=), (<), ($))
 
 import LN.Component.Types       (EvalEff)
-import LN.Input.Types           (Input(..))
+import LN.Input.Types
+import LN.Input.Organization    as Organization
 import LN.Internal.Organization (defaultOrganizationRequest)
 import LN.Internal.Forum        (defaultForumRequest)
 import LN.Internal.Board        (defaultBoardRequest)
@@ -55,7 +56,7 @@ eval_Goto eval (Goto route next) = do
 
 
 
-    (Organizations Index params) -> eval (GetOrganizations next) $> unit
+    (Organizations Index params) -> eval (cOrganizationAct Organization.Gets next) $> unit
 
     (Organizations New params) -> do
       modify (_{ currentOrganizationRequest = Just defaultOrganizationRequest, currentOrganizationRequestSt = Just defaultOrganizationRequestState })

@@ -24,7 +24,7 @@ import LN.Api                          (rd, getOrganizationPacks', getOrganizati
 import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
-import LN.Input.Organization           (InputOrganization(..), Organization_Mod(..))
+import LN.Input.Organization           (InputOrganization(..), Organization_Act(..), Organization_Mod(..))
 import LN.Input.Types                  (Input(..))
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                ( l_currentOrganization, l_organizations
@@ -225,6 +225,12 @@ eval_Organization eval (CompOrganization sub next) = do
   m_me <- gets _.me
 
   case sub of
+
+    InputOrganization_Act q -> do
+      case q of
+        Gets -> get_organizations
+
+
     InputOrganization_Mod q -> do
       case q of
         SetDisplayName name -> mod $ set (\req -> _OrganizationRequest .. displayName_ .~ name $ req)
@@ -280,3 +286,27 @@ eval_Organization eval (CompOrganization sub next) = do
  append (Just arr) a = Just $ nub $ arr <> [a]
  set v req           = Just (v req)
  mod new             = modify (\st->st{ currentOrganizationRequest = maybe Nothing new st.currentOrganizationRequest }) $> next
+
+
+ get_organizations   = do
+   modify (_{ organizations = (M.empty :: M.Map Int OrganizationPackResponse) })
+
+   modify $ setLoading l_organizations
+
+   e_organizations <- rd $ getOrganizationPacks'
+
+   modify $ clearLoading l_organizations
+
+   case e_organizations of
+
+     Left err                                             -> eval (AddErrorApi "eval_GetOrganizations::getOrganizationPacks'" err next)
+
+     Right (OrganizationPackResponses organization_packs) -> do
+
+       let
+         organizations_map =
+           idmapFrom (\(OrganizationPackResponse pack) -> pack.organizationId) organization_packs.organizationPackResponses
+
+
+       modify (_{ organizations = organizations_map })
+       pure next

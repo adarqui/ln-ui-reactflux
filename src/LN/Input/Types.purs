@@ -3,6 +3,7 @@ module LN.Input.Types (
   -- helpers
   cOrganization,
   cOrganizationMod,
+  cOrganizationAct,
   cTeam,
   cTeamMod,
   cForum,
@@ -29,7 +30,7 @@ import LN.Input.Leuron         (InputLeuron(..), Leuron_Mod)
 import LN.Input.Like           (InputLike)
 import LN.Input.Star           (InputStar)
 import LN.Input.OrderBy        (InputOrderBy)
-import LN.Input.Organization   (InputOrganization(..), Organization_Mod)
+import LN.Input.Organization   (InputOrganization(..), Organization_Act, Organization_Mod)
 import LN.Input.Profile        (InputProfile)
 import LN.Input.Resource       (InputResource(..), Resource_Mod)
 import LN.Input.Team           (InputTeam(..), Team_Mod)
@@ -118,10 +119,13 @@ data Input a
 --
 
 cOrganization :: forall a. InputOrganization -> a -> Input a
-cOrganization il next = CompOrganization il next
+cOrganization sub next = CompOrganization sub next
 
 cOrganizationMod :: forall a. Organization_Mod -> a -> Input a
-cOrganizationMod lm next = CompOrganization (InputOrganization_Mod lm) next
+cOrganizationMod mod next = CompOrganization (InputOrganization_Mod mod) next
+
+cOrganizationAct :: forall a. Organization_Act -> a -> Input a
+cOrganizationAct act next = CompOrganization (InputOrganization_Act act) next
 
 
 
