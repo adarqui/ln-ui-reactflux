@@ -35,7 +35,6 @@ data Organization_Mod
 
 
 data Organization_Act
-  = Nop
-  | Gets
+  = Gets
   | GetId  Int
   | GetSid String

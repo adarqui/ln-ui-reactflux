@@ -228,9 +228,9 @@ eval_Organization eval (CompOrganization sub next) = do
 
     InputOrganization_Act q -> do
       case q of
-        Gets            -> act_get_organizations
-        GetId org_id    -> act_get_organization_id org_id
-        GetSid org_name -> act_get_organization_sid org_name
+        Gets            -> act_gets
+        GetId org_id    -> act_get_id org_id
+        GetSid org_name -> act_get_sid org_name
 
 
 
@@ -255,7 +255,7 @@ eval_Organization eval (CompOrganization sub next) = do
   mod new             = modify (\st->st{ currentOrganizationRequest = maybe Nothing new st.currentOrganizationRequest }) $> next
 
 
-  act_get_organizations   = do
+  act_gets = do
     modify (_{ organizations = (M.empty :: M.Map Int OrganizationPackResponse) })
     modify $ setLoading l_organizations
     e_organizations <- rd $ getOrganizationPacks'
@@ -271,7 +271,7 @@ eval_Organization eval (CompOrganization sub next) = do
 
 
 
-  act_get_organization_id org_id = do
+  act_get_id org_id = do
     modify (_{ currentOrganization = Nothing })
     modify $ setLoading l_currentOrganization
     e_org <- rd $ getOrganizationPack' org_id
@@ -284,7 +284,7 @@ eval_Organization eval (CompOrganization sub next) = do
 
 
 
-  act_get_organization_sid org_name = do
+  act_get_sid org_name = do
     modify (_{ currentOrganization = Nothing })
     modify $ setLoading l_currentOrganization
     e_org <- rd $ ApiS.getOrganizationPack' org_name
