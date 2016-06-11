@@ -66,10 +66,10 @@ renderView_Forums_Index' org_pack forum_packs =
                  else H.div_ []
             ],
             H.div [P.class_ B.colXs2] [
-              H.p_ [H.text "boards"],
-              H.p_ [H.text "threads"],
-              H.p_ [H.text "posts"],
-              H.p_ [H.text "views"]
+              showBadge' "boards "  0,
+              showBadge' "threads " 0,
+              showBadge' "posts "   0,
+              showBadge' "views "   0
             ],
             H.div [P.class_ B.colXs2] [
               H.p_ [H.text "created-at"]

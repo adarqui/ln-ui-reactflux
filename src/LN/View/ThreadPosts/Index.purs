@@ -88,14 +88,14 @@ renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack post_pa
                   , renderGravatarForUser Medium (usersMapLookup_ToUser' users_map post.userId)
                   , displayUserStats (usersMapLookup' users_map post.userId)
                 ]
-              , H.div [P.class_ B.colXs8] [
+              , H.div [P.class_ B.colXs7] [
                     linkTo (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (ShowI post.id) []) (thread.name <> "/" <> show post.id)
                   , H.p_ [H.text $ show post.createdAt]
                   , H.p_ [H.text "quote / reply"]
                   , displayPostData post.body
                   , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup' users_map post.userId)]
                 ]
-              , H.div [P.class_ B.colXs1] [
+              , H.div [P.class_ B.colXs2] [
                     renderLike Ent_ThreadPost post.id pack'.like pack'.star
                   , displayPostStats (ThreadPostStatResponse stats)
                 ]
