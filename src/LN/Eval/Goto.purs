@@ -87,7 +87,7 @@ eval_Goto eval (Goto route next) = do
 
     (Organizations (Show org_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (cForumAct (Forum.Gets_ByOrganizationSid org_name) next)
+      eval (cForumAct Forum.Gets_ByCurrentOrganization next)
       pure unit
 
 
@@ -98,7 +98,7 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForums org_name (Edit forum_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForum org_name forum_name next)
       m_pack <- gets _.currentForum
       case m_pack of
            Nothing                              -> pure unit
@@ -112,7 +112,7 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForums org_name (Delete forum_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForum org_name forum_name next)
       m_pack <- gets _.currentForum
       case m_pack of
            Nothing                          -> pure unit
@@ -121,16 +121,16 @@ eval_Goto eval (Goto route next) = do
              pure unit
 
     (OrganizationsForums org_name Index params) -> do
-      eval (cForumAct (Forum.Gets_ByOrganizationSid org_name) next)
+      eval (cForumAct Forum.Gets_ByCurrentOrganization next)
       pure unit
 
     (OrganizationsForums org_name (Show forum_name) params) -> do
       -- TODO FIXME
       if (org_name /= (maybe "" (\v -> v ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. name_) st.currentOrganization))
-        then eval (cOrganizationAct (Organization.GetSid org_name) next)
-        else pure next
+        then eval (cOrganizationAct (Organization.GetSid org_name) next) $> unit
+        else pure unit
 
-      eval (GetOrganizationForum org_name forum_name next) $> unit
+--      eval (GetOrganizationForum org_name forum_name next) $> unit
 
 
 
@@ -140,8 +140,8 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForumsBoards org_name forum_name (Edit board_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
-      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+--      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForumBoard org_name forum_name board_name next)
       m_pack <- gets _.currentBoard
       case m_pack of
            Nothing                              -> pure unit
@@ -155,8 +155,8 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForumsBoards org_name forum_name (Delete board_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
-      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+--      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForumBoard org_name forum_name board_name next)
       m_pack <- gets _.currentBoard
       case m_pack of
            Nothing                          -> pure unit
@@ -166,12 +166,12 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForumsBoards org_name forum_name Index params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForum org_name forum_name next)
       pure unit
 
     (OrganizationsForumsBoards org_name forum_name (Show board_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForum org_name forum_name next)
 
       let moffset = elemBy (\(Tuple k v) -> k == "offset") params
       maybe
@@ -200,14 +200,14 @@ eval_Goto eval (Goto route next) = do
           pure unit)
         msort_order
 
-      eval (GetOrganizationForumBoard org_name forum_name board_name next) $> unit
+--      eval (GetOrganizationForumBoard org_name forum_name board_name next) $> unit
 
 
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name Index params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
-      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+--      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForumBoard org_name forum_name board_name next)
       pure unit
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name New params) -> do
@@ -216,9 +216,9 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name (Edit thread_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
-      eval (GetOrganizationForumBoard org_name forum_name board_name next)
-      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
+--      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+--      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
       m_pack <- gets _.currentThread
       case m_pack of
            Nothing                              -> pure unit
@@ -232,9 +232,9 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name (Delete thread_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
-      eval (GetOrganizationForumBoard org_name forum_name board_name next)
-      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
+--      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+--      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
 
       m_pack <- gets _.currentThread
       case m_pack of
@@ -276,8 +276,8 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
-      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+--      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForumBoard org_name forum_name board_name next)
 
       let moffset = elemBy (\(Tuple k v) -> k == "offset") params
       maybe
@@ -295,7 +295,7 @@ eval_Goto eval (Goto route next) = do
       -- create empty thread post state
       modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState })
 
-      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) $> unit
+--      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) $> unit
 
 
 
@@ -306,10 +306,10 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (EditI post_id) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
-      eval (GetOrganizationForumBoard org_name forum_name board_name next)
-      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
-      eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next)
+--      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+--      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
+--      eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next)
       m_pack <- gets _.currentThreadPost
       case m_pack of
            Nothing                              -> pure unit
@@ -322,10 +322,10 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (DeleteI post_id) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
-      eval (GetOrganizationForumBoard org_name forum_name board_name next)
-      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
-      eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next)
+--      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+--      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
+--      eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next)
       m_pack <- gets _.currentThreadPost
       case m_pack of
            Nothing                          -> pure unit
@@ -335,9 +335,9 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name Index params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
-      eval (GetOrganizationForumBoard org_name forum_name board_name next)
-      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
+--      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+--      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
 
       let moffset = elemBy (\(Tuple k v) -> k == "offset") params
       maybe
@@ -354,13 +354,13 @@ eval_Goto eval (Goto route next) = do
 
       modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState })
 
-      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) $> unit
+--      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) $> unit
 
     (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post_id) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (GetOrganizationForum org_name forum_name next)
-      eval (GetOrganizationForumBoard org_name forum_name board_name next)
-      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
+--      eval (GetOrganizationForum org_name forum_name next)
+--      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+--      eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next)
 
       let moffset = elemBy (\(Tuple k v) -> k == "offset") params
       maybe
@@ -377,7 +377,7 @@ eval_Goto eval (Goto route next) = do
 
       modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState })
 
-      eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next) $> unit
+--      eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next) $> unit
 
 
 

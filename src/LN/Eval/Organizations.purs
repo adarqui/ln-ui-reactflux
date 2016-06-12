@@ -1,8 +1,10 @@
 module LN.Eval.Organizations (
+  {-
   eval_GetOrganizationForum,
   eval_GetOrganizationForumBoard,
   eval_GetOrganizationForumBoardThread,
   eval_GetOrganizationForumBoardThreadPost,
+  -}
   eval_Organization
 ) where
 
@@ -44,8 +46,11 @@ import LN.T                            ( OrganizationPackResponses(..), Organiza
 
 
 
+{-
 eval_GetOrganizationForum :: EvalEff
 eval_GetOrganizationForum eval (GetOrganizationForum org_name forum_name next) = do
+
+  pure next
 
   modify (_{ currentForum = Nothing })
 
@@ -63,9 +68,11 @@ eval_GetOrganizationForum eval (GetOrganizationForum org_name forum_name next) =
       modify (_{ currentForum = Just pack })
       eval (GetBoardsForForum forum.forumId next)
       pure next
+      -}
 
 
 
+{-
 eval_GetOrganizationForumBoard :: EvalEff
 eval_GetOrganizationForumBoard eval (GetOrganizationForumBoard org_name forum_name board_name next) = do
 
@@ -93,9 +100,11 @@ eval_GetOrganizationForumBoard eval (GetOrganizationForumBoard org_name forum_na
         modify (_{ currentBoard = Just pack })
         eval (GetThreadsForBoard board.boardId next)
         pure next
+        -}
 
 
 
+{-
 eval_GetOrganizationForumBoardThread :: EvalEff
 eval_GetOrganizationForumBoardThread eval (GetOrganizationForumBoardThread org_name forum_name board_name thread_name next) = do
 
@@ -123,9 +132,10 @@ eval_GetOrganizationForumBoardThread eval (GetOrganizationForumBoardThread org_n
         modify (_{ currentThread = Just pack })
         eval (GetThreadPostsForThread thread.threadId next)
         pure next
+-}
 
 
-
+{-
 eval_GetOrganizationForumBoardThreadPost :: EvalEff
 eval_GetOrganizationForumBoardThreadPost eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next) = do
 
@@ -144,6 +154,7 @@ eval_GetOrganizationForumBoardThreadPost eval (GetOrganizationForumBoardThreadPo
     Right pack@(ThreadPostPackResponse post) -> do
       modify (_{ currentThreadPost = Just pack })
       pure next
+      -}
 
 
 

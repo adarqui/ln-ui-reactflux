@@ -14,4 +14,4 @@ import LN.T
 
 
 defaultBoardRequest :: BoardRequest
-defaultBoardRequest = mkBoardRequest "" Nothing Nothing [] 0
+defaultBoardRequest = mkBoardRequest "" Nothing false true true Nothing [] 0

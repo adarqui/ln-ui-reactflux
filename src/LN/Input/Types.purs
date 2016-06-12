@@ -11,6 +11,7 @@ module LN.Input.Types (
   cForumAct,
   cBoard,
   cBoardMod,
+  cBoardAct,
   cThread,
   cThreadMod,
   cThreadPost,
@@ -25,7 +26,7 @@ module LN.Input.Types (
 import Data.Foreign            (ForeignError)
 import Purescript.Api.Helpers  (ApiError)
 
-import LN.Input.Board          (InputBoard(..), Board_Mod)
+import LN.Input.Board          (InputBoard(..), Board_Act, Board_Mod)
 import LN.Input.Forum          (InputForum(..), Forum_Act, Forum_Mod)
 import LN.Input.Leuron         (InputLeuron(..), Leuron_Mod)
 import LN.Input.Like           (InputLike)
@@ -57,15 +58,7 @@ data Input a
   | GetUsers_MergeMap_ByUser (Array UserSanitizedResponse) a
   | GetUsers_MergeMap_ByUserId (Array Int) a
 
-  | GetOrganizationForum String String a
-  | GetOrganizationForumBoard String String String a
-  | GetOrganizationForumBoardThread String String String String a
-  | GetOrganizationForumBoardThreadPost String String String String Int a
-
   | GetTeams a
-
-  | GetBoards a
-  | GetBoardsForForum Int a
 
   | GetThreads a
   | GetThreadsForBoard Int a
@@ -148,6 +141,9 @@ cBoard sub next = CompBoard sub next
 
 cBoardMod :: forall a. Board_Mod -> a -> Input a
 cBoardMod mod next = CompBoard (InputBoard_Mod mod) next
+
+cBoardAct :: forall a. Board_Act -> a -> Input a
+cBoardAct act next = CompBoard (InputBoard_Act act) next
 
 
 

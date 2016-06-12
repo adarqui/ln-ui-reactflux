@@ -13,7 +13,8 @@ import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
 import Prelude                         (class Eq, bind, pure, ($), (<>), (<$>))
 
-import LN.Api                          (rd, getForumPacks_ByOrganizationName', getForumPack', postForum_ByOrganizationId', putForum')
+import LN.Api                          (rd, getForumPacks_ByOrganizationName', getForumPack', postForum_ByOrganizationId', putForum', getForumPacks_ByOrganizationId')
+import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Input.Forum                  (InputForum(..), Forum_Act(..), Forum_Mod(..))
 import LN.Input.Types                  (Input(..))
@@ -28,7 +29,7 @@ import LN.T                            ( ForumPackResponses(..), ForumPackRespon
                                        , _ForumResponse, name_
                                        , ForumRequest(..)
                                        , _ForumRequest, displayName_, description_, icon_, tags_, visibility_, guard_
-                                       , _OrganizationPackResponse, _OrganizationResponse, organization_, name_)
+                                       , _OrganizationPackResponse, _OrganizationResponse, organization_, name_, organizationId_)
 
 
 
@@ -39,12 +40,11 @@ eval_Forum eval (CompForum sub next) = do
 
     InputForum_Act q -> do
       case q of
-        Gets                                       -> pure next
-        Gets_ByOrganizationId org_id               -> pure next
-        Gets_ByOrganizationSid org_sid             -> act_gets_by_organization_sid org_sid
-        GetId forum_id                             -> pure next
-        GetSid_ByOrganizationId org_id forum_sid   -> pure next
-        GetSid_ByOrganizationSid org_sid forum_sid -> pure next
+        Gets                                   -> pure next
+        Gets_ByOrganizationId org_id           -> pure next
+        Gets_ByCurrentOrganization             -> act_gets_by_current_organization
+        GetId forum_id                         -> pure next
+        GetSid_ByCurrentOrganization forum_sid -> act_get_sid_by_current_organization forum_sid
 
 
 
@@ -73,17 +73,36 @@ eval_Forum eval (CompForum sub next) = do
 
 
 
-  act_gets_by_organization_sid org_sid = do
+  act_gets_by_current_organization = do
     modify (_{ forums = (M.empty :: M.Map Int ForumPackResponse) })
-    e_forum_packs <- rd $ getForumPacks_ByOrganizationName' org_sid
-    case e_forum_packs of
-      Left err                               -> eval (AddErrorApi "eval_Forum(Act/Gets)::getForumPacks_ByOrgName'" err next)
-      Right (ForumPackResponses forum_packs) -> do
+    m_org_pack <- gets _.currentOrganization
+    case m_org_pack of
+      Nothing       -> eval (AddError "eval_Forum(Act/Gets)" "Organization doesn't exist" next)
+      Just org_pack -> do
+        e_forum_packs <- rd $ getForumPacks_ByOrganizationId' (org_pack ^. _OrganizationPackResponse .. organizationId_)
+        case e_forum_packs of
+          Left err                               -> eval (AddErrorApi "eval_Forum(Act/Gets)::getForumPacks_ByOrgName'" err next)
+          Right (ForumPackResponses forum_packs) -> do
 
-        let
-          forums_map = idmapFrom (\(ForumPackResponse pack) -> pack.forumId) forum_packs.forumPackResponses
-        modify (_{ forums = forums_map })
-        pure next
+            let
+              forums_map = idmapFrom (\(ForumPackResponse pack) -> pack.forumId) forum_packs.forumPackResponses
+            modify (_{ forums = forums_map })
+            pure next
+
+
+
+  act_get_sid_by_current_organization forum_sid = do
+    modify (_{ currentForum = Nothing })
+    m_org_pack <- gets _.currentOrganization
+    case m_org_pack of
+      Nothing       -> eval (AddError "eval_Forum(Act/Get)" "Organization doesn't exist" next)
+      Just org_pack -> do
+        e_forum_pack <- rd $ ApiS.getForumPack_ByOrganizationId' forum_sid (org_pack ^. _OrganizationPackResponse .. organizationId_)
+        case e_forum_pack of
+          Left err         -> eval (AddErrorApi "eval_Forum(Act/Get)::getForumPacks_ByOrgName'" err next)
+          Right forum_pack -> do
+            modify (_{ currentForum = Just forum_pack })
+            pure next
 
 
 

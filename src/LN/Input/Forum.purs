@@ -44,8 +44,7 @@ data Forum_Mod
 
 data Forum_Act
   = Gets
-  | Gets_ByOrganizationId     Int
-  | Gets_ByOrganizationSid    String
-  | GetId                     Int
-  | GetSid_ByOrganizationId   Int String
-  | GetSid_ByOrganizationSid  String String
+  | Gets_ByOrganizationId        Int
+  | Gets_ByCurrentOrganization
+  | GetId                        Int
+  | GetSid_ByCurrentOrganization String
