@@ -83,6 +83,13 @@ eval_Thread eval (CompThread sub next) = do
     board_name = maybe "unknown" (\org -> org ^. _BoardPackResponse .. board_ ^. _BoardResponse .. name_) board_pack
 
   case sub of
+
+    InputThread_Act q -> do
+      case q of
+        _ -> pure next
+
+
+
     InputThread_Mod q -> do
       case q of
         SetDisplayName name -> mod $ set (\req -> _ThreadRequest .. displayName_ .~ name $ req)
@@ -93,47 +100,42 @@ eval_Thread eval (CompThread sub next) = do
         SetIcon s           -> mod $ set (\req -> _ThreadRequest .. icon_ .~ Just s $ req)
         RemoveIcon          -> mod $ set (\req -> _ThreadRequest .. icon_ .~ Nothing $ req)
 
-        Create board_id     -> do
+        Create board_id     -> mod_create board_id org_name forum_name board_name
+        EditP thread_id     -> mod_edit thread_id org_name forum_name board_name
 
-          m_req <- gets _.currentThreadRequest
-
-          case m_req of
-
-               Just req -> do
-
-                 e_thread <- rd $ postThread_ByBoardId' board_id req
-
-                 case e_thread of
-                      Left err                      -> eval (AddErrorApi "eval_Thread(Create)::postThread'" err next)
-                      Right (ThreadResponse thread) -> eval (Goto (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread.name) []) next)
-
-
-               _        -> eval (AddError "eval_Thread(Create)" "Thread request doesn't exist" next)
-
-
-        EditP thread_id -> do
-
-          m_req <- gets _.currentThreadRequest
-
-          case m_req of
-               Nothing  -> eval (AddError "eval_Thread(Edit)" "Thread request doesn't exist" next)
-               Just req -> do
-
-                 e_thread <- rd $ putThread' thread_id req
-
-                 case e_thread of
-                      Left err     -> eval (AddErrorApi "eval_Thread(Edit)::putThread" err next)
-                      Right thread -> do
-
-                        modify (\st->st{ currentThreadRequest = Just $ threadResponseToThreadRequest thread })
-                        eval (Goto (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show $ thread ^. _ThreadResponse .. name_) []) next)
-                        pure next
 
     _   -> pure next
 
  where
- append :: forall a. Eq a => Maybe (Array a) -> a -> Maybe (Array a)
- append Nothing a    = Just [a]
- append (Just arr) a = Just $ nub $ arr <> [a]
- set v req           = Just (v req)
- mod new             = modify (\st->st{ currentThreadRequest = maybe Nothing new st.currentThreadRequest }) $> next
+  append :: forall a. Eq a => Maybe (Array a) -> a -> Maybe (Array a)
+  append Nothing a    = Just [a]
+  append (Just arr) a = Just $ nub $ arr <> [a]
+  set v req           = Just (v req)
+  mod new             = modify (\st->st{ currentThreadRequest = maybe Nothing new st.currentThreadRequest }) $> next
+
+
+
+  mod_create board_id org_name forum_name board_name = do
+    m_req <- gets _.currentThreadRequest
+    case m_req of
+         Just req -> do
+           e_thread <- rd $ postThread_ByBoardId' board_id req
+           case e_thread of
+                Left err                      -> eval (AddErrorApi "eval_Thread(Create)::postThread'" err next)
+                Right (ThreadResponse thread) -> eval (Goto (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread.name) []) next)
+         _        -> eval (AddError "eval_Thread(Create)" "Thread request doesn't exist" next)
+
+
+
+  mod_edit thread_id org_name forum_name board_name = do
+    m_req <- gets _.currentThreadRequest
+    case m_req of
+         Nothing  -> eval (AddError "eval_Thread(Edit)" "Thread request doesn't exist" next)
+         Just req -> do
+           e_thread <- rd $ putThread' thread_id req
+           case e_thread of
+                Left err     -> eval (AddErrorApi "eval_Thread(Edit)::putThread" err next)
+                Right thread -> do
+                  modify (\st->st{ currentThreadRequest = Just $ threadResponseToThreadRequest thread })
+                  eval (Goto (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show $ thread ^. _ThreadResponse .. name_) []) next)
+                  pure next
