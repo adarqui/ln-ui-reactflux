@@ -38,8 +38,8 @@ import LN.Input.Organization   (InputOrganization(..), Organization_Act, Organiz
 import LN.Input.Profile        (InputProfile)
 import LN.Input.Resource       (InputResource(..), Resource_Mod)
 import LN.Input.Team           (InputTeam(..), Team_Mod)
-import LN.Input.Thread         (InputThread(..), Thread_Mod)
-import LN.Input.ThreadPost     (InputThreadPost(..), ThreadPost_Mod)
+import LN.Input.Thread         (InputThread(..), Thread_Act, Thread_Mod)
+import LN.Input.ThreadPost     (InputThreadPost(..), ThreadPost_Act, ThreadPost_Mod)
 import LN.Router.Class.Routes  (Routes)
 import LN.T
 

@@ -216,8 +216,9 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name Index params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
---      eval (GetOrganizationForum org_name forum_name next)
---      eval (GetOrganizationForumBoard org_name forum_name board_name next)
+      eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
+      eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
+      eval (cThreadAct Thread.Gets_ByCurrentBoard next)
       pure unit
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name New params) -> do

@@ -62,13 +62,6 @@ ui = component render eval
 
   eval z@(GetTeams _)                                 = eval_GetTeams eval z
 
-  eval z@(GetThreads _)                               = eval_GetThreads eval z
-  eval z@(GetThreadsForBoard _ _)                     = eval_GetThreadsForBoard eval z
-
-  eval z@(GetThreadPosts _)                           = eval_GetThreadPosts eval z
-  eval z@(GetThreadPostsForThread _ _)                = eval_GetThreadPostsForThread eval z
-  eval z@(GetThreadPost _ _)                          = eval_GetThreadPost eval z
-
   eval (GetThreadPostLikes next)                      = pure next
 
   eval (GetPMs next)                                  = pure next

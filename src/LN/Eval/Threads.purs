@@ -1,6 +1,4 @@
 module LN.Eval.Threads (
-  eval_GetThreads,
-  eval_GetThreadsForBoard,
   eval_Thread
 ) where
 
@@ -30,6 +28,7 @@ import LN.T
 
 
 
+{-
 eval_GetThreads :: EvalEff
 eval_GetThreads eval (GetThreads next) = pure next
 
@@ -68,6 +67,7 @@ eval_GetThreadsForBoard eval (GetThreadsForBoard board_id next) = do
 
           modify (_{ threads = threads_map })
           pure next
+          -}
 
 
 

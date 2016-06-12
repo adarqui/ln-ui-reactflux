@@ -1,7 +1,4 @@
 module LN.Eval.ThreadPosts (
-  eval_GetThreadPosts,
-  eval_GetThreadPost,
-  eval_GetThreadPostsForThread,
   eval_ThreadPost
 ) where
 
@@ -30,6 +27,7 @@ import LN.T
 
 
 
+{-
 eval_GetThreadPosts :: EvalEff
 eval_GetThreadPosts eval (GetThreadPosts next) = pure next
 
@@ -75,6 +73,7 @@ eval_GetThreadPostsForThread eval (GetThreadPostsForThread thread_id next) = do
                      (\x -> x ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse .. id_)
                  })
           pure next
+-}
 
 
 
