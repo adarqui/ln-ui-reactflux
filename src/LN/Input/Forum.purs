@@ -1,7 +1,7 @@
 module LN.Input.Forum (
   InputForum (..),
-  Forum_Mod (..),
-  Forum_Act (..)
+  Forum_Act (..),
+  Forum_Mod (..)
 ) where
 
 
@@ -18,6 +18,15 @@ data InputForum
   = InputForum_Act Forum_Act
   | InputForum_Mod Forum_Mod
   | InputForum_Nop
+
+
+
+data Forum_Act
+  = Gets
+  | Gets_ByOrganizationId        Int
+  | Gets_ByCurrentOrganization
+  | GetId                        Int
+  | GetSid_ByCurrentOrganization String
 
 
 
@@ -39,12 +48,3 @@ data Forum_Mod
 
   | Create            Int  -- save to organization_id
   | EditP             Int   -- edit forum_id
-
-
-
-data Forum_Act
-  = Gets
-  | Gets_ByOrganizationId        Int
-  | Gets_ByCurrentOrganization
-  | GetId                        Int
-  | GetSid_ByCurrentOrganization String

@@ -1,7 +1,7 @@
 module LN.Input.Organization (
   InputOrganization(..),
-  Organization_Mod(..),
-  Organization_Act(..)
+  Organization_Act(..),
+  Organization_Mod(..)
 ) where
 
 
@@ -19,6 +19,13 @@ data InputOrganization
 
 
 
+data Organization_Act
+  = Gets
+  | GetId  Int
+  | GetSid String
+
+
+
 data Organization_Mod
   = SetDisplayName    String
 
@@ -31,10 +38,3 @@ data Organization_Mod
 
   | Create
   | EditP Int
-
-
-
-data Organization_Act
-  = Gets
-  | GetId  Int
-  | GetSid String

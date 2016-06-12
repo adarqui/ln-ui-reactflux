@@ -13,9 +13,18 @@ import LN.T
 
 
 data InputBoard
-  = InputBoard_Mod Board_Mod
-  | InputBoard_Act Board_Act
+  = InputBoard_Act Board_Act
+  | InputBoard_Mod Board_Mod
   | InputBoard_Nop
+
+
+
+data Board_Act
+  = Gets
+  | Gets_ByForumId        Int
+  | Gets_ByCurrentForum
+  | GetId                 Int
+  | GetSid_ByCurrentForum String
 
 
 
@@ -35,12 +44,3 @@ data Board_Mod
 
   | Create            Int -- TODO FIXME: needs to be a forum id OR board id
   | EditP             Int  -- edit board_id
-
-
-
-data Board_Act
-  = Gets
-  | Gets_ByForumId        Int
-  | Gets_ByCurrentForum
-  | GetId                 Int
-  | GetSid_ByCurrentForum String

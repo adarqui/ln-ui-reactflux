@@ -14,6 +14,7 @@ import Optic.Core                      ((^.), (..), (.~))
 import Prelude                         (class Eq, bind, pure, ($), (<>))
 
 import LN.Api                          (rd, getBoardPacks_ByForumId', getBoardPack', postBoard_ByForumId', putBoard')
+import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Input.Board                  (InputBoard(..), Board_Act(..), Board_Mod(..))
 import LN.Input.Types                  (Input(..))
@@ -49,7 +50,7 @@ eval_Board eval (CompBoard sub next) = do
       case q of
         Gets                            -> pure next
         Gets_ByCurrentForum             -> act_gets_by_current_forum
-        GetSid_ByCurrentForum forum_sid -> pure next
+        GetSid_ByCurrentForum forum_sid -> act_get_sid_by_current_forum forum_sid
 
 
     InputBoard_Mod q -> do
@@ -73,6 +74,7 @@ eval_Board eval (CompBoard sub next) = do
   mod new             = modify (\st->st{ currentBoardRequest = maybe Nothing new st.currentBoardRequest }) $> next
 
 
+
   act_gets_by_current_forum = do
     modify (_{ boards = (M.empty :: M.Map Int BoardPackResponse) })
     m_forum_pack <- gets _.currentForum
@@ -86,6 +88,21 @@ eval_Board eval (CompBoard sub next) = do
             let
               boards_map = idmapFrom (\(BoardPackResponse pack) -> pack.boardId) board_packs.boardPackResponses
             modify (_{ boards = boards_map })
+            pure next
+
+
+
+  act_get_sid_by_current_forum board_sid = do
+    modify (_{ currentBoard = Nothing })
+    m_forum_pack <- gets _.currentForum
+    case m_forum_pack of
+      Nothing       -> eval (AddError "eval_Board(Act/Get)" "Forum doesn't exist" next)
+      Just forum_pack -> do
+        e_board_pack <- rd $ ApiS.getBoardPack_ByForumId' board_sid (forum_pack ^. _ForumPackResponse .. forumId_)
+        case e_board_pack of
+          Left err         -> eval (AddErrorApi "eval_Board(Act/Get)::getBoardPacks_ByOrgName'" err next)
+          Right board_pack -> do
+            modify (_{ currentBoard = Just board_pack })
             pure next
 
 

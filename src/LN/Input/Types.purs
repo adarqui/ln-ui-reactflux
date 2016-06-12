@@ -14,8 +14,10 @@ module LN.Input.Types (
   cBoardAct,
   cThread,
   cThreadMod,
+  cThreadAct,
   cThreadPost,
   cThreadPostMod,
+  cThreadPostAct,
   cResource,
   cResourceMod,
   cLeuron,
@@ -60,13 +62,6 @@ data Input a
 
   | GetTeams a
 
-  | GetThreads a
-  | GetThreadsForBoard Int a
-
-  | GetThreadPosts a
-  | GetThreadPostsForThread Int a
-
-  | GetThreadPost String a
   | GetThreadPostLikes a
 
   | GetPMs a
@@ -153,6 +148,9 @@ cThread sub next = CompThread sub next
 cThreadMod :: forall a. Thread_Mod -> a -> Input a
 cThreadMod mod next = CompThread (InputThread_Mod mod) next
 
+cThreadAct :: forall a. Thread_Act -> a -> Input a
+cThreadAct act next = CompThread (InputThread_Act act) next
+
 
 
 cThreadPost :: forall a. InputThreadPost -> a -> Input a
@@ -160,6 +158,9 @@ cThreadPost sub next = CompThreadPost sub next
 
 cThreadPostMod :: forall a. ThreadPost_Mod -> a -> Input a
 cThreadPostMod mod next = CompThreadPost (InputThreadPost_Mod mod) next
+
+cThreadPostAct :: forall a. ThreadPost_Act -> a -> Input a
+cThreadPostAct act next = CompThreadPost (InputThreadPost_Act act) next
 
 
 

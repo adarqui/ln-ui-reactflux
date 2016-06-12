@@ -18,6 +18,8 @@ import LN.Input.Types
 import LN.Input.Organization    as Organization
 import LN.Input.Forum           as Forum
 import LN.Input.Board           as Board
+import LN.Input.Thread          as Thread
+import LN.Input.ThreadPost      as ThreadPost
 import LN.Internal.Organization (defaultOrganizationRequest)
 import LN.Internal.Forum        (defaultForumRequest)
 import LN.Internal.Board        (defaultBoardRequest)
@@ -178,6 +180,7 @@ eval_Goto eval (Goto route next) = do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
       eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
       eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
+      eval (cThreadAct Thread.Gets_ByCurrentBoard next)
       pure unit
 
       let moffset = elemBy (\(Tuple k v) -> k == "offset") params
