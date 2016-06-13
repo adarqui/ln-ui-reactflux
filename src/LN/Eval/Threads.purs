@@ -19,7 +19,7 @@ import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
 import LN.Input.Thread                 (InputThread(..), Thread_Act(..), Thread_Mod(..))
 import LN.Input.Types                  (Input(..))
-import LN.State.Loading                (l_currentThread)
+import LN.State.Loading                (l_currentThread, l_threads)
 import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.Router.Class.Routes          (Routes(..))
 import LN.Router.Class.CRUD            (CRUD(..))
@@ -87,7 +87,9 @@ eval_Thread eval (CompThread sub next) = do
           Right counts -> do
             let new_page_info = runPageInfo counts page_info
             modify (_ { threadsPageInfo = new_page_info.pageInfo })
+            modify $ setLoading l_threads
             e_thread_packs <- rd $ getThreadPacks_ByBoardId new_page_info.params (board_pack ^. _BoardPackResponse .. boardId_)
+            modify $ clearLoading l_threads
             case e_thread_packs of
               Left err -> pure next
               Right (ThreadPackResponses thread_packs) -> do
@@ -109,7 +111,9 @@ eval_Thread eval (CompThread sub next) = do
     case m_board_pack of
       Nothing       -> eval (AddError "eval_Thread(Act/Get)" "Board doesn't exist" next)
       Just board_pack -> do
+        modify $ setLoading l_currentThread
         e_thread_pack <- rd $ ApiS.getThreadPack_ByBoardId' thread_sid (board_pack ^. _BoardPackResponse .. boardId_)
+        modify $ clearLoading l_currentThread
         case e_thread_pack of
           Left err         -> eval (AddErrorApi "eval_Thread(Act/Get)::getThreadPacks_ByOrgName'" err next)
           Right thread_pack -> do
