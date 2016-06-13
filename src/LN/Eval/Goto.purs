@@ -97,6 +97,11 @@ eval_Goto eval (Goto route next) = do
 
 
 
+    (OrganizationsForums org_name Index params) -> do
+      eval (cOrganizationAct (Organization.GetSid org_name) next)
+      eval (cForumAct Forum.Gets_ByCurrentOrganization next)
+      pure unit
+
     (OrganizationsForums org_name New params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
       modify (_{ currentForumRequest = Just defaultForumRequest, currentForumRequestSt = Just defaultForumRequestState })
@@ -126,17 +131,18 @@ eval_Goto eval (Goto route next) = do
              modify (_{ currentForumRequest = Just $ forumResponseToForumRequest pack.forum })
              pure unit
 
-    (OrganizationsForums org_name Index params) -> do
-      eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (cForumAct Forum.Gets_ByCurrentOrganization next)
-      pure unit
-
     (OrganizationsForums org_name (Show forum_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
       eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
       pure unit
 
 
+
+    (OrganizationsForumsBoards org_name forum_name Index params) -> do
+      eval (cOrganizationAct (Organization.GetSid org_name) next)
+      eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
+      eval (cBoardAct Board.Gets_ByCurrentForum next)
+      pure unit
 
     (OrganizationsForumsBoards org_name forum_name New params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
@@ -169,12 +175,6 @@ eval_Goto eval (Goto route next) = do
            Just (BoardPackResponse pack) -> do
              modify (_{ currentBoardRequest = Just $ boardResponseToBoardRequest pack.board })
              pure unit
-
-    (OrganizationsForumsBoards org_name forum_name Index params) -> do
-      eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
-      eval (cBoardAct Board.Gets_ByCurrentForum next)
-      pure unit
 
     (OrganizationsForumsBoards org_name forum_name (Show board_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
@@ -217,7 +217,6 @@ eval_Goto eval (Goto route next) = do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
       eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
       eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
-      eval (cThreadAct Thread.Gets_ByCurrentBoard next)
 
       let moffset = elemBy (\(Tuple k v) -> k == "offset") params
       maybe
@@ -246,6 +245,7 @@ eval_Goto eval (Goto route next) = do
           pure unit)
         msort_order
 
+      eval (cThreadAct Thread.Gets_ByCurrentBoard next)
       pure unit
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name New params) -> do
@@ -280,41 +280,6 @@ eval_Goto eval (Goto route next) = do
              modify (_{ currentThreadRequest = Just $ threadResponseToThreadRequest pack.thread })
              pure unit
 
-    (OrganizationsForumsBoardsThreads org_name forum_name board_name Index params) -> do
-      eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
-      eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
-
-      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
-      maybe
-        (pure unit)
-        (\(Tuple k offset) -> do
-          pageInfo <- gets _.threadsPageInfo
-          modify (_{ threadsPageInfo = pageInfo { currentPage = maybe 1 id (fromString offset) } })
-          pure unit)
-        moffset
-
-      let morder = elemBy (\(Tuple k v) -> k == show ParamTag_Order) params
-      maybe
-        (pure unit)
-        (\(Tuple k order_by) -> do
-          pageInfo <- gets _.threadsPageInfo
-          modify (_{ threadsPageInfo = pageInfo { order = orderFromString order_by } })
-          pure unit)
-        morder
-
-      let msort_order = elemBy (\(Tuple k v) -> k == show ParamTag_SortOrder) params
-      maybe
-        (pure unit)
-        (\(Tuple k order) -> do
-          pageInfo <- gets _.threadsPageInfo
-          modify (_{ threadsPageInfo = pageInfo { sortOrder = sortOrderFromString order } })
-          pure unit)
-        msort_order
-
-      eval (cThreadAct Thread.Gets_ByCurrentBoard next)
-      pure unit
-
     (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
       eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
@@ -340,6 +305,30 @@ eval_Goto eval (Goto route next) = do
       pure unit
 
 
+
+    (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name Index params) -> do
+      eval (cOrganizationAct (Organization.GetSid org_name) next)
+      eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
+      eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
+      eval (cThreadAct (Thread.GetSid_ByCurrentBoard thread_name) next)
+
+      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
+      maybe
+        (pure unit)
+        (\(Tuple k offset) -> do
+          pageInfo <- gets _.threadPostsPageInfo
+          modify (_{
+            threadPostsPageInfo = pageInfo
+            -- TODO FIXME: offset=-1 just makes us go to the last page
+              { currentPage = let off = maybe 1 id (fromString offset) in if off < 0 then pageInfo.totalPages else off }
+          })
+          pure unit)
+        moffset
+
+      modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState })
+
+      eval (cThreadPostAct ThreadPost.Gets_ByCurrentThread next)
+      pure unit
 
     (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name New params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
@@ -377,30 +366,6 @@ eval_Goto eval (Goto route next) = do
            Just (ThreadPostPackResponse pack) -> do
              modify (_{ currentThreadPostRequest = Just $ threadPostResponseToThreadPostRequest pack.threadPost })
              pure unit
-
-    (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name Index params) -> do
-      eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
-      eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
-      eval (cThreadAct (Thread.GetSid_ByCurrentBoard thread_name) next)
-
-      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
-      maybe
-        (pure unit)
-        (\(Tuple k offset) -> do
-          pageInfo <- gets _.threadPostsPageInfo
-          modify (_{
-            threadPostsPageInfo = pageInfo
-            -- TODO FIXME: offset=-1 just makes us go to the last page
-              { currentPage = let off = maybe 1 id (fromString offset) in if off < 0 then pageInfo.totalPages else off }
-          })
-          pure unit)
-        moffset
-
-      modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState })
-
-      eval (cThreadPostAct ThreadPost.Gets_ByCurrentThread next)
-      pure unit
 
     (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post_id) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
