@@ -110,6 +110,9 @@ routing =
       login <|>
       logout <|>
 
+      -- wtf? why do I have to put this here..
+      organizations_forums_boards_threads_posts_int <|>
+
       organizations_new <|>
       organizations_edit <|>
       organizations_delete <|>
@@ -135,7 +138,6 @@ routing =
       organizations_forums_boards_index <|>
       organizations_forums_index <|>
 
-      organizations_forums_boards_threads_posts_int <|>
       organizations_forums_boards_threads <|>
       organizations_forums_boards <|>
       organizations_forums <|>

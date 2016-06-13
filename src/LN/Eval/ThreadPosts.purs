@@ -45,8 +45,9 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
   case sub of
     InputThreadPost_Act q -> do
       case q of
-        Gets_ByCurrentThread -> act_gets_by_current_thread
-        GetId thread_post_id -> act_get_id thread_post_id
+        Gets_ByCurrentThread                          -> act_gets_by_current_thread
+        Gets_ByCurrentThread_And_ThreadPostId post_id -> act_gets_by_current_thread_and_thread_post_id post_id
+        GetId thread_post_id                          -> act_get_id thread_post_id
 
     InputThreadPost_Mod q -> do
       case q of
@@ -97,6 +98,13 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
                            (\x -> x ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse .. id_)
                        })
                 pure next
+
+
+
+  act_gets_by_current_thread_and_thread_post_id post_id = do
+    -- TODO FIXME
+    act_gets_by_current_thread
+    pure next
 
 
 

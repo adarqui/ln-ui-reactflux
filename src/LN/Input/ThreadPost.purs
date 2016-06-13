@@ -20,8 +20,9 @@ data InputThreadPost
 data ThreadPost_Act
   = Gets
   | Gets_ByCurrentThread
-  | GetId                  Int
-  | GetSid_ByCurrentThread String
+  | Gets_ByCurrentThread_And_ThreadPostId Int
+  | GetId                                 Int
+  | GetSid_ByCurrentThread                String
 
 
 

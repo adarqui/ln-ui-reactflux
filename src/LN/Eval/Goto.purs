@@ -388,9 +388,8 @@ eval_Goto eval (Goto route next) = do
 
       modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState })
 
-      eval (cThreadPostAct ThreadPost.Gets_ByCurrentThread next)
+      eval (cThreadPostAct (ThreadPost.Gets_ByCurrentThread_And_ThreadPostId post_id) next)
       pure unit
---      eval (GetOrganizationForumBoardThreadPost org_name forum_name board_name thread_name post_id next) $> unit
 
 
 
