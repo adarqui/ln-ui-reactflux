@@ -21,7 +21,7 @@ import LN.Input.Types                  (Input(..))
 import LN.Helpers.Map                  (idmapFrom)
 import LN.Router.Class.Routes          (Routes(..))
 import LN.Router.Class.CRUD            (CRUD(..))
-import LN.State.Loading                (l_currentBoard)
+import LN.State.Loading                (l_currentBoard, l_boards)
 import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.T.Internal.Convert           (boardResponseToBoardRequest)
 import LN.T                            (BoardPackResponses(..), BoardPackResponse(..)
@@ -81,7 +81,9 @@ eval_Board eval (CompBoard sub next) = do
     case m_forum_pack of
       Nothing         -> eval (AddError "eval_Board(Act/Gets)" "Forum doesn't exist" next)
       Just forum_pack -> do
+        modify $ setLoading l_boards
         e_board_packs <- rd $ getBoardPacks_ByForumId' (forum_pack ^. _ForumPackResponse .. forumId_)
+        modify $ clearLoading l_boards
         case e_board_packs of
           Left err -> eval (AddErrorApi "eval_GetBoardsForForum" err next)
           Right (BoardPackResponses board_packs) -> do
@@ -98,7 +100,9 @@ eval_Board eval (CompBoard sub next) = do
     case m_forum_pack of
       Nothing       -> eval (AddError "eval_Board(Act/Get)" "Forum doesn't exist" next)
       Just forum_pack -> do
+        modify $ setLoading l_currentBoard
         e_board_pack <- rd $ ApiS.getBoardPack_ByForumId' board_sid (forum_pack ^. _ForumPackResponse .. forumId_)
+        modify $ clearLoading l_currentBoard
         case e_board_pack of
           Left err         -> eval (AddErrorApi "eval_Board(Act/Get)::getBoardPacks_ByOrgName'" err next)
           Right board_pack -> do
