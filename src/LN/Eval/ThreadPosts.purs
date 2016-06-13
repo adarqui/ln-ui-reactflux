@@ -4,26 +4,28 @@ module LN.Eval.ThreadPosts (
 
 
 
-import Data.Array             (head, deleteAt, modifyAt, nub)
-import Data.Either            (Either(..))
-import Data.Functor           (($>))
-import Data.Map               as M
-import Data.Maybe             (Maybe(..), maybe)
-import Halogen                (gets, modify)
-import Optic.Core             ((^.), (..), (.~))
-import Prelude                (class Eq, bind, pure, map, ($), (<>))
+import Data.Array               (head, deleteAt, modifyAt, nub)
+import Data.Either              (Either(..))
+import Data.Functor             (($>))
+import Data.Map                 as M
+import Data.Maybe               (Maybe(..), maybe)
+import Halogen                  (gets, modify)
+import Optic.Core               ((^.), (..), (.~))
+import Prelude                  (class Eq, bind, pure, map, ($), (<>))
 
-import LN.Api.Internal        (getThreadPostsCount_ByThreadId' , getThreadPostPacks_ByThreadId, getThreadPostPack', postThreadPost_ByThreadId', putThreadPost')
-import LN.Api.Internal.String as ApiS
-import LN.Api.Helpers         (rd)
-import LN.Component.Types     (EvalEff)
-import LN.Input.ThreadPost    (InputThreadPost(..), ThreadPost_Act(..), ThreadPost_Mod(..))
-import LN.Input.Types         (Input(..))
-import LN.Router.Class.Routes (Routes(..))
-import LN.Router.Class.CRUD   (CRUD(..))
-import LN.Helpers.Map         (mergeMapArray)
-import LN.State.PageInfo      (runPageInfo)
-import LN.T.Internal.Convert  (threadPostResponseToThreadPostRequest)
+import LN.Api.Internal          (getThreadPostsCount_ByThreadId' , getThreadPostPacks_ByThreadId, getThreadPostPack', postThreadPost_ByThreadId', putThreadPost')
+import LN.Api.Internal.String   as ApiS
+import LN.Api.Helpers           (rd)
+import LN.Component.Types       (EvalEff)
+import LN.Input.ThreadPost      (InputThreadPost(..), ThreadPost_Act(..), ThreadPost_Mod(..))
+import LN.Input.Types           (Input(..))
+import LN.Router.Class.Routes   (Routes(..))
+import LN.Router.Class.CRUD     (CRUD(..))
+import LN.Helpers.Map           (mergeMapArray)
+import LN.State.Loading         (l_currentThreadPost, l_threadPosts)
+import LN.State.Loading.Helpers (setLoading, clearLoading)
+import LN.State.PageInfo        (runPageInfo)
+import LN.T.Internal.Convert    (threadPostResponseToThreadPostRequest)
 import LN.T
 
 
@@ -77,7 +79,9 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
           Right counts -> do
             let new_page_info = runPageInfo counts page_info
             modify (_ { threadPostsPageInfo = new_page_info.pageInfo })
+            modify $ setLoading l_currentThreadPost
             e_posts <- rd $ getThreadPostPacks_ByThreadId new_page_info.params (thread_pack ^. _ThreadPackResponse .. threadId_)
+            modify $ clearLoading l_currentThreadPost
             case e_posts of
               Left err -> eval (AddErrorApi "eval_ThreadPost(Act/Gets)::getThreadPostPacks_ByThreadId" err next)
               Right (ThreadPostPackResponses posts) -> do
@@ -97,7 +101,15 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
 
 
   act_get_id thread_post_id = do
-    pure next
+    modify (_{ currentThreadPost = Nothing })
+    modify $ setLoading l_currentThreadPost
+    e_thread_pack <- rd $ getThreadPostPack' thread_post_id
+    modify $ clearLoading l_currentThreadPost
+    case e_thread_pack of
+      Left err         -> eval (AddErrorApi "eval_ThreadPost(Act/Get)::getThreadPostPack'" err next)
+      Right thread_pack -> do
+        modify (_{ currentThreadPost = Just thread_pack })
+        pure next
 
 
 
