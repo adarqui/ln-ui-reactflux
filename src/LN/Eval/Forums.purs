@@ -21,7 +21,7 @@ import LN.Input.Types                  (Input(..))
 import LN.Helpers.Map                  (idmapFrom)
 import LN.Router.Class.Routes          (Routes(..))
 import LN.Router.Class.CRUD            (CRUD(..))
-import LN.State.Loading                (l_currentForum)
+import LN.State.Loading                (l_currentForum, l_forums)
 import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.T.Internal.Convert           (forumResponseToForumRequest)
 import LN.T                            ( ForumPackResponses(..), ForumPackResponse(..)
@@ -35,6 +35,8 @@ import LN.T                            ( ForumPackResponses(..), ForumPackRespon
 
 eval_Forum :: EvalEff
 eval_Forum eval (CompForum sub next) = do
+
+  org_name <- (maybe "unknown" (\org -> org ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. name_)) <$> gets _.currentOrganization
 
   case sub of
 
@@ -57,8 +59,8 @@ eval_Forum eval (CompForum sub next) = do
 
         SetIcon s           -> mod $ set (\req -> _ForumRequest .. icon_ .~ Just s $ req)
         RemoveIcon          -> mod $ set (\req -> _ForumRequest .. icon_ .~ Nothing $ req)
-        Create org_id       -> mod_create org_id
-        EditP forum_id      -> mod_edit forum_id
+        Create org_id       -> mod_create org_id org_name
+        EditP forum_id      -> mod_edit forum_id org_name
 
     _   -> pure next
 
@@ -69,7 +71,6 @@ eval_Forum eval (CompForum sub next) = do
   set v req           = Just (v req)
   mod new             = modify (\st->st{ currentForumRequest = maybe Nothing new st.currentForumRequest }) $> next
 
-  get_org_name        = (maybe "unknown" (\org -> org ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. name_)) <$> gets _.currentOrganization
 
 
 
@@ -79,7 +80,9 @@ eval_Forum eval (CompForum sub next) = do
     case m_org_pack of
       Nothing       -> eval (AddError "eval_Forum(Act/Gets)" "Organization doesn't exist" next)
       Just org_pack -> do
+        modify $ setLoading l_forums
         e_forum_packs <- rd $ getForumPacks_ByOrganizationId' (org_pack ^. _OrganizationPackResponse .. organizationId_)
+        modify $ clearLoading l_forums
         case e_forum_packs of
           Left err                               -> eval (AddErrorApi "eval_Forum(Act/Gets)::getForumPacks_ByOrgName'" err next)
           Right (ForumPackResponses forum_packs) -> do
@@ -97,7 +100,9 @@ eval_Forum eval (CompForum sub next) = do
     case m_org_pack of
       Nothing       -> eval (AddError "eval_Forum(Act/Get)" "Organization doesn't exist" next)
       Just org_pack -> do
+        modify $ setLoading l_currentForum
         e_forum_pack <- rd $ ApiS.getForumPack_ByOrganizationId' forum_sid (org_pack ^. _OrganizationPackResponse .. organizationId_)
+        modify $ clearLoading l_currentForum
         case e_forum_pack of
           Left err         -> eval (AddErrorApi "eval_Forum(Act/Get)::getForumPacks_ByOrgName'" err next)
           Right forum_pack -> do
@@ -106,8 +111,7 @@ eval_Forum eval (CompForum sub next) = do
 
 
 
-  mod_create org_id = do
-    org_name <- get_org_name
+  mod_create org_id org_name = do
     m_req <- gets _.currentForumRequest
     case m_req of
          Just req -> do
@@ -119,8 +123,7 @@ eval_Forum eval (CompForum sub next) = do
 
 
 
-  mod_edit forum_id = do
-    org_name <- get_org_name
+  mod_edit forum_id org_name = do
     m_req <- gets _.currentForumRequest
     case m_req of
          Nothing  -> eval (AddError "eval_Forum(Edit)" "Forum request doesn't exist" next)
