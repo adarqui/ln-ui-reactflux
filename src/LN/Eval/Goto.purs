@@ -218,6 +218,34 @@ eval_Goto eval (Goto route next) = do
       eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
       eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
       eval (cThreadAct Thread.Gets_ByCurrentBoard next)
+
+      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
+      maybe
+        (pure unit)
+        (\(Tuple k offset) -> do
+          pageInfo <- gets _.threadsPageInfo
+          modify (_{ threadsPageInfo = pageInfo { currentPage = maybe 1 id (fromString offset) } })
+          pure unit)
+        moffset
+
+      let morder = elemBy (\(Tuple k v) -> k == show ParamTag_Order) params
+      maybe
+        (pure unit)
+        (\(Tuple k order_by) -> do
+          pageInfo <- gets _.threadsPageInfo
+          modify (_{ threadsPageInfo = pageInfo { order = orderFromString order_by } })
+          pure unit)
+        morder
+
+      let msort_order = elemBy (\(Tuple k v) -> k == show ParamTag_SortOrder) params
+      maybe
+        (pure unit)
+        (\(Tuple k order) -> do
+          pageInfo <- gets _.threadsPageInfo
+          modify (_{ threadsPageInfo = pageInfo { sortOrder = sortOrderFromString order } })
+          pure unit)
+        msort_order
+
       pure unit
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name New params) -> do
@@ -253,6 +281,9 @@ eval_Goto eval (Goto route next) = do
              pure unit
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name Index params) -> do
+      eval (cOrganizationAct (Organization.GetSid org_name) next)
+      eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
+      eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
 
       let moffset = elemBy (\(Tuple k v) -> k == "offset") params
       maybe
@@ -281,9 +312,6 @@ eval_Goto eval (Goto route next) = do
           pure unit)
         msort_order
 
-      eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
-      eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
       eval (cThreadAct Thread.Gets_ByCurrentBoard next)
       pure unit
 
