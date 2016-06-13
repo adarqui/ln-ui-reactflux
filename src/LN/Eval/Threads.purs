@@ -13,10 +13,11 @@ import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
 import Prelude                         (class Eq, bind, pure, map, ($), (<>))
 
-import LN.Api                          (getThreadPacks_ByBoardId, rd, getThreadsCount_ByBoardId', getThreadPack', postThread_ByBoardId', putThread')
+import LN.Api                          (rd, getThreadPacks_ByBoardId, getThreadPacks_ByBoardId', getThreadsCount_ByBoardId', getThreadPack', postThread_ByBoardId', putThread')
+import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
-import LN.Input.Thread                 (InputThread(..), Thread_Mod(..))
+import LN.Input.Thread                 (InputThread(..), Thread_Act(..), Thread_Mod(..))
 import LN.Input.Types                  (Input(..))
 import LN.State.Loading                (l_currentThread)
 import LN.State.Loading.Helpers        (setLoading, clearLoading)
@@ -86,7 +87,8 @@ eval_Thread eval (CompThread sub next) = do
 
     InputThread_Act q -> do
       case q of
-        _ -> pure next
+        Gets_ByCurrentBoard             -> act_gets_by_current_board
+        GetSid_ByCurrentBoard board_sid -> act_get_sid_by_current_board board_sid
 
 
 
@@ -112,6 +114,50 @@ eval_Thread eval (CompThread sub next) = do
   append (Just arr) a = Just $ nub $ arr <> [a]
   set v req           = Just (v req)
   mod new             = modify (\st->st{ currentThreadRequest = maybe Nothing new st.currentThreadRequest }) $> next
+
+
+
+  act_gets_by_current_board = do
+    modify (_{ threads = (M.empty :: M.Map Int ThreadPackResponse) })
+    m_board_pack <- gets _.currentBoard
+    case m_board_pack of
+      Nothing         -> eval (AddError "eval_Thread(Act/Gets)" "Board doesn't exist" next)
+      Just board_pack -> do
+        page_info <- gets _.threadsPageInfo
+        e_count <- rd $ getThreadsCount_ByBoardId' (board_pack ^. _BoardPackResponse .. boardId_)
+        case e_count of
+          Left err     -> eval (AddErrorApi "eval_GetThreadsForBoard::getThreadsCount_ByBoardId'" err next)
+          Right counts -> do
+            let new_page_info = runPageInfo counts page_info
+            modify (_ { threadsPageInfo = new_page_info.pageInfo })
+            e_thread_packs <- rd $ getThreadPacks_ByBoardId new_page_info.params (board_pack ^. _BoardPackResponse .. boardId_)
+            case e_thread_packs of
+              Left err -> pure next
+              Right (ThreadPackResponses thread_packs) -> do
+                let
+                  users =
+                    (catMaybes $ map (\(ThreadPackResponse pack) -> pack.latestThreadPostUser) thread_packs.threadPackResponses)
+                    <>
+                    (map (\(ThreadPackResponse pack) -> pack.user) thread_packs.threadPackResponses)
+                  threads_map = idmapFrom (\(ThreadPackResponse p) -> p.threadId) thread_packs.threadPackResponses
+                eval (GetUsers_MergeMap_ByUser users next)
+                modify (_{ threads = threads_map })
+                pure next
+
+
+
+  act_get_sid_by_current_board thread_sid = do
+    modify (_{ currentThread = Nothing })
+    m_board_pack <- gets _.currentBoard
+    case m_board_pack of
+      Nothing       -> eval (AddError "eval_Thread(Act/Get)" "Board doesn't exist" next)
+      Just board_pack -> do
+        e_thread_pack <- rd $ ApiS.getThreadPack_ByBoardId' thread_sid (board_pack ^. _BoardPackResponse .. boardId_)
+        case e_thread_pack of
+          Left err         -> eval (AddErrorApi "eval_Thread(Act/Get)::getThreadPacks_ByOrgName'" err next)
+          Right thread_pack -> do
+            modify (_{ currentThread = Just thread_pack })
+            pure next
 
 
 
