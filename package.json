@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/adarqui/ln-ui#readme",
   "dependencies": {
+    "util": "^0.10.3",
     "virtual-dom": "^2.1.1"
   }
 }

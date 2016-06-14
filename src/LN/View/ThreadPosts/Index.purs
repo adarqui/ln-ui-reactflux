@@ -25,7 +25,8 @@ import LN.State.PageInfo               (PageInfo)
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup', usersMapLookup_ToNick', usersMapLookup_ToUser')
 import LN.View.Helpers
-import LN.View.ThreadPosts.Mod         (renderView_ThreadPosts_Mod', postDataToBody)
+import LN.View.ThreadPosts.Mod         (renderView_ThreadPosts_Mod')
+import LN.View.ThreadPosts.Show        (renderView_ThreadPosts_Show_Single')
 import LN.View.Module.Gravatar         (renderGravatarForUser)
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.Like             (renderLike)
@@ -74,40 +75,8 @@ renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack post_pa
   H.div_ [
       renderPageNumbers posts_page_info posts_route
     , H.ul [P.class_ B.listUnstyled] (
-        (map (\pack ->
-          let
-            pack' = pack ^. _ThreadPostPackResponse
-            post  = pack ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse
-            stats = pack ^. _ThreadPostPackResponse .. stat_ ^. _ThreadPostStatResponse
-          in
-          H.li_ [
-
-            H.div [P.class_ B.row] [
-                H.div [P.class_ B.colXs2] [
-                    H.p_ [linkTo (Users (Show (usersMapLookup_ToNick' users_map post.userId)) []) (usersMapLookup_ToNick' users_map post.userId)]
-                  , renderGravatarForUser Medium (usersMapLookup_ToUser' users_map post.userId)
-                  , displayUserStats (usersMapLookup' users_map post.userId)
-                ]
-              , H.div [P.class_ B.colXs7] [
-                    linkTo (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (ShowI post.id) []) (thread.name <> "/" <> show post.id)
-                  , H.p_ [H.text $ show post.createdAt]
-                  , H.p_ [H.text "quote / reply"]
-                  , displayPostData post.body
-                  , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup' users_map post.userId)]
-                ]
-              , H.div [P.class_ B.colXs2] [
-                    renderLike Ent_ThreadPost post.id pack'.like pack'.star
-                  , displayPostStats (ThreadPostStatResponse stats)
-                ]
-              , H.div [P.class_ B.colXs1] [
-                  buttonGroup_VerticalSm1 [
-                    glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) [],
-                    glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) []
-                  ]
-                ]
-            ]
-
-          ]
+        (map (\post_pack ->
+          H.li_ [renderView_ThreadPosts_Show_Single' org_pack forum_pack board_pack thread_pack post_pack users_map]
         ) $ listToArray $ M.values post_packs)
         <>
         -- INPUT FORM AT THE BOTTOM
@@ -115,44 +84,7 @@ renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack post_pa
   , renderPageNumbers posts_page_info posts_route
   ]
   where
-  body   = postDataToBody $ post_req ^. _ThreadPostRequest .. body_
   org    = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
   forum  = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
   board  = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
   thread = thread_pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse
-
-
-
-
-displayUserStats :: Maybe UserSanitizedPackResponse -> HTML _ _
-displayUserStats Nothing = H.p_ [H.text "No stats."]
-displayUserStats (Just user) =
-  H.div_ [
-    showBadge' "respect "   stats.respect,
-    showBadge' "threads "   stats.threads,
-    showBadge' "posts "     stats.threadPosts,
-    showBadge' "workouts "  stats.workouts,
-    showBadge' "resources " stats.resources,
-    showBadge' "leurons "   stats.leurons
-  ]
-  where
-  stats = user ^. _UserSanitizedPackResponse .. stat_ ^. _UserSanitizedStatResponse
-
-
-
-displayPostStats :: ThreadPostStatResponse -> HTML _ _
-displayPostStats (ThreadPostStatResponse stats) =
-  H.div_ [
-    showBadge' "score: "   $ stats.likes - stats.dislikes,
-    showBadge' "up: "      stats.likes,
-    showBadge' "neutral: " stats.neutral,
-    showBadge' "down: "    stats.dislikes,
-    showBadge' "stars: "   stats.stars,
-    showBadge' "views: "   stats.views
-  ]
-
-
-
-displayPostData :: PostData -> ComponentHTML Input
-displayPostData (PostDataBBCode v) = H.pre_ [H.text v]
-displayPostData _                  = H.p_ [H.text "unknown post body"]

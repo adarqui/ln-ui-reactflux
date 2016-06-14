@@ -49,5 +49,11 @@ wtf:
 	rm -rf bower_components/purescript-daimyo
 	bower install
 
+copy-bbcode:
+	rsync -av /Users/x/code/github/adarqui/purescript-bbcode-parser/src/ ./bower_components/purescript-bbcode-parser/src/
+
+copy-foreign:
+	rsync -av /Users/x/code/github/adarqui/purescript-foreign/src/ ./bower_components/purescript-foreign/src/
+
 deps:
 	npm install -g pulp

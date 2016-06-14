@@ -36,16 +36,25 @@
     "purescript-nullable": "^0.2.1",
     "purescript-partial": "^1.1.0",
     "purescript-maybe": "^0.3.5",
-    "purescript-halogen-css": "^0.4.0"
+    "purescript-halogen-css": "^0.4.0",
+    "purescript-css": "0.7.0",
+    "purescript-elm-compat": "^1.0.0",
+    "purescript-test-unit": "^6.0.1",
+    "purescript-assert": "^0.1.0",
+    "purescript-parsing": "^0.8.0"
   },
   "resolutions": {
     "purescript-generics": "~0.7",
-    "purescript-aff": "^0.14.1",
+    "purescript-aff": "^0.16.1",
     "purescript-halogen": "^0.5.18",
     "purescript-aff-coroutines": "^0.4.1",
     "purescript-maps": "^0.5.7",
     "purescript-argonaut-codecs": "^0.6.0",
     "purescript-sets": "^0.5.7",
-    "purescript-affjax": "^0.13.1"
+    "purescript-affjax": "^0.13.1",
+    "purescript-css": "0.7.0",
+    "purescript-test-unit": "^6.0.1",
+    "purescript-sequences": "^0.6.0",
+    "purescript-eff": "~0.1.0"
   }
 }

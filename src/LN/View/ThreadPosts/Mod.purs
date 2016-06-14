@@ -3,8 +3,7 @@ module LN.View.ThreadPosts.Mod (
   renderView_ThreadPosts_New,
   renderView_ThreadPosts_Edit,
   renderView_ThreadPosts_Mod,
-  renderView_ThreadPosts_Mod',
-  postDataToBody
+  renderView_ThreadPosts_Mod'
 ) where
 
 
@@ -22,11 +21,12 @@ import Prelude                         (id, map, show, const, ($), (<<<))
 import LN.Halogen.Util
 import LN.Helpers.Array                (seqArrayFrom)
 import LN.Helpers.JSON                 (decodeString)
-import LN.Input.ThreadPost                  (ThreadPost_Mod(..))
+import LN.Input.ThreadPost             (ThreadPost_Mod(..))
 import LN.Input.Types                  (Input(..), cThreadPostMod)
 import LN.State.Loading                (getLoading, l_currentThreadPost)
-import LN.State.ThreadPost                  (ThreadPostRequestState)
+import LN.State.ThreadPost             (ThreadPostRequestState)
 import LN.State.Types                  (State)
+import LN.View.ThreadPosts.Shared      (postDataToBody)
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
 
@@ -118,9 +118,3 @@ renderView_ThreadPosts_Mod' thread_pack m_post_id post_req post_st =
   threadPost = unwrapThreadPostRequest post_req
   body       = postDataToBody $ post_req ^. _ThreadPostRequest .. body_
   thread     = thread_pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse
-
-
-
-postDataToBody :: PostData -> String
-postDataToBody (PostDataBBCode v) = v
-postDataToBody _                  = ""
