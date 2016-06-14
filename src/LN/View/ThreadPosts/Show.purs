@@ -16,6 +16,9 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, ($), (<>), (-), (<<<))
 
+import Data.BBCode.Parser
+import Data.BBCode.Types
+
 import LN.Input.Types                  (Input(..), cThreadPostMod)
 import LN.Input.ThreadPost             (InputThreadPost(..), ThreadPost_Mod(..))
 import LN.Router.Link                  (linkTo, linkToP)
@@ -137,5 +140,6 @@ displayPostStats (ThreadPostStatResponse stats) =
 
 
 displayPostData :: PostData -> ComponentHTML Input
+-- displayPostData (PostDataBBCode v) = H.pre_ [H.text v]
 displayPostData (PostDataBBCode v) = H.pre_ [H.text v]
 displayPostData _                  = H.p_ [H.text "unknown post body"]

@@ -42,6 +42,7 @@ bower:
 
 reset:
 	rm -rf bower_components/purescript-ln
+	rm -rf bower_components/purescript-bbcode-parser
 	bower install
 
 wtf:

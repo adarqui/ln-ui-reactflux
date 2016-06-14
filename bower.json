@@ -26,6 +26,7 @@
     "purescript-webstorage": "~0.4.0",
     "purescript-daimyo": "https://github.com/adarqui/purescript-daimyo.git",
     "purescript-ln": "ssh://git@github.com/adarqui/purescript-ln.git",
+    "purescript-bbcode-parser": "https://github.com/adarqui/purescript-bbcode-parser",
     "virtual-dom": "^2.1.1",
     "purescript-dom": "^0.2.19",
     "purescript-free": "^0.9.1",
