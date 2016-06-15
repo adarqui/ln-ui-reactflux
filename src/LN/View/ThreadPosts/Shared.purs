@@ -84,9 +84,9 @@ displayPostData body =
     PostDataEmpty      -> H.p_ []
     PostDataRaw v      -> H.p_ [H.text v]
     PostDataBBCode v   ->
-      case parseBBCode' v of
+      case parseBBCode v of
            Left err    -> H.p_ [H.text "error: ", H.text err]
-           Right codes -> H.p_ $ bbcodeToHTML codes
+           Right codes -> H.p_ $ runBBCodeToHTML codes
     PostDataMarkdown v -> H.p_ [H.text "markdown"]
     _                  -> H.p_ [H.text "unknown post body"]
 

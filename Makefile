@@ -16,7 +16,8 @@ upload-ugly:
 	rsync -av -e ssh ./static/dist/app.min.js adarq:/root/projects/leuronet/ln-ui/static/dist/app.js
 
 prod:
-	psc-bundle output/**/*.js -m Main --main Main > ./static/dist/app.js
+	psc-bundle output/**/*.js -m Main --main Main > ./static/dist/app.raw.js
+	browserify ./static/dist/app.raw.js > static/dist/app.js
 
 prod-uglify: prod uglify
 
