@@ -90,7 +90,7 @@ eval_Organization eval (CompOrganization sub next) = do
   append (Just arr) a = Just $ nub $ arr <> [a]
   set v req           = Just (v req)
   mod new             = modify (\st->st{ currentOrganizationRequest = maybe Nothing new st.currentOrganizationRequest }) $> next
-  modSt new           = modify (\st->st{ currentOrganizationRequestSt = maybe Nothing (Just <<< new) st.currentOrganizationRequestSt })
+--  modSt new           = modify (\st->st{ currentOrganizationRequestSt = maybe Nothing (Just <<< new) st.currentOrganizationRequestSt })
 
 
 
