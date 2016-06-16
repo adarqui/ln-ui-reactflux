@@ -12,7 +12,7 @@ import LN.Input.ArrayString (ArrayStringEnt)
 
 
 type ArrayStringState = {
-  ents     :: M.Map ArrayStringEnt String,
+  ents     :: M.Map ArrayStringEnt (Array String),
   currents :: M.Map ArrayStringEnt String
 }
 

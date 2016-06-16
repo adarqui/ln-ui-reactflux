@@ -78,7 +78,12 @@ arrayStringEntFromEnum ASE_Examples      = 3
 
 
 data InputArrayString
-  = SetCurrent    ArrayStringEnt String
-  | AddToTags     ArrayStringEnt
-  | DeleteTag     ArrayStringEnt Int
-  | ClearTags     ArrayStringEnt
+  = SetCurrent            ArrayStringEnt String
+  | AddFromCurrent        ArrayStringEnt
+  | AddFromCurrentSort    ArrayStringEnt
+  | AddFromCurrentNub     ArrayStringEnt
+  | AddFromCurrentSortNub ArrayStringEnt
+  | Edit                  ArrayStringEnt Int String
+  | Delete                ArrayStringEnt Int
+  | Clear                 ArrayStringEnt
+  | Empty
