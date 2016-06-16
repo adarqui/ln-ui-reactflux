@@ -21,13 +21,15 @@ module LN.Input.Types (
   cResource,
   cResourceMod,
   cLeuron,
-  cLeuronMod
+  cLeuronMod,
+  cArrayString
 ) where
 
 
 import Data.Foreign            (ForeignError)
 import Purescript.Api.Helpers  (ApiError)
 
+import LN.Input.ArrayString    (InputArrayString(..))
 import LN.Input.Board          (InputBoard(..), Board_Act, Board_Mod)
 import LN.Input.Forum          (InputForum(..), Forum_Act, Forum_Mod)
 import LN.Input.Leuron         (InputLeuron(..), Leuron_Mod)
@@ -81,6 +83,7 @@ data Input a
 
   | ConnectSocket a
 
+  | CompArrayString    InputArrayString  a
   | CompOrderBy        InputOrderBy      a
   | CompOrganization   InputOrganization a
   | CompTeam           InputTeam         a
@@ -177,3 +180,8 @@ cLeuron sub next = CompLeuron sub next
 
 cLeuronMod :: forall a. Leuron_Mod -> a -> Input a
 cLeuronMod mod next = CompLeuron (InputLeuron_Mod mod) next
+
+
+
+cArrayString :: forall a. InputArrayString -> a -> Input a
+cArrayString sub next = CompArrayString sub next

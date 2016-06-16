@@ -18,6 +18,7 @@ import Prelude                      (Unit)
 import LN.Component.CreateThread    (Comp_CreateThread_State)
 import LN.Input.Types               (Input)
 import LN.Router.Class.Routes       (Routes(..))
+import LN.State.ArrayString         (defaultArrayStringState)
 import LN.State.Leuron              (LeuronRequestState, defaultLeuronRequestState)
 import LN.State.Loading             (LoadingMap, defaultLoadingMap)
 import LN.State.Resource            (ResourceRequestState, defaultResourceRequestState)
@@ -94,6 +95,7 @@ initialState ch =
   , resourcesPageInfo:            defaultPageInfo_Resources
   , leuronsPageInfo:              defaultPageInfo_Leurons
   , compCreateThread:             Nothing
+  , arrayStringSt:                defaultArrayStringState
 --  , driverCh:                     ch
   , loading:                      defaultLoadingMap
   }
