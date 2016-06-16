@@ -5,7 +5,8 @@ module LN.View.Fields (
   mandatoryLocationField,
   optionalDescriptionField,
   mandatoryDescriptionField,
-  mandatoryMembershipField
+  mandatoryMembershipField,
+  mandatoryVisibilityField
 ) where
 
 
@@ -20,7 +21,7 @@ import Prelude                         (id, show, ($))
 import LN.Halogen.Util
 import LN.Input.Types                  (Input(..))
 import LN.Router.Link                  (linkToHref)
-import LN.T                            (Membership(..))
+import LN.T                            (Membership(..), Visibility(..))
 
 
 
@@ -62,4 +63,14 @@ mandatoryMembershipField value set_membership =
   , Membership_Locked
   ]
   set_membership
+  value
+
+
+
+mandatoryVisibilityField value set_visibility =
+ radioMenu
+  "Visibility"
+  "visibility"
+  [Public, Private]
+  set_visibility
   value

@@ -8,7 +8,7 @@ module LN.Input.Organization (
 
 import Data.Maybe           (Maybe)
 
-import LN.T
+import LN.T                 (Membership, Visibility)
 
 
 
@@ -35,6 +35,9 @@ data Organization_Mod
   | SetCompany        String
 
   | SetLocation       String
+
+  | SetMembership     Membership
+  | SetVisibility     Visibility
 
   | Create
   | EditP Int
