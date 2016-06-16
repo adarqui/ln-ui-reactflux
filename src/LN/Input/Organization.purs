@@ -36,7 +36,16 @@ data Organization_Mod
 
   | SetLocation       String
 
+  | SetIcon           String
+  | RemoveIcon
+
+  | AddTag            String
+  | EditTag           Int String
+  | DeleteTag         Int
+  | ClearTags
+
   | SetMembership     Membership
+
   | SetVisibility     Visibility
 
   | Create

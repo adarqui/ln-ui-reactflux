@@ -10,14 +10,14 @@ module LN.Eval.Organizations (
 
 
 
-import Data.Array                      (head, deleteAt, modifyAt, nub)
+import Data.Array                      (head, deleteAt, modifyAt, nub, sort, (:))
 import Data.Either                     (Either(..))
 import Data.Functor                    (($>))
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
-import Prelude                         (class Eq, bind, pure, ($), (<>))
+import Prelude                         (class Eq, id, bind, pure, const, ($), (<>))
 
 import LN.Api                          (rd, getOrganizationPacks', getOrganizationPack', postOrganization', putOrganization', getThreadPostPack')
 import LN.Api.Internal.String          as ApiS
@@ -37,7 +37,7 @@ import LN.T.Internal.Convert           (organizationResponseToOrganizationReques
 import LN.T                            ( OrganizationPackResponses(..), OrganizationPackResponse(..)
                                        , OrganizationResponse(..)
                                        , _OrganizationResponse, name_
-                                       , _OrganizationRequest, OrganizationRequest(..), displayName_, description_, company_, location_
+                                       , _OrganizationRequest, OrganizationRequest(..), displayName_, description_, company_, location_, membership_, visibility_, tags_, icon_
                                        , _UserPackResponse, _UserResponse, user_, email_
                                        , ForumPackResponse(..)
                                        , BoardPackResponse(..)
@@ -68,6 +68,14 @@ eval_Organization eval (CompOrganization sub next) = do
         RemoveDescription    -> mod $ set (\req -> _OrganizationRequest .. description_ .~ Nothing $ req)
         SetCompany company   -> mod $ set (\req -> _OrganizationRequest .. company_ .~ company $ req)
         SetLocation location -> mod $ set (\req -> _OrganizationRequest .. location_ .~ location $ req)
+        SetIcon icon         -> mod $ set (\req -> _OrganizationRequest .. icon_ .~ Just icon $ req)
+        RemoveIcon           -> mod $ set (\req -> _OrganizationRequest .. icon_ .~ Nothing $ req)
+        AddTag tag           -> mod (\(OrganizationRequest req)->Just $ OrganizationRequest req{tags = nub $ sort (tag : req.tags)})
+        EditTag idx tag      -> mod (\(OrganizationRequest req)->Just $ OrganizationRequest req{tags = maybe req.tags id (modifyAt idx (const tag) req.tags) })
+        DeleteTag idx        -> mod (\(OrganizationRequest req)->Just $ OrganizationRequest req{tags = maybe req.tags id (deleteAt idx req.tags) })
+        ClearTags            -> mod $ set (\req -> _OrganizationRequest .. tags_ .~ [] $ req)
+        SetMembership memb   -> mod $ set (\req -> _OrganizationRequest .. membership_ .~ memb $ req)
+        SetVisibility viz    -> mod $ set (\req -> _OrganizationRequest .. visibility_ .~ viz $ req)
         Create               -> mod_create
         EditP org_id         -> mod_edit org_id
 
@@ -80,6 +88,7 @@ eval_Organization eval (CompOrganization sub next) = do
   append (Just arr) a = Just $ nub $ arr <> [a]
   set v req           = Just (v req)
   mod new             = modify (\st->st{ currentOrganizationRequest = maybe Nothing new st.currentOrganizationRequest }) $> next
+
 
 
   act_gets = do

@@ -28,7 +28,7 @@ import LN.State.Organization           (OrganizationRequestState)
 import LN.State.Types                  (State)
 import LN.View.Helpers                 (buttons_CreateEditCancel)
 import LN.View.Fields                  ( mandatoryNameField, optionalDescriptionField, mandatoryCompanyField, mandatoryLocationField
-                                       , mandatoryMembershipField, mandatoryVisibilityField
+                                       , mandatoryMembershipField, mandatoryVisibilityField, tagsField
                                        )
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
@@ -90,8 +90,9 @@ renderView_Organizations_Mod' m_organization_id organization_req o_st st =
 
   , mandatoryVisibilityField organization.visibility (cOrganizationMod <<< SetVisibility)
 
-  -- , tags
   -- , icon
+
+  , tagsField organization.tags (cOrganizationMod <<< AddTag) (cOrganizationMod <<< EditTag 0) (cOrganizationMod <<< DeleteTag) (cOrganizationMod ClearTags)
 
   , buttons_CreateEditCancel m_organization_id (cOrganizationMod Create) (cOrganizationMod <<< EditP) About
 

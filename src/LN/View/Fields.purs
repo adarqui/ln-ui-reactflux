@@ -6,7 +6,10 @@ module LN.View.Fields (
   optionalDescriptionField,
   mandatoryDescriptionField,
   mandatoryMembershipField,
-  mandatoryVisibilityField
+  mandatoryVisibilityField,
+  internalTagsField,
+  tagsField,
+  privateTagsField
 ) where
 
 
@@ -74,3 +77,12 @@ mandatoryVisibilityField value set_visibility =
   [Public, Private]
   set_visibility
   value
+
+
+
+internalTagsField label value add_tag edit_tag delete_tag clear_tags =
+  H.div_ [H.text "tags"]
+
+tagsField = internalTagsField "Tags"
+
+privateTagsField = internalTagsField "Private Tags"
