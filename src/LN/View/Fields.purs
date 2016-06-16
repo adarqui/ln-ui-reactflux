@@ -15,12 +15,14 @@ module LN.View.Fields (
 
 
 import Data.Maybe                      (Maybe(..), maybe)
+import Data.Tuple                      (Tuple(..))
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events.Indexed     as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
-import Prelude                         (id, show, ($))
+import Prelude                         (id, show, map, ($))
 
+import LN.Helpers.Array                (seqArrayFrom)
 import LN.Halogen.Util
 import LN.Input.Types                  (Input(..))
 import LN.Router.Link                  (linkToHref)
@@ -80,8 +82,28 @@ mandatoryVisibilityField value set_visibility =
 
 
 
-internalTagsField label value add_tag edit_tag delete_tag clear_tags =
-  H.div_ [H.text "tags"]
+internalTagsField label tags current_tag add_tag delete_tag clear_tags =
+  H.div_ [
+    H.label_ [H.text label],
+    H.input [P.value "", P.inputType P.InputText],
+    H.span [P.class_ B.inputGroupBtn] [
+      H.button [
+        buttonInfoClasses,
+        P.title "Add",
+        E.onClick $ E.input_ $ add_tag current_tag
+      ] [H.text "Add"]
+    ],
+    H.div_ $ map (\(Tuple idx tag) ->
+        H.p_ [
+          H.text tag,
+          H.span [] [
+            H.button [
+              E.onClick $ E.input_ $ delete_tag idx
+            ] [H.text "x"]
+          ]
+        ]
+      ) $ seqArrayFrom tags
+  ]
 
 tagsField = internalTagsField "Tags"
 

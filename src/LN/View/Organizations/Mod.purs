@@ -92,7 +92,7 @@ renderView_Organizations_Mod' m_organization_id organization_req o_st st =
 
   -- , icon
 
-  , tagsField organization.tags (cOrganizationMod <<< AddTag) (cOrganizationMod <<< EditTag 0) (cOrganizationMod <<< DeleteTag) (cOrganizationMod ClearTags)
+  , tagsField organization.tags "tag" (cOrganizationMod <<< AddTag) (cOrganizationMod <<< DeleteTag) (cOrganizationMod ClearTags)
 
   , buttons_CreateEditCancel m_organization_id (cOrganizationMod Create) (cOrganizationMod <<< EditP) About
 
