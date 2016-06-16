@@ -70,8 +70,10 @@ eval_Organization eval (CompOrganization sub next) = do
         SetLocation location -> mod $ set (\req -> _OrganizationRequest .. location_ .~ location $ req)
         SetIcon icon         -> mod $ set (\req -> _OrganizationRequest .. icon_ .~ Just icon $ req)
         RemoveIcon           -> mod $ set (\req -> _OrganizationRequest .. icon_ .~ Nothing $ req)
-        AddTag tag           -> mod (\(OrganizationRequest req)->Just $ OrganizationRequest req{tags = nub $ sort (tag : req.tags)})
-        EditTag idx tag      -> mod (\(OrganizationRequest req)->Just $ OrganizationRequest req{tags = maybe req.tags id (modifyAt idx (const tag) req.tags) })
+        Setag tag            -> mod (\(OrganizationRequest req)->Just $ OrganizationRequest req{tags = nub $ sort (tag : req.tags)})
+--        AddTag               -> do
+--          m_current_tag <-
+--          mod (\(OrganizationRequest req)->Just $ OrganizationRequest req{tags = nub $ sort (tag : req.tags)})
         DeleteTag idx        -> mod (\(OrganizationRequest req)->Just $ OrganizationRequest req{tags = maybe req.tags id (deleteAt idx req.tags) })
         ClearTags            -> mod $ set (\req -> _OrganizationRequest .. tags_ .~ [] $ req)
         SetMembership memb   -> mod $ set (\req -> _OrganizationRequest .. membership_ .~ memb $ req)
@@ -88,6 +90,7 @@ eval_Organization eval (CompOrganization sub next) = do
   append (Just arr) a = Just $ nub $ arr <> [a]
   set v req           = Just (v req)
   mod new             = modify (\st->st{ currentOrganizationRequest = maybe Nothing new st.currentOrganizationRequest }) $> next
+  modSt new           = modify (\st->st{ currentOrganizationRequestSt = maybe Nothing (Just <<< new) st.currentOrganizationRequestSt })
 
 
 

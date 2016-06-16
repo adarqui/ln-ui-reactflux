@@ -39,8 +39,8 @@ data Organization_Mod
   | SetIcon           String
   | RemoveIcon
 
-  | AddTag            String
-  | EditTag           Int String
+  | SetTag            String -- sets the current tag in state
+  | AddTag                   -- adds the current tag in state
   | DeleteTag         Int
   | ClearTags
 
