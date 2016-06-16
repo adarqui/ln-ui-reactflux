@@ -27,7 +27,8 @@ eval_ArrayString :: EvalEff
 eval_ArrayString eval (CompArrayString sub next) = do
 
   case sub of
---        Setag tag            -> mod (\(ArrayStringRequest req)->Just $ ArrayStringRequest req{tags = nub $ sort (tag : req.tags)})
+    SetCurrent ent tag -> mod (\st -> st{ currents = M.update (const $ Just tag) ent st.currents })
+--    Setag ent tag    -> modSt (\(ArrayStringState req)-> Just $ 
 --        AddTag               -> do
 --          m_current_tag <-
 --          mod (\(ArrayStringRequest req)->Just $ ArrayStringRequest req{tags = nub $ sort (tag : req.tags)})
@@ -40,4 +41,5 @@ eval_ArrayString eval (CompArrayString sub next) = do
   append Nothing a    = Just [a]
   append (Just arr) a = Just $ nub $ arr <> [a]
   set v req           = Just (v req)
-  --  modSt new           = modify (\st->st{ currentArrayStringRequestSt = maybe Nothing (Just <<< new) st.currentArrayStringRequestSt })
+  mod   f             = modify (\st->st{ arrayStringSt = f st.arrayStringSt }) $> next
+--  modSt new           = modify (\st->st{ currentArrayStringSt = maybe Nothing (Just <<< new) st.currentArrayStringSt })

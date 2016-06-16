@@ -5,7 +5,7 @@ module LN.Input.ArrayString (
 
 
 
-import Prelude              (class Show)
+import Prelude              (class Show, class Eq, class Ord, Ordering(..))
 
 
 
@@ -25,8 +25,25 @@ instance arrayStringEntShow :: Show ArrayStringEnt where
 
 
 
+instance arrayStringEntEq :: Eq ArrayStringEnt where
+  eq ASE_Tags          ASE_Tags          = true
+  eq ASE_PrivateTags   ASE_PrivateTags   = true
+  eq ASE_SuggestedTags ASE_SuggestedTags = true
+  eq ASE_Examples      ASE_Examples      = true
+  eq _                 _                 = false
+
+
+
+instance arrayStringEntOrd :: Ord ArrayStringEnt where
+  compare ASE_Tags          ASE_Tags          = EQ
+  compare ASE_PrivateTags   ASE_PrivateTags   = EQ
+  compare ASE_SuggestedTags ASE_SuggestedTags = EQ
+  compare ASE_Examples      ASE_Examples      = EQ
+
+
+
 data InputArrayString
-  = SetCurrentTag ArrayStringEnt String
+  = SetCurrent    ArrayStringEnt String
   | AddToTags     ArrayStringEnt
   | DeleteTag     ArrayStringEnt Int
   | ClearTags     ArrayStringEnt
