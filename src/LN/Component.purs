@@ -9,9 +9,14 @@ import LN.Component.Types          (LNEff)
 import LN.Input.Types              (Input(..))
 import LN.State.Types              (State)
 import LN.View
+import LN.Eval.ArrayString
 import LN.Eval.Goto
 import LN.Eval.Errors
 import LN.Eval.Me
+import LN.Eval.Like
+import LN.Eval.Star
+import LN.Eval.OrderBy
+import LN.Eval.Profile
 import LN.Eval.Users
 import LN.Eval.Organizations
 import LN.Eval.Teams
@@ -23,12 +28,6 @@ import LN.Eval.Resources
 import LN.Eval.Leurons
 import LN.Eval.Socket
 import LN.Eval.Nop
-
--- Components
-import LN.Eval.Like
-import LN.Eval.Star
-import LN.Eval.OrderBy
-import LN.Eval.Profile
 
 
 
@@ -82,6 +81,7 @@ ui = component render eval
 
   -- Components
 
+  eval z@(CompArrayString _ _)                        = eval_ArrayString eval z
   eval z@(CompOrganization _ _)                       = eval_Organization eval z
   eval z@(CompForum _ _)                              = eval_Forum eval z
   eval z@(CompBoard _ _)                              = eval_Board eval z

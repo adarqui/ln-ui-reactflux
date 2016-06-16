@@ -94,7 +94,6 @@ initialState ch =
   , threadPostsPageInfo:          defaultPageInfo_ThreadPosts
   , resourcesPageInfo:            defaultPageInfo_Resources
   , leuronsPageInfo:              defaultPageInfo_Leurons
-  , compCreateThread:             Nothing
   , arrayStringSt:                defaultArrayStringState
 --  , driverCh:                     ch
   , loading:                      defaultLoadingMap

@@ -20,8 +20,7 @@ module LN.State.Lens (
   stOrganizationsPageInfo,
   stUsersPageInfo,
   stThreadsPageInfo,
-  stThreadPostsPageInfo,
-  stCompCreateThread
+  stThreadPostsPageInfo
 ) where
 
 
@@ -31,7 +30,6 @@ import Data.Maybe                (Maybe)
 import Data.Tuple                (Tuple)
 import Optic.Core                (LensP, lens)
 
-import LN.Component.CreateThread (Comp_CreateThread_State)
 import LN.Router.Types           (Routes)
 import LN.State.PageInfo         (PageInfo)
 import LN.State.Types            (State)
@@ -210,11 +208,3 @@ stThreadPostsPageInfo =
   lens
     _.threadPostsPageInfo
     (_ { threadPostsPageInfo = _ })
-
-
-
-stCompCreateThread :: LensP State (Maybe Comp_CreateThread_State)
-stCompCreateThread =
-  lens
-    _.compCreateThread
-    (_ { compCreateThread = _ })

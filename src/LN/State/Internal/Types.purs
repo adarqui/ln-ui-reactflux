@@ -9,7 +9,6 @@ import Data.Map                     as M
 import Data.Maybe                   (Maybe)
 import Data.Tuple                   (Tuple)
 
-import LN.Component.CreateThread    (Comp_CreateThread_State)
 -- import LN.Input.Types               (Input)
 -- import LN.Router.Types              (Routes(..))
 import LN.State.ArrayString         (ArrayStringState)
@@ -77,7 +76,6 @@ type InternalState routes {- TODO FIXME: driver_ch-} =
   , threadPostsPageInfo          :: PageInfo
   , resourcesPageInfo            :: PageInfo
   , leuronsPageInfo              :: PageInfo
-  , compCreateThread             :: Maybe Comp_CreateThread_State
   , arrayStringSt                :: ArrayStringState
 --  , driverCh                     :: driver_ch
 --  , driverCh                   :: AVar (Input Unit)
