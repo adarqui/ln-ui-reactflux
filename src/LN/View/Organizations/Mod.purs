@@ -11,26 +11,25 @@ module LN.View.Organizations.Mod (
 
 
 
-import Data.Maybe                      (Maybe(..), maybe)
-import Data.Tuple                      (Tuple(..))
+import Data.Maybe                      (Maybe(..))
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events             as E
 import Halogen.HTML.Properties.Indexed as P
-import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, map, show, const, ($), (<<<))
+import Prelude                         ((<<<))
 
-import LN.Halogen.Util
-import LN.Helpers.Array                (seqArrayFrom)
-import LN.Helpers.JSON                 (decodeString)
+import LN.Halogen.Util                 (input_Label)
 import LN.Input.Organization           (Organization_Mod(..))
-import LN.Input.Types                  (Input(..), cOrganizationMod)
+import LN.Input.Types                  (Input, cOrganizationMod)
 import LN.Router.Class.Routes          (Routes(..))
 import LN.State.Loading                (getLoading, l_currentOrganization)
 import LN.State.Organization           (OrganizationRequestState)
 import LN.State.Types                  (State)
 import LN.View.Helpers                 (buttons_CreateEditCancel)
+import LN.View.Fields                  ( mandatoryNameField, optionalDescriptionField, mandatoryCompanyField, mandatoryLocationField
+                                       , mandatoryMembershipField
+                                       )
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
 
@@ -79,13 +78,13 @@ renderView_Organizations_Mod' m_organization_id organization_req o_st st =
 
     H.h1_ [ H.text "Add Organization" ]
 
-  , input_Label "Name" "Name" organization.displayName P.InputText (E.input (cOrganizationMod <<< SetDisplayName))
+  , mandatoryNameField organization.displayName (cOrganizationMod <<< SetDisplayName)
 
---  , textArea_Label "Description" "Description" organization.description (E.input (cOrganizationMod <<< SetDescription))
+  , optionalDescriptionField organization.description (cOrganizationMod <<< SetDescription) (cOrganizationMod RemoveDescription)
 
-  , input_Label "Company" "Company" organization.company P.InputText (E.input (cOrganizationMod <<< SetCompany))
+  , mandatoryCompanyField organization.company (cOrganizationMod <<< SetCompany)
 
-  , input_Label "Location" "Location" organization.location P.InputText (E.input (cOrganizationMod <<< SetLocation))
+  , mandatoryLocationField organization.location (cOrganizationMod <<< SetLocation)
 
   -- , membership
   -- , visibility

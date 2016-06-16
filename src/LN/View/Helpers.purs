@@ -95,24 +95,16 @@ module LN.View.Helpers (
 
 
 
-import Daimyo.Data.ArrayList           (listToArray)
-import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
-import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events.Indexed     as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
-import Optic.Core                      ((^.), (..))
-import Prelude                         (id, map, show, ($), (<>))
+import Prelude                         (id, show, ($))
 
 import LN.Halogen.Util
 import LN.Input.Types                  (Input(..))
-import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP, linkToHref)
-import LN.Router.Types                 (Routes(..), CRUD(..))
-import LN.T                            ( OrganizationPackResponse
-                                       , _OrganizationPackResponse, _OrganizationResponse, organization_
-                                       , _ForumPackResponse, _ForumResponse, forum_)
+import LN.Router.Link                  (linkToHref)
 
 
 
