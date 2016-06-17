@@ -16,16 +16,18 @@ import Halogen.HTML.Events.Indexed     as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, map, show, const, ($), (<<<))
+import Prelude                         (id, map, show, const, ($), (<<<), (<>))
 
 import LN.Halogen.Util
 import LN.Helpers.Array                (seqArrayFrom)
 import LN.Helpers.JSON                 (decodeString)
 import LN.Input.ThreadPost             (ThreadPost_Mod(..))
 import LN.Input.Types                  (Input(..), cThreadPostMod)
+import LN.Router.Class.CRUD            (TyCRUD(..))
 import LN.State.Loading                (getLoading, l_currentThreadPost)
 import LN.State.ThreadPost             (ThreadPostRequestState)
 import LN.State.Types                  (State)
+import LN.View.Fields                  (tagsField, privateTagsField)
 import LN.View.ThreadPosts.Shared      (postDataToBody)
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
@@ -51,29 +53,29 @@ renderView_ThreadPosts_Delete' pack st =
 
 
 renderView_ThreadPosts_New :: State -> ComponentHTML Input
-renderView_ThreadPosts_New = renderView_ThreadPosts_Mod Nothing
+renderView_ThreadPosts_New = renderView_ThreadPosts_Mod TyCreate Nothing
 
 
 
 renderView_ThreadPosts_Edit :: Int -> State -> ComponentHTML Input
-renderView_ThreadPosts_Edit threadPost_id = renderView_ThreadPosts_Mod (Just threadPost_id)
+renderView_ThreadPosts_Edit threadPost_id = renderView_ThreadPosts_Mod TyEdit (Just threadPost_id)
 
 
 
-renderView_ThreadPosts_Mod :: Maybe Int -> State -> ComponentHTML Input
-renderView_ThreadPosts_Mod m_post_id st =
+renderView_ThreadPosts_Mod :: TyCRUD -> Maybe Int -> State -> ComponentHTML Input
+renderView_ThreadPosts_Mod crud m_post_id st =
   case st.currentThread, st.currentThreadPostRequest, st.currentThreadPostRequestSt, getLoading l_currentThreadPost st.loading of
     _, _, _, true                                   -> renderLoading
-    Just thread, Just post_req, Just post_st, false -> renderView_ThreadPosts_Mod' thread m_post_id post_req post_st
+    Just thread, Just post_req, Just post_st, false -> renderView_ThreadPosts_Mod' crud thread m_post_id post_req post_st
     _, _, _, false                                  -> H.div_ [H.p_ [H.text "ThreadPosts_Mod: unexpected error."]]
 
 
 
-renderView_ThreadPosts_Mod' :: ThreadPackResponse -> Maybe Int -> ThreadPostRequest -> ThreadPostRequestState -> ComponentHTML Input
-renderView_ThreadPosts_Mod' thread_pack m_post_id post_req post_st =
+renderView_ThreadPosts_Mod' :: TyCRUD -> ThreadPackResponse -> Maybe Int -> ThreadPostRequest -> ThreadPostRequestState -> ComponentHTML Input
+renderView_ThreadPosts_Mod' crud thread_pack m_post_id post_req post_st =
   H.div_ [
 
-    H.h1_ [ H.text "Add ThreadPost" ]
+    H.h1_ [ H.text $ show crud <> " Post" ]
 
   , H.li_ [
       H.div [P.class_ B.row] [

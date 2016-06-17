@@ -4,14 +4,15 @@ module LN.Eval.ThreadPosts (
 
 
 
-import Data.Array               (head, deleteAt, modifyAt, nub)
+import Data.Array               (head, deleteAt, modifyAt, nub, sort, (:))
+import Data.Ebyam               (ebyam)
 import Data.Either              (Either(..))
 import Data.Functor             (($>))
 import Data.Map                 as M
 import Data.Maybe               (Maybe(..), maybe)
 import Halogen                  (gets, modify)
 import Optic.Core               ((^.), (..), (.~))
-import Prelude                  (class Eq, bind, pure, map, ($), (<>))
+import Prelude                  (class Eq, id, bind, pure, map, ($), (<>), (<<<))
 
 import LN.Api.Internal          (getThreadPostsCount_ByThreadId' , getThreadPostPacks_ByThreadId, getThreadPostPack', postThreadPost_ByThreadId', putThreadPost')
 import LN.Api.Internal.String   as ApiS
@@ -53,6 +54,19 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
       case q of
         SetBody text         -> mod $ set (\req -> _ThreadPostRequest .. body_ .~ PostDataBBCode text $ req)
 
+        SetTag s             -> modSt $ (_{currentTag = Just s})
+        AddTag               -> do
+          m_req_st <- gets _.currentThreadPostRequestSt
+          ebyam m_req_st (pure next) $ \req_st ->
+            case req_st.currentTag of
+               Nothing  -> pure next
+               Just tag -> do
+                 mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{tags = nub $ sort $ tag : req.tags})
+                 modSt $ (_{currentTag = Nothing})
+                 pure next
+        DeleteTag idx        -> mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{tags = maybe req.tags id $ deleteAt idx req.tags})
+        ClearTags            -> mod $ set (\req -> _ThreadPostRequest .. tags_ .~ [] $ req)
+
         Create thread_id     -> mod_create thread_id org_name forum_name board_name thread_name
         EditP thread_post_id -> mod_edit thread_post_id org_name forum_name board_name thread_name
 
@@ -64,6 +78,7 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
   append (Just arr) a = Just $ nub $ arr <> [a]
   set v req           = Just (v req)
   mod new             = modify (\st->st{ currentThreadPostRequest = maybe Nothing new st.currentThreadPostRequest }) $> next
+  modSt new           = modify (\st->st{ currentThreadPostRequestSt = maybe Nothing (Just <<< new) st.currentThreadPostRequestSt }) $> next
 
 
 

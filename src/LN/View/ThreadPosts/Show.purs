@@ -26,11 +26,13 @@ import Data.BBCode.Types
 import LN.Input.Types                  (Input(..), cThreadPostMod)
 import LN.Input.ThreadPost             (InputThreadPost(..), ThreadPost_Mod(..))
 import LN.Router.Link                  (linkTo, linkToP)
-import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.CRUD            (CRUD(..), TyCRUD(..))
+import LN.Router.Class.Routes          (Routes(..))
 import LN.State.ThreadPost             (ThreadPostRequestState)
 import LN.State.PageInfo               (PageInfo)
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup', usersMapLookup_ToNick', usersMapLookup_ToUser')
+import LN.View.Helpers
 import LN.View.ThreadPosts.Shared      (displayUserStats, displayPostStats, displayPostData)
 import LN.View.ThreadPosts.Mod         (renderView_ThreadPosts_Mod')
 import LN.View.Module.Gravatar         (renderGravatarForUser)
@@ -86,7 +88,7 @@ renderView_ThreadPosts_Show' org_pack forum_pack board_pack thread_pack post_pac
         ) $ listToArray $ M.values post_packs)
         <>
         -- INPUT FORM AT THE BOTTOM
-        [renderView_ThreadPosts_Mod' thread_pack Nothing post_req post_req_st])
+        [renderView_ThreadPosts_Mod' TyCreate thread_pack Nothing post_req post_req_st])
   , renderPageNumbers posts_page_info posts_route
   ]
   where
@@ -122,8 +124,10 @@ renderView_ThreadPosts_Show_Single' org_pack forum_pack board_pack thread_pack p
           , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup' users_map post.userId)]
         ]
       , H.div [P.class_ B.colXs1] [
-          H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) []) "edit"],
-          H.div_ [linkToP [] (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) []) "delete"]
+          buttonGroup_VerticalSm1 [
+            glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) [],
+            glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) []
+          ]
         ]
       , H.div [P.class_ B.colXs1] [
             renderLike Ent_ThreadPost post.id like star

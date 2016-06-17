@@ -19,7 +19,8 @@ import Prelude                         (id, show, map, ($), (<>), (-), (<<<))
 import LN.Input.Types                  (Input(..), cThreadPostMod)
 import LN.Input.ThreadPost             (InputThreadPost(..), ThreadPost_Mod(..))
 import LN.Router.Link                  (linkTo, linkToP)
-import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.CRUD            (CRUD(..), TyCRUD(..))
+import LN.Router.Class.Routes          (Routes(..))
 import LN.State.ThreadPost             (ThreadPostRequestState)
 import LN.State.PageInfo               (PageInfo)
 import LN.State.Types                  (State)
@@ -80,7 +81,7 @@ renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack post_pa
         ) $ listToArray $ M.values post_packs)
         <>
         -- INPUT FORM AT THE BOTTOM
-        [renderView_ThreadPosts_Mod' thread_pack Nothing post_req post_req_st])
+        [renderView_ThreadPosts_Mod' TyCreate thread_pack Nothing post_req post_req_st])
   , renderPageNumbers posts_page_info posts_route
   ]
   where
