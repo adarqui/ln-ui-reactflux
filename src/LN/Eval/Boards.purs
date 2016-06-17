@@ -32,6 +32,7 @@ import LN.T                            (BoardPackResponses(..), BoardPackRespons
                                        , _BoardResponse, name_
                                        , BoardRequest(..)
                                        , _BoardRequest, displayName_, description_, suggestedTags_, icon_, tags_, guard_
+                                       , isAnonymous_, canCreateSubBoards_, canCreateThreads_
                                        , _OrganizationPackResponse, _OrganizationResponse, organization_, name_)
 
 
@@ -59,6 +60,11 @@ eval_Board eval (CompBoard sub next) = do
         SetDisplayName name -> mod $ set (\req -> _BoardRequest .. displayName_ .~ name $ req)
         SetDescription s    -> mod $ set (\req -> _BoardRequest .. description_ .~ Just s $ req)
         RemoveDescription   -> mod $ set (\req -> _BoardRequest .. description_ .~ Nothing $ req)
+
+        SetIsAnonymous b        -> mod $ set (\req -> _BoardRequest .. isAnonymous_ .~ b $ req)
+        SetCanCreateSubBoards b -> mod $ set (\req -> _BoardRequest .. canCreateSubBoards_ .~ b $ req)
+        SetCanCreateThreads b   -> mod $ set (\req -> _BoardRequest .. canCreateThreads_ .~ b $ req)
+
         SetIcon s           -> mod $ set (\req -> _BoardRequest .. icon_ .~ Just s $ req)
         RemoveIcon          -> mod $ set (\req -> _BoardRequest .. icon_ .~ Nothing $ req)
 
