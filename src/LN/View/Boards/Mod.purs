@@ -30,7 +30,7 @@ import LN.Router.Class.Routes          (Routes(..))
 import LN.State.Loading                (getLoading, l_currentBoard)
 import LN.State.Board                  (BoardRequestState)
 import LN.State.Types                  (State)
-import LN.View.Fields                  ( mandatoryNameField, optionalDescriptionField, mandatoryYesNoField
+import LN.View.Fields                  ( mandatoryNameField, optionalDescriptionField, mandatoryBooleanYesNoField
                                        , suggestedTagsField, tagsField)
 import LN.View.Helpers                 (buttons_CreateEditCancel)
 import LN.View.Module.Loading          (renderLoading)

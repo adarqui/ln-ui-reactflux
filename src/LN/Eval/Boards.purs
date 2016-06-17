@@ -4,14 +4,15 @@ module LN.Eval.Boards (
 
 
 
-import Data.Array                      (head, deleteAt, modifyAt, nub)
+import Data.Array                      (head, deleteAt, modifyAt, nub, sort, (:))
+import Data.Ebyam                      (ebyam)
 import Data.Either                     (Either(..))
 import Data.Functor                    (($>))
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
-import Prelude                         (class Eq, bind, pure, ($), (<>))
+import Prelude                         (class Eq, id, bind, pure, ($), (<>), (<<<))
 
 import LN.Api                          (rd, getBoardPacks_ByForumId', getBoardPack', postBoard_ByForumId', putBoard')
 import LN.Api.Internal.String          as ApiS
@@ -30,7 +31,7 @@ import LN.T                            (BoardPackResponses(..), BoardPackRespons
                                        , BoardResponse(..)
                                        , _BoardResponse, name_
                                        , BoardRequest(..)
-                                       , _BoardRequest, displayName_, description_, icon_, tags_, guard_
+                                       , _BoardRequest, displayName_, description_, suggestedTags_, icon_, tags_, guard_
                                        , _OrganizationPackResponse, _OrganizationResponse, organization_, name_)
 
 
@@ -60,6 +61,33 @@ eval_Board eval (CompBoard sub next) = do
         RemoveDescription   -> mod $ set (\req -> _BoardRequest .. description_ .~ Nothing $ req)
         SetIcon s           -> mod $ set (\req -> _BoardRequest .. icon_ .~ Just s $ req)
         RemoveIcon          -> mod $ set (\req -> _BoardRequest .. icon_ .~ Nothing $ req)
+
+        SetSuggestedTag s   -> modSt $ (_{currentSuggestedTag = Just s})
+        AddSuggestedTag     -> do
+          m_req_st <- gets _.currentBoardRequestSt
+          ebyam m_req_st (pure next) $ \req_st ->
+            case req_st.currentSuggestedTag of
+               Nothing  -> pure next
+               Just tag -> do
+                 mod $ set (\(BoardRequest req) -> BoardRequest req{suggestedTags = nub $ sort $ tag : req.suggestedTags})
+                 modSt $ (_{currentSuggestedTag = Nothing})
+                 pure next
+        DeleteSuggestedTag idx -> mod $ set (\(BoardRequest req) -> BoardRequest req{suggestedTags = maybe req.suggestedTags id $ deleteAt idx req.suggestedTags})
+        ClearSuggestedTags     -> mod $ set (\req -> _BoardRequest .. suggestedTags_ .~ [] $ req)
+
+        SetTag s             -> modSt $ (_{currentTag = Just s})
+        AddTag               -> do
+          m_req_st <- gets _.currentBoardRequestSt
+          ebyam m_req_st (pure next) $ \req_st ->
+            case req_st.currentTag of
+               Nothing  -> pure next
+               Just tag -> do
+                 mod $ set (\(BoardRequest req) -> BoardRequest req{tags = nub $ sort $ tag : req.tags})
+                 modSt $ (_{currentTag = Nothing})
+                 pure next
+        DeleteTag idx        -> mod $ set (\(BoardRequest req) -> BoardRequest req{tags = maybe req.tags id $ deleteAt idx req.tags})
+        ClearTags            -> mod $ set (\req -> _BoardRequest .. tags_ .~ [] $ req)
+
         Create forum_id     -> mod_create forum_id org_name forum_name
         EditP board_id      -> mod_edit board_id org_name forum_name
 
@@ -72,6 +100,7 @@ eval_Board eval (CompBoard sub next) = do
   append (Just arr) a = Just $ nub $ arr <> [a]
   set v req           = Just (v req)
   mod new             = modify (\st->st{ currentBoardRequest = maybe Nothing new st.currentBoardRequest }) $> next
+  modSt new           = modify (\st->st{ currentBoardRequestSt = maybe Nothing (Just <<< new) st.currentBoardRequestSt }) $> next
 
 
 
