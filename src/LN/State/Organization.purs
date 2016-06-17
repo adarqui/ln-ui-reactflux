@@ -5,11 +5,17 @@ module LN.State.Organization (
 
 
 
+import Data.Maybe (Maybe(..))
+
+
+
 type OrganizationRequestState = {
+  currentTag :: Maybe String
 }
 
 
 
 defaultOrganizationRequestState :: OrganizationRequestState
 defaultOrganizationRequestState = {
+  currentTag: Nothing
 }

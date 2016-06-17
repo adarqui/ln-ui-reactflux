@@ -17,11 +17,9 @@ import LN.Api                          (rd, getOrganizationPacks', getOrganizati
 import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
-import LN.Input.ArrayString            (ArrayStringEnt(..))
 import LN.Input.Organization           (InputOrganization(..), Organization_Act(..), Organization_Mod(..))
 import LN.Input.Types                  (Input(..))
 import LN.Router.Types                 (Routes(..), CRUD(..))
-import LN.State.ArrayString            (getArrayStringEnt)
 import LN.State.Loading                ( l_currentOrganization, l_organizations
                                        , l_currentForum
                                        , l_currentBoard
@@ -128,13 +126,11 @@ eval_Organization eval (CompOrganization sub next) = do
   mod_create = do
     m_me  <- gets _.me
     m_req <- gets _.currentOrganizationRequest
-    tags  <- getArrayStringEnt ASE_Tags <$> gets (\st->st.arrayStringSt.ents)
     case m_req, m_me of
          Just (OrganizationRequest req), Just me -> do
            e_organization <- rd $ postOrganization' $
              OrganizationRequest req{
-               email = me ^. _UserPackResponse .. user_ ^. _UserResponse .. email_,
-               tags  = tags
+               email = me ^. _UserPackResponse .. user_ ^. _UserResponse .. email_
              }
            case e_organization of
                 Left err                                  -> eval (AddErrorApi "eval_Organization(Mod/Create)::postOrganization'" err next)
@@ -146,12 +142,10 @@ eval_Organization eval (CompOrganization sub next) = do
 
   mod_edit org_id = do
     m_req <- gets _.currentOrganizationRequest
-    tags  <- getArrayStringEnt ASE_Tags <$> gets (\st->st.arrayStringSt.ents)
     case m_req of
          Nothing  -> eval (AddError "eval_Organization(Mod/Edit)" "Organization request doesn't exist" next)
-         Just (OrganizationRequest req) -> do
-           e_org <- rd $ putOrganization' org_id $
-             OrganizationRequest req{ tags = tags }
+         Just req -> do
+           e_org <- rd $ putOrganization' org_id req
            case e_org of
                 Left err  -> eval (AddErrorApi "eval_Organization(Mod/Edit)::putOrganization" err next)
                 Right org -> do
