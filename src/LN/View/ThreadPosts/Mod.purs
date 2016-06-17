@@ -77,7 +77,7 @@ renderView_ThreadPosts_Mod' crud thread_pack m_post_id post_req post_req_st =
 
     H.h1_ [ H.text $ show crud <> " Post" ]
 
-   , H.p_ [H.text "TODO FIXME: Add suggested tags for the board we're in. These should go to public tags."
+  , H.p_ [H.text "TODO FIXME: Add suggested tags for the board we're in. These should go to public tags."
 
   , tagsField
       post.tags
