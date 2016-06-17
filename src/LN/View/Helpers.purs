@@ -90,17 +90,20 @@ module LN.View.Helpers (
   linkBadge',
 
   showBadge,
-  showBadge'
+  showBadge',
+
+  showTags
 ) where
 
 
 
+import Data.Array                      (concat)
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events.Indexed     as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
-import Prelude                         (id, show, ($))
+import Prelude                         (id, show, map, ($), (<>))
 
 import LN.Halogen.Util
 import LN.Input.Types                  (Input(..))
@@ -273,3 +276,15 @@ showBadge attrs text badge =
 
 
 showBadge' = showBadge (P.classes [])
+
+
+
+showTags tags =
+  concat $ map (\tag ->
+      [
+        H.span [P.classes [B.label, B.labelDefault]] [
+          H.text tag
+        ],
+        H.text " "
+      ]
+  ) tags
