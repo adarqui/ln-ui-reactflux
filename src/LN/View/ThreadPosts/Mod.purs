@@ -65,17 +65,35 @@ renderView_ThreadPosts_Edit threadPost_id = renderView_ThreadPosts_Mod TyEdit (J
 renderView_ThreadPosts_Mod :: TyCRUD -> Maybe Int -> State -> ComponentHTML Input
 renderView_ThreadPosts_Mod crud m_post_id st =
   case st.currentThread, st.currentThreadPostRequest, st.currentThreadPostRequestSt, getLoading l_currentThreadPost st.loading of
-    _, _, _, true                                   -> renderLoading
-    Just thread, Just post_req, Just post_st, false -> renderView_ThreadPosts_Mod' crud thread m_post_id post_req post_st
-    _, _, _, false                                  -> H.div_ [H.p_ [H.text "ThreadPosts_Mod: unexpected error."]]
+    _, _, _, true                                       -> renderLoading
+    Just thread, Just post_req, Just post_req_st, false -> renderView_ThreadPosts_Mod' crud thread m_post_id post_req post_req_st
+    _, _, _, false                                      -> H.div_ [H.p_ [H.text "ThreadPosts_Mod: unexpected error."]]
 
 
 
 renderView_ThreadPosts_Mod' :: TyCRUD -> ThreadPackResponse -> Maybe Int -> ThreadPostRequest -> ThreadPostRequestState -> ComponentHTML Input
-renderView_ThreadPosts_Mod' crud thread_pack m_post_id post_req post_st =
+renderView_ThreadPosts_Mod' crud thread_pack m_post_id post_req post_req_st =
   H.div_ [
 
     H.h1_ [ H.text $ show crud <> " Post" ]
+
+   , H.p_ [H.text "TODO FIXME: Add suggested tags for the board we're in. These should go to public tags."
+
+  , tagsField
+      post.tags
+      (maybe "" id post_req_st.currentTag)
+      (cThreadPostMod <<< SetTag)
+      (cThreadPostMod AddTag)
+      (cThreadPostMod <<< DeleteTag)
+      (cThreadPostMod ClearTags)
+
+   , privateTagsField
+       post.privateTags
+       (maybe "" id post_req_st.currentPrivateTag)
+       (cThreadPostMod <<< SetPrivateTag)
+       (cThreadPostMod AddPrivateTag)
+       (cThreadPostMod <<< DeletePrivateTag)
+       (cThreadPostMod ClearPrivateTags)
 
   , H.li_ [
       H.div [P.class_ B.row] [
@@ -117,6 +135,6 @@ renderView_ThreadPosts_Mod' crud thread_pack m_post_id post_req post_st =
 
   ]
   where
-  threadPost = unwrapThreadPostRequest post_req
+  post       = unwrapThreadPostRequest post_req
   body       = postDataToBody $ post_req ^. _ThreadPostRequest .. body_
   thread     = thread_pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse

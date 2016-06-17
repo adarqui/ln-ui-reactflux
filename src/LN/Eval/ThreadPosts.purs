@@ -52,10 +52,23 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
 
     InputThreadPost_Mod q -> do
       case q of
-        SetBody text         -> mod $ set (\req -> _ThreadPostRequest .. body_ .~ PostDataBBCode text $ req)
+        SetBody text          -> mod $ set (\req -> _ThreadPostRequest .. body_ .~ PostDataBBCode text $ req)
 
-        SetTag s             -> modSt $ (_{currentTag = Just s})
-        AddTag               -> do
+        SetPrivateTag s       -> modSt $ (_{currentPrivateTag = Just s})
+        AddPrivateTag         -> do
+          m_req_st <- gets _.currentThreadPostRequestSt
+          ebyam m_req_st (pure next) $ \req_st ->
+            case req_st.currentPrivateTag of
+               Nothing  -> pure next
+               Just tag -> do
+                 mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{privateTags = nub $ sort $ tag : req.privateTags})
+                 modSt $ (_{currentPrivateTag = Nothing})
+                 pure next
+        DeletePrivateTag idx   -> mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{privateTags = maybe req.privateTags id $ deleteAt idx req.privateTags})
+        ClearPrivateTags       -> mod $ set (\req -> _ThreadPostRequest .. privateTags_ .~ [] $ req)
+
+        SetTag s               -> modSt $ (_{currentTag = Just s})
+        AddTag                 -> do
           m_req_st <- gets _.currentThreadPostRequestSt
           ebyam m_req_st (pure next) $ \req_st ->
             case req_st.currentTag of
@@ -64,11 +77,11 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
                  mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{tags = nub $ sort $ tag : req.tags})
                  modSt $ (_{currentTag = Nothing})
                  pure next
-        DeleteTag idx        -> mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{tags = maybe req.tags id $ deleteAt idx req.tags})
-        ClearTags            -> mod $ set (\req -> _ThreadPostRequest .. tags_ .~ [] $ req)
+        DeleteTag idx          -> mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{tags = maybe req.tags id $ deleteAt idx req.tags})
+        ClearTags              -> mod $ set (\req -> _ThreadPostRequest .. tags_ .~ [] $ req)
 
-        Create thread_id     -> mod_create thread_id org_name forum_name board_name thread_name
-        EditP thread_post_id -> mod_edit thread_post_id org_name forum_name board_name thread_name
+        Create thread_id       -> mod_create thread_id org_name forum_name board_name thread_name
+        EditP thread_post_id   -> mod_edit thread_post_id org_name forum_name board_name thread_name
 
     _   -> pure next
 
