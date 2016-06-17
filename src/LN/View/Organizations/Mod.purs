@@ -17,12 +17,13 @@ import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events             as E
 import Halogen.HTML.Properties.Indexed as P
 import Optic.Core                      ((^.), (..))
-import Prelude                         (show, id, (<<<), ($))
+import Prelude                         (show, id, (<<<), ($), (<>))
 
 import LN.Halogen.Util                 (input_Label)
 import LN.Input.Organization           (Organization_Mod(..))
 import LN.Input.Types                  (Input, cOrganizationMod)
 import LN.Router.Class.Routes          (Routes(..))
+import LN.Router.Class.CRUD            (TyCRUD(..))
 import LN.State.Loading                (getLoading, l_currentOrganization)
 import LN.State.Organization           (OrganizationRequestState)
 import LN.State.Types                  (State)
@@ -54,29 +55,29 @@ renderView_Organizations_Delete' pack st =
 
 
 renderView_Organizations_New :: State -> ComponentHTML Input
-renderView_Organizations_New = renderView_Organizations_Mod Nothing
+renderView_Organizations_New = renderView_Organizations_Mod TyCreate Nothing
 
 
 
 renderView_Organizations_Edit :: Int -> State -> ComponentHTML Input
-renderView_Organizations_Edit organization_id = renderView_Organizations_Mod (Just organization_id)
+renderView_Organizations_Edit organization_id = renderView_Organizations_Mod TyEdit (Just organization_id)
 
 
 
-renderView_Organizations_Mod :: Maybe Int -> State -> ComponentHTML Input
-renderView_Organizations_Mod m_organization_id st =
+renderView_Organizations_Mod :: TyCRUD -> Maybe Int -> State -> ComponentHTML Input
+renderView_Organizations_Mod crud m_organization_id st =
   case st.currentOrganizationRequest, st.currentOrganizationRequestSt, getLoading l_currentOrganization st.loading of
     _, _, true                                    -> renderLoading
-    Just organization_req, Just org_req_st, false -> renderView_Organizations_Mod' m_organization_id organization_req org_req_st st
+    Just organization_req, Just org_req_st, false -> renderView_Organizations_Mod' crud m_organization_id organization_req org_req_st st
     _, _, false                                   -> H.div_ [H.p_ [H.text "Organizations_Mod: unexpected error."]]
 
 
 
-renderView_Organizations_Mod' :: Maybe Int -> OrganizationRequest -> OrganizationRequestState -> State -> ComponentHTML Input
-renderView_Organizations_Mod' m_organization_id organization_req org_req_st st =
+renderView_Organizations_Mod' :: TyCRUD -> Maybe Int -> OrganizationRequest -> OrganizationRequestState -> State -> ComponentHTML Input
+renderView_Organizations_Mod' crud m_organization_id organization_req org_req_st st =
   H.div_ [
 
-    H.h1_ [ H.text "Add Organization" ]
+    H.h1_ [ H.text $ show crud <> " Organization" ]
 
   , mandatoryNameField organization.displayName (cOrganizationMod <<< SetDisplayName)
 

@@ -1,5 +1,6 @@
 module LN.Router.Class.CRUD (
-  CRUD (..)
+  CRUD (..),
+  TyCRUD (..)
 ) where
 
 
@@ -72,3 +73,28 @@ instance crudHasLink :: HasLink CRUD where
   link (Delete s)     = Tuple ("/_delete/" <> s) M.empty
   link (DeleteI int)  = Tuple ("/_delete/" <> show int) M.empty
   link (DeleteN num)  = Tuple ("/_delete/" <> show num) M.empty
+
+
+
+data TyCRUD
+  = TyCreate
+  | TyEdit
+  | TyDelete
+  | TyView
+
+
+
+instance tyCRUDEq :: Eq TyCRUD where
+  eq TyCreate TyCreate = true
+  eq TyEdit   TyEdit   = true
+  eq TyDelete TyDelete = true
+  eq TyView   TyView   = true
+  eq _        _        = false
+
+
+
+instance tyCRUDShow :: Show TyCRUD where
+  show TyCreate = "Create"
+  show TyEdit   = "Edit"
+  show TyDelete = "Delete"
+  show TyView   = "View"
