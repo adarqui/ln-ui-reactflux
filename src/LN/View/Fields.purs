@@ -164,10 +164,44 @@ mandatoryIntegerField label value default min max step set_cb =
 
 
 
+boolFromString :: String -> Boolean
+boolFromString "true" = true
+boolFromString _      = false
+
+
+
+boolFromYesNoString :: String -> Boolean
+boolFromYesNoString "true" = true
+boolFromYesNoString _      = false
+
+
+
 mandatoryBooleanField label value default set_cb =
-  H.div_ []
+  internalSelectList label value default [true, false] (set_cb)
 
 
 
 mandatoryBooleanYesNoField label value default set_cb =
-  H.div_ []
+  internalSelectList label value default [true, false] (set_cb)
+--  internalSelectList label (show value) (show default) ["yes", "no"] (set_cb <<< boolFromYesNoString)
+
+
+
+internalSelectList label value default options set_cb =
+  H.div_ [
+    H.div [P.class_ B.formGroup] [
+      H.label_ [H.text label],
+      H.select [
+         P.class_ B.formControl,
+          E.onValueChange $ E.input (set_cb <<< boolFromString)
+        ] $
+        map (\option -> H.option [P.selected $ value == option] [H.text $ show option]) options,
+      H.span [P.class_ B.inputGroupBtn] [
+        H.button [
+          buttonInfoClasses,
+          P.title "Default",
+          E.onClick $ E.input_ $ set_cb default
+        ] [H.text "Default"]
+      ]
+    ]
+  ]
