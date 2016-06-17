@@ -20,7 +20,7 @@ import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events.Indexed     as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
-import Prelude                         (id, show, map, ($))
+import Prelude                         (id, show, map, ($), (==))
 
 import LN.Helpers.Array                (seqArrayFrom)
 import LN.Halogen.Util
@@ -85,7 +85,12 @@ mandatoryVisibilityField value set_visibility =
 internalTagsField label tags current_tag set_tag add_tag delete_tag clear_tags =
   H.div_ [
     H.label_ [H.text label],
-    H.input [P.value current_tag, P.inputType P.InputText, E.onValueChange $ E.input set_tag],
+    H.input [
+      P.value current_tag,
+      P.inputType P.InputText,
+      E.onValueChange $ E.input set_tag,
+      E.onKeyUp $ E.input (\ev -> if ev.keyCode == 13.0 then add_tag else Nop)
+    ],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         buttonInfoClasses,

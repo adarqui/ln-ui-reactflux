@@ -14,7 +14,6 @@ import LN.Input.Types            (Input(..))
 
 
 eval_Nop :: EvalEff
-eval_Nop eval (Nop next) = do
-
-  liftAff' $ log "nop"
-  pure next
+eval_Nop eval (Nop next) = pure next
+--  liftAff' $ log "nop"
+--  pure next
