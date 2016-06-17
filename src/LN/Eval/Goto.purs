@@ -9,7 +9,7 @@ import Data.Functor             (($>))
 import Data.Maybe               (Maybe(..), maybe)
 import Data.Int                 (fromString)
 import Data.Tuple               (Tuple(..))
-import Halogen                  (get, gets, modify, liftAff')
+import Halogen                  (get, gets, modify)
 import Optic.Core               ((^.),(..))
 import Prelude                  (show, bind, pure, unit, id, (==), (/=), (<), ($))
 
@@ -38,13 +38,14 @@ import LN.State.Leuron          (defaultLeuronRequestState, leuronRequestStateFr
 import LN.State.Resource        (defaultResourceRequestState)
 import LN.T
 
+import Control.Monad.Aff.Free (fromAff)
 
 
 eval_Goto :: EvalEff
 eval_Goto eval (Goto route next) = do
 
   modify (_ { currentPage = route })
-  liftAff' (updateUrl route)
+  fromAff $ updateUrl route
 
   st <- get
 

@@ -6,7 +6,7 @@ module LN.Eval.Star (
 
 import Data.Maybe                  (Maybe(..))
 import Data.Either                 (Either(..))
-import Halogen                     (get, modify, liftAff')
+import Halogen                     (get, modify)
 import Optic.Core                  ((^.), (..), (.~))
 import Prelude                     (bind, pure, void, const, ($))
 import Purescript.Api.Helpers
@@ -27,6 +27,7 @@ import LN.T                        ( Ent(..)
                                    , id_, stat_, _ThreadPostResponse, threadPost_, like_
                                    , mkStarRequest, mkStarRequest)
 
+import Control.Monad.Aff.Free (fromAff)
 
 
 eval_Star :: EvalEff
@@ -36,7 +37,7 @@ eval_Star :: EvalEff
 eval_Star eval (CompStar (InputStar ent ent_id mstar) next) = do
   let star_req = mkStarRequest Nothing 0
   st <- get
-  lr <- liftAff' $ boomStar st mstar ent ent_id star_req
+  lr <- fromAff $ boomStar st mstar ent ent_id star_req
   case lr of
        Left err -> pure next
        Right st' -> do
@@ -85,7 +86,7 @@ boomStar st m_star ent ent_id star_req = do
 eval_Like eval (CompLike (InputLike_Neutral ent ent_id mlike) next) = do
   let like_req = mkLikeRequest Neutral Nothing
   packmap <- gets _.threadPosts
-  newmap' <- liftAff' $ boomLike pack like_req packmap
+  newmap' <- fromAff $ boomLike pack like_req packmap
   case newmap' of
        Left err     -> pure next
        Right newmap -> do
@@ -97,7 +98,7 @@ eval_Like eval (CompLike (InputLike_Neutral ent ent_id mlike) next) = do
 eval_Like eval (CompLike (InputLike_Dislike ent ent_id mlike) next) = do
   let like_req = mkLikeRequest Dislike Nothing
   packmap <- gets _.threadPosts
-  newmap' <- liftAff' $ boomLike pack like_req packmap
+  newmap' <- fromAff $ boomLike pack like_req packmap
   case newmap' of
        Left err     -> pure next
        Right newmap -> do
@@ -109,7 +110,7 @@ eval_Like eval (CompLike (InputLike_Dislike ent ent_id mlike) next) = do
 eval_Like eval (CompLike (InputLike_Star ent ent_id mstar) next) = do
   let star_req = mkStarRequest Nothing
   packmap <- gets _.threadPosts
-  newmap' <- liftAff' $ boomStar pack star_req packmap
+  newmap' <- fromAff $ boomStar pack star_req packmap
   case newmap' of
        Left err     -> pure next
        Right newmap -> do

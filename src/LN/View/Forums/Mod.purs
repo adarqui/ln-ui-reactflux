@@ -87,9 +87,9 @@ renderView_Forums_Mod' crud organization_id m_forum_id forum_req forum_req_st =
 
   , optionalDescriptionField forum.description (cForumMod <<< SetDescription) (cForumMod RemoveDescription)
 
-  , mandatoryIntegerField "Threads per board" forum.threadsPerBoard (cForumMod <<< SetThreadsPerBoard)
+  , mandatoryIntegerField "Threads per board" forum.threadsPerBoard 20 10 50 10 (cForumMod <<< SetThreadsPerBoard)
 
-  , mandatoryIntegerField "Posts per thread" forum.threadPostsPerThread (cForumMod <<< SetThreadPostsPerThread)
+  , mandatoryIntegerField "Posts per thread" forum.threadPostsPerThread 20 10 50 10 (cForumMod <<< SetThreadPostsPerThread)
 
   , mandatoryVisibilityField forum.visibility (cForumMod <<< SetVisibility)
 

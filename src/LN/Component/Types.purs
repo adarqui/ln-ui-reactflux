@@ -1,7 +1,8 @@
 module LN.Component.Types (
   ComponentSlot,
+  CompEff,
   EvalEff,
-  EvalEffP,
+--  EvalEffP,
   LNEff,
   LN
 ) where
@@ -12,7 +13,8 @@ import Control.Monad.Aff         (Aff())
 import Control.Monad.Eff.Console (CONSOLE())
 import Data.Date                 (Now())
 import Data.Date.Locale          (Locale())
-import Halogen                   (HalogenEffects, Component, Eval)
+import Data.NaturalTransformation (Natural(..))
+import Halogen                   (HalogenEffects, Component, ComponentDSL)
 import Network.HTTP.Affjax       (AJAX())
 import Prelude                   (Unit)
 import WebSocket                 (WEBSOCKET())
@@ -27,8 +29,12 @@ type ComponentSlot s f g = Unit -> { component :: Component s f g, initialState 
 
 
 
-type EvalEff = forall eff. {-Partial =>-} Eval Input State Input (LNEff eff) -> Eval Input State Input (LNEff eff)
-type EvalEffP= forall eff. Eval Input State Input (LNEff eff)
+-- type EvalEff = forall eff. {-Partial =>-} Natural Input State Input (LNEff eff) -> Natural Input State Input (LNEff eff)
+type CompEff = forall eff. Natural Input (ComponentDSL State Input (LNEff eff))
+type EvalEff = CompEff -> CompEff
+-- type EvalEff = forall eff. Natural Input (ComponentDSL State Input (LNEff eff)) -> Natural Input (ComponentDSL State Input (LNEff eff))
+-- Natural Query (ComponentDSL State Query (Aff (AppEffects eff)))
+--type EvalEffP = forall eff. Natural Input State Input (LNEff eff)
 
 
 

@@ -16,13 +16,16 @@ module LN.View.Fields (
 
 
 import Data.Array                      (concat)
+import Data.Int                        (fromString)
 import Data.Maybe                      (Maybe(..), maybe)
 import Data.Tuple                      (Tuple(..))
+import Halogen.HTML.Core               as C
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events.Indexed     as E
+import Halogen.HTML.Properties         as Pr
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
-import Prelude                         (id, show, map, ($), (==))
+import Prelude                         (id, show, map, ($), (==), (<<<))
 
 import LN.Helpers.Array                (seqArrayFrom)
 import LN.Halogen.Util
@@ -131,7 +134,25 @@ tagsField = internalTagsField "Tags"
 
 privateTagsField = internalTagsField "Private Tags"
 
-
-
-mandatoryIntegerField label value set_cb =
-  H.div_ [H.text "int"]
+mandatoryIntegerField label value default min max step set_cb =
+  H.div_ [
+    H.div [P.class_ B.inputGroup] [
+      H.label_ [H.text label],
+      H.input [
+        formControlClasses,
+        P.value $ show value,
+        P.inputType P.InputNumber,
+--        P.min min,
+--        P.max max,
+--        P.step step,
+        E.onValueChange $ E.input (set_cb <<< maybe default id <<< fromString)
+      ],
+      H.span [P.class_ B.inputGroupBtn] [
+        H.button [
+          buttonInfoClasses,
+          P.title "Default",
+          E.onClick $ E.input_ $ set_cb default
+        ] [H.text "Default"]
+      ]
+    ]
+  ]

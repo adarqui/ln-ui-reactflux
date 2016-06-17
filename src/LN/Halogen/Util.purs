@@ -17,7 +17,6 @@ import Data.Maybe (Maybe(..), maybe, fromMaybe)
 import Data.Tuple
 
 import Halogen
-import Halogen.Util (appendTo, appendToBody, onLoad)
 import Halogen.HTML.Core as H
 import Halogen.HTML.Indexed as H
 import Halogen.HTML.Events.Indexed as E

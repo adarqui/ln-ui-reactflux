@@ -5,15 +5,15 @@ module LN.Eval.Nop (
 
 
 import Control.Monad.Aff.Console (log)
-import Halogen                   (liftAff')
 import Prelude                   (bind, pure, ($))
 
 import LN.Component.Types        (EvalEff)
 import LN.Input.Types            (Input(..))
 
+import Control.Monad.Aff.Free (fromAff)
 
 
 eval_Nop :: EvalEff
 eval_Nop eval (Nop next) = pure next
---  liftAff' $ log "nop"
+--  fromAff $ log "nop"
 --  pure next

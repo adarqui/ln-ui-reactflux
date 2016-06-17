@@ -5,7 +5,7 @@ import Halogen                     hiding (set)
 import Prelude                     (pure)
 
 import LN.Layout                   as L
-import LN.Component.Types          (LNEff)
+import LN.Component.Types          (LNEff, CompEff)
 import LN.Input.Types              (Input(..))
 import LN.State.Types              (State)
 import LN.View
@@ -32,7 +32,7 @@ import LN.Eval.Nop
 
 
 ui :: forall eff. {-Partial =>-} Component State Input (LNEff eff)
-ui = component render eval
+ui = component {render, eval}
 
   where
   render state =
@@ -40,7 +40,8 @@ ui = component render eval
       [ renderView state.currentPage state
       ]
 
-  eval :: Eval Input State Input (LNEff eff)
+  eval :: CompEff
+--  eval :: Eval Input State Input (LNEff eff)
 
   eval z@(Goto _ _)                                   = eval_Goto eval z
 

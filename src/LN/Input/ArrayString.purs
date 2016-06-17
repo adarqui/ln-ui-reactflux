@@ -6,7 +6,7 @@ module LN.Input.ArrayString (
 
 
 import Data.Enum            (class Enum, Cardinality(..), fromEnum, defaultSucc, defaultPred)
-import Data.Function        (on)
+-- import Data.Function        (on)
 import Data.Maybe           (Maybe(..))
 import Prelude              ( class Show
                             , class Eq
@@ -42,7 +42,8 @@ instance arrayStringEntEq :: Eq ArrayStringEnt where
 
 
 instance arrayStringEntOrd :: Ord ArrayStringEnt where
-  compare = compare `on` fromEnum
+--  compare = compare `on` fromEnum
+  compare _ _ = EQ
 
 
 

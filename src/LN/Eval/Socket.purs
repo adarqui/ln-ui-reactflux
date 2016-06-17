@@ -12,7 +12,7 @@ import Control.Monad.Eff.Class          (liftEff)
 import Control.Monad.Eff.Console        as Console
 import Control.Monad.Eff.Console.Unsafe as Console
 import Control.Monad.Eff.Var            (($=), get)
-import Halogen                          (gets, action, liftAff')
+import Halogen                          (gets, action)
 import Prelude                          (Unit, unit, bind, pure, ($), (++))
 import WebSocket                        (URL(..), WEBSOCKET(), Connection(..), newWebSocket
                                         , runMessage, runMessageEvent)
@@ -21,6 +21,7 @@ import LN.Component.Types               (EvalEff)
 import LN.Component.Util                (quietLaunchAff)
 import LN.Input.Types                   (Input(..))
 
+import Control.Monad.Aff.Free (fromAff)
 
 
 -- alot of this code from:
@@ -31,13 +32,13 @@ import LN.Input.Types                   (Input(..))
 --  Connection socket <- newWebSocket (URL "wss://leuro.adarq.org/spa") []
 eval_ConnectSocket :: EvalEff
 eval_ConnectSocket eval (ConnectSocket next) = do
-  liftAff' $ log "ConnectSocket"
+  fromAff $ log "ConnectSocket"
 -- TODO FIXME: took this out temporarily because of cyclic dependency  ch <- gets _.driverCh
--- TODO FIXME: ^^  liftAff' $ makeSocket ch (URL "wss://leuro.adarq.org")
+-- TODO FIXME: ^^  fromAff $ makeSocket ch (URL "wss://leuro.adarq.org")
 --  Connection socket <- liftEff' $ newWebSocket (URL "wss://leuro.adarq.org/spa") []
 --  driver <- makeAuxDriver <$> get
 --  url <- URL <$> gets _.chatServerUrl
---  liftAff' $ makeSocket driver "wss://leuro.adarq.org/spa"
+--  fromAff $ makeSocket driver "wss://leuro.adarq.org/spa"
   pure next
 
 

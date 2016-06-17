@@ -6,7 +6,7 @@ module LN.Eval.Like (
 
 import Data.Maybe                  (Maybe(..))
 import Data.Either                 (Either(..))
-import Halogen                     (get, modify, liftAff')
+import Halogen                     (get, modify)
 import Optic.Core                  ((^.), (..), (.~))
 import Prelude                     (bind, pure, void, const, ($))
 import Purescript.Api.Helpers
@@ -29,6 +29,9 @@ import LN.T                        ( Ent(..)
                                    , mkLikeRequest)
 
 
+import Control.Monad.Aff.Free (fromAff)
+
+
 
 eval_Like :: EvalEff
 
@@ -37,7 +40,7 @@ eval_Like :: EvalEff
 eval_Like eval (CompLike (InputLike_Like ent ent_id mlike) next) = do
   let like_req = mkLikeRequest Like Nothing 0
   st <- get
-  lr <- liftAff' $ boomLike st mlike ent ent_id like_req
+  lr <- fromAff $ boomLike st mlike ent ent_id like_req
   case lr of
        Left err -> pure next
        Right st' -> do
@@ -49,7 +52,7 @@ eval_Like eval (CompLike (InputLike_Like ent ent_id mlike) next) = do
 eval_Like eval (CompLike (InputLike_Neutral ent ent_id mlike) next) = do
   let like_req = mkLikeRequest Neutral Nothing 0
   st <- get
-  lr <- liftAff' $ boomLike st mlike ent ent_id like_req
+  lr <- fromAff $ boomLike st mlike ent ent_id like_req
   case lr of
        Left err -> pure next
        Right st' -> do
@@ -61,7 +64,7 @@ eval_Like eval (CompLike (InputLike_Neutral ent ent_id mlike) next) = do
 eval_Like eval (CompLike (InputLike_Dislike ent ent_id mlike) next) = do
   let like_req = mkLikeRequest Dislike Nothing 0
   st <- get
-  lr <- liftAff' $ boomLike st mlike ent ent_id like_req
+  lr <- fromAff $ boomLike st mlike ent ent_id like_req
   case lr of
        Left err -> pure next
        Right st' -> do
