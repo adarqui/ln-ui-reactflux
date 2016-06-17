@@ -19,7 +19,7 @@ import Halogen.HTML.Events             as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, map, show, const, ($), (<<<))
+import Prelude                         (id, map, show, const, ($), (<<<), (<>))
 
 import LN.Halogen.Util
 import LN.Helpers.Array                (seqArrayFrom)
@@ -57,29 +57,29 @@ renderView_Forums_Delete' pack st =
 
 
 renderView_Forums_New :: Int -> State -> ComponentHTML Input
-renderView_Forums_New organization_id = renderView_Forums_Mod organization_id Nothing
+renderView_Forums_New organization_id = renderView_Forums_Mod TyCreate organization_id Nothing
 
 
 
 renderView_Forums_Edit :: Int -> Int -> State -> ComponentHTML Input
-renderView_Forums_Edit organization_id forum_id = renderView_Forums_Mod organization_id (Just forum_id)
+renderView_Forums_Edit organization_id forum_id = renderView_Forums_Mod TyEdit organization_id (Just forum_id)
 
 
 
-renderView_Forums_Mod :: Int -> Maybe Int -> State -> ComponentHTML Input
-renderView_Forums_Mod organization_id m_forum_id st =
+renderView_Forums_Mod :: TyCRUD -> Int -> Maybe Int -> State -> ComponentHTML Input
+renderView_Forums_Mod crud organization_id m_forum_id st =
   case st.currentForumRequest, st.currentForumRequestSt, getLoading l_currentForum st.loading of
     _, _, true                         -> renderLoading
-    Just forum_req, Just f_st, false   -> renderView_Forums_Mod' organization_id m_forum_id forum_req f_st
+    Just forum_req, Just f_st, false   -> renderView_Forums_Mod' crud organization_id m_forum_id forum_req f_st
     _, _, false                        -> H.div_ [H.p_ [H.text "Forums_Mod: unexpected error."]]
 
 
 
-renderView_Forums_Mod' :: Int -> Maybe Int -> ForumRequest -> ForumRequestState -> ComponentHTML Input
-renderView_Forums_Mod' organization_id m_forum_id forum_req f_st =
+renderView_Forums_Mod' :: TyCRUD -> Int -> Maybe Int -> ForumRequest -> ForumRequestState -> ComponentHTML Input
+renderView_Forums_Mod' crud organization_id m_forum_id forum_req f_st =
   H.div_ [
 
-    H.h1_ [ H.text "Add Forum" ]
+    H.h1_ [ H.text $ show crud <> " Forum" ]
 
   , input_Label "Name" "Name" forum.displayName P.InputText (E.input (cForumMod <<< SetDisplayName))
 
