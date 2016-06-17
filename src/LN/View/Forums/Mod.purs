@@ -32,6 +32,8 @@ import LN.Router.Class.Routes          (Routes(..))
 import LN.State.Loading                (getLoading, l_currentForum)
 import LN.State.Forum                  (ForumRequestState)
 import LN.State.Types                  (State)
+import LN.View.Fields                  ( mandatoryNameField, optionalDescriptionField, mandatoryIntegerField, mandatoryVisibilityField
+                                       , tagsField)
 import LN.View.Helpers                 (buttons_CreateEditCancel)
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
@@ -69,21 +71,35 @@ renderView_Forums_Edit organization_id forum_id = renderView_Forums_Mod TyEdit o
 renderView_Forums_Mod :: TyCRUD -> Int -> Maybe Int -> State -> ComponentHTML Input
 renderView_Forums_Mod crud organization_id m_forum_id st =
   case st.currentForumRequest, st.currentForumRequestSt, getLoading l_currentForum st.loading of
-    _, _, true                         -> renderLoading
-    Just forum_req, Just f_st, false   -> renderView_Forums_Mod' crud organization_id m_forum_id forum_req f_st
-    _, _, false                        -> H.div_ [H.p_ [H.text "Forums_Mod: unexpected error."]]
+    _, _, true                               -> renderLoading
+    Just forum_req, Just forum_req_st, false -> renderView_Forums_Mod' crud organization_id m_forum_id forum_req forum_req_st
+    _, _, false                              -> H.div_ [H.p_ [H.text "Forums_Mod: unexpected error."]]
 
 
 
 renderView_Forums_Mod' :: TyCRUD -> Int -> Maybe Int -> ForumRequest -> ForumRequestState -> ComponentHTML Input
-renderView_Forums_Mod' crud organization_id m_forum_id forum_req f_st =
+renderView_Forums_Mod' crud organization_id m_forum_id forum_req forum_req_st =
   H.div_ [
 
     H.h1_ [ H.text $ show crud <> " Forum" ]
 
-  , input_Label "Name" "Name" forum.displayName P.InputText (E.input (cForumMod <<< SetDisplayName))
+  , mandatoryNameField forum.displayName (cForumMod <<< SetDisplayName)
 
-  , textArea_Label "Description" "Description" (maybe "" id forum.description) (E.input (cForumMod <<< SetDescription))
+  , optionalDescriptionField forum.description (cForumMod <<< SetDescription) (cForumMod RemoveDescription)
+
+  , mandatoryIntegerField "Threads per board" forum.threadsPerBoard (cForumMod <<< SetThreadsPerBoard)
+
+  , mandatoryIntegerField "Posts per thread" forum.threadPostsPerThread (cForumMod <<< SetThreadPostsPerThread)
+
+  , mandatoryVisibilityField forum.visibility (cForumMod <<< SetVisibility)
+
+  , tagsField
+      forum.tags
+      (maybe "" id forum_req_st.currentTag)
+      (cForumMod <<< SetTag)
+      (cForumMod AddTag)
+      (cForumMod <<< DeleteTag)
+      (cForumMod ClearTags)
 
   , buttons_CreateEditCancel m_forum_id (cForumMod $ Create organization_id) (cForumMod <<< EditP) About
 

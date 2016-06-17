@@ -9,7 +9,8 @@ module LN.View.Fields (
   mandatoryVisibilityField,
   internalTagsField,
   tagsField,
-  privateTagsField
+  privateTagsField,
+  mandatoryIntegerField
 ) where
 
 
@@ -129,3 +130,8 @@ internalTagsField label tags current_tag set_tag add_tag delete_tag clear_tags =
 tagsField = internalTagsField "Tags"
 
 privateTagsField = internalTagsField "Private Tags"
+
+
+
+mandatoryIntegerField label value set_cb =
+  H.div_ [H.text "int"]

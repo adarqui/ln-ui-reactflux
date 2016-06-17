@@ -97,9 +97,9 @@ renderView_Organizations_Mod' crud m_organization_id organization_req org_req_st
       organization.tags
       (maybe "" id org_req_st.currentTag)
       (cOrganizationMod <<< SetTag)
-      (cOrganizationMod $ AddTag)
+      (cOrganizationMod AddTag)
       (cOrganizationMod <<< DeleteTag)
-      (cOrganizationMod $ ClearTags)
+      (cOrganizationMod ClearTags)
 
   , buttons_CreateEditCancel m_organization_id (cOrganizationMod Create) (cOrganizationMod <<< EditP) About
 

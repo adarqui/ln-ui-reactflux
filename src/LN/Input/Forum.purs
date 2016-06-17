@@ -31,20 +31,22 @@ data Forum_Act
 
 
 data Forum_Mod
-  = SetDisplayName    String
+  = SetDisplayName          String
 
-  | SetDescription    String
+  | SetDescription          String
   | RemoveDescription
 
-  | SetIcon           String
+  | SetThreadsPerBoard      Int
+  | SetThreadPostsPerThread Int
+  | SetIcon                 String
   | RemoveIcon
 
-  | AddTag            String
-  | EditTag           Int String
-  | DeleteTag         Int
+  | SetTag                  String
+  | AddTag
+  | DeleteTag               Int
   | ClearTags
 
-  | SetVisibility     Visibility
+  | SetVisibility           Visibility
 
-  | Create            Int  -- save to organization_id
-  | EditP             Int   -- edit forum_id
+  | Create                  Int  -- save to organization_id
+  | EditP                   Int   -- edit forum_id
