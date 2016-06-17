@@ -1,10 +1,4 @@
 module LN.Eval.Organizations (
-  {-
-  eval_GetOrganizationForum,
-  eval_GetOrganizationForumBoard,
-  eval_GetOrganizationForumBoardThread,
-  eval_GetOrganizationForumBoardThreadPost,
-  -}
   eval_Organization
 ) where
 
@@ -17,15 +11,17 @@ import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
-import Prelude                         (class Eq, id, bind, pure, const, ($), (<>))
+import Prelude                         (class Eq, id, bind, pure, const, ($), (<>), (<$>))
 
 import LN.Api                          (rd, getOrganizationPacks', getOrganizationPack', postOrganization', putOrganization', getThreadPostPack')
 import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
+import LN.Input.ArrayString            (ArrayStringEnt(..))
 import LN.Input.Organization           (InputOrganization(..), Organization_Act(..), Organization_Mod(..))
 import LN.Input.Types                  (Input(..))
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.State.ArrayString            (getArrayStringEnt)
 import LN.State.Loading                ( l_currentOrganization, l_organizations
                                        , l_currentForum
                                        , l_currentBoard
@@ -70,12 +66,6 @@ eval_Organization eval (CompOrganization sub next) = do
         SetLocation location -> mod $ set (\req -> _OrganizationRequest .. location_ .~ location $ req)
         SetIcon icon         -> mod $ set (\req -> _OrganizationRequest .. icon_ .~ Just icon $ req)
         RemoveIcon           -> mod $ set (\req -> _OrganizationRequest .. icon_ .~ Nothing $ req)
---        Setag tag            -> mod (\(OrganizationRequest req)->Just $ OrganizationRequest req{tags = nub $ sort (tag : req.tags)})
---        AddTag               -> do
---          m_current_tag <-
---          mod (\(OrganizationRequest req)->Just $ OrganizationRequest req{tags = nub $ sort (tag : req.tags)})
---        DeleteTag idx        -> mod (\(OrganizationRequest req)->Just $ OrganizationRequest req{tags = maybe req.tags id (deleteAt idx req.tags) })
---        ClearTags            -> mod $ set (\req -> _OrganizationRequest .. tags_ .~ [] $ req)
         SetMembership memb   -> mod $ set (\req -> _OrganizationRequest .. membership_ .~ memb $ req)
         SetVisibility viz    -> mod $ set (\req -> _OrganizationRequest .. visibility_ .~ viz $ req)
         Create               -> mod_create
@@ -90,7 +80,6 @@ eval_Organization eval (CompOrganization sub next) = do
   append (Just arr) a = Just $ nub $ arr <> [a]
   set v req           = Just (v req)
   mod new             = modify (\st->st{ currentOrganizationRequest = maybe Nothing new st.currentOrganizationRequest }) $> next
---  modSt new           = modify (\st->st{ currentOrganizationRequestSt = maybe Nothing (Just <<< new) st.currentOrganizationRequestSt })
 
 
 
@@ -139,9 +128,14 @@ eval_Organization eval (CompOrganization sub next) = do
   mod_create = do
     m_me  <- gets _.me
     m_req <- gets _.currentOrganizationRequest
+    tags  <- getArrayStringEnt ASE_Tags <$> gets (\st->st.arrayStringSt.ents)
     case m_req, m_me of
          Just (OrganizationRequest req), Just me -> do
-           e_organization <- rd $ postOrganization' (OrganizationRequest req{ email = me ^. _UserPackResponse .. user_ ^. _UserResponse .. email_ })
+           e_organization <- rd $ postOrganization' $
+             OrganizationRequest req{
+               email = me ^. _UserPackResponse .. user_ ^. _UserResponse .. email_,
+               tags  = tags
+             }
            case e_organization of
                 Left err                                  -> eval (AddErrorApi "eval_Organization(Mod/Create)::postOrganization'" err next)
                 Right (OrganizationResponse organization) -> do
@@ -152,10 +146,12 @@ eval_Organization eval (CompOrganization sub next) = do
 
   mod_edit org_id = do
     m_req <- gets _.currentOrganizationRequest
+    tags  <- getArrayStringEnt ASE_Tags <$> gets (\st->st.arrayStringSt.ents)
     case m_req of
          Nothing  -> eval (AddError "eval_Organization(Mod/Edit)" "Organization request doesn't exist" next)
-         Just req -> do
-           e_org <- rd $ putOrganization' org_id req
+         Just (OrganizationRequest req) -> do
+           e_org <- rd $ putOrganization' org_id $
+             OrganizationRequest req{ tags = tags }
            case e_org of
                 Left err  -> eval (AddErrorApi "eval_Organization(Mod/Edit)::putOrganization" err next)
                 Right org -> do
