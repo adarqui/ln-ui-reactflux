@@ -30,6 +30,8 @@ import LN.Router.Class.Routes          (Routes(..))
 import LN.State.Loading                (getLoading, l_currentBoard)
 import LN.State.Board                  (BoardRequestState)
 import LN.State.Types                  (State)
+import LN.View.Fields                  ( mandatoryNameField, optionalDescriptionField, mandatoryYesNoField
+                                       , suggestedTagsField, tagsField)
 import LN.View.Helpers                 (buttons_CreateEditCancel)
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
@@ -68,20 +70,42 @@ renderView_Boards_Mod :: Maybe Int -> State -> ComponentHTML Input
 renderView_Boards_Mod m_board_id st =
   case st.currentForum, st.currentBoardRequest, st.currentBoardRequestSt, getLoading l_currentBoard st.loading of
     _, _, _, true                                     -> renderLoading
-    Just forum_pack, Just board_req, Just f_st, false -> renderView_Boards_Mod' forum_pack m_board_id board_req f_st st
+    Just forum_pack, Just board_req, Just board_req_st, false -> renderView_Boards_Mod' forum_pack m_board_id board_req board_req_st
     _, _, _, false                                    -> H.div_ [H.p_ [H.text "Boards_Mod: unexpected error."]]
 
 
 
-renderView_Boards_Mod' :: ForumPackResponse -> Maybe Int -> BoardRequest -> BoardRequestState -> State -> ComponentHTML Input
-renderView_Boards_Mod' forum_pack m_board_id board_req f_st st =
+renderView_Boards_Mod' :: ForumPackResponse -> Maybe Int -> BoardRequest -> BoardRequestState -> ComponentHTML Input
+renderView_Boards_Mod' forum_pack m_board_id board_req board_req_st =
   H.div_ [
 
     H.h1_ [ H.text "Add Board" ]
 
-  , input_Label "Name" "Name" board.displayName P.InputText (E.input (cBoardMod <<< SetDisplayName))
+  , mandatoryNameField board.displayName (cBoardMod <<< SetDisplayName)
 
-  , textArea_Label "Description" "Description" (maybe "" id board.description) (E.input (cBoardMod <<< SetDescription))
+  , optionalDescriptionField board.description (cBoardMod <<< SetDescription) (cBoardMod RemoveDescription)
+
+  , mandatoryBooleanYesNoField "Anonymous" board.isAnonymous false (cBoardMod <<< SetIsAnonymous)
+
+  , mandatoryBooleanYesNoField "Can create sub boards" board.canCreateSubBoards true (cBoardMod <<< SetCanCreateSubBoards)
+
+  , mandatoryBooleanYesNoField "Can create threads" board.canCreateThreads true (cBoardMod <<< SetCanCreateThreads)
+
+  , suggestedTagsField
+      board.suggestedTags
+      (maybe "" id board_req_st.currentSuggestedTag)
+      (cBoardMod <<< SetSuggestedTag)
+      (cBoardMod AddSuggestedTag)
+      (cBoardMod <<< DeleteSuggestedTag)
+      (cBoardMod ClearSuggestedTags)
+
+  , tagsField
+      board.tags
+      (maybe "" id board_req_st.currentTag)
+      (cBoardMod <<< SetTag)
+      (cBoardMod AddTag)
+      (cBoardMod <<< DeleteTag)
+      (cBoardMod ClearTags)
 
   , buttons_CreateEditCancel m_board_id (cBoardMod $ Create forum.id) (cBoardMod <<< EditP) About
 

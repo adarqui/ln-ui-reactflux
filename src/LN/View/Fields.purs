@@ -10,7 +10,10 @@ module LN.View.Fields (
   internalTagsField,
   tagsField,
   privateTagsField,
-  mandatoryIntegerField
+  suggestedTagsField,
+  mandatoryIntegerField,
+  mandatoryBooleanField,
+  mandatoryBooleanYesNoField
 ) where
 
 
@@ -134,6 +137,8 @@ tagsField = internalTagsField "Tags"
 
 privateTagsField = internalTagsField "Private Tags"
 
+suggestedTagsField = internalTagsField "Suggested thread post tags - so people can easily tag posts"
+
 mandatoryIntegerField label value default min max step set_cb =
   H.div_ [
     H.div [P.class_ B.inputGroup] [
@@ -156,3 +161,13 @@ mandatoryIntegerField label value default min max step set_cb =
       ]
     ]
   ]
+
+
+
+mandatoryBooleanField label value default set_cb =
+  H.div_ []
+
+
+
+mandatoryBooleanYesNoField label value default set_cb =
+  H.div_ []

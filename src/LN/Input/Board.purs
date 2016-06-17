@@ -29,18 +29,27 @@ data Board_Act
 
 
 data Board_Mod
-  = SetDisplayName    String
+  = SetDisplayName        String
 
-  | SetDescription    String
+  | SetDescription        String
   | RemoveDescription
 
-  | SetIcon           String
+  | SetIsAnonymous        Boolean
+  | SetCanCreateSubBoards Boolean
+  | SetCanCreateThreads   Boolean
+
+  | SetIcon               String
   | RemoveIcon
 
-  | AddTag            String
-  | EditTag           Int String
-  | DeleteTag         Int
+  | SetSuggestedTag       String
+  | AddSuggestedTag
+  | DeleteSuggestedTag    Int
+  | ClearSuggestedTags
+
+  | SetTag                String
+  | AddTag
+  | DeleteTag             Int
   | ClearTags
 
-  | Create            Int -- TODO FIXME: needs to be a forum id OR board id
-  | EditP             Int  -- edit board_id
+  | Create                Int -- TODO FIXME: needs to be a forum id OR board id
+  | EditP                 Int  -- edit board_id
