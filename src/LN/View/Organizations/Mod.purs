@@ -68,13 +68,13 @@ renderView_Organizations_Mod :: TyCRUD -> Maybe Int -> State -> ComponentHTML In
 renderView_Organizations_Mod crud m_organization_id st =
   case st.currentOrganizationRequest, st.currentOrganizationRequestSt, getLoading l_currentOrganization st.loading of
     _, _, true                                    -> renderLoading
-    Just organization_req, Just org_req_st, false -> renderView_Organizations_Mod' crud m_organization_id organization_req org_req_st st
+    Just organization_req, Just org_req_st, false -> renderView_Organizations_Mod' crud m_organization_id organization_req org_req_st
     _, _, false                                   -> H.div_ [H.p_ [H.text "Organizations_Mod: unexpected error."]]
 
 
 
-renderView_Organizations_Mod' :: TyCRUD -> Maybe Int -> OrganizationRequest -> OrganizationRequestState -> State -> ComponentHTML Input
-renderView_Organizations_Mod' crud m_organization_id organization_req org_req_st st =
+renderView_Organizations_Mod' :: TyCRUD -> Maybe Int -> OrganizationRequest -> OrganizationRequestState -> ComponentHTML Input
+renderView_Organizations_Mod' crud m_organization_id organization_req org_req_st =
   H.div_ [
 
     H.h1_ [ H.text $ show crud <> " Organization" ]
