@@ -27,7 +27,7 @@ eval_ArrayString :: EvalEff
 eval_ArrayString eval (CompArrayString sub next) = do
 
   case sub of
-    SetCurrent ent tag        -> mod (\st -> st{ currents = M.alter (const $ Just tag) ent st.currents })
+    SetCurrent ent s          -> mod (\st -> st{ currents = M.alter (const $ Just s) ent st.currents })
     AddFromCurrent ent        -> add_from_current ent id
     AddFromCurrentSort ent    -> add_from_current ent sort
     AddFromCurrentNub ent     -> add_from_current ent nub
