@@ -5,6 +5,7 @@ module LN.Eval.Forums (
 
 
 import Data.Array                      (head, deleteAt, modifyAt, nub, sort, (:))
+import Data.Ebyam                      (ebyam)
 import Data.Either                     (Either(..))
 import Data.Functor                    (($>))
 import Data.Map                        as M
@@ -19,7 +20,6 @@ import LN.Component.Types              (EvalEff)
 import LN.Input.Forum                  (InputForum(..), Forum_Act(..), Forum_Mod(..))
 import LN.Input.Types                  (Input(..))
 import LN.Helpers.Map                  (idmapFrom)
-import LN.Maybe                        (ebyam)
 import LN.Router.Class.Routes          (Routes(..))
 import LN.Router.Class.CRUD            (CRUD(..))
 import LN.State.Loading                (l_currentForum, l_forums)

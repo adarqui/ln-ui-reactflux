@@ -42,7 +42,8 @@
     "purescript-test-unit": "^6.0.1",
     "purescript-assert": "^0.1.0",
     "purescript-parsing": "^0.8.0",
-    "purescript-functions": "^0.1.0"
+    "purescript-functions": "^0.1.0",
+    "purescript-ebyam": "^0.1.1"
   },
   "resolutions": {
     "purescript-generics": "~0.7",
@@ -76,6 +77,6 @@
     "purescript-either": "~0.2.3",
     "purescript-distributive": "^0.5.1",
     "purescript-exceptions": "^0.3.1",
-    "purescript-prelude": "~0.1.5"
+    "purescript-prelude": "^0.1.5"
   }
 }

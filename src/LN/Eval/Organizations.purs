@@ -5,6 +5,7 @@ module LN.Eval.Organizations (
 
 
 import Data.Array                      (head, deleteAt, modifyAt, nub, sort, (:))
+import Data.Ebyam                      (ebyam)
 import Data.Either                     (Either(..))
 import Data.Functor                    (($>))
 import Data.Map                        as M
@@ -19,7 +20,6 @@ import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
 import LN.Input.Organization           (InputOrganization(..), Organization_Act(..), Organization_Mod(..))
 import LN.Input.Types                  (Input(..))
-import LN.Maybe                        (ebyam)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                ( l_currentOrganization, l_organizations
                                        , l_currentForum

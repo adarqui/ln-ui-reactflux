@@ -5,6 +5,7 @@ module LN.View.Organizations.Show (
 
 
 import Daimyo.Data.ArrayList           (listToArray)
+import Data.Ebyam                      (ebyam)
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (ComponentHTML)
@@ -15,7 +16,6 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, show, ($), (<>))
 
 import LN.Input.Types                  (Input)
-import LN.Maybe                        (ebyam)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                (getLoading, l_currentOrganization)
