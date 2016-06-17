@@ -11,21 +11,19 @@ module LN.View.Organizations.Mod (
 
 
 
-import Data.Maybe                      (Maybe(..))
+import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events             as E
 import Halogen.HTML.Properties.Indexed as P
 import Optic.Core                      ((^.), (..))
-import Prelude                         (show, (<<<), ($))
+import Prelude                         (show, id, (<<<), ($))
 
 import LN.Halogen.Util                 (input_Label)
-import LN.Input.ArrayString
 import LN.Input.Organization           (Organization_Mod(..))
-import LN.Input.Types                  (Input, cOrganizationMod, cArrayString)
+import LN.Input.Types                  (Input, cOrganizationMod)
 import LN.Router.Class.Routes          (Routes(..))
 import LN.State.Loading                (getLoading, l_currentOrganization)
-import LN.State.ArrayString
 import LN.State.Organization           (OrganizationRequestState)
 import LN.State.Types                  (State)
 import LN.View.Helpers                 (buttons_CreateEditCancel)
@@ -68,14 +66,14 @@ renderView_Organizations_Edit organization_id = renderView_Organizations_Mod (Ju
 renderView_Organizations_Mod :: Maybe Int -> State -> ComponentHTML Input
 renderView_Organizations_Mod m_organization_id st =
   case st.currentOrganizationRequest, st.currentOrganizationRequestSt, getLoading l_currentOrganization st.loading of
-    _, _, true                              -> renderLoading
-    Just organization_req, Just o_st, false -> renderView_Organizations_Mod' m_organization_id organization_req o_st st
-    _, _, false                             -> H.div_ [H.p_ [H.text "Organizations_Mod: unexpected error."]]
+    _, _, true                                    -> renderLoading
+    Just organization_req, Just org_req_st, false -> renderView_Organizations_Mod' m_organization_id organization_req org_req_st st
+    _, _, false                                   -> H.div_ [H.p_ [H.text "Organizations_Mod: unexpected error."]]
 
 
 
 renderView_Organizations_Mod' :: Maybe Int -> OrganizationRequest -> OrganizationRequestState -> State -> ComponentHTML Input
-renderView_Organizations_Mod' m_organization_id organization_req o_st st =
+renderView_Organizations_Mod' m_organization_id organization_req org_req_st st =
   H.div_ [
 
     H.h1_ [ H.text "Add Organization" ]
@@ -95,18 +93,18 @@ renderView_Organizations_Mod' m_organization_id organization_req o_st st =
   -- , icon
 
   , tagsField
-      (getArrayStringEnt ASE_Tags st.arrayStringSt.ents)
-      (getArrayStringCurrent ASE_Tags st.arrayStringSt.currents)
-      (cArrayString <<< SetCurrent ASE_Tags)
-      (cArrayString $ AddFromCurrentSortNub ASE_Tags)
-      (cArrayString <<< Delete ASE_Tags)
-      (cArrayString $ Clear ASE_Tags)
+      organization.tags
+      (maybe "" id org_req_st.currentTag)
+      (cOrganizationMod <<< SetTag)
+      (cOrganizationMod $ AddTag)
+      (cOrganizationMod <<< DeleteTag)
+      (cOrganizationMod $ ClearTags)
 
   , buttons_CreateEditCancel m_organization_id (cOrganizationMod Create) (cOrganizationMod <<< EditP) About
 
   ]
   where
-  organization = unwrapOrganizationRequest organization_req
+  organization        = unwrapOrganizationRequest organization_req
 
 
 

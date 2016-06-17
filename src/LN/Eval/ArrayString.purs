@@ -36,6 +36,7 @@ eval_ArrayString eval (CompArrayString sub next) = do
     Delete ent idx            -> mod (\st -> st{ ents = M.alter (\m_arr -> Just $ maybe [] (\arr -> maybe arr id $ deleteAt idx arr) m_arr) ent st.ents })
     Clear ent                 -> mod (\st -> st{ currents = M.update (const Nothing) ent st.currents, ents = M.update (const Nothing) ent st.ents })
     Empty                     -> mod (\st -> st{ currents = M.empty, ents = M.empty })
+
     _   -> pure next
 
   where

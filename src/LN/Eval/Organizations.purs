@@ -11,7 +11,7 @@ import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
-import Prelude                         (class Eq, id, bind, pure, const, ($), (<>), (<$>))
+import Prelude                         (class Eq, id, bind, pure, const, ($), (<>), (<$>), (<<<))
 
 import LN.Api                          (rd, getOrganizationPacks', getOrganizationPack', postOrganization', putOrganization', getThreadPostPack')
 import LN.Api.Internal.String          as ApiS
@@ -19,6 +19,7 @@ import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
 import LN.Input.Organization           (InputOrganization(..), Organization_Act(..), Organization_Mod(..))
 import LN.Input.Types                  (Input(..))
+import LN.Maybe                        (flippedMaybe)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                ( l_currentOrganization, l_organizations
                                        , l_currentForum
@@ -62,10 +63,22 @@ eval_Organization eval (CompOrganization sub next) = do
         RemoveDescription    -> mod $ set (\req -> _OrganizationRequest .. description_ .~ Nothing $ req)
         SetCompany company   -> mod $ set (\req -> _OrganizationRequest .. company_ .~ company $ req)
         SetLocation location -> mod $ set (\req -> _OrganizationRequest .. location_ .~ location $ req)
-        SetIcon icon         -> mod $ set (\req -> _OrganizationRequest .. icon_ .~ Just icon $ req)
-        RemoveIcon           -> mod $ set (\req -> _OrganizationRequest .. icon_ .~ Nothing $ req)
         SetMembership memb   -> mod $ set (\req -> _OrganizationRequest .. membership_ .~ memb $ req)
         SetVisibility viz    -> mod $ set (\req -> _OrganizationRequest .. visibility_ .~ viz $ req)
+        SetIcon icon         -> mod $ set (\req -> _OrganizationRequest .. icon_ .~ Just icon $ req)
+        RemoveIcon           -> mod $ set (\req -> _OrganizationRequest .. icon_ .~ Nothing $ req)
+        SetTag s             -> modSt $ (_{currentTag = Just s})
+        AddTag               -> do
+          m_req_st <- gets _.currentOrganizationRequestSt
+          flippedMaybe m_req_st (pure next) $ \req_st ->
+            case req_st.currentTag of
+               Nothing  -> pure next
+               Just tag -> do
+                 mod $ set (\(OrganizationRequest req) -> OrganizationRequest req{tags = nub $ sort $ tag : req.tags})
+                 modSt $ (_{currentTag = Nothing})
+                 pure next
+        DeleteTag idx        -> mod $ set (\(OrganizationRequest req) -> OrganizationRequest req{tags = maybe req.tags id $ deleteAt idx req.tags})
+        ClearTags            -> mod $ set (\req -> _OrganizationRequest .. tags_ .~ [] $ req)
         Create               -> mod_create
         EditP org_id         -> mod_edit org_id
 
@@ -78,6 +91,7 @@ eval_Organization eval (CompOrganization sub next) = do
   append (Just arr) a = Just $ nub $ arr <> [a]
   set v req           = Just (v req)
   mod new             = modify (\st->st{ currentOrganizationRequest = maybe Nothing new st.currentOrganizationRequest }) $> next
+  modSt new           = modify (\st->st{ currentOrganizationRequestSt = maybe Nothing (Just <<< new) st.currentOrganizationRequestSt }) $> next
 
 
 
