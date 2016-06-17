@@ -83,21 +83,32 @@ mandatoryVisibilityField value set_visibility =
 
 
 
+-- | Generic "Tags" function
+-- label: Tags, Private Tags
+-- tags: Array of tag strings
+-- current_tag: current string which may be added as a tag
+-- set_tag: set st.current_tag, which is what we have been editing
+-- add_tag: add tag to st.tags
+-- delete_tag: delete tag by index
+-- clear_tags: remove all tags
 internalTagsField label tags current_tag set_tag add_tag delete_tag clear_tags =
   H.div_ [
-    H.label_ [H.text label],
-    H.input [
-      P.value current_tag,
-      P.inputType P.InputText,
-      E.onValueChange $ E.input set_tag,
-      E.onKeyUp $ E.input (\ev -> if ev.keyCode == 13.0 then add_tag else Nop)
-    ],
-    H.span [P.class_ B.inputGroupBtn] [
-      H.button [
-        buttonInfoClasses,
-        P.title "Add",
-        E.onClick $ E.input_ add_tag
-      ] [H.text "Add"]
+    H.div [P.class_ B.inputGroup] [
+      H.label_ [H.text label],
+      H.input [
+        formControlClasses,
+        P.value current_tag,
+        P.inputType P.InputText,
+        E.onValueChange $ E.input set_tag,
+        E.onKeyUp $ E.input (\ev -> if ev.keyCode == 13.0 then add_tag else Nop)
+      ],
+      H.span [P.class_ B.inputGroupBtn] [
+        H.button [
+          buttonInfoClasses,
+          P.title "Add",
+          E.onClick $ E.input_ add_tag
+        ] [H.text "Add"]
+      ]
     ],
     H.div_ $ concat $ map (\(Tuple idx tag) ->
         [
