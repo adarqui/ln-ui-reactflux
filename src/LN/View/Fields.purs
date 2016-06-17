@@ -189,7 +189,7 @@ mandatoryBooleanYesNoField label value default set_cb =
 
 internalSelectList label value default options set_cb =
   H.div_ [
-    H.div [P.class_ B.formGroup] [
+    H.div [P.class_ B.inputGroup] [
       H.label_ [H.text label],
       H.select [
          P.class_ B.formControl,
