@@ -14,6 +14,7 @@ module LN.View.Fields (
 
 
 
+import Data.Array                      (concat)
 import Data.Maybe                      (Maybe(..), maybe)
 import Data.Tuple                      (Tuple(..))
 import Halogen.HTML.Indexed            as H
@@ -98,14 +99,18 @@ internalTagsField label tags current_tag set_tag add_tag delete_tag clear_tags =
         E.onClick $ E.input_ add_tag
       ] [H.text "Add"]
     ],
-    H.div_ $ map (\(Tuple idx tag) ->
-        H.p_ [
-          H.text tag,
-          H.span [] [
-            H.button [
-              E.onClick $ E.input_ $ delete_tag idx
-            ] [H.text "x"]
-          ]
+    H.div_ $ concat $ map (\(Tuple idx tag) ->
+        [
+        H.span [P.classes [B.label, B.labelDefault]] [
+          H.text tag
+        ],
+        H.span [] [
+          H.button [
+            P.classes [B.btn, B.btnDefault, B.btnXs],
+            E.onClick $ E.input_ $ delete_tag idx
+          ] [H.span [P.classes [B.glyphicon, B.glyphiconRemove]] []]
+        ],
+        H.text " "
         ]
       ) $ seqArrayFrom tags
   ]

@@ -56,3 +56,6 @@ social buttons for bootstrap:
 
 need to align badges:
 - http://stackoverflow.com/questions/22688426/bootstrap-3-aligning-badges-in-a-list
+
+tags:
+- https://bootstrap-tagsinput.github.io/bootstrap-tagsinput/examples/
