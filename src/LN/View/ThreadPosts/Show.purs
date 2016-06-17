@@ -122,6 +122,7 @@ renderView_ThreadPosts_Show_Single' org_pack forum_pack board_pack thread_pack p
           , H.p_ [H.text "quote / reply"]
           , displayPostData post.body
           , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup' users_map post.userId)]
+          , H.p_ $ showTags post.tags
         ]
       , H.div [P.class_ B.colXs1] [
           buttonGroup_VerticalSm1 [
