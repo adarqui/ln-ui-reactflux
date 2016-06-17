@@ -10,6 +10,7 @@ import Data.Either                     (Either(..))
 import Data.Functor                    (($>))
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
+import Data.String                     (toLower)
 import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
 import Prelude                         (class Eq, id, bind, pure, ($), (<>), (<$>), (<<<))
@@ -69,7 +70,7 @@ eval_Forum eval (CompForum sub next) = do
             case req_st.currentTag of
                Nothing  -> pure next
                Just tag -> do
-                 mod $ set (\(ForumRequest req) -> ForumRequest req{tags = nub $ sort $ tag : req.tags})
+                 mod $ set (\(ForumRequest req) -> ForumRequest req{tags = nub $ sort $ toLower tag : req.tags})
                  modSt $ (_{currentTag = Nothing})
                  pure next
         DeleteTag idx        -> mod $ set (\(ForumRequest req) -> ForumRequest req{tags = maybe req.tags id $ deleteAt idx req.tags})

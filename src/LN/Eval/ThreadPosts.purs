@@ -10,6 +10,7 @@ import Data.Either              (Either(..))
 import Data.Functor             (($>))
 import Data.Map                 as M
 import Data.Maybe               (Maybe(..), maybe)
+import Data.String              (toLower)
 import Halogen                  (gets, modify)
 import Optic.Core               ((^.), (..), (.~))
 import Prelude                  (class Eq, id, bind, pure, map, ($), (<>), (<<<))
@@ -61,7 +62,7 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
             case req_st.currentPrivateTag of
                Nothing  -> pure next
                Just tag -> do
-                 mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{privateTags = nub $ sort $ tag : req.privateTags})
+                 mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{privateTags = nub $ sort $ toLower tag : req.privateTags})
                  modSt $ (_{currentPrivateTag = Nothing})
                  pure next
         DeletePrivateTag idx   -> mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{privateTags = maybe req.privateTags id $ deleteAt idx req.privateTags})
@@ -74,7 +75,7 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
             case req_st.currentTag of
                Nothing  -> pure next
                Just tag -> do
-                 mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{tags = nub $ sort $ tag : req.tags})
+                 mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{tags = nub $ sort $ toLower tag : req.tags})
                  modSt $ (_{currentTag = Nothing})
                  pure next
         DeleteTag idx          -> mod $ set (\(ThreadPostRequest req) -> ThreadPostRequest req{tags = maybe req.tags id $ deleteAt idx req.tags})
