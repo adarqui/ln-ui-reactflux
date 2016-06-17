@@ -33,15 +33,15 @@ data ThreadPost_Mod
   | SetBody          String
   | RemoveBody
 
-  | AddTag           String
-  | EditTag          Int String
-  | DeleteTag        Int
-  | ClearTags
-
-  | AddPrivateTag    String
-  | EditPrivateTag   Int String
+  | SetPrivateTag    String
+  | AddPrivateTag
   | DeletePrivateTag Int
   | ClearPrivateTags
+
+  | SetTag           String
+  | AddTag
+  | DeleteTag        Int
+  | ClearTags
 
   | Create           Int -- TODO FIXME: create based on thread_id or thread_post_id
   | EditP            Int  -- via thread_post_id

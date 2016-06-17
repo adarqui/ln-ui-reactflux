@@ -12,7 +12,7 @@ import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
-import Prelude                         (class Eq, bind, pure, map, ($), (<>))
+import Prelude                         (class Eq, id, bind, pure, map, ($), (<>), (<<<))
 
 import LN.Api                          (rd, getThreadPacks_ByBoardId, getThreadPacks_ByBoardId', getThreadsCount_ByBoardId', getThreadPack', postThread_ByBoardId', putThread')
 import LN.Api.Internal.String          as ApiS
