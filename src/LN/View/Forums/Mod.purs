@@ -27,6 +27,7 @@ import LN.Helpers.JSON                 (decodeString)
 import LN.Internal.Forum               ()
 import LN.Input.Forum                  (Forum_Mod(..))
 import LN.Input.Types                  (Input(..), cForumMod)
+import LN.Router.Class.CRUD            (TyCRUD(..))
 import LN.Router.Class.Routes          (Routes(..))
 import LN.State.Loading                (getLoading, l_currentForum)
 import LN.State.Forum                  (ForumRequestState)
@@ -69,13 +70,13 @@ renderView_Forums_Mod :: Int -> Maybe Int -> State -> ComponentHTML Input
 renderView_Forums_Mod organization_id m_forum_id st =
   case st.currentForumRequest, st.currentForumRequestSt, getLoading l_currentForum st.loading of
     _, _, true                         -> renderLoading
-    Just forum_req, Just f_st, false   -> renderView_Forums_Mod' organization_id m_forum_id forum_req f_st st
+    Just forum_req, Just f_st, false   -> renderView_Forums_Mod' organization_id m_forum_id forum_req f_st
     _, _, false                        -> H.div_ [H.p_ [H.text "Forums_Mod: unexpected error."]]
 
 
 
-renderView_Forums_Mod' :: Int -> Maybe Int -> ForumRequest -> ForumRequestState -> State -> ComponentHTML Input
-renderView_Forums_Mod' organization_id m_forum_id forum_req f_st st =
+renderView_Forums_Mod' :: Int -> Maybe Int -> ForumRequest -> ForumRequestState -> ComponentHTML Input
+renderView_Forums_Mod' organization_id m_forum_id forum_req f_st =
   H.div_ [
 
     H.h1_ [ H.text "Add Forum" ]
