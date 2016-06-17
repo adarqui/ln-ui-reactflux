@@ -5,11 +5,17 @@ module LN.State.Thread (
 
 
 
+import Data.Maybe (Maybe(..))
+
+
+
 type ThreadRequestState = {
+  currentTag :: Maybe String
 }
 
 
 
 defaultThreadRequestState :: ThreadRequestState
 defaultThreadRequestState = {
+  currentTag: Nothing
 }

@@ -19,17 +19,20 @@ import Halogen.HTML.Events             as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, map, show, const, ($), (<<<))
+import Prelude                         (id, map, show, const, ($), (<<<), (<>))
 
 import LN.Halogen.Util
 import LN.Helpers.Array                (seqArrayFrom)
 import LN.Helpers.JSON                 (decodeString)
 import LN.Input.Thread                 (Thread_Mod(..))
 import LN.Input.Types                  (Input(..), cThreadMod)
+import LN.Router.Class.CRUD            (TyCRUD(..))
 import LN.Router.Class.Routes          (Routes(..))
 import LN.State.Loading                (getLoading, l_currentThread)
 import LN.State.Thread                 (ThreadRequestState)
 import LN.State.Types                  (State)
+import LN.View.Fields                  ( mandatoryNameField, optionalDescriptionField, mandatoryBooleanYesNoField
+                                       , tagsField)
 import LN.View.Helpers                 (buttons_CreateEditCancel)
 import LN.View.Module.Loading          (renderLoading)
 import LN.T
@@ -55,43 +58,49 @@ renderView_Threads_Delete' pack st =
 
 
 renderView_Threads_New :: State -> ComponentHTML Input
-renderView_Threads_New = renderView_Threads_Mod Nothing
+renderView_Threads_New = renderView_Threads_Mod TyCreate Nothing
 
 
 
 renderView_Threads_Edit :: Int -> State -> ComponentHTML Input
-renderView_Threads_Edit thread_id = renderView_Threads_Mod (Just thread_id)
+renderView_Threads_Edit thread_id = renderView_Threads_Mod TyEdit (Just thread_id)
 
 
 
-renderView_Threads_Mod :: Maybe Int -> State -> ComponentHTML Input
-renderView_Threads_Mod m_thread_id st =
+renderView_Threads_Mod :: TyCRUD -> Maybe Int -> State -> ComponentHTML Input
+renderView_Threads_Mod crud m_thread_id st =
   case st.currentBoard, st.currentThreadRequest, st.currentThreadRequestSt, getLoading l_currentThread st.loading of
-    _, _, _, true                                       -> renderLoading
-    Just board_pack, Just thread_req, Just f_st, false  -> renderView_Threads_Mod' board_pack m_thread_id thread_req f_st st
-    _, _, _, false                                      -> H.div_ [H.p_ [H.text "Threads_Mod: unexpected error."]]
+    _, _, _, true                                                -> renderLoading
+    Just board_pack, Just thread_req, Just thread_req_st, false  -> renderView_Threads_Mod' crud board_pack m_thread_id thread_req thread_req_st
+    _, _, _, false                                               -> H.div_ [H.p_ [H.text "Threads_Mod: unexpected error."]]
 
 
 
-renderView_Threads_Mod' :: BoardPackResponse -> Maybe Int -> ThreadRequest -> ThreadRequestState -> State -> ComponentHTML Input
-renderView_Threads_Mod' board_pack m_thread_id thread_req f_st st =
+renderView_Threads_Mod' :: TyCRUD -> BoardPackResponse -> Maybe Int -> ThreadRequest -> ThreadRequestState -> ComponentHTML Input
+renderView_Threads_Mod' crud board_pack m_thread_id thread_req thread_req_st =
   H.div_ [
 
-    H.h1_ [ H.text "Add Thread" ]
+    H.h1_ [ H.text $ show crud <> " Thread" ]
 
-  , input_Label "Name" "Name" thread.displayName P.InputText (E.input (cThreadMod <<< SetDisplayName))
+  , mandatoryNameField thread.displayName (cThreadMod <<< SetDisplayName)
 
-  , textArea_Label "Description" "Description" (maybe "" id thread.description) (E.input (cThreadMod <<< SetDescription))
+  , optionalDescriptionField thread.description (cThreadMod <<< SetDescription) (cThreadMod RemoveDescription)
 
-  -- , sticky
+  , mandatoryBooleanYesNoField "Sticky" thread.sticky false (cThreadMod <<< SetSticky)
 
-  -- , locked
+  , mandatoryBooleanYesNoField "Locked" thread.locked false (cThreadMod <<< SetLocked)
 
-  -- , poll
+  , H.div_ [H.text "poll: TODO"]
 
   -- , icon
 
-  -- , tags
+  , tagsField
+      thread.tags
+      (maybe "" id thread_req_st.currentTag)
+      (cThreadMod <<< SetTag)
+      (cThreadMod AddTag)
+      (cThreadMod <<< DeleteTag)
+      (cThreadMod ClearTags)
 
   , buttons_CreateEditCancel m_thread_id (cThreadMod $ Create board.id) (cThreadMod <<< EditP) About
 

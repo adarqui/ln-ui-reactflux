@@ -4,7 +4,8 @@ module LN.Eval.Threads (
 
 
 
-import Data.Array                      (head, deleteAt, modifyAt, nub, catMaybes)
+import Data.Array                      (head, deleteAt, modifyAt, nub, sort, catMaybes, (:))
+import Data.Ebyam                      (ebyam)
 import Data.Either                     (Either(..))
 import Data.Functor                    (($>))
 import Data.Map                        as M
@@ -52,13 +53,26 @@ eval_Thread eval (CompThread sub next) = do
     InputThread_Mod q -> do
       case q of
         SetDisplayName name -> mod $ set (\req -> _ThreadRequest .. displayName_ .~ name $ req)
-
         SetDescription s    -> mod $ set (\req -> _ThreadRequest .. description_ .~ Just s $ req)
         RemoveDescription   -> mod $ set (\req -> _ThreadRequest .. description_ .~ Nothing $ req)
-
+        SetSticky b         -> mod $ set (\req -> _ThreadRequest .. sticky_ .~ b $ req)
+        SetLocked b         -> mod $ set (\req -> _ThreadRequest .. locked_ .~ b $ req)
         SetIcon s           -> mod $ set (\req -> _ThreadRequest .. icon_ .~ Just s $ req)
-        RemoveIcon          -> mod $ set (\req -> _ThreadRequest .. icon_ .~ Nothing $ req)
 
+        SetTag s             -> modSt $ (_{currentTag = Just s})
+        AddTag               -> do
+          m_req_st <- gets _.currentThreadRequestSt
+          ebyam m_req_st (pure next) $ \req_st ->
+            case req_st.currentTag of
+               Nothing  -> pure next
+               Just tag -> do
+                 mod $ set (\(ThreadRequest req) -> ThreadRequest req{tags = nub $ sort $ tag : req.tags})
+                 modSt $ (_{currentTag = Nothing})
+                 pure next
+        DeleteTag idx        -> mod $ set (\(ThreadRequest req) -> ThreadRequest req{tags = maybe req.tags id $ deleteAt idx req.tags})
+        ClearTags            -> mod $ set (\req -> _ThreadRequest .. tags_ .~ [] $ req)
+
+        RemoveIcon          -> mod $ set (\req -> _ThreadRequest .. icon_ .~ Nothing $ req)
         Create board_id     -> mod_create board_id org_name forum_name board_name
         EditP thread_id     -> mod_edit thread_id org_name forum_name board_name
 
@@ -71,6 +85,7 @@ eval_Thread eval (CompThread sub next) = do
   append (Just arr) a = Just $ nub $ arr <> [a]
   set v req           = Just (v req)
   mod new             = modify (\st->st{ currentThreadRequest = maybe Nothing new st.currentThreadRequest }) $> next
+  modSt new           = modify (\st->st{ currentThreadRequestSt = maybe Nothing (Just <<< new) st.currentThreadRequestSt }) $> next
 
 
 

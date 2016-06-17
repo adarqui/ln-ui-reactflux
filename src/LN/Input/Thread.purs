@@ -42,5 +42,10 @@ data Thread_Mod
   | SetIcon           String
   | RemoveIcon
 
+  | SetTag           String
+  | AddTag
+  | DeleteTag        Int
+  | ClearTags
+
   | Create            Int -- via board_id
   | EditP             Int -- via thread_id
