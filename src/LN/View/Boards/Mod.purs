@@ -19,13 +19,14 @@ import Halogen.HTML.Events             as E
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, map, show, const, ($), (<<<))
+import Prelude                         (id, map, show, const, ($), (<<<), (<>))
 
 import LN.Halogen.Util
 import LN.Helpers.Array                (seqArrayFrom)
 import LN.Helpers.JSON                 (decodeString)
 import LN.Input.Board                  (Board_Mod(..))
 import LN.Input.Types                  (Input(..), cBoardMod)
+import LN.Router.Class.CRUD            (TyCRUD(..))
 import LN.Router.Class.Routes          (Routes(..))
 import LN.State.Loading                (getLoading, l_currentBoard)
 import LN.State.Board                  (BoardRequestState)
@@ -57,29 +58,29 @@ renderView_Boards_Delete' pack st =
 
 
 renderView_Boards_New :: State -> ComponentHTML Input
-renderView_Boards_New = renderView_Boards_Mod Nothing
+renderView_Boards_New = renderView_Boards_Mod TyCreate Nothing
 
 
 
 renderView_Boards_Edit :: Int -> State -> ComponentHTML Input
-renderView_Boards_Edit board_id = renderView_Boards_Mod (Just board_id)
+renderView_Boards_Edit board_id = renderView_Boards_Mod TyEdit (Just board_id)
 
 
 
-renderView_Boards_Mod :: Maybe Int -> State -> ComponentHTML Input
-renderView_Boards_Mod m_board_id st =
+renderView_Boards_Mod :: TyCRUD -> Maybe Int -> State -> ComponentHTML Input
+renderView_Boards_Mod crud m_board_id st =
   case st.currentForum, st.currentBoardRequest, st.currentBoardRequestSt, getLoading l_currentBoard st.loading of
-    _, _, _, true                                     -> renderLoading
-    Just forum_pack, Just board_req, Just board_req_st, false -> renderView_Boards_Mod' forum_pack m_board_id board_req board_req_st
-    _, _, _, false                                    -> H.div_ [H.p_ [H.text "Boards_Mod: unexpected error."]]
+    _, _, _, true                                             -> renderLoading
+    Just forum_pack, Just board_req, Just board_req_st, false -> renderView_Boards_Mod' crud forum_pack m_board_id board_req board_req_st
+    _, _, _, false                                            -> H.div_ [H.p_ [H.text "Boards_Mod: unexpected error."]]
 
 
 
-renderView_Boards_Mod' :: ForumPackResponse -> Maybe Int -> BoardRequest -> BoardRequestState -> ComponentHTML Input
-renderView_Boards_Mod' forum_pack m_board_id board_req board_req_st =
+renderView_Boards_Mod' :: TyCRUD -> ForumPackResponse -> Maybe Int -> BoardRequest -> BoardRequestState -> ComponentHTML Input
+renderView_Boards_Mod' crud forum_pack m_board_id board_req board_req_st =
   H.div_ [
 
-    H.h1_ [ H.text "Add Board" ]
+    H.h1_ [ H.text $ show crud <> " Board" ]
 
   , mandatoryNameField board.displayName (cBoardMod <<< SetDisplayName)
 
