@@ -61,9 +61,10 @@ renderView_Forums_Index' org_pack forum_packs =
             H.div [P.class_ B.colXs6] [
               H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForums org.name (Show forum.name) []) forum.displayName],
               H.p_ [H.text $ maybe "No description." id forum.description],
-              if forum.tags /= []
-                 then H.p_ [H.text $ show forum.tags]
-                 else H.div_ []
+              showTagsSmall forum.tags
+--              if forum.tags /= []
+--                 then H.p_ [H.text $ show forum.tags]
+--                 else H.div_ []
             ],
             H.div [P.class_ B.colXs2] [
               showBadge' "boards "  0,

@@ -92,7 +92,8 @@ module LN.View.Helpers (
   showBadge,
   showBadge',
 
-  showTags
+  showTags,
+  showTagsSmall
 ) where
 
 
@@ -288,3 +289,7 @@ showTags tags =
         H.text " "
       ]
   ) tags
+
+
+
+showTagsSmall tags = H.small_ [H.span_ $ showTags tags]

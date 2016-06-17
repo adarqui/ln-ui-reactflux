@@ -60,7 +60,7 @@ renderView_Organizations_Show' org_pack forum_packs =
       H.p_ [ H.h4_ [H.text "Location:", H.small_ [H.text $ " " <> organization.location]]],
       H.p_ [ H.h4_ [H.text "Membership:", H.small_ [H.text $ show organization.membership]]],
       H.p_ [ H.h4_ [H.text "Visibility:", H.small_ [H.text $ show organization.visibility]]],
-      H.p_ [ H.h4_ [H.text "Tags:", H.small_ [H.span_ $ showTags organization.tags]]]
+      H.p_ [ H.h4_ [H.text "Tags:", showTagsSmall organization.tags]]
     ],
     renderView_Forums_Index' org_pack forum_packs,
     H.p_ [ H.h4_ [H.text "Members"]],
