@@ -27,7 +27,7 @@ eval_ArrayString :: EvalEff
 eval_ArrayString eval (CompArrayString sub next) = do
 
   case sub of
-    SetCurrent ent tag        -> mod (\st -> st{ currents = M.update (const $ Just tag) ent st.currents })
+    SetCurrent ent tag        -> mod (\st -> st{ currents = M.alter (const $ Just tag) ent st.currents })
     AddFromCurrent ent        -> add_from_current ent id
     AddFromCurrentSort ent    -> add_from_current ent sort
     AddFromCurrentNub ent     -> add_from_current ent nub
@@ -48,8 +48,8 @@ eval_ArrayString eval (CompArrayString sub next) = do
   add_from_current ent fix = mod (\st ->
       let
         _currents = M.delete ent st.currents
-        _ents = case M.lookup ent st.currents, M.lookup ent st.ents of
-          Just v, Just arr -> M.alter (\m_arr -> Just $ maybe [] (\arr -> fix $ v : arr) m_arr) ent st.ents
-          _, _             -> st.ents
+        _ents = case M.lookup ent st.currents of
+          Nothing -> st.ents
+          Just v  -> M.alter (\m_arr -> Just $ maybe [v] (\arr -> fix (v : arr)) m_arr) ent st.ents
       in
         st{ currents = _currents, ents = _ents })

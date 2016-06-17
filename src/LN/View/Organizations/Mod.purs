@@ -17,13 +17,15 @@ import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Events             as E
 import Halogen.HTML.Properties.Indexed as P
 import Optic.Core                      ((^.), (..))
-import Prelude                         ((<<<))
+import Prelude                         (show, (<<<), ($))
 
 import LN.Halogen.Util                 (input_Label)
+import LN.Input.ArrayString
 import LN.Input.Organization           (Organization_Mod(..))
-import LN.Input.Types                  (Input, cOrganizationMod)
+import LN.Input.Types                  (Input, cOrganizationMod, cArrayString)
 import LN.Router.Class.Routes          (Routes(..))
 import LN.State.Loading                (getLoading, l_currentOrganization)
+import LN.State.ArrayString
 import LN.State.Organization           (OrganizationRequestState)
 import LN.State.Types                  (State)
 import LN.View.Helpers                 (buttons_CreateEditCancel)
@@ -92,7 +94,13 @@ renderView_Organizations_Mod' m_organization_id organization_req o_st st =
 
   -- , icon
 
---  , tagsField organization.tags "tag" (cOrganizationMod <<< AddTag) (cOrganizationMod <<< DeleteTag) (cOrganizationMod ClearTags)
+  , tagsField
+      (getArrayStringEnt ASE_Tags st.arrayStringSt.ents)
+      (getArrayStringCurrent ASE_Tags st.arrayStringSt.currents)
+      (cArrayString <<< SetCurrent ASE_Tags)
+      (cArrayString $ AddFromCurrentSortNub ASE_Tags)
+      (cArrayString <<< Delete ASE_Tags)
+      (cArrayString $ Clear ASE_Tags)
 
   , buttons_CreateEditCancel m_organization_id (cOrganizationMod Create) (cOrganizationMod <<< EditP) About
 

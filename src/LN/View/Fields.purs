@@ -82,15 +82,15 @@ mandatoryVisibilityField value set_visibility =
 
 
 
-internalTagsField label tags current_tag add_tag delete_tag clear_tags =
+internalTagsField label tags current_tag set_tag add_tag delete_tag clear_tags =
   H.div_ [
     H.label_ [H.text label],
-    H.input [P.value "", P.inputType P.InputText],
+    H.input [P.value current_tag, P.inputType P.InputText, E.onValueChange $ E.input set_tag],
     H.span [P.class_ B.inputGroupBtn] [
       H.button [
         buttonInfoClasses,
         P.title "Add",
-        E.onClick $ E.input_ $ add_tag current_tag
+        E.onClick $ E.input_ add_tag
       ] [H.text "Add"]
     ],
     H.div_ $ map (\(Tuple idx tag) ->
