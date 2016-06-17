@@ -19,7 +19,7 @@ import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
 import LN.Input.Organization           (InputOrganization(..), Organization_Act(..), Organization_Mod(..))
 import LN.Input.Types                  (Input(..))
-import LN.Maybe                        (flippedMaybe)
+import LN.Maybe                        (ebyam)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                ( l_currentOrganization, l_organizations
                                        , l_currentForum
@@ -70,7 +70,7 @@ eval_Organization eval (CompOrganization sub next) = do
         SetTag s             -> modSt $ (_{currentTag = Just s})
         AddTag               -> do
           m_req_st <- gets _.currentOrganizationRequestSt
-          flippedMaybe m_req_st (pure next) $ \req_st ->
+          ebyam m_req_st (pure next) $ \req_st ->
             case req_st.currentTag of
                Nothing  -> pure next
                Just tag -> do

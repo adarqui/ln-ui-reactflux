@@ -15,7 +15,7 @@ import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, show, ($), (<>))
 
 import LN.Input.Types                  (Input)
-import LN.Maybe                        (flippedMaybe)
+import LN.Maybe                        (ebyam)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.State.Loading                (getLoading, l_currentOrganization)
@@ -55,7 +55,7 @@ renderView_Organizations_Show' org_pack forum_packs =
     ],
     H.div [P.class_ B.pageHeader] [
       H.p_ [ H.h4_ [H.text "Name:", H.small_ [H.text $ " " <> organization.name]]],
-      flippedMaybe organization.description (H.div_ []) $ \desc -> H.p_ [ H.h4_ [H.text "Description:", H.small_ [H.text desc]]],
+      ebyam organization.description (H.div_ []) $ \desc -> H.p_ [ H.h4_ [H.text "Description:", H.small_ [H.text desc]]],
       H.p_ [ H.h4_ [H.text "Company:", H.small_ [H.text $ " " <> organization.company]]],
       H.p_ [ H.h4_ [H.text "Location:", H.small_ [H.text $ " " <> organization.location]]],
       H.p_ [ H.h4_ [H.text "Membership:", H.small_ [H.text $ show organization.membership]]],

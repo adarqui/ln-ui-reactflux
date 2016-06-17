@@ -19,7 +19,7 @@ import LN.Component.Types              (EvalEff)
 import LN.Input.Forum                  (InputForum(..), Forum_Act(..), Forum_Mod(..))
 import LN.Input.Types                  (Input(..))
 import LN.Helpers.Map                  (idmapFrom)
-import LN.Maybe                        (flippedMaybe)
+import LN.Maybe                        (ebyam)
 import LN.Router.Class.Routes          (Routes(..))
 import LN.Router.Class.CRUD            (CRUD(..))
 import LN.State.Loading                (l_currentForum, l_forums)
@@ -65,7 +65,7 @@ eval_Forum eval (CompForum sub next) = do
         SetTag s             -> modSt $ (_{currentTag = Just s})
         AddTag               -> do
           m_req_st <- gets _.currentForumRequestSt
-          flippedMaybe m_req_st (pure next) $ \req_st ->
+          ebyam m_req_st (pure next) $ \req_st ->
             case req_st.currentTag of
                Nothing  -> pure next
                Just tag -> do
