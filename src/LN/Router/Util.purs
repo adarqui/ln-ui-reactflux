@@ -4,14 +4,16 @@ module LN.Router.Util (
   fixParams,
   slash,
   preSlash,
-  postSlash
+  postSlash,
+  unslash
 ) where
 
 
 
 import Daimyo.Data.ArrayList (arrayToList)
-import Data.Tuple            (Tuple)
 import Data.Map              as M
+import Data.String           (joinWith, split)
+import Data.Tuple            (Tuple)
 import Global                (encodeURI, decodeURI)
 import Prelude               ((<<<), (<>))
 
@@ -47,3 +49,7 @@ preSlash s = "/" <> s
 
 postSlash :: String -> String
 postSlash = slash
+
+
+unslash :: String -> String
+unslash = joinWith "" <<< split "/"

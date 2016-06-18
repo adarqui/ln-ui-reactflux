@@ -92,8 +92,7 @@ eval_Goto eval (Goto route next) = do
              pure unit
 
     (Organizations (Show org_name) params) -> do
-      eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (cForumAct Forum.Gets_ByCurrentOrganization next)
+      eval (Goto (OrganizationsForums org_name Index params) next)
       pure unit
 
 
@@ -133,8 +132,7 @@ eval_Goto eval (Goto route next) = do
              pure unit
 
     (OrganizationsForums org_name (Show forum_name) params) -> do
-      eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
+      eval (Goto (OrganizationsForumsBoards org_name forum_name Index params) next)
       pure unit
 
 
@@ -178,38 +176,7 @@ eval_Goto eval (Goto route next) = do
              pure unit
 
     (OrganizationsForumsBoards org_name forum_name (Show board_name) params) -> do
-      eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
-      eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
-
-      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
-      maybe
-        (pure unit)
-        (\(Tuple k offset) -> do
-          pageInfo <- gets _.threadsPageInfo
-          modify (_{ threadsPageInfo = pageInfo { currentPage = maybe 1 id (fromString offset) } })
-          pure unit)
-        moffset
-
-      let morder = elemBy (\(Tuple k v) -> k == show ParamTag_Order) params
-      maybe
-        (pure unit)
-        (\(Tuple k order_by) -> do
-          pageInfo <- gets _.threadsPageInfo
-          modify (_{ threadsPageInfo = pageInfo { order = orderFromString order_by } })
-          pure unit)
-        morder
-
-      let msort_order = elemBy (\(Tuple k v) -> k == show ParamTag_SortOrder) params
-      maybe
-        (pure unit)
-        (\(Tuple k order) -> do
-          pageInfo <- gets _.threadsPageInfo
-          modify (_{ threadsPageInfo = pageInfo { sortOrder = sortOrderFromString order } })
-          pure unit)
-        msort_order
-
-      eval (cThreadAct Thread.Gets_ByCurrentBoard next)
+      eval (Goto (OrganizationsForumsBoardsThreads org_name forum_name board_name Index params) next)
       pure unit
 
 
@@ -282,27 +249,7 @@ eval_Goto eval (Goto route next) = do
              pure unit
 
     (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread_name) params) -> do
-      eval (cOrganizationAct (Organization.GetSid org_name) next)
-      eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
-      eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
-
-      let moffset = elemBy (\(Tuple k v) -> k == "offset") params
-      maybe
-        (pure unit)
-        (\(Tuple k offset) -> do
-          pageInfo <- gets _.threadPostsPageInfo
-          modify (_{
-            threadPostsPageInfo = pageInfo
-            -- TODO FIXME: offset=-1 just makes us go to the last page
-              { currentPage = let off = maybe 1 id (fromString offset) in if off < 0 then pageInfo.totalPages else off }
-          })
-          pure unit)
-        moffset
-
-      -- create empty thread post state
-      modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState })
-
-      eval (cThreadAct (Thread.GetSid_ByCurrentBoard thread_name) next)
+      eval (Goto (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name Index params) next)
       pure unit
 
 
