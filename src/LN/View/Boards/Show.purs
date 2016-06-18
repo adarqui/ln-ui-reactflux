@@ -25,7 +25,7 @@ import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.OrderBy          (renderOrderBy)
 import LN.T                            ( Param(..)
                                        , OrganizationPackResponse, ForumPackResponse
-                                       , _OrganizationPackResponse, _OrganizationResponse, organization_
+                                       , _OrganizationPackResponse, _OrganizationResponse, organization_, isOwner_
                                        , _ForumPackResponse, _ForumResponse, forum_
                                        , _BoardPackResponse, _BoardResponse, board_
                                        , _BoardStatResponse, stat_
@@ -66,11 +66,14 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
       H.h2_ [H.text board.name],
       H.p [P.class_ B.lead] [H.text board_desc],
 
-      buttonGroup_HorizontalSm1 [
-        glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) [],
-        glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New [],
-        glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) []
-      ]
+      if org_owner
+         then
+           buttonGroup_HorizontalSm1 [
+             glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) [],
+             glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New [],
+             glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) []
+           ]
+         else H.div_ []
     ],
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [
       renderOrderBy $ OrganizationsForumsBoards org.name forum.name (Show board.name) []
@@ -79,6 +82,7 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
   ]
   where
   org        = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  org_owner  = org_pack ^. _OrganizationPackResponse .. isOwner_
   forum      = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
   board      = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
   board_desc = maybe "No description." id board.description

@@ -23,11 +23,10 @@ import LN.View.Helpers
 import LN.View.Boards.Index            (renderView_Boards_Index')
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( ForumPackResponse
-                                       , _ForumPackResponse, _ForumResponse, organization_
+                                       , _ForumPackResponse, _ForumResponse, organization_, isOwner_
                                        , _ForumPackResponse, _ForumResponse, forum_
                                        , OrganizationPackResponse, OrganizationResponse
                                        , _OrganizationPackResponse, _OrganizationResponse
-                                       , isOwner_
                                        , organization_)
 
 

@@ -23,7 +23,7 @@ import LN.View.Helpers
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( Param(..)
                                        , OrganizationPackResponse, ForumPackResponse
-                                       , _OrganizationPackResponse, _OrganizationResponse, organization_
+                                       , _OrganizationPackResponse, _OrganizationResponse, organization_, isOwner_
                                        , _ForumPackResponse, _ForumResponse, forum_
                                        , _BoardPackResponse, _BoardResponse, board_
                                        , _BoardStatResponse, stat_
