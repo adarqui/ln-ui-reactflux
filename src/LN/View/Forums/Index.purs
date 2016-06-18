@@ -26,6 +26,7 @@ import LN.T                            ( ForumPackResponse
                                        , _ForumPackResponse, _ForumResponse, forum_
                                        , OrganizationPackResponse, OrganizationResponse
                                        , _OrganizationPackResponse, _OrganizationResponse
+                                       , isOwner_
                                        , organization_)
 
 
@@ -46,9 +47,13 @@ renderView_Forums_Index' org_pack forum_packs =
 
     H.h1 [P.class_ B.textCenter] [ H.text "Forums" ],
 
-    H.div [P.classes [B.clearfix, B.container]] [
-      glyphButtonLinkDef_Plus $ OrganizationsForums org.name New []
-    ],
+    (if org_owner
+       then
+         H.div [P.classes [B.clearfix, B.container]] [
+           glyphButtonLinkDef_Plus $ OrganizationsForums org.name New []
+         ]
+       else
+         H.div_ []),
 
     H.div [P.class_ B.listUnstyled] $
       map (\forum_pack ->
@@ -73,14 +78,19 @@ renderView_Forums_Index' org_pack forum_packs =
               H.p_ [H.text "created-at"]
             ],
             H.div [P.class_ B.colXs1] [
-              buttonGroup_Horizontal [
-                glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) [],
-                glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) []
-              ]
+              if org_owner
+                 then
+                   buttonGroup_Horizontal [
+                     glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) [],
+                     glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) []
+                   ]
+                 else H.div_ []
             ]
           ]
         ])
         $ listToArray $ M.values forum_packs
   ]
   where
-  org = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  org       = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  org_owner = org_pack ^. _OrganizationPackResponse .. isOwner_
+  col_stats = if org_owner then B.colXs2 else B.colXs3

@@ -47,7 +47,7 @@ renderView_Organizations_Show' org_pack forum_packs =
       H.h1 [P.class_ B.textCenter] [ H.text organization.name ],
       H.p [P.class_ B.textCenter] [ H.text $ maybe "" id organization.description ],
 
-        if (org_pack ^. _OrganizationPackResponse .. isOwner_)
+        if org_owner
            then
              buttonGroup_HorizontalSm1 [
                glyphButtonLinkDef_Pencil $ Organizations (Edit organization.name) [],
@@ -73,3 +73,4 @@ renderView_Organizations_Show' org_pack forum_packs =
   ]
   where
   organization = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  org_owner    = org_pack ^. _OrganizationPackResponse .. isOwner_
