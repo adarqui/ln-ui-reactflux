@@ -15,7 +15,7 @@ import Data.Map                      as M
 import Data.Maybe                    (Maybe(..))
 import Data.Tuple                    (Tuple(..))
 import Optic.Core                    ((^.), (..))
-import Prelude                       (bind, pure, not, map, ($))
+import Prelude                       (bind, pure, not, map, ($), (==))
 
 import LN.Api                        (rd, getUsersCount' , getUserSanitizedPacks
                                      , getUserSanitizedPacks_ByUsersIds')
@@ -100,16 +100,19 @@ eval_GetUsers_MergeMap_ByUserId eval (GetUsers_MergeMap_ByUserId users_ids next)
       filter (\user_id -> not $ M.member user_id usersMap)
       $ nub users_ids
 
-  eresult <- rd $ getUserSanitizedPacks_ByUsersIds' users_ids_not_in_map
+  if users_ids_not_in_map == []
+     then pure next
+     else do
+       e_result <- rd $ getUserSanitizedPacks_ByUsersIds' users_ids_not_in_map
 
-  case eresult of
-       Left err -> pure next
-       Right (UserSanitizedPackResponses result) -> do
-         let
-          newUsersMap =
-            M.fromList
-            $ arrayToList
-            $ map (\user -> Tuple (user ^. _UserSanitizedPackResponse .. user_ ^. _UserSanitizedResponse .. id_) user) result.userSanitizedPackResponses
+       case e_result of
+            Left err -> pure next
+            Right (UserSanitizedPackResponses result) -> do
+              let
+               newUsersMap =
+                 M.fromList
+                 $ arrayToList
+                 $ map (\user -> Tuple (user ^. _UserSanitizedPackResponse .. user_ ^. _UserSanitizedResponse .. id_) user) result.userSanitizedPackResponses
 
-         modify (_{ usersMap = (M.union newUsersMap usersMap) })
-         pure next
+              modify (_{ usersMap = (M.union newUsersMap usersMap) })
+              pure next
