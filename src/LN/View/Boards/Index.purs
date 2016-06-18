@@ -91,11 +91,14 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
             ]
           , H.div [P.class_ B.colXs1] [
               H.div [P.class_ B.container] [
-                buttonGroup_VerticalSm1 [
-                  glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) [],
-                  glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New [],
-                  glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) []
-                ]
+                if org_owner
+                   then
+                     buttonGroup_VerticalSm1 [
+                       glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) [],
+                       glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New [],
+                       glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) []
+                     ]
+                   else H.div_ []
               ]
             ]
 
@@ -103,5 +106,6 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
       ])
     $ listToArray $ M.values board_packs
   where
-  org   = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  forum = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
+  org       = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  org_owner = org_pack ^. _OrganizationPackResponse .. isOwner_
+  forum     = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
