@@ -92,6 +92,8 @@ instance routesHasLink :: HasLink Routes where
   link (Organizations crud@(Delete org_name) params) = Tuple ("#/organizations" <> (fst $ link crud)) (fixParams params)
   link (Organizations crud@(Show org_name) params)   = Tuple ("#" ++ (fst $ link crud)) (fixParams params)
 
+  link (OrganizationsForums org Index params) =
+    Tuple ("#/" <> org) (fixParams params)
   link (OrganizationsForums org crud params) =
     Tuple ("#/" <> org <> "/f" <> (fst $ link crud)) (fixParams params)
 

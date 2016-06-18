@@ -111,7 +111,7 @@ routing =
       logout <|>
 
       -- wtf? why do I have to put this here..
-      organizations_forums_boards_threads_posts_int <|>
+      organizations_forums_boards_threads_posts_show_int <|>
 
       organizations_new <|>
       organizations_edit <|>
@@ -138,9 +138,9 @@ routing =
       organizations_forums_boards_index <|>
       organizations_forums_index <|>
 
-      organizations_forums_boards_threads <|>
-      organizations_forums_boards <|>
-      organizations_forums <|>
+      organizations_forums_boards_threads_show <|>
+      organizations_forums_boards_show <|>
+      organizations_forums_show <|>
       organizations_show <|>
 
       home <|>
@@ -234,10 +234,6 @@ routing =
       <$> (lit "" *> lit "organizations" *> lit "_delete" *> (Delete <$> str1))
       <*> (params' <|> pure [])
 
-    organizations_show =
-      Organizations
-      <$> (lit "" *> (Show <$> str1))
-      <*> (params' <|> pure [])
 
 
 
@@ -369,20 +365,25 @@ routing =
 
 
 
-    organizations_forums =
+    organizations_show =
+      Organizations
+      <$> (lit "" *> (Show <$> str1))
+      <*> (params' <|> pure [])
+
+    organizations_forums_show =
       OrganizationsForums
       <$> (lit "" *> str)
       <*> (lit "f" *> (Show <$> str1))
       <*> (params' <|> pure [])
 
-    organizations_forums_boards =
+    organizations_forums_boards_show =
       OrganizationsForumsBoards
       <$> (lit "" *> str)
       <*> (lit "f" *> str1)
       <*> (Show <$> str1)
       <*> (params' <|> pure [])
 
-    organizations_forums_boards_threads =
+    organizations_forums_boards_threads_show =
       OrganizationsForumsBoardsThreads
       <$> (lit "" *> str)
       <*> (lit "f" *> str1)
@@ -390,7 +391,7 @@ routing =
       <*> (Show <$> str1)
       <*> (params' <|> pure [])
 
-    organizations_forums_boards_threads_posts_int =
+    organizations_forums_boards_threads_posts_show_int =
       OrganizationsForumsBoardsThreadsPosts
       <$> (lit "" *> str)
       <*> (lit "f" *> str1)
