@@ -24,7 +24,7 @@ import LN.View.Helpers
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Forums.Index            (renderView_Forums_Index')
 import LN.T                            ( OrganizationPackResponse
-                                       , _OrganizationPackResponse, _OrganizationResponse, organization_
+                                       , _OrganizationPackResponse, _OrganizationResponse, organization_, isOwner_
                                        , ForumPackResponse
                                        , _ForumPackResponse, _ForumResponse, forum_)
 
@@ -47,10 +47,13 @@ renderView_Organizations_Show' org_pack forum_packs =
       H.h1 [P.class_ B.textCenter] [ H.text organization.name ],
       H.p [P.class_ B.textCenter] [ H.text $ maybe "" id organization.description ],
 
-        buttonGroup_HorizontalSm1 [
-          glyphButtonLinkDef_Pencil $ Organizations (Edit organization.name) [],
-          glyphButtonLinkDef_Trash $ Organizations (Delete organization.name) []
-        ]
+        if (org_pack ^. _OrganizationPackResponse .. isOwner_)
+           then
+             buttonGroup_HorizontalSm1 [
+               glyphButtonLinkDef_Pencil $ Organizations (Edit organization.name) [],
+               glyphButtonLinkDef_Trash $ Organizations (Delete organization.name) []
+             ]
+           else H.div_ []
 
     ],
     H.div [P.class_ B.pageHeader] [
