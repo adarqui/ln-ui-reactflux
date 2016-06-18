@@ -13,7 +13,7 @@ import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, show, map, ($), (<>))
+import Prelude                         (id, show, map, ($), (<>), (||), (==))
 
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes)
@@ -35,7 +35,8 @@ import LN.T                            (BoardPackResponse, ForumPackResponse, Or
                                        , _ThreadPackResponse, latestThreadPost_, _ThreadStatResponse, stat_
                                        , _ThreadResponse, thread_, _BoardResponse, board_, _BoardPackResponse
                                        , _ForumResponse, forum_, _ForumPackResponse, _OrganizationResponse
-                                       , organization_, _OrganizationPackResponse)
+                                       , organization_, _OrganizationPackResponse
+                                       , isOwner_)
 
 
 
@@ -46,14 +47,15 @@ renderView_Threads_Index st =
 
        Just org_pack, Just forum_pack, Just board_pack ->
 
-         renderView_Threads_Index' org_pack forum_pack board_pack st.threads st.threadsPageInfo st.currentPage st.usersMap
+         renderView_Threads_Index' st.meId org_pack forum_pack board_pack st.threads st.threadsPageInfo st.currentPage st.usersMap
 
        _,             _,               _               -> renderLoading
 
 
 
 renderView_Threads_Index'
-  :: OrganizationPackResponse
+  :: Int
+  -> OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
   -> M.Map Int ThreadPackResponse
@@ -61,7 +63,7 @@ renderView_Threads_Index'
   -> Routes
   -> M.Map Int UserSanitizedPackResponse
   -> ComponentHTML Input
-renderView_Threads_Index' org_pack forum_pack board_pack thread_packs threads_page_info threads_route users_map =
+renderView_Threads_Index' me_id org_pack forum_pack board_pack thread_packs threads_page_info threads_route users_map =
   H.div_ [
       renderPageNumbers threads_page_info threads_route
 
@@ -98,11 +100,13 @@ renderView_Threads_Index' org_pack forum_pack board_pack thread_packs threads_pa
                      _, _ -> H.div_ [ H.p_ [H.text "No posts."]]
                 ]
               , H.div [P.class_ B.colXs1] [
-                  buttonGroup_VerticalSm1 [
-
-                    glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) [],
-                    glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) []
-                  ]
+                  if org_owner || thread.userId == me_id
+                     then
+                       buttonGroup_VerticalSm1 [
+                         glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) [],
+                         glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) []
+                       ]
+                     else H.div_ []
 
                 ]
             ]
@@ -111,6 +115,7 @@ renderView_Threads_Index' org_pack forum_pack board_pack thread_packs threads_pa
     , renderPageNumbers threads_page_info threads_route
   ]
   where
-  org   = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  forum = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
-  board = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
+  org       = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  org_owner = org_pack ^. _OrganizationPackResponse .. isOwner_
+  forum     = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
+  board     = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
