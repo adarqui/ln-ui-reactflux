@@ -54,14 +54,15 @@ renderView_ThreadPosts_Index st =
   case st.currentOrganization, st.currentForum, st.currentBoard, st.currentThread, st.currentThreadPostRequest, st.currentThreadPostRequestSt of
 
        Just org_pack, Just forum_pack, Just board_pack, Just thread_pack, Just post_req, Just post_req_st ->
-         renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack st.threadPosts st.threadPostsPageInfo st.currentPage st.usersMap post_req post_req_st
+         renderView_ThreadPosts_Index' st.meId org_pack forum_pack board_pack thread_pack st.threadPosts st.threadPostsPageInfo st.currentPage st.usersMap post_req post_req_st
 
        _, _, _, _, _ , _                 -> renderLoading
 
 
 
 renderView_ThreadPosts_Index'
-  :: OrganizationPackResponse
+  :: Int
+  -> OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
   -> ThreadPackResponse
@@ -72,12 +73,12 @@ renderView_ThreadPosts_Index'
   -> ThreadPostRequest
   -> ThreadPostRequestState
   -> ComponentHTML Input
-renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack post_packs posts_page_info posts_route users_map post_req post_req_st =
+renderView_ThreadPosts_Index' me_id org_pack forum_pack board_pack thread_pack post_packs posts_page_info posts_route users_map post_req post_req_st =
   H.div_ [
       renderPageNumbers posts_page_info posts_route
     , H.ul [P.class_ B.listUnstyled] (
         (map (\post_pack ->
-          H.li_ [renderView_ThreadPosts_Show_Single' org_pack forum_pack board_pack thread_pack post_pack users_map]
+          H.li_ [renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_pack post_pack users_map]
         ) $ listToArray $ M.values post_packs)
         <>
         -- INPUT FORM AT THE BOTTOM

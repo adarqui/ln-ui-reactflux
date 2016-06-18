@@ -45,7 +45,7 @@ renderView_Threads_Show st =
        Just org_pack, Just forum_pack, Just board_pack, Just thread_pack, Just post_req, Just post_req_st ->
 
          renderView_Threads_Show' st.meId org_pack forum_pack board_pack thread_pack $
-           renderView_ThreadPosts_Index' org_pack forum_pack board_pack thread_pack st.threadPosts st.threadPostsPageInfo st.currentPage st.usersMap post_req post_req_st
+           renderView_ThreadPosts_Index' st.meId org_pack forum_pack board_pack thread_pack st.threadPosts st.threadPostsPageInfo st.currentPage st.usersMap post_req post_req_st
 
        _, _, _, _, _, _                -> renderLoading
 

@@ -15,7 +15,7 @@ import Halogen.HTML.Properties.Indexed as P
 import Halogen.HTML.Events.Indexed     as E
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, show, map, ($), (<>), (-), (<<<))
+import Prelude                         (id, show, map, ($), (<>), (-), (<<<), (||), (==))
 
 import Daimyo.Data.ArrayList           (listToArray)
 
@@ -50,7 +50,7 @@ import LN.T                            ( Ent(..)
                                        , _ThreadPostRequest, _ThreadResponse, thread_, _ThreadPackResponse
                                        , _BoardResponse, board_, _BoardPackResponse, _ForumResponse, forum_
                                        , _ForumPackResponse, _OrganizationResponse, organization_
-                                       , _OrganizationPackResponse
+                                       , _OrganizationPackResponse, isOwner_
                                        , like_, star_)
 
 
@@ -61,14 +61,15 @@ renderView_ThreadPosts_Show st =
   case st.currentOrganization, st.currentForum, st.currentBoard, st.currentThread, st.currentThreadPostRequest, st.currentThreadPostRequestSt of
 
        Just org_pack, Just forum_pack, Just board_pack, Just thread_pack, Just post_req, Just post_req_st ->
-         renderView_ThreadPosts_Show' org_pack forum_pack board_pack thread_pack st.threadPosts st.threadPostsPageInfo st.currentPage st.usersMap post_req post_req_st
+         renderView_ThreadPosts_Show' st.meId org_pack forum_pack board_pack thread_pack st.threadPosts st.threadPostsPageInfo st.currentPage st.usersMap post_req post_req_st
 
        _, _, _, _, _, _                 -> renderLoading
 
 
 
 renderView_ThreadPosts_Show'
-  :: OrganizationPackResponse
+  :: Int
+  -> OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
   -> ThreadPackResponse
@@ -79,12 +80,12 @@ renderView_ThreadPosts_Show'
   -> ThreadPostRequest
   -> ThreadPostRequestState
   -> ComponentHTML Input
-renderView_ThreadPosts_Show' org_pack forum_pack board_pack thread_pack post_packs posts_page_info posts_route users_map post_req post_req_st =
+renderView_ThreadPosts_Show' me_id org_pack forum_pack board_pack thread_pack post_packs posts_page_info posts_route users_map post_req post_req_st =
   H.div_ [
       renderPageNumbers posts_page_info posts_route
     , H.ul [P.class_ B.listUnstyled] (
         (map (\post_pack ->
-          H.li_ [renderView_ThreadPosts_Show_Single' org_pack forum_pack board_pack thread_pack post_pack users_map]
+          H.li_ [renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_pack post_pack users_map]
         ) $ listToArray $ M.values post_packs)
         <>
         -- INPUT FORM AT THE BOTTOM
@@ -101,14 +102,15 @@ renderView_ThreadPosts_Show' org_pack forum_pack board_pack thread_pack post_pac
 
 
 renderView_ThreadPosts_Show_Single'
-  :: OrganizationPackResponse
+  :: Int
+  -> OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
   -> ThreadPackResponse
   -> ThreadPostPackResponse
   -> M.Map Int UserSanitizedPackResponse
   -> ComponentHTML Input
-renderView_ThreadPosts_Show_Single' org_pack forum_pack board_pack thread_pack post_pack users_map =
+renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_pack post_pack users_map =
   H.div_ [
     H.div [P.class_ B.row] [
         H.div [P.class_ B.colXs2] [
@@ -125,10 +127,13 @@ renderView_ThreadPosts_Show_Single' org_pack forum_pack board_pack thread_pack p
           , H.p_ $ showTags post.tags
         ]
       , H.div [P.class_ B.colXs1] [
-          buttonGroup_VerticalSm1 [
-            glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) [],
-            glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) []
-          ]
+          if org_owner || post.userId == me_id
+             then
+               buttonGroup_VerticalSm1 [
+                 glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) [],
+                 glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) []
+               ]
+             else H.div_ []
         ]
       , H.div [P.class_ B.colXs1] [
             renderLike Ent_ThreadPost post.id like star
@@ -137,11 +142,12 @@ renderView_ThreadPosts_Show_Single' org_pack forum_pack board_pack thread_pack p
     ]
   ]
   where
-  org    = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  forum  = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
-  board  = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
-  thread = thread_pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse
-  post   = post_pack ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse
-  like   = post_pack ^. _ThreadPostPackResponse .. like_
-  star   = post_pack ^. _ThreadPostPackResponse .. star_
-  stats  = post_pack ^. _ThreadPostPackResponse .. stat_
+  org       = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  org_owner = org_pack ^. _OrganizationPackResponse .. isOwner_
+  forum     = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
+  board     = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
+  thread    = thread_pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse
+  post      = post_pack ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse
+  like      = post_pack ^. _ThreadPostPackResponse .. like_
+  star      = post_pack ^. _ThreadPostPackResponse .. star_
+  stats     = post_pack ^. _ThreadPostPackResponse .. stat_
