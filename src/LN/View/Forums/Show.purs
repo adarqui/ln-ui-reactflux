@@ -27,6 +27,7 @@ import LN.T                            ( ForumPackResponse
                                        , _ForumPackResponse, _ForumResponse, forum_
                                        , OrganizationPackResponse, OrganizationResponse
                                        , _OrganizationPackResponse, _OrganizationResponse
+                                       , isOwner_
                                        , organization_)
 
 
@@ -56,11 +57,14 @@ renderView_Forums_Show' org_pack forum_pack plumbing_boards =
       H.h2_ [H.text forum.name],
       H.p [P.class_ B.lead] [H.text forum_desc],
 
-      buttonGroup_HorizontalSm1 [
-        glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) [],
-        glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New [],
-        glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) []
-      ]
+      if org_owner
+         then
+           buttonGroup_HorizontalSm1 [
+             glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) [],
+             glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New [],
+             glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) []
+           ]
+         else H.div_ []
 
     ],
 
@@ -68,5 +72,6 @@ renderView_Forums_Show' org_pack forum_pack plumbing_boards =
   ]
   where
   org        = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  org_owner  = org_pack ^. _OrganizationPackResponse .. isOwner_
   forum      = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
   forum_desc = maybe "No description." id forum.description
