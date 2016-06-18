@@ -73,7 +73,11 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
              glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New [],
              glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) []
            ]
-         else H.div_ []
+         else
+           buttonGroup_HorizontalSm1 [
+             glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New []
+           ]
+
     ],
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [
       renderOrderBy $ OrganizationsForumsBoards org.name forum.name (Show board.name) []
