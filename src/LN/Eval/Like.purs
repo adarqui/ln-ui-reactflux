@@ -4,7 +4,9 @@ module LN.Eval.Like (
 
 
 
-import Data.Maybe                  (Maybe(..))
+import Data.Array                  (cons)
+import Data.Map                    as M
+import Data.Maybe                  (Maybe(..), maybe)
 import Data.Either                 (Either(..))
 import Halogen                     (get, modify)
 import Optic.Core                  ((^.), (..), (.~))
@@ -14,10 +16,11 @@ import Purescript.Api.Helpers
 import LN.Api                      ( putLike'
                                    , postLike_ByThreadPostId'
                                    , postLike_ByLeuronId'
-                                   , getLikeStat'
+                                   , getLikeStat
                                    , getThreadPostStat'
                                    )
 import LN.Component.Types          (EvalEff, LNEff)
+import LN.Ent                      (createByParamFromEnt)
 import LN.Input.Like               (InputLike(..))
 import LN.Input.Types              (Input(..))
 import LN.State.Types              (State)
@@ -26,7 +29,8 @@ import LN.T                        ( Ent(..)
                                    , LikeRequest(..)
                                    , LikeOpt(..)
                                    , id_, stat_, _ThreadPostResponse, threadPost_, like_
-                                   , mkLikeRequest)
+                                   , mkLikeRequest
+                                   , ThreadPostPackResponse(..))
 
 
 import Control.Monad.Aff.Free (fromAff)
@@ -81,6 +85,14 @@ postLike ent ent_id like_req =
 
 
 
+updateLike ent ent_id like like_stat st =
+  case ent of
+       Ent_ThreadPost -> st{ threadPosts = M.update (\(ThreadPostPackResponse pack) -> Just $ ThreadPostPackResponse pack{ like = Just like }) ent_id st.threadPosts }
+       _              -> st
+
+
+
+
 boomLike
   :: forall eff.
      State
@@ -101,9 +113,13 @@ boomLike st m_like ent ent_id like_req = do
        Left err   -> pure $ Left err
        Right resp -> do
          let like_id = resp ^. _LikeResponse .. id_
-         e_stat <- rD $ getLikeStat' like_id
+         e_stat <- rD $ getLikeStat by_params like_id
          case e_stat of
            Left err   -> pure $ Left err
            Right stat -> do
              -- Need to update stats AND our like
-             pure $ Right $ st
+--           pure $ Right $ st
+             pure $ Right $ updateLike ent ent_id resp stat st
+
+  where
+  by_params = maybe [] (`cons` []) $ createByParamFromEnt ent ent_id
