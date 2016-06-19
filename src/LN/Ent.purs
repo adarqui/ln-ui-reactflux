@@ -4,10 +4,12 @@ module LN.Ent (
 
 
 
-import Data.Maybe (Maybe(..))
-import Prelude    (($))
+import Data.Maybe          (Maybe(..))
+import Prelude             (($))
 
-import LN.T       (Param(..), Ent(..))
+import LN.Input.ThreadPost as ThreadPost
+import LN.Input.Types      (Input, cThreadPostAct)
+import LN.T                (Param(..), Ent(..))
 
 
 
@@ -16,3 +18,10 @@ createByParamFromEnt ent ent_id =
   case ent of
        Ent_ThreadPost -> Just $ ByThreadPostId ent_id
        _              -> Nothing
+
+
+
+createResyncFromEnt :: forall a. Ent -> Int -> a -> Input a
+createResyncFromEnt ent ent_id next =
+  case ent of
+       Ent_ThreadPost -> (cThreadPostAct (ThreadPost.ResyncById ent_id) next)

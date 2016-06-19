@@ -51,7 +51,7 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
         Gets_ByCurrentThread                          -> act_gets_by_current_thread
         Gets_ByCurrentThread_And_ThreadPostId post_id -> act_gets_by_current_thread_and_thread_post_id post_id
         GetId thread_post_id                          -> act_get_id thread_post_id
-        ReplaceById thread_post_id                    -> act_replace_by_id thread_post_id
+        ResyncById thread_post_id                    -> act_resync_by_id thread_post_id
 
     InputThreadPost_Mod q -> do
       case q of
@@ -152,7 +152,7 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
 
 
 
-  act_replace_by_id thread_post_id = do
+  act_resync_by_id thread_post_id = do
     thread_posts <- gets _.threadPosts
     if M.member thread_post_id thread_posts
        then do

@@ -23,7 +23,7 @@ data ThreadPost_Act
   | Gets_ByCurrentThread_And_ThreadPostId Int
   | GetId                                 Int
   | GetSid_ByCurrentThread                String
-  | ReplaceById                           Int
+  | ResyncById                            Int
 
 
 

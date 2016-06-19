@@ -21,8 +21,9 @@ import LN.Api                      ( putLike'
                                    )
 import LN.Component.Types          (EvalEff, LNEff)
 import LN.Ent                      (createByParamFromEnt)
+import LN.Input.ThreadPost         as ThreadPost
 import LN.Input.Like               (InputLike(..))
-import LN.Input.Types              (Input(..))
+import LN.Input.Types              (Input(..), cThreadPostAct)
 import LN.State.Types              (State)
 import LN.T                        ( Ent(..)
                                    , LikeResponse(..), _LikeResponse
@@ -44,11 +45,11 @@ eval_Like :: EvalEff
 eval_Like eval (CompLike (InputLike_Like ent ent_id mlike) next) = do
   let like_req = mkLikeRequest Like Nothing 0
   st <- get
-  lr <- fromAff $ boomLike st mlike ent ent_id like_req next
+  lr <- fromAff $ boomLike mlike ent ent_id like_req next
   case lr of
        Left err -> pure next
-       Right st' -> do
-         modify (const st')
+       Right cmd -> do
+         eval cmd
          pure next
 
 
@@ -56,11 +57,11 @@ eval_Like eval (CompLike (InputLike_Like ent ent_id mlike) next) = do
 eval_Like eval (CompLike (InputLike_Neutral ent ent_id mlike) next) = do
   let like_req = mkLikeRequest Neutral Nothing 0
   st <- get
-  lr <- fromAff $ boomLike st mlike ent ent_id like_req next
+  lr <- fromAff $ boomLike mlike ent ent_id like_req next
   case lr of
        Left err -> pure next
-       Right st' -> do
-         modify (const st')
+       Right cmd -> do
+         eval cmd
          pure next
 
 
@@ -68,11 +69,11 @@ eval_Like eval (CompLike (InputLike_Neutral ent ent_id mlike) next) = do
 eval_Like eval (CompLike (InputLike_Dislike ent ent_id mlike) next) = do
   let like_req = mkLikeRequest Dislike Nothing 0
   st <- get
-  lr <- fromAff $ boomLike st mlike ent ent_id like_req next
+  lr <- fromAff $ boomLike mlike ent ent_id like_req next
   case lr of
        Left err -> pure next
-       Right st' -> do
-         modify (const st')
+       Right cmd -> do
+         eval cmd
          pure next
 
 
@@ -95,14 +96,13 @@ updateLike ent ent_id like like_stat st =
 
 boomLike
   :: forall a eff.
-     State
-  -> Maybe LikeResponse
+     Maybe LikeResponse
   -> Ent
   -> Int
   -> LikeRequest
   -> a
-  -> LNEff eff (Either ApiError State)
-boomLike st m_like ent ent_id like_req next = do
+  -> LNEff eff (Either ApiError (Input a))
+boomLike m_like ent ent_id like_req next = do
 
   -- If m_like is Nothing, then we are creating a new "like".
   -- Otherwise, update an existing like
@@ -119,8 +119,7 @@ boomLike st m_like ent ent_id like_req next = do
            Left err   -> pure $ Left err
            Right stat -> do
              -- Need to update stats AND our like
---           pure $ Right $ st
-             pure $ Right $ updateLike ent ent_id resp stat st
+             pure $ Right $ (cThreadPostAct (ThreadPost.ResyncById ent_id) next)
 
   where
   by_params = maybe [] (`cons` []) $ createByParamFromEnt ent ent_id
