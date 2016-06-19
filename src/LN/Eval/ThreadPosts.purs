@@ -13,7 +13,7 @@ import Data.Maybe               (Maybe(..), maybe)
 import Data.String              (toLower)
 import Halogen                  (gets, modify)
 import Optic.Core               ((^.), (..), (.~))
-import Prelude                  (class Eq, id, bind, pure, map, ($), (<>), (<<<))
+import Prelude                  (class Eq, id, bind, pure, map, const, ($), (<>), (<<<))
 
 import LN.Api.Internal          (getThreadPostsCount_ByThreadId' , getThreadPostPacks_ByThreadId, getThreadPostPack', postThreadPost_ByThreadId', putThreadPost')
 import LN.Api.Internal.String   as ApiS
@@ -51,6 +51,7 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
         Gets_ByCurrentThread                          -> act_gets_by_current_thread
         Gets_ByCurrentThread_And_ThreadPostId post_id -> act_gets_by_current_thread_and_thread_post_id post_id
         GetId thread_post_id                          -> act_get_id thread_post_id
+        ReplaceById thread_post_id                    -> act_replace_by_id thread_post_id
 
     InputThreadPost_Mod q -> do
       case q of
@@ -148,6 +149,20 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
       Right thread_pack -> do
         modify (_{ currentThreadPost = Just thread_pack })
         pure next
+
+
+
+  act_replace_by_id thread_post_id = do
+    thread_posts <- gets _.threadPosts
+    if M.member thread_post_id thread_posts
+       then do
+         e_pack <- rd $ getThreadPostPack' thread_post_id
+         case e_pack of
+          Left _     -> pure next
+          Right pack -> do
+            modify (\st->st{threadPosts = M.update (const $ Just pack) thread_post_id thread_posts})
+            pure next
+       else pure next
 
 
 
