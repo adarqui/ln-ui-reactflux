@@ -20,10 +20,9 @@ import LN.Api                      ( putLike'
                                    , getThreadPostStat'
                                    )
 import LN.Component.Types          (EvalEff, LNEff)
-import LN.Ent                      (createByParamFromEnt)
-import LN.Input.ThreadPost         as ThreadPost
+import LN.Ent                      (createByParamFromEnt, createResyncFromEnt)
 import LN.Input.Like               (InputLike(..))
-import LN.Input.Types              (Input(..), cThreadPostAct)
+import LN.Input.Types              (Input(..))
 import LN.State.Types              (State)
 import LN.T                        ( Ent(..)
                                    , LikeResponse(..), _LikeResponse
@@ -119,7 +118,7 @@ boomLike m_like ent ent_id like_req next = do
            Left err   -> pure $ Left err
            Right stat -> do
              -- Need to update stats AND our like
-             pure $ Right $ (cThreadPostAct (ThreadPost.ResyncById ent_id) next)
+             pure $ Right $ createResyncFromEnt ent ent_id next
 
   where
   by_params = maybe [] (`cons` []) $ createByParamFromEnt ent ent_id

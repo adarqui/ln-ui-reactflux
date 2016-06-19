@@ -1,5 +1,6 @@
 module LN.Ent (
-  createByParamFromEnt
+  createByParamFromEnt,
+  createResyncFromEnt
 ) where
 
 
