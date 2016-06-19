@@ -5,6 +5,7 @@ module LN.Eval.Like (
 
 
 import Data.Array                  (cons)
+import Data.Ebyam                  (ebyam)
 import Data.Map                    as M
 import Data.Maybe                  (Maybe(..), maybe)
 import Data.Either                 (Either(..))
@@ -14,6 +15,7 @@ import Prelude                     (bind, pure, void, const, ($))
 import Purescript.Api.Helpers
 
 import LN.Api                      ( putLike'
+                                   , deleteLike'
                                    , postLike_ByThreadPostId'
                                    , postLike_ByLeuronId'
                                    , getLikeStat
@@ -41,10 +43,22 @@ eval_Like :: EvalEff
 
 
 
-eval_Like eval (CompLike (InputLike_Like ent ent_id mlike) next) = do
+
+eval_Like eval (CompLike (InputLike_Un ent ent_id m_like) next) = do
+  ebyam m_like (pure next) $ \like -> do
+    lr <- fromAff $ boomUnLike like ent ent_id next
+    case lr of
+         Left err -> pure next
+         Right cmd -> do
+           eval cmd
+           pure next
+
+
+
+eval_Like eval (CompLike (InputLike_Like ent ent_id m_like) next) = do
   let like_req = mkLikeRequest Like Nothing 0
   st <- get
-  lr <- fromAff $ boomLike mlike ent ent_id like_req next
+  lr <- fromAff $ boomLike m_like ent ent_id like_req next
   case lr of
        Left err -> pure next
        Right cmd -> do
@@ -53,10 +67,10 @@ eval_Like eval (CompLike (InputLike_Like ent ent_id mlike) next) = do
 
 
 
-eval_Like eval (CompLike (InputLike_Neutral ent ent_id mlike) next) = do
+eval_Like eval (CompLike (InputLike_Neutral ent ent_id m_like) next) = do
   let like_req = mkLikeRequest Neutral Nothing 0
   st <- get
-  lr <- fromAff $ boomLike mlike ent ent_id like_req next
+  lr <- fromAff $ boomLike m_like ent ent_id like_req next
   case lr of
        Left err -> pure next
        Right cmd -> do
@@ -65,16 +79,15 @@ eval_Like eval (CompLike (InputLike_Neutral ent ent_id mlike) next) = do
 
 
 
-eval_Like eval (CompLike (InputLike_Dislike ent ent_id mlike) next) = do
+eval_Like eval (CompLike (InputLike_Dislike ent ent_id m_like) next) = do
   let like_req = mkLikeRequest Dislike Nothing 0
   st <- get
-  lr <- fromAff $ boomLike mlike ent ent_id like_req next
+  lr <- fromAff $ boomLike m_like ent ent_id like_req next
   case lr of
        Left err -> pure next
        Right cmd -> do
          eval cmd
          pure next
-
 
 
 
@@ -112,13 +125,26 @@ boomLike m_like ent ent_id like_req next = do
   case e_like_req of
        Left err   -> pure $ Left err
        Right resp -> do
-         let like_id = resp ^. _LikeResponse .. id_
-         e_stat <- rD $ getLikeStat by_params like_id
-         case e_stat of
-           Left err   -> pure $ Left err
-           Right stat -> do
-             -- Need to update stats AND our like
-             pure $ Right $ createResyncFromEnt ent ent_id next
+         -- Need to update stats AND our like
+         pure $ Right $ createResyncFromEnt ent ent_id next
 
   where
   by_params = maybe [] (`cons` []) $ createByParamFromEnt ent ent_id
+
+
+
+boomUnLike
+  :: forall a eff.
+     LikeResponse
+  -> Ent
+  -> Int
+  -> a
+  -> LNEff eff (Either ApiError (Input a))
+boomUnLike like ent ent_id next = do
+
+   e_resp <- rD $ deleteLike' (like ^. _LikeResponse .. id_)
+   case e_resp of
+     Left err   -> pure $ Left err
+     Right _ -> do
+       -- Need to update stats AND our like
+       pure $ Right $ createResyncFromEnt ent ent_id next

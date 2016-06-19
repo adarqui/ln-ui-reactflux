@@ -38,9 +38,9 @@ renderLike ent ent_id m_like m_star =
 
   H.div [P.class_ B.row] [
 
-    glyphButtonDef_ArrowUp colorLike $ CompLike (InputLike_Like ent ent_id m_like),
-    glyphButtonDef_Minus colorNeutral $ CompLike (InputLike_Neutral ent ent_id m_like),
-    glyphButtonDef_ArrowDown colorDislike $ CompLike (InputLike_Dislike ent ent_id m_like),
+    glyphButtonDef_ArrowUp colorLike $ CompLike (likeInput ent ent_id m_like),
+    glyphButtonDef_Minus colorNeutral $ CompLike (neutralInput ent ent_id m_like),
+    glyphButtonDef_ArrowDown colorDislike $ CompLike (dislikeInput ent ent_id m_like),
 
     (case m_star of
          Nothing   -> glyphButtonDef_StarEmpty colorStar
@@ -49,6 +49,7 @@ renderLike ent ent_id m_like m_star =
 
   where
   color c   = HCSS.style $ CSS.color c
+
   colorLike =
     case m_like of
          Nothing -> color CSS.black
@@ -71,7 +72,27 @@ renderLike ent ent_id m_like m_star =
     case m_star of
          Nothing -> color CSS.black
          Just _  -> color CSS.orange
-  star        =
+
+  starButton  =
     case m_star of
          Nothing -> B.glyphiconStarEmpty
          Just _  -> B.glyphiconStar
+
+  likeInput   =
+    case m_like of
+         Nothing -> InputLike_Like
+         Just r  -> case (r ^. _LikeResponse .. opt_) of
+                         Like -> InputLike_Un
+                         _    -> InputLike_Like
+  neutralInput =
+    case m_like of
+         Nothing -> InputLike_Neutral
+         Just r  -> case (r ^. _LikeResponse .. opt_) of
+                         Neutral -> InputLike_Un
+                         _       -> InputLike_Neutral
+  dislikeInput =
+    case m_like of
+         Nothing -> InputLike_Dislike
+         Just r  -> case (r ^. _LikeResponse .. opt_) of
+                         Dislike -> InputLike_Un
+                         _       -> InputLike_Dislike
