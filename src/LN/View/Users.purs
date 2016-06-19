@@ -19,6 +19,7 @@ import LN.Input.Types                  (Input)
 import LN.State.Types                  (State)
 import LN.Router.Link                  (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.T
 
 
@@ -28,16 +29,16 @@ usersLayout user_nick st page =
   H.div [P.class_ B.containerFluid] [
     H.div [P.classes [B.colSm2]] [
       H.ul [P.class_ B.listUnstyled] [
-        H.li_ [linkToP [] (Users (Show user_nick) [])        "Users"],
-        H.li_ [linkToP [] (UsersProfile user_nick [])     "Profile"],
-        showIfSelf_UserNick st user_nick [H.li_ [linkToP [] (UsersSettings user_nick [])    "Settings"]],
-        showIfSelf_UserNick st user_nick [H.li_ [linkToP [] (UsersPMs user_nick [])         "Personal Messages"]],
-        H.li_ [linkToP [] (UsersThreads user_nick [])     "Threads"],
-        H.li_ [linkToP [] (UsersThreadPosts user_nick []) "Posts"],
-        H.li_ [linkToP [] (UsersWorkouts user_nick [])    "Workouts"],
-        H.li_ [linkToP [] (UsersResources user_nick [])   "Resources"],
-        H.li_ [linkToP [] (UsersLeurons user_nick [])     "Leurons"],
-        H.li_ [linkToP [] (UsersLikes user_nick [])       "Likes"]
+        H.li_ [linkToP [] (Users (Show user_nick) emptyParams)        "Users"],
+        H.li_ [linkToP [] (UsersProfile user_nick emptyParams)     "Profile"],
+        showIfSelf_UserNick st user_nick [H.li_ [linkToP [] (UsersSettings user_nick emptyParams)    "Settings"]],
+        showIfSelf_UserNick st user_nick [H.li_ [linkToP [] (UsersPMs user_nick emptyParams)         "Personal Messages"]],
+        H.li_ [linkToP [] (UsersThreads user_nick emptyParams)     "Threads"],
+        H.li_ [linkToP [] (UsersThreadPosts user_nick emptyParams) "Posts"],
+        H.li_ [linkToP [] (UsersWorkouts user_nick emptyParams)    "Workouts"],
+        H.li_ [linkToP [] (UsersResources user_nick emptyParams)   "Resources"],
+        H.li_ [linkToP [] (UsersLeurons user_nick emptyParams)     "Leurons"],
+        H.li_ [linkToP [] (UsersLikes user_nick emptyParams)       "Likes"]
       ]
     ],
     H.div [P.class_ B.colSm10] page

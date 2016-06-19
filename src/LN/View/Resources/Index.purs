@@ -16,6 +16,7 @@ import Prelude                         (show, map, ($), (<>))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
@@ -46,7 +47,7 @@ renderView_Resources_Index' st =
     ],
 
     H.div [P.classes [B.colLg2, B.colMd2, B.colXs12]] [
-      linkToP_Classes [B.btn, B.btnLg, B.btnInfo, B.btnBlock] [] (Resources New []) "new"
+      linkToP_Classes [B.btn, B.btnLg, B.btnInfo, B.btnBlock] [] (Resources New emptyParams) "new"
     ],
 
     -- Page Numbers
@@ -75,7 +76,7 @@ resources st =
                   renderGravatarForUser Small (usersMapLookup_ToUser st resource.userId)
                 ]
               , H.div [P.class_ B.colXs7] [
-                    H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (Resources (Show $ show resource.id) []) resource.displayName]
+                    H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (Resources (Show $ show resource.id) emptyParams) resource.displayName]
                   , H.p_ [H.text $ show resource.createdAt]
                   , H.p_ [H.text $ resource.description]
                 ]

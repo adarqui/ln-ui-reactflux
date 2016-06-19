@@ -13,6 +13,7 @@ import Prelude                      (map, ($))
 
 import LN.Input.Types               (Input)
 import LN.Router.Types              (Routes(..), CRUD(..))
+import LN.Router.Class.Params       (emptyParams)
 import LN.State.Types               (State)
 import LN.T                         (Size(XLarge), user_, _UserSanitizedPackResponse, _UserSanitizedResponse)
 import LN.View.Module.Gravatar      (gravatarUrlFromUser)
@@ -31,7 +32,7 @@ renderView_Users_Index st =
       , displayNick: user.displayNick
       , createdAt:   user.createdAt
       , logo:        gravatarUrlFromUser XLarge (pack ^. _UserSanitizedPackResponse .. user_)
-      , route: Users (Show $ user.nick) []
+      , route: Users (Show $ user.nick) emptyParams
       }
     ) $ listToArray $ M.values st.users) pNum
   where

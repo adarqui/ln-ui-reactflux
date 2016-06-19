@@ -23,6 +23,7 @@ import LN.Input.Types                  (Input(..))
 import LN.Helpers.Map                  (idmapFrom)
 import LN.Router.Class.Routes          (Routes(..))
 import LN.Router.Class.CRUD            (CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Loading                (l_currentForum, l_forums)
 import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.T.Internal.Convert           (forumResponseToForumRequest)
@@ -136,7 +137,7 @@ eval_Forum eval (CompForum sub next) = do
            e_forum <- rd $ postForum_ByOrganizationId' org_id req
            case e_forum of
                 Left err                    -> eval (AddErrorApi "eval_Forum(Create)::postForum'" err next)
-                Right (ForumResponse forum) -> eval (Goto (OrganizationsForums org_name (Show forum.name) []) next)
+                Right (ForumResponse forum) -> eval (Goto (OrganizationsForums org_name (Show forum.name) emptyParams) next)
          _        -> eval (AddError "eval_Forum(Create)" "Forum request doesn't exist" next)
 
 
@@ -151,5 +152,5 @@ eval_Forum eval (CompForum sub next) = do
                 Left err    -> eval (AddErrorApi "eval_Forum(Edit)::putForum" err next)
                 Right forum -> do
                   modify (\st->st{ currentForumRequest = Just $ forumResponseToForumRequest forum })
-                  eval (Goto (OrganizationsForums org_name (Show $ forum ^. _ForumResponse .. name_) []) next)
+                  eval (Goto (OrganizationsForums org_name (Show $ forum ^. _ForumResponse .. name_) emptyParams) next)
                   pure next

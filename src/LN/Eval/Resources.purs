@@ -29,6 +29,7 @@ import LN.Input.Resource             (InputResource(..), Resource_Mod(..))
 import LN.Input.Types                (Input(..))
 import LN.Internal.Resource          (resourceTypeToTyResourceType)
 import LN.Router.Types               (Routes(..), CRUD(..))
+import LN.Router.Class.Params        (emptyParams)
 import LN.State.Loading              (l_currentLeuron, l_currentResource, l_resources)
 import LN.State.Loading.Helpers      (getLoading, setLoading, clearLoading)
 import LN.State.Resource             (ResourceRequestState, defaultResourceRequestState)
@@ -198,7 +199,7 @@ eval_Resource eval (CompResource sub next) = do
                        case e_resource of
                             Left err                          -> eval (AddErrorApi "eval_Resource(Save)::postResource'" err next)
                             Right (ResourceResponse resource) -> do
-                              eval (Goto (Resources (ShowI resource.id) []) next)
+                              eval (Goto (Resources (ShowI resource.id) emptyParams) next)
 
                      Just resource_id -> do
                      -- Save an existing resource
@@ -206,7 +207,7 @@ eval_Resource eval (CompResource sub next) = do
                        case e_resource of
                             Left err                          -> eval (AddErrorApi "eval_Resource(Save)::putResource'" err next)
                             Right (ResourceResponse resource) -> do
-                              eval (Goto (Resources (ShowI resource.id) []) next)
+                              eval (Goto (Resources (ShowI resource.id) emptyParams) next)
 
    InputResource_Nop   -> pure next
 

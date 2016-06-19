@@ -17,6 +17,7 @@ module LN.Router.Link (
 import Control.Monad.Aff               (Aff)
 import Daimyo.Data.ArrayList           (listToArray)
 import Data.Map                        as M
+import Data.StrMap                     as StrM
 import Data.String                     (drop)
 import Data.Tuple                      (fst, snd)
 import DOM                             (DOM)
@@ -44,11 +45,11 @@ apply' = ($)
 updateUrl :: forall e. Routes -> Aff (dom :: DOM | e) Unit
 updateUrl route =
   let l = link route
---   in setHash $ drop 1 $ ((fst l) <> (mkQueryString $ flattenParams $ listToArray $  M.toList $ snd l))
-
-   in setHash $ drop 1 $ mkUri $ ((fst l) <> "/" <> (mkQueryString $ flattenParams $ listToArray $  M.toList $ snd l))
---   in setHash $ drop 1 $ ((fst l) ++ (mkQueryString $ flattenParams $ listToArray $  M.toList $ snd l))
--- updateUrl = setHash <<< drop 1 <<< link
+   in setHash $ drop 1 $ mkUri $ ((fst l) <> "/" <> (mkQueryString $ flattenParams $ listToArray $ StrM.values $ snd l))
+--   in setHash $ drop 1 $ mkUri $ ((fst l) <> "/")
+--   in setHash $ drop 1 $ mkUri $ ((fst l) <> "/" <> (mkQueryString $ flattenParams $ listToArray $ M.toList $ snd l))
+--   in setHash $ drop 1 $ mkUri "hi"
+--   in setHash $ drop 1 $ mkUri $ ((fst l) <> "/" <> (mkQueryString $ flattenParams $ listToArray $ M.toList $ snd l))
 
 
 

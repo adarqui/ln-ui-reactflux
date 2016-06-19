@@ -16,6 +16,7 @@ import Prelude                         (show, map, ($), (<>))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
 import LN.View.Module.Gravatar         (renderGravatarForUser)
@@ -71,7 +72,7 @@ renderLeurons st =
                   renderGravatarForUser Small (usersMapLookup_ToUser st leuron.userId)
                 ]
               , H.div [P.class_ B.colSm6] [
-                    linkToP [] (ResourcesLeurons leuron.resourceId (ShowI leuron.id) []) (show leuron.id)
+                    linkToP [] (ResourcesLeurons leuron.resourceId (ShowI leuron.id) emptyParams) (show leuron.id)
                   , H.p_ [H.text $ show leuron.createdAt]
 --                  , H.p_ [H.text leuron.description]
                 ]

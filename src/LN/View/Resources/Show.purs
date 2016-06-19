@@ -14,6 +14,7 @@ import Optic.Core                      ((^.), (..))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Loading                (getLoading, l_currentResource)
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
@@ -40,13 +41,13 @@ renderView_Resources_Show' pack st =
       H.p [P.class_ B.textCenter] [H.text (resource.description)]
     ],
     H.div [P.class_ B.container] [
-      linkToP [] (Resources (EditI resource.id) []) "edit",
-      linkToP [] (Resources (DeleteI resource.id) []) "delete"
+      linkToP [] (Resources (EditI resource.id) emptyParams) "edit",
+      linkToP [] (Resources (DeleteI resource.id) emptyParams) "delete"
     ],
     H.div [P.class_ B.container] [
       H.div [P.class_ B.listGroup] [
-        linkToP_Classes [B.listGroupItem] [] (ResourcesLeurons resource.id Index []) "leurons",
-        linkToP_Classes [B.listGroupItem] [] (ResourcesSiftLeurons resource.id []) "sift"
+        linkToP_Classes [B.listGroupItem] [] (ResourcesLeurons resource.id Index emptyParams) "leurons",
+        linkToP_Classes [B.listGroupItem] [] (ResourcesSiftLeurons resource.id emptyParams) "sift"
       ]
     ]
   ]

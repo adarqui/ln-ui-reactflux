@@ -5,18 +5,13 @@ module LN.Router.Class.CRUD (
 
 
 
-import Control.Monad.Aff           (Aff())
-import Control.Monad.Aff.AVar      (AVAR())
-import Control.Monad.Eff.Exception (EXCEPTION())
-import Data.Generic                (class Generic, gEq)
+-- import Data.Generic                (class Generic, gEq)
 import Data.Map                    as M
 import Data.Tuple                  (Tuple(..), fst)
-import DOM                         (DOM())
-import LN.Router.Util              (slash, fixParams)
 import Prelude                     (class Eq, class Show, show, (<>), ($), (++), (==))
 
-import LN.T                        (OrderBy(..))
-import LN.Router.Class.Link
+import LN.Router.Class.Link        (class HasLink)
+import LN.Router.Class.Params      (emptyParams)
 
 
 
@@ -36,7 +31,25 @@ data CRUD
 
 
 
-derive instance genericCRUD :: Generic CRUD
+instance crudEq :: Eq CRUD where
+  eq Index        Index        = true
+  eq (Show t1)    (Show t2)    = t1 == t2
+  eq (ShowI t1)   (ShowI t2)   = t1 == t2
+  eq (ShowN t1)   (ShowN t2)   = t1 == t2
+  eq (ShowB t1)   (ShowB t2)   = t1 == t2
+  eq New          New          = true
+  eq (Edit t1)    (Edit t2)    = t1 == t2
+  eq (EditI t1)   (EditI t2)   = t1 == t2
+  eq (EditN t1)   (EditN t2)   = t1 == t2
+  eq (Delete t1)  (Delete t2)  = t1 == t2
+  eq (DeleteI t1) (DeleteI t2) = t1 == t2
+  eq (DeleteN t1) (DeleteN t2) = t1 == t2
+  eq _            _            = false
+
+
+
+
+-- derive instance genericCRUD :: Generic CRUD
 
 
 
@@ -60,19 +73,19 @@ instance eqCrud :: Eq CRUD where
 instance crudHasLink :: HasLink CRUD where
 -- TODO FIXME:
 -- well this could be fixed.. changed from "" in order to match CRUD Index routes
---  link Index    = Tuple "/index" M.empty
-  link Index          = Tuple "" M.empty
-  link New            = Tuple "/new" M.empty
-  link (Show s)       = Tuple ("/" <> s) M.empty
-  link (ShowI int)    = Tuple ("/" <> show int) M.empty
-  link (ShowN num)    = Tuple ("/" <> show num) M.empty
-  link (ShowB bool)   = Tuple ("/" <> show bool) M.empty
-  link (Edit s)       = Tuple ("/_edit/" <> s) M.empty
-  link (EditI int)    = Tuple ("/_edit/" <> show int) M.empty
-  link (EditN num)    = Tuple ("/_edit/" <> show num) M.empty
-  link (Delete s)     = Tuple ("/_delete/" <> s) M.empty
-  link (DeleteI int)  = Tuple ("/_delete/" <> show int) M.empty
-  link (DeleteN num)  = Tuple ("/_delete/" <> show num) M.empty
+--  link Index    = Tuple "/index" emptyParams
+  link Index          = Tuple "" emptyParams
+  link New            = Tuple "/new" emptyParams
+  link (Show s)       = Tuple ("/" <> s) emptyParams
+  link (ShowI int)    = Tuple ("/" <> show int) emptyParams
+  link (ShowN num)    = Tuple ("/" <> show num) emptyParams
+  link (ShowB bool)   = Tuple ("/" <> show bool) emptyParams
+  link (Edit s)       = Tuple ("/_edit/" <> s) emptyParams
+  link (EditI int)    = Tuple ("/_edit/" <> show int) emptyParams
+  link (EditN num)    = Tuple ("/_edit/" <> show num) emptyParams
+  link (Delete s)     = Tuple ("/_delete/" <> s) emptyParams
+  link (DeleteI int)  = Tuple ("/_delete/" <> show int) emptyParams
+  link (DeleteN num)  = Tuple ("/_delete/" <> show num) emptyParams
 
 
 

@@ -6,21 +6,17 @@ module LN.Router.Class.Routes (
 
 
 
-import Control.Monad.Aff           (Aff())
-import Control.Monad.Aff.AVar      (AVAR())
-import Control.Monad.Eff.Exception (EXCEPTION())
 import Data.Generic                (class Generic, gEq)
 import Data.Map                    as M
 import Data.Maybe                  (maybe)
 import Data.Tuple                  (Tuple(..), fst)
-import DOM                         (DOM())
 import Optic.Core                  ((^.), (..))
 import Prelude                     (class Eq, class Show, show, (<>), ($), (++), (==))
 
 import LN.T
-import LN.Router.Util              (slash, fixParams)
+import LN.Router.Util              (slash)
 import LN.Router.Class.CRUD
-import LN.Router.Class.Params
+import LN.Router.Class.Params      (Params, emptyParams, fixParams)
 import LN.Router.Class.Link
 import LN.Router.Class.OrderBy
 import LN.State.Internal.Types     (InternalState)
@@ -61,11 +57,11 @@ data Routes
 
 
 
-derive instance genericRoutes :: Generic Routes
+-- derive instance genericRoutes :: Generic Routes
 
 
 
-instance eqRoute :: Eq Routes where eq = gEq
+-- instance eqRoute :: Eq Routes where eq = gEq
 
 
 
@@ -76,15 +72,15 @@ class HasCrumb a where
 
 instance routesHasLink :: HasLink Routes where
 
-  link Home   = Tuple "#/"       M.empty
+  link Home   = Tuple "#/"       emptyParams
 
-  link About  = Tuple "#/about"  M.empty
+  link About  = Tuple "#/about"  emptyParams
 
-  link Me     = Tuple "#/me"     M.empty
+  link Me     = Tuple "#/me"     emptyParams
 
-  link Errors = Tuple "#/errors" M.empty
+  link Errors = Tuple "#/errors" emptyParams
 
-  link Portal = Tuple "#/portal" M.empty
+  link Portal = Tuple "#/portal" emptyParams
 
   link (Organizations Index params)                  = Tuple "#/organizations" (fixParams params)
   link (Organizations crud@(New) params)             = Tuple ("#/organizations" <> (fst $ link crud)) (fixParams params)
@@ -127,10 +123,10 @@ instance routesHasLink :: HasLink Routes where
 
 --  link (Leurons crud params) = Tuple ("#/leurons" ++ (fst $ link crud)) (fixParams params)
 
-  link Login    = Tuple "/auth/login" M.empty
-  link Logout   = Tuple "/auth/logout" M.empty
+  link Login    = Tuple "/auth/login" emptyParams
+  link Logout   = Tuple "/auth/logout" emptyParams
 
-  link NotFound = Tuple "#/404" M.empty
+  link NotFound = Tuple "#/404" emptyParams
 
 
 
@@ -232,21 +228,21 @@ instance routesHasCrumb :: HasCrumb Routes where
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum
         ]
 
       OrganizationsForumsBoards org forum New params ->
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum
         ]
 
       OrganizationsForumsBoards org forum (Edit board) params ->
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
           Tuple (OrganizationsForumsBoards org forum (Show board) params) board
         ]
 
@@ -254,7 +250,7 @@ instance routesHasCrumb :: HasCrumb Routes where
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
           Tuple (OrganizationsForumsBoards org forum (Show board) params) board
         ]
 
@@ -262,7 +258,7 @@ instance routesHasCrumb :: HasCrumb Routes where
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
           Tuple (OrganizationsForumsBoards org forum (Show board) params) board
         ]
 
@@ -272,24 +268,24 @@ instance routesHasCrumb :: HasCrumb Routes where
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
-          Tuple (OrganizationsForumsBoards org forum (Show board) []) board
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show board) emptyParams) board
         ]
 
       OrganizationsForumsBoardsThreads org forum board New params ->
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
-          Tuple (OrganizationsForumsBoards org forum (Show board) []) board
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show board) emptyParams) board
         ]
 
       OrganizationsForumsBoardsThreads org forum board (Edit thread) params ->
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
-          Tuple (OrganizationsForumsBoards org forum (Show board) []) board,
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show board) emptyParams) board,
           Tuple (OrganizationsForumsBoardsThreads org forum board (Show thread) params) thread
         ]
 
@@ -297,8 +293,8 @@ instance routesHasCrumb :: HasCrumb Routes where
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
-          Tuple (OrganizationsForumsBoards org forum (Show board) []) board,
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show board) emptyParams) board,
           Tuple (OrganizationsForumsBoardsThreads org forum board (Show thread) params) thread
         ]
 
@@ -306,8 +302,8 @@ instance routesHasCrumb :: HasCrumb Routes where
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
-          Tuple (OrganizationsForumsBoards org forum (Show board) []) board,
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show board) emptyParams) board,
           Tuple (OrganizationsForumsBoardsThreads org forum board (Show thread) params) thread
         ]
 
@@ -317,26 +313,26 @@ instance routesHasCrumb :: HasCrumb Routes where
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
-          Tuple (OrganizationsForumsBoards org forum (Show board) []) board,
-          Tuple (OrganizationsForumsBoardsThreads org forum board (Show thread) []) thread
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show board) emptyParams) board,
+          Tuple (OrganizationsForumsBoardsThreads org forum board (Show thread) emptyParams) thread
         ]
 
       OrganizationsForumsBoardsThreadsPosts org forum board thread New params ->
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
-          Tuple (OrganizationsForumsBoards org forum (Show board) []) board,
-          Tuple (OrganizationsForumsBoardsThreads org forum board (Show thread) []) thread
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show board) emptyParams) board,
+          Tuple (OrganizationsForumsBoardsThreads org forum board (Show thread) emptyParams) thread
         ]
 
       OrganizationsForumsBoardsThreadsPosts org forum board thread (EditI post) params ->
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
-          Tuple (OrganizationsForumsBoards org forum (Show board) []) board,
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show board) emptyParams) board,
           Tuple (OrganizationsForumsBoardsThreads org forum board (Show thread) params) thread,
           Tuple (OrganizationsForumsBoardsThreadsPosts org forum board thread (ShowI post) params) (show post)
         ]
@@ -345,8 +341,8 @@ instance routesHasCrumb :: HasCrumb Routes where
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
-          Tuple (OrganizationsForumsBoards org forum (Show board) []) board,
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show board) emptyParams) board,
           Tuple (OrganizationsForumsBoardsThreads org forum board (Show thread) params) thread,
           Tuple (OrganizationsForumsBoardsThreadsPosts org forum board thread (ShowI post) params) (show post)
         ]
@@ -355,8 +351,8 @@ instance routesHasCrumb :: HasCrumb Routes where
         [
           Tuple (Organizations Index params) "Organizations",
           Tuple (Organizations (Show org) params) org,
-          Tuple (OrganizationsForums org (Show forum) []) forum,
-          Tuple (OrganizationsForumsBoards org forum (Show board) []) board,
+          Tuple (OrganizationsForums org (Show forum) emptyParams) forum,
+          Tuple (OrganizationsForumsBoards org forum (Show board) emptyParams) board,
           Tuple (OrganizationsForumsBoardsThreads org forum board (Show thread) params) thread,
           Tuple (OrganizationsForumsBoardsThreadsPosts org forum board thread (ShowI post) params) (show post)
         ]
@@ -379,63 +375,63 @@ instance routesHasCrumb :: HasCrumb Routes where
       UsersProfile user params ->
         [
           Tuple (Users Index params) "Users",
-          Tuple (Users (Show user) []) user,
+          Tuple (Users (Show user) emptyParams) user,
           Tuple (UsersProfile (slash user) params) "Profile"
         ]
 
       UsersSettings user params ->
         [
           Tuple (Users Index params) "Users",
-          Tuple (Users (Show user) []) user,
+          Tuple (Users (Show user) emptyParams) user,
           Tuple (UsersSettings (slash user) params) "Settings"
         ]
 
       UsersPMs user params ->
         [
-          Tuple (Users Index []) "Users",
-          Tuple (Users (Show user) []) user,
+          Tuple (Users Index emptyParams) "Users",
+          Tuple (Users (Show user) emptyParams) user,
           Tuple (UsersPMs (slash user) params) "PMs"
         ]
 
       UsersThreads user params ->
         [
-          Tuple (Users Index []) "Users",
-          Tuple (Users (Show user) []) user,
+          Tuple (Users Index emptyParams) "Users",
+          Tuple (Users (Show user) emptyParams) user,
           Tuple (UsersThreads (slash user) params) "Threads"
         ]
 
       UsersThreadPosts user params ->
         [
-          Tuple (Users Index []) "Users",
-          Tuple (Users (Show user) []) user,
+          Tuple (Users Index emptyParams) "Users",
+          Tuple (Users (Show user) emptyParams) user,
           Tuple (UsersThreadPosts (slash user) params) "ThreadPosts"
         ]
 
       UsersWorkouts user params ->
         [
-          Tuple (Users Index []) "Users",
-          Tuple (Users (Show user) []) user,
+          Tuple (Users Index emptyParams) "Users",
+          Tuple (Users (Show user) emptyParams) user,
           Tuple (UsersWorkouts (slash user) params) "Workouts"
         ]
 
       UsersResources user params ->
         [
-          Tuple (Users Index []) "Users",
-          Tuple (Users (Show user) []) user,
+          Tuple (Users Index emptyParams) "Users",
+          Tuple (Users (Show user) emptyParams) user,
           Tuple (UsersResources (slash user) params) "Resources"
         ]
 
       UsersLeurons user params ->
         [
-          Tuple (Users Index []) "Users",
-          Tuple (Users (Show user) []) user,
+          Tuple (Users Index emptyParams) "Users",
+          Tuple (Users (Show user) emptyParams) user,
           Tuple (UsersLeurons (slash user) params) "Leurons"
         ]
 
       UsersLikes user params ->
         [
-          Tuple (Users Index []) "Users",
-          Tuple (Users (Show user) []) user,
+          Tuple (Users Index emptyParams) "Users",
+          Tuple (Users (Show user) emptyParams) user,
           Tuple (UsersLikes (slash user) params) "Likes"
         ]
 

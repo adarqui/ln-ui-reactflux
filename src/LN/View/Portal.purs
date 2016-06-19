@@ -13,6 +13,7 @@ import Prelude                         (show, map, ($))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 
 
 
@@ -43,29 +44,29 @@ links =
 
   , Errors
 
-  , Organizations Index []
-  , OrganizationsForums "adarq" Index []
-  , OrganizationsForumsBoards "adarq" "forum" Index []
-  , OrganizationsForumsBoardsThreads "adarq" "forum" "board" Index []
-  , OrganizationsForumsBoardsThreadsPosts "adarq" "forum" "board" "thread" Index []
+  , Organizations Index emptyParams
+  , OrganizationsForums "adarq" Index emptyParams
+  , OrganizationsForumsBoards "adarq" "forum" Index emptyParams
+  , OrganizationsForumsBoardsThreads "adarq" "forum" "board" Index emptyParams
+  , OrganizationsForumsBoardsThreadsPosts "adarq" "forum" "board" "thread" Index emptyParams
 
-  , Users Index []
-  , UsersProfile "adarq" []
-  , UsersSettings "adarq" []
-  , UsersPMs "adarq" []
-  , UsersThreads "adarq" []
-  , UsersThreadPosts "adarq" []
-  , UsersWorkouts "adarq" []
-  , UsersResources "adarq" []
-  , UsersLeurons "adarq" []
-  , UsersLikes "adarq" []
+  , Users Index emptyParams
+  , UsersProfile "adarq" emptyParams
+  , UsersSettings "adarq" emptyParams
+  , UsersPMs "adarq" emptyParams
+  , UsersThreads "adarq" emptyParams
+  , UsersThreadPosts "adarq" emptyParams
+  , UsersWorkouts "adarq" emptyParams
+  , UsersResources "adarq" emptyParams
+  , UsersLeurons "adarq" emptyParams
+  , UsersLikes "adarq" emptyParams
 
-  , Resources Index []
-  , ResourcesLeurons 1 Index []
-  , ResourcesSiftLeurons 1 []
-  , ResourcesSiftLeuronsLinear 1 Index []
-  , ResourcesSiftLeuronsRandom 1 []
---  , Leurons Index []
+  , Resources Index emptyParams
+  , ResourcesLeurons 1 Index emptyParams
+  , ResourcesSiftLeurons 1 emptyParams
+  , ResourcesSiftLeuronsLinear 1 Index emptyParams
+  , ResourcesSiftLeuronsRandom 1 emptyParams
+--  , Leurons Index emptyParams
   , Login
   , Logout
   ]

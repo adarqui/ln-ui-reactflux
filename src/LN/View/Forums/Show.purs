@@ -18,6 +18,7 @@ import Prelude                         (id, map, show, ($), (<>), (/=))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Types                  (State)
 import LN.View.Helpers
 import LN.View.Boards.Index            (renderView_Boards_Index')
@@ -59,9 +60,9 @@ renderView_Forums_Show' org_pack forum_pack plumbing_boards =
       if org_owner
          then
            buttonGroup_HorizontalSm1 [
-             glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) [],
-             glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New [],
-             glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) []
+             glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams,
+             glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New emptyParams,
+             glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) emptyParams
            ]
          else H.div_ []
 

@@ -18,6 +18,7 @@ import Prelude                         (id, show, map, ($), (<>), (||), (==))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.PageInfo               (PageInfo)
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser')
@@ -82,7 +83,7 @@ renderView_Threads_Index' me_id org_pack forum_pack board_pack thread_packs thre
                   renderGravatarForUser Small (usersMapLookup_ToUser' users_map thread.userId)
                 ]
               , H.div [P.class_ B.colXs5] [
-                    H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Show thread.name) []) thread.displayName]
+                    H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Show thread.name) emptyParams) thread.displayName]
                   , H.p_ [H.text "page-numbers"]
                   , H.p_ [H.text $ show thread.createdAt]
                 ]
@@ -103,8 +104,8 @@ renderView_Threads_Index' me_id org_pack forum_pack board_pack thread_packs thre
                   if org_owner || thread.userId == me_id
                      then
                        buttonGroup_VerticalSm1 [
-                         glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) [],
-                         glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) []
+                         glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) emptyParams,
+                         glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) emptyParams
                        ]
                      else H.div_ []
 

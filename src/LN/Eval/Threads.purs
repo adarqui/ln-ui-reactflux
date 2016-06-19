@@ -25,6 +25,7 @@ import LN.State.Loading                (l_currentThread, l_threads)
 import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.Router.Class.Routes          (Routes(..))
 import LN.Router.Class.CRUD            (CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.PageInfo               (runPageInfo)
 import LN.T.Internal.Convert           (threadResponseToThreadRequest)
 import LN.T
@@ -145,7 +146,7 @@ eval_Thread eval (CompThread sub next) = do
            e_thread <- rd $ postThread_ByBoardId' board_id req
            case e_thread of
                 Left err                      -> eval (AddErrorApi "eval_Thread(Create)::postThread'" err next)
-                Right (ThreadResponse thread) -> eval (Goto (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread.name) []) next)
+                Right (ThreadResponse thread) -> eval (Goto (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show thread.name) emptyParams) next)
          _        -> eval (AddError "eval_Thread(Create)" "Thread request doesn't exist" next)
 
 
@@ -160,5 +161,5 @@ eval_Thread eval (CompThread sub next) = do
                 Left err     -> eval (AddErrorApi "eval_Thread(Edit)::putThread" err next)
                 Right thread -> do
                   modify (\st->st{ currentThreadRequest = Just $ threadResponseToThreadRequest thread })
-                  eval (Goto (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show $ thread ^. _ThreadResponse .. name_) []) next)
+                  eval (Goto (OrganizationsForumsBoardsThreads org_name forum_name board_name (Show $ thread ^. _ThreadResponse .. name_) emptyParams) next)
                   pure next

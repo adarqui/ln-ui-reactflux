@@ -18,6 +18,7 @@ import Prelude                         (id, map, show, ($), (<>))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Loading                (getLoading, l_currentOrganization)
 import LN.State.Types                  (State)
 import LN.View.Helpers
@@ -50,8 +51,8 @@ renderView_Organizations_Show' org_pack forum_packs =
         if org_owner
            then
              buttonGroup_HorizontalSm1 [
-               glyphButtonLinkDef_Pencil $ Organizations (Edit organization.name) [],
-               glyphButtonLinkDef_Trash $ Organizations (Delete organization.name) []
+               glyphButtonLinkDef_Pencil $ Organizations (Edit organization.name) emptyParams,
+               glyphButtonLinkDef_Trash $ Organizations (Delete organization.name) emptyParams
              ]
            else H.div_ []
 

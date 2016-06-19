@@ -17,6 +17,7 @@ import Prelude                            (show, ($), (<>))
 import LN.Input.Types                     (Input)
 import LN.Router.Link                     (linkTo', linkToHref)
 import LN.Router.Types                    (Routes(..), CRUD(..))
+import LN.Router.Class.Params             (emptyParams)
 import LN.T
 
 
@@ -33,7 +34,7 @@ renderGravatarForUser sz Nothing =
   H.img [P.src $ "//www.gravatar.com/avatar/none?d=identicon&" <> (gravatarSizeParam sz)]
 renderGravatarForUser sz (Just (UserSanitizedResponse user)) =
   linkTo'
-    (Users (Show user.nick) [])
+    (Users (Show user.nick) emptyParams)
     [H.img [P.src $ "//www.gravatar.com/avatar/" <> user.emailMD5 <> "?d=identicon&r=pg" <> "&" <> (gravatarSizeParam sz), P.alt user.nick]]
 
 

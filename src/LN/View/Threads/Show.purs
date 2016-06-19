@@ -18,6 +18,7 @@ import Prelude                         (id, show, map, ($), (<>), (==), (||))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser)
 -- import LN.View.Module.CreateThread     (renderCreateThread)
@@ -60,8 +61,8 @@ renderView_Threads_Show' me_id org_pack forum_pack board_pack thread_pack plumbi
       if org_owner || thread.userId == me_id
          then
            buttonGroup_HorizontalSm1 [
-             glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) [],
-             glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) []
+             glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) emptyParams,
+             glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) emptyParams
            ]
          else H.div_ []
     ],

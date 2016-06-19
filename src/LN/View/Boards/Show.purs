@@ -18,6 +18,7 @@ import Prelude                         (id, show, map, negate, ($), (<>))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Types                  (State)
 import LN.View.Helpers
 import LN.View.Threads.Index           (renderView_Threads_Index')
@@ -69,18 +70,18 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
       if org_owner
          then
            buttonGroup_HorizontalSm1 [
-             glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) [],
-             glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New [],
-             glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) []
+             glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams,
+             glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams,
+             glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams
            ]
          else
            buttonGroup_HorizontalSm1 [
-             glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New []
+             glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams
            ]
 
     ],
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [
-      renderOrderBy $ OrganizationsForumsBoards org.name forum.name (Show board.name) []
+      renderOrderBy $ OrganizationsForumsBoards org.name forum.name (Show board.name) emptyParams
     ]],
     H.div [] [plumbing_threads]
   ]

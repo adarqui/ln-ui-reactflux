@@ -29,6 +29,7 @@ import LN.Input.Leuron                 (Leuron_Mod(..))
 import LN.Input.Types                  (Input, cLeuronMod)
 import LN.Router.Link                  (linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Loading                (getLoading, l_currentLeuron)
 import LN.State.Leuron                 (LeuronRequestState)
 import LN.State.Types                  (State)
@@ -282,7 +283,7 @@ TODO FIXME
   , create_or_save
 
   -- show a list of recently added leurons
-  , H.ul_ $ map (\id_ -> H.li_ [linkToP [] (ResourcesLeurons resource_id (ShowI id_) []) (show id_)]) lst.ids
+  , H.ul_ $ map (\id_ -> H.li_ [linkToP [] (ResourcesLeurons resource_id (ShowI id_) emptyParams) (show id_)]) lst.ids
   ]
   where
 

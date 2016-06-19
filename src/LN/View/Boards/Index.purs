@@ -18,6 +18,7 @@ import Prelude                         (id, show, map, negate, ($), (<>))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Types                  (State)
 import LN.View.Helpers
 import LN.View.Module.Loading          (renderLoading)
@@ -67,7 +68,7 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
               H.p_ [H.text "icon"]
             ]
           , H.div [P.class_ B.colXs5] [
-                H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoards org.name forum.name (Show $ board.name) []) board.displayName]
+                H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForumsBoards org.name forum.name (Show $ board.name) emptyParams) board.displayName]
               , H.p_ [H.text $ maybe "No description." id board.description]
             ]
           , H.div [P.class_ B.colXs2] [
@@ -80,8 +81,8 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
               case thread, post, user of
                    Just (ThreadResponse thread'), Just (ThreadPostResponse post'), Just (UserSanitizedResponse user') ->
                     H.div_ [
-                      H.p_ [H.text $ "Last post by ", linkToP [] (Users (Show user'.nick) []) user'.nick],
-                      H.p_ [H.text $ "in ", linkToP [Offset (-1)] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Show thread'.name) []) thread'.name],
+                      H.p_ [H.text $ "Last post by ", linkToP [] (Users (Show user'.nick) emptyParams) user'.nick],
+                      H.p_ [H.text $ "in ", linkToP [Offset (-1)] (OrganizationsForumsBoardsThreads org.name forum.name board.name (Show thread'.name) emptyParams) thread'.name],
                       H.p_ [H.text $ show post'.createdAt]
                     ]
                    _, _, _ ->
@@ -94,9 +95,9 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
                 if org_owner
                    then
                      buttonGroup_VerticalSm1 [
-                       glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) [],
-                       glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New [],
-                       glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) []
+                       glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams,
+                       glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New emptyParams,
+                       glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams
                      ]
                    else H.div_ []
               ]

@@ -18,6 +18,7 @@ import Prelude                         (show, map, ($))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkTo, linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Loading                (getLoading, l_currentLeuron)
 import LN.State.Types                  (State)
 import LN.View.Module.Loading          (renderLoading)
@@ -56,8 +57,8 @@ renderView_Leurons_Show' pack st =
 --      H.p [P.class_ B.textCenter] [H.text (leuron.description)]
     ],
     H.div [P.class_ B.container] [
-      linkToP [] (ResourcesLeurons leuron.resourceId (EditI leuron.id) []) "edit",
-      linkToP [] (ResourcesLeurons leuron.resourceId (DeleteI leuron.id) []) "delete"
+      linkToP [] (ResourcesLeurons leuron.resourceId (EditI leuron.id) emptyParams) "edit",
+      linkToP [] (ResourcesLeurons leuron.resourceId (DeleteI leuron.id) emptyParams) "delete"
     ],
     H.div [P.class_ B.container] [
       renderLeuron leuron'
@@ -87,7 +88,7 @@ renderLeuron leuron =
 renderLinks :: LeuronResponseR -> ComponentHTML Input
 renderLinks leuron =
   H.div_ [
-    H.p_ [H.text "Resource: ", linkTo (Resources (Show $ show leuron.resourceId) []) (show leuron.resourceId)]
+    H.p_ [H.text "Resource: ", linkTo (Resources (Show $ show leuron.resourceId) emptyParams) (show leuron.resourceId)]
   ]
 
 

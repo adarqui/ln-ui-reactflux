@@ -15,6 +15,7 @@ import Prelude                         (map, show, ($), (<>))
 
 import LN.Router.Link                  (linkToHref, linkTo)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Types                  (State)
 import LN.View.Module.Breadcrumbs      (renderBreadcrumbs)
 import LN.T
@@ -86,7 +87,7 @@ header muser n_errors =
   where
   me = case muser of
             Nothing   -> linkTo NotFound "Me"
-            Just user -> linkTo (Users (Show (user ^. _UserPackResponse .. user_ ^. _UserResponse .. nick_)) []) "Me"
+            Just user -> linkTo (Users (Show (user ^. _UserPackResponse .. user_ ^. _UserResponse .. nick_)) emptyParams) "Me"
   errors =
     -- TODO FIXME: use proper pill number
     linkTo Errors $ "Errors [" <> show n_errors <> "]"

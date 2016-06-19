@@ -22,6 +22,7 @@ import LN.Helpers.Map                  (idmapFrom)
 import LN.Input.Organization           (InputOrganization(..), Organization_Act(..), Organization_Mod(..))
 import LN.Input.Types                  (Input(..))
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Loading                ( l_currentOrganization, l_organizations
                                        , l_currentForum
                                        , l_currentBoard
@@ -150,7 +151,7 @@ eval_Organization eval (CompOrganization sub next) = do
            case e_organization of
                 Left err                                  -> eval (AddErrorApi "eval_Organization(Mod/Create)::postOrganization'" err next)
                 Right (OrganizationResponse organization) -> do
-                  eval (Goto (Organizations (Show organization.name) []) next)
+                  eval (Goto (Organizations (Show organization.name) emptyParams) next)
          _, _  -> eval (AddError "eval_Organization(Mod/Create)" "Organization request doesn't exist" next)
 
 
@@ -165,5 +166,5 @@ eval_Organization eval (CompOrganization sub next) = do
                 Left err  -> eval (AddErrorApi "eval_Organization(Mod/Edit)::putOrganization" err next)
                 Right org -> do
                   modify (\st->st{ currentOrganizationRequest = Just $ organizationResponseToOrganizationRequest org })
-                  eval (Goto (Organizations (Show $ org ^. _OrganizationResponse .. name_) []) next)
+                  eval (Goto (Organizations (Show $ org ^. _OrganizationResponse .. name_) emptyParams) next)
                   pure next

@@ -28,6 +28,7 @@ import LN.Input.ThreadPost             (InputThreadPost(..), ThreadPost_Mod(..))
 import LN.Router.Link                  (linkTo, linkToP)
 import LN.Router.Class.CRUD            (CRUD(..), TyCRUD(..))
 import LN.Router.Class.Routes          (Routes(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.ThreadPost             (ThreadPostRequestState)
 import LN.State.PageInfo               (PageInfo)
 import LN.State.Types                  (State)
@@ -114,12 +115,12 @@ renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_
   H.div_ [
     H.div [P.class_ B.row] [
         H.div [P.class_ B.colXs2] [
-            H.p_ [linkTo (Users (Show (usersMapLookup_ToNick' users_map post.userId)) []) (usersMapLookup_ToNick' users_map post.userId)]
+            H.p_ [linkTo (Users (Show (usersMapLookup_ToNick' users_map post.userId)) emptyParams) (usersMapLookup_ToNick' users_map post.userId)]
           , renderGravatarForUser Medium (usersMapLookup_ToUser' users_map post.userId)
           , displayUserStats (usersMapLookup' users_map post.userId)
         ]
       , H.div [P.class_ B.colXs8] [
-            linkTo (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (ShowI post.id) []) (thread.name <> "/" <> show post.id)
+            linkTo (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (ShowI post.id) emptyParams) (thread.name <> "/" <> show post.id)
           , H.p_ [H.text $ show post.createdAt]
           , H.p_ [H.text "quote / reply"]
           , displayPostData post.body
@@ -130,8 +131,8 @@ renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_
           if org_owner || post.userId == me_id
              then
                buttonGroup_VerticalSm1 [
-                 glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) [],
-                 glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) []
+                 glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) emptyParams,
+                 glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) emptyParams
                ]
              else H.div_ []
         ]

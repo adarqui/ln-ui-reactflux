@@ -18,6 +18,7 @@ import Prelude                         (id, map, show, ($), (<>), (/=))
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Types                  (State)
 import LN.View.Helpers
 import LN.View.Module.Loading          (renderLoading)
@@ -50,7 +51,7 @@ renderView_Forums_Index' org_pack forum_packs =
     (if org_owner
        then
          H.div [P.classes [B.clearfix, B.container]] [
-           glyphButtonLinkDef_Plus $ OrganizationsForums org.name New []
+           glyphButtonLinkDef_Plus $ OrganizationsForums org.name New emptyParams
          ]
        else
          H.div_ []),
@@ -64,7 +65,7 @@ renderView_Forums_Index' org_pack forum_packs =
               H.p_ [H.text "icon"]
             ],
             H.div [P.class_ B.colXs6] [
-              H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForums org.name (Show forum.name) []) forum.displayName],
+              H.div [P.class_ B.listGroup] [linkToP_Classes [B.listGroupItem] [] (OrganizationsForums org.name (Show forum.name) emptyParams) forum.displayName],
               H.p_ [H.text $ maybe "No description." id forum.description],
               showTagsSmall forum.tags
             ],
@@ -81,8 +82,8 @@ renderView_Forums_Index' org_pack forum_packs =
               if org_owner
                  then
                    buttonGroup_Horizontal [
-                     glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) [],
-                     glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) []
+                     glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams,
+                     glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) emptyParams
                    ]
                  else H.div_ []
             ]

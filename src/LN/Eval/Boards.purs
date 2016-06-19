@@ -23,6 +23,7 @@ import LN.Input.Types                  (Input(..))
 import LN.Helpers.Map                  (idmapFrom)
 import LN.Router.Class.Routes          (Routes(..))
 import LN.Router.Class.CRUD            (CRUD(..))
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Loading                (l_currentBoard, l_boards)
 import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.T.Internal.Convert           (boardResponseToBoardRequest)
@@ -154,7 +155,7 @@ eval_Board eval (CompBoard sub next) = do
            e_board <- rd $ postBoard_ByForumId' forum_id req
            case e_board of
                 Left err                    -> eval (AddErrorApi "eval_Board(Create)::postBoard'" err next)
-                Right (BoardResponse board) -> eval (Goto (OrganizationsForumsBoards org_name forum_name (Show board.name) []) next)
+                Right (BoardResponse board) -> eval (Goto (OrganizationsForumsBoards org_name forum_name (Show board.name) emptyParams) next)
          _        -> eval (AddError "eval_Board(Create)" "Board request doesn't exist" next)
 
 
@@ -169,5 +170,5 @@ eval_Board eval (CompBoard sub next) = do
                 Left err    -> eval (AddErrorApi "eval_Board(Edit)::putBoard" err next)
                 Right board -> do
                   modify (\st->st{ currentBoardRequest = Just $ boardResponseToBoardRequest board })
-                  eval (Goto (OrganizationsForumsBoards org_name forum_name (Show $ board ^. _BoardResponse .. name_) []) next)
+                  eval (Goto (OrganizationsForumsBoards org_name forum_name (Show $ board ^. _BoardResponse .. name_) emptyParams) next)
                   pure next

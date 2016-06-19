@@ -13,6 +13,7 @@ import Prelude                      (map, ($))
 
 import LN.Input.Types               (Input)
 import LN.Router.Types              (Routes(..), CRUD(..))
+import LN.Router.Class.Params       (emptyParams)
 import LN.State.Types               (State)
 import LN.T                         (Size(XLarge), organization_, _OrganizationPackResponse
                                     , _OrganizationResponse)
@@ -24,7 +25,7 @@ import LN.View.Module.EntityListing (renderEntityListing)
 
 renderView_Organizations_Index :: State -> ComponentHTML Input
 renderView_Organizations_Index st =
-  renderEntityListing "Organizations" (Just $ Organizations New []) (
+  renderEntityListing "Organizations" (Just $ Organizations New emptyParams) (
     map (\pack ->
       let org = pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
       in
@@ -32,7 +33,7 @@ renderView_Organizations_Index st =
       , displayNick: org.name
       , createdAt:   org.createdAt
       , logo:        gravatarUrlFromOrganization XLarge (pack ^. _OrganizationPackResponse .. organization_)
-      , route:       Organizations (Show org.name) []
+      , route:       Organizations (Show org.name) emptyParams
       }
     ) $ listToArray $ M.values st.organizations) pNum
   where

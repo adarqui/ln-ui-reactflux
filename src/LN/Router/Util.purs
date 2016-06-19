@@ -1,7 +1,6 @@
 module LN.Router.Util (
   mkUri,
   unUri,
-  fixParams,
   slash,
   preSlash,
   postSlash,
@@ -10,12 +9,11 @@ module LN.Router.Util (
 
 
 
-import Daimyo.Data.ArrayList (arrayToList)
-import Data.Map              as M
-import Data.String           (joinWith, split)
-import Data.Tuple            (Tuple)
-import Global                (encodeURI, decodeURI)
-import Prelude               ((<<<), (<>))
+import Data.Map               as M
+import Data.String            (joinWith, split)
+import Data.Tuple             (Tuple)
+import Global                 (encodeURI, decodeURI)
+import Prelude                ((<<<), (<>))
 
 
 
@@ -26,11 +24,6 @@ mkUri url = encodeURI url
 
 unUri :: String -> String
 unUri url = decodeURI url
-
-
-
-fixParams :: Array (Tuple String String) -> M.Map String String
-fixParams = M.fromList <<< arrayToList
 
 
 

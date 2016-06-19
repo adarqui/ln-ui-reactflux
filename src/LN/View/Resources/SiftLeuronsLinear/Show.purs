@@ -15,6 +15,7 @@ import Prelude                         ((==), (+), (-))
 import LN.Input.Types                  (Input)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.Router.Link                  (linkToP_Classes)
+import LN.Router.Class.Params          (emptyParams)
 import LN.State.Loading                (getLoading, l_currentLeuron)
 import LN.State.Types                  (State)
 import LN.View.Leurons.Show            (renderView_Leurons_Show')
@@ -48,10 +49,10 @@ renderButtons :: LeuronPackResponse -> Int -> State -> ComponentHTML Input
 renderButtons pack offset st =
   H.div [P.class_ B.row] [
     H.div [P.classes [B.colLg2, B.colMd2, B.colXs6]] [
-      linkToP_Classes [B.btn, B.btnLg, B.btnInfo, B.btnBlock] [] (ResourcesSiftLeuronsLinear leuron.resourceId (ShowI offset_prev) []) "prev"
+      linkToP_Classes [B.btn, B.btnLg, B.btnInfo, B.btnBlock] [] (ResourcesSiftLeuronsLinear leuron.resourceId (ShowI offset_prev) emptyParams) "prev"
     ],
     H.div [P.classes [B.colLg2, B.colMd2, B.colXs6]] [
-      linkToP_Classes [B.btn, B.btnLg, B.btnInfo, B.btnBlock] [] (ResourcesSiftLeuronsLinear leuron.resourceId (ShowI offset_next) []) "next"
+      linkToP_Classes [B.btn, B.btnLg, B.btnInfo, B.btnBlock] [] (ResourcesSiftLeuronsLinear leuron.resourceId (ShowI offset_next) emptyParams) "next"
     ]
   ]
   where

@@ -23,6 +23,7 @@ import LN.Input.ThreadPost      (InputThreadPost(..), ThreadPost_Act(..), Thread
 import LN.Input.Types           (Input(..))
 import LN.Router.Class.Routes   (Routes(..))
 import LN.Router.Class.CRUD     (CRUD(..))
+import LN.Router.Class.Params   (emptyParams)
 import LN.Helpers.Map           (mergeMapArray)
 import LN.State.Loading         (l_currentThreadPost, l_threadPosts)
 import LN.State.Loading.Helpers (setLoading, clearLoading)
@@ -157,7 +158,7 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
         e_post <- rd $ postThreadPost_ByThreadId' thread_id req
         case e_post of
           Left err                        -> eval (AddErrorApi "eval_ThreadPost(Create)::postThreadPost'" err next)
-          Right (ThreadPostResponse post) -> eval (Goto (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post.id) []) next)
+          Right (ThreadPostResponse post) -> eval (Goto (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI post.id) emptyParams) next)
       _        -> eval (AddError "eval_ThreadPost(Create)" "ThreadPost request doesn't exist" next)
 
 
@@ -172,5 +173,5 @@ eval_ThreadPost eval (CompThreadPost sub next) = do
            Left err  -> eval (AddErrorApi "eval_ThreadPost(Edit)::putThreadPost" err next)
            Right post -> do
              modify (\st->st{ currentThreadPostRequest = Just $ threadPostResponseToThreadPostRequest post })
-             eval (Goto (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI thread_post_id) []) next)
+             eval (Goto (OrganizationsForumsBoardsThreadsPosts org_name forum_name board_name thread_name (ShowI thread_post_id) emptyParams) next)
              pure next
