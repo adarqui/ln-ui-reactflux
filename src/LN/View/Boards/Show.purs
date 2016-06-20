@@ -15,6 +15,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, negate, ($), (<>))
 
+import LN.Access                       (orgOwner, orgMember)
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -67,7 +68,8 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
       H.h2_ [H.text board.name],
       H.p [P.class_ B.lead] [H.text board_desc],
 
-      if org_owner
+      -- TODO FIXME: clean this nested junk up
+      if orgOwner org_pack
          then
            buttonGroup_HorizontalSm1 [
              glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams,
@@ -75,9 +77,12 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
              glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams
            ]
          else
-           buttonGroup_HorizontalSm1 [
-             glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams
-           ]
+           if orgMember org_pack
+              then
+                buttonGroup_HorizontalSm1 [
+                  glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams
+                ]
+              else H.div_ []
 
     ],
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [
@@ -87,7 +92,6 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
   ]
   where
   org        = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  org_owner  = org_pack ^. _OrganizationPackResponse .. isOwner_
   forum      = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
   board      = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
   board_desc = maybe "No description." id board.description
