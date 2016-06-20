@@ -80,8 +80,9 @@ header muser n_errors =
             ]
           Just u ->
             H.ul [P.classes [B.nav, B.navbarNav, B.navTabs, B.navbarRight]] [
-              H.li_ [linkTo Logout "Log out"] ]
+              H.li_ [linkTo Logout $ "Log out: " <> u ^. _UserPackResponse .. user_ ^. _UserResponse .. name_]
             ]
+      ]
     ]
   ]
   where
