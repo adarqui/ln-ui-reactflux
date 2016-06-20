@@ -15,7 +15,7 @@ import Halogen.HTML.Properties.Indexed as P
 import Halogen.HTML.Events.Indexed     as E
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, show, map, ($), (<>), (-), (<<<), (||), (==))
+import Prelude                         (id, show, map, ($), (<>), (-), (<<<), (||), (==), (&&))
 
 import Daimyo.Data.ArrayList           (listToArray)
 
@@ -23,6 +23,7 @@ import Data.BBCode.HTML
 import Data.BBCode.Parser
 import Data.BBCode.Types
 
+import LN.Access                       (orgOwner, orgMember, self, notSelf)
 import LN.Input.Types                  (Input(..), cThreadPostMod)
 import LN.Input.ThreadPost             (InputThreadPost(..), ThreadPost_Mod(..))
 import LN.Router.Link                  (linkTo, linkToP)
@@ -90,7 +91,10 @@ renderView_ThreadPosts_Show' me_id org_pack forum_pack board_pack thread_pack po
         ) $ listToArray $ M.values post_packs)
         <>
         -- INPUT FORM AT THE BOTTOM
-        [renderView_ThreadPosts_Mod' TyCreate thread_pack Nothing post_req post_req_st])
+        if orgOwner org_pack || orgMember org_pack
+           then [renderView_ThreadPosts_Mod' TyCreate thread_pack Nothing post_req post_req_st]
+           else []
+      )
   , renderPageNumbers posts_page_info posts_route
   ]
   where
@@ -128,7 +132,7 @@ renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_
           , H.p_ $ showTags post.tags
         ]
       , H.div [P.class_ B.colXs1] [
-          if org_owner || post.userId == me_id
+          if orgOwner org_pack || self me_id post.userId
              then
                buttonGroup_VerticalSm1 [
                  glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) emptyParams,
@@ -137,14 +141,15 @@ renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_
              else H.div_ []
         ]
       , H.div [P.class_ B.colXs1] [
-            renderLike Ent_ThreadPost post.id like star
+            if (orgMember org_pack && notSelf me_id post.userId)
+               then renderLike Ent_ThreadPost post.id like star
+               else H.div_ []
           , displayPostStats stats
         ]
     ]
   ]
   where
   org       = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  org_owner = org_pack ^. _OrganizationPackResponse .. isOwner_
   forum     = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
   board     = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
   thread    = thread_pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse

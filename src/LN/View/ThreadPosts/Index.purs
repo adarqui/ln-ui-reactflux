@@ -1,6 +1,5 @@
 module LN.View.ThreadPosts.Index (
-  renderView_ThreadPosts_Index,
-  renderView_ThreadPosts_Index'
+  renderView_ThreadPosts_Index
 ) where
 
 
@@ -27,7 +26,7 @@ import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup', usersMapLookup_ToNick', usersMapLookup_ToUser')
 import LN.View.Helpers
 import LN.View.ThreadPosts.Mod         (renderView_ThreadPosts_Mod')
-import LN.View.ThreadPosts.Show        (renderView_ThreadPosts_Show_Single')
+import LN.View.ThreadPosts.Show        (renderView_ThreadPosts_Show_Single', renderView_ThreadPosts_Show')
 import LN.View.Module.Gravatar         (renderGravatarForUser)
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.Like             (renderLike)
@@ -54,39 +53,6 @@ renderView_ThreadPosts_Index st =
   case st.currentOrganization, st.currentForum, st.currentBoard, st.currentThread, st.currentThreadPostRequest, st.currentThreadPostRequestSt of
 
        Just org_pack, Just forum_pack, Just board_pack, Just thread_pack, Just post_req, Just post_req_st ->
-         renderView_ThreadPosts_Index' st.meId org_pack forum_pack board_pack thread_pack st.threadPosts st.threadPostsPageInfo st.currentPage st.usersMap post_req post_req_st
+         renderView_ThreadPosts_Show' st.meId org_pack forum_pack board_pack thread_pack st.threadPosts st.threadPostsPageInfo st.currentPage st.usersMap post_req post_req_st
 
        _, _, _, _, _ , _                 -> renderLoading
-
-
-
-renderView_ThreadPosts_Index'
-  :: Int
-  -> OrganizationPackResponse
-  -> ForumPackResponse
-  -> BoardPackResponse
-  -> ThreadPackResponse
-  -> M.Map Int ThreadPostPackResponse
-  -> PageInfo
-  -> Routes
-  -> M.Map Int UserSanitizedPackResponse
-  -> ThreadPostRequest
-  -> ThreadPostRequestState
-  -> ComponentHTML Input
-renderView_ThreadPosts_Index' me_id org_pack forum_pack board_pack thread_pack post_packs posts_page_info posts_route users_map post_req post_req_st =
-  H.div_ [
-      renderPageNumbers posts_page_info posts_route
-    , H.ul [P.class_ B.listUnstyled] (
-        (map (\post_pack ->
-          H.li_ [renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_pack post_pack users_map]
-        ) $ listToArray $ M.values post_packs)
-        <>
-        -- INPUT FORM AT THE BOTTOM
-        [renderView_ThreadPosts_Mod' TyCreate thread_pack Nothing post_req post_req_st])
-  , renderPageNumbers posts_page_info posts_route
-  ]
-  where
-  org    = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  forum  = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
-  board  = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
-  thread = thread_pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse
