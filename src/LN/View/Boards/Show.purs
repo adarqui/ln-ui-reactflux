@@ -5,7 +5,7 @@ module LN.View.Boards.Show (
 
 
 
-import Daimyo.Data.ArrayList           (listToArray)
+import LN.ArrayList           (listToArray)
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (ComponentHTML, HTML)

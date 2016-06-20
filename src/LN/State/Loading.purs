@@ -28,7 +28,7 @@ module LN.State.Loading (
 
 
 
-import Daimyo.Data.ArrayList (arrayToList)
+import LN.ArrayList (arrayToList)
 import Data.List             (List)
 import Data.Maybe            (Maybe(..))
 import Data.Maybe.Unsafe     (fromJust)

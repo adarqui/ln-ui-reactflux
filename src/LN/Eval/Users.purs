@@ -8,7 +8,7 @@ module LN.Eval.Users (
 
 
 import Halogen                       (gets, modify)
-import Daimyo.Data.ArrayList         (arrayToList)
+import LN.ArrayList         (arrayToList)
 import Data.Array                    (nub, filter)
 import Data.Either                   (Either(..))
 import Data.Map                      as M

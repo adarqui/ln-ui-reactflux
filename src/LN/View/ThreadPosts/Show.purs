@@ -17,7 +17,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, ($), (<>), (-), (<<<), (||), (==), (&&))
 
-import Daimyo.Data.ArrayList           (listToArray)
+import LN.ArrayList           (listToArray)
 
 import Data.BBCode.HTML
 import Data.BBCode.Parser

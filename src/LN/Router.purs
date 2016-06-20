@@ -9,7 +9,7 @@ module Router (
 import Control.Alt             ((<|>))
 import Control.Apply           ((*>), (<*))
 import Control.Plus            (empty)
-import Daimyo.Data.ArrayList   (listToArray)
+import LN.ArrayList   (listToArray)
 import Data.Functor            ((<$))
 import Data.Int                (fromString)
 import Data.List               (List(..))

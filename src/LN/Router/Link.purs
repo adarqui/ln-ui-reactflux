@@ -15,7 +15,7 @@ module LN.Router.Link (
 
 
 import Control.Monad.Aff               (Aff)
-import Daimyo.Data.ArrayList           (listToArray)
+import LN.ArrayList           (listToArray)
 import Data.Map                        as M
 import Data.StrMap                     as StrM
 import Data.String                     (drop)

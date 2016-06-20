@@ -4,7 +4,7 @@ module LN.View.Users.Index (
 
 
 
-import Daimyo.Data.ArrayList        (listToArray)
+import LN.ArrayList        (listToArray)
 import Data.Map                     as M
 import Data.Maybe                   (Maybe(..))
 import Halogen                      (ComponentHTML)

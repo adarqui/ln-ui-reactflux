@@ -4,7 +4,7 @@ module LN.View.Leurons.Index (
 
 
 
-import Daimyo.Data.ArrayList           (listToArray)
+import LN.ArrayList           (listToArray)
 import Data.Map                        as M
 import Halogen                         (ComponentHTML)
 import Halogen.HTML.Indexed            as H
