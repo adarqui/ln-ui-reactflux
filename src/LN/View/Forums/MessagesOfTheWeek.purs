@@ -1,11 +1,11 @@
-module LN.View.Forums.Show (
-  renderView_Forums_Show,
-  renderView_Forums_Show'
+module LN.View.Forums.MessagesOfTheWeek (
+  renderView_Forums_MessagesOfTheWeek,
+  renderView_Forums_MessagesOfTheWeek'
 ) where
 
 
 
-import LN.ArrayList           (listToArray)
+import LN.ArrayList                    (listToArray)
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (ComponentHTML, HTML)
@@ -22,8 +22,6 @@ import LN.Router.Class.Params          (emptyParams)
 import LN.State.Types                  (State)
 import LN.View.Helpers
 import LN.View.Boards.Index            (renderView_Boards_Index')
-import LN.View.Forums.LatestPosts      (renderView_Forums_LatestPosts')
-import LN.View.Forums.MessagesOfTheWeek(renderView_Forums_MessagesOfTheWeek')
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( ForumPackResponse
                                        , _ForumPackResponse, _ForumResponse, organization_, isOwner_
@@ -35,61 +33,33 @@ import LN.T                            ( ForumPackResponse
 
 
 
-renderView_Forums_Show :: State -> ComponentHTML Input
-renderView_Forums_Show st =
+renderView_Forums_MessagesOfTheWeek :: State -> ComponentHTML Input
+renderView_Forums_MessagesOfTheWeek st =
 
   case st.currentOrganization, st.currentForum of
 
        Just org_pack, Just forum_pack ->
-         renderView_Forums_Show' org_pack forum_pack
-           (renderView_Boards_Index' org_pack forum_pack st.boards)
-           (renderView_Forums_LatestPosts' org_pack forum_pack)
-           (renderView_Forums_MessagesOfTheWeek' org_pack forum_pack)
+         renderView_Forums_MessagesOfTheWeek' org_pack forum_pack -- st.latestPosts
 
        _, _                           -> renderLoading
 
 
 
-renderView_Forums_Show'
+--
+-- Re: ADARQ's Journal by adarqui (Progress Journals & Experimental Routines) Today at 06:00:30 pm
+--
+renderView_Forums_MessagesOfTheWeek'
   :: OrganizationPackResponse
   -> ForumPackResponse
-  -> HTML _ _
-  -> HTML _ _
-  -> HTML _ _
   -> ComponentHTML Input
-renderView_Forums_Show'
-  org_pack
-  forum_pack
-  plumbing_boards
-  plumbing_latest_posts
-  plumbing_messages_of_the_week
-  =
+renderView_Forums_MessagesOfTheWeek' org_pack forum_pack =
   H.div [P.class_ B.containerFluid] [
 
     H.div [P.class_ B.pageHeader] [
-      H.h2_ [H.text forum.name],
-      H.p [P.class_ B.lead] [H.text forum_desc],
-
-      if org_owner
-         then
-           buttonGroup_HorizontalSm1 [
-             glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams,
-             glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New emptyParams,
-             glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) emptyParams
-           ]
-         else H.div_ []
-
-    ],
-
-    H.div [] [plumbing_boards],
-
-    H.div [] [plumbing_latest_posts],
-
-    H.div [] [plumbing_messages_of_the_week]
-
+      H.h4_ [H.text "Messages of the Week"]
+    ]
   ]
   where
   org        = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
   org_owner  = org_pack ^. _OrganizationPackResponse .. isOwner_
   forum      = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
-  forum_desc = maybe "No description." id forum.description
