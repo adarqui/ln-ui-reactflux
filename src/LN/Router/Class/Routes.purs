@@ -35,6 +35,8 @@ data Routes
   | OrganizationsForumsBoards String String CRUD Params
   | OrganizationsForumsBoardsThreads String String String CRUD Params
   | OrganizationsForumsBoardsThreadsPosts String String String String CRUD Params
+  | OrganizationsTeams String CRUD Params
+  | OrganizationsTeamsMembers String String CRUD Params
   | Users CRUD Params
   | UsersProfile String Params
   | UsersSettings String Params
@@ -101,6 +103,12 @@ instance routesHasLink :: HasLink Routes where
 
   link (OrganizationsForumsBoardsThreadsPosts org forum board thread crud params) =
     Tuple ("#/" <> org <> "/f/" <> forum <> "/" <> board <> "/" <> thread <> (fst $ link crud)) (fixParams params)
+
+  link (OrganizationsTeams org crud params) =
+    Tuple ("#/" <> org <> "/teams" <> (fst $ link crud)) (fixParams params)
+
+  link (OrganizationsTeamsMembers org team crud params) =
+    Tuple ("#/" <> org <> "/teams/" <> team <> "/" <> (fst $ link crud)) (fixParams params)
 
   link (Users Index params)           = Tuple "#/u" (fixParams params)
   link (Users crud params)            = Tuple ("#/u" ++ (fst $ link crud)) (fixParams params)
