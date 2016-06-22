@@ -140,10 +140,12 @@ routing =
       organizations_forums_boards_threads_index <|>
       organizations_forums_boards_index <|>
       organizations_forums_index <|>
+      organizations_teams_index <|>
 
       organizations_forums_boards_threads_show <|>
       organizations_forums_boards_show <|>
       organizations_forums_show <|>
+      organizations_teams_show <|>
       organizations_show <|>
 
       home <|>
@@ -336,6 +338,12 @@ routing =
 
 
 
+    organizations_teams_index =
+      OrganizationsTeams
+      <$> (lit "" *> str)
+      <*> (lit "teams" *> pure Index)
+      <*> (params' <|> pure emptyParams)
+
     organizations_forums_index =
       OrganizationsForums
       <$> (lit "" *> str)
@@ -371,6 +379,12 @@ routing =
     organizations_show =
       Organizations
       <$> (lit "" *> (Show <$> str1))
+      <*> (params' <|> pure emptyParams)
+
+    organizations_teams_show =
+      OrganizationsTeams
+      <$> (lit "" *> str)
+      <*> (lit "teams" *> (Show <$> str1))
       <*> (params' <|> pure emptyParams)
 
     organizations_forums_show =

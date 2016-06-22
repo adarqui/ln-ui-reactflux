@@ -93,7 +93,8 @@ eval_Goto eval (Goto route next) = do
              pure unit
 
     (Organizations (Show org_name) params) -> do
-      eval (Goto (OrganizationsForums org_name Index params) next)
+      eval (cOrganizationAct (Organization.GetSid org_name) next)
+      eval (cForumAct Forum.Gets_ByCurrentOrganization next)
       pure unit
 
 
