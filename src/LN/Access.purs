@@ -10,7 +10,11 @@ module LN.Access (
   ifte_Self,
   ifte_NotSelf,
   self,
-  notSelf
+  notSelf,
+  ifte_OrgMember,
+  orgMember,
+  orgMemberHTML,
+  orgMemberHTML'
 ) where
 
 
@@ -102,3 +106,29 @@ self my_id questionable_id = my_id == questionable_id
 
 notSelf :: Int -> Int -> Boolean
 notSelf my_id questionable_id = my_id /= questionable_id
+
+
+
+ifte_OrgMember :: forall a. OrganizationPackResponse -> a -> a -> a
+ifte_OrgMember (OrganizationPackResponse pack) t e =
+  if pack.isMember == true
+     then t
+     else e
+
+
+
+orgMember :: OrganizationPackResponse -> Boolean
+orgMember (OrganizationPackResponse pack) = pack.isMember
+
+
+
+orgMemberHTML :: OrganizationPackResponse -> (Unit -> HTML _ _) -> (Unit -> HTML _ _) -> HTML _ _
+orgMemberHTML pack member_cb no_member_cb =
+  if orgMember pack
+    then member_cb unit
+    else no_member_cb unit
+
+
+
+orgMemberHTML' :: OrganizationPackResponse -> (Unit -> HTML _ _) -> HTML _ _
+orgMemberHTML' pack member_cb = orgMemberHTML pack member_cb unitDiv

@@ -11,6 +11,8 @@ module LN.View.Helpers (
   glyphButton_StarEmpty,
   glyphButton_Trash,
   glyphButton_Pencil,
+  glyphButton_Ok,
+  glyphButton_Remove,
 
   glyphButtonDef_ArrowUp,
   glyphButtonDef_ArrowDown,
@@ -20,6 +22,8 @@ module LN.View.Helpers (
   glyphButtonDef_StarEmpty,
   glyphButtonDef_Trash,
   glyphButtonDef_Pencil,
+  glyphButtonDef_Ok,
+  glyphButtonDef_Remove,
 
   glyphButtonSm_ArrowUp,
   glyphButtonSm_ArrowDown,
@@ -29,6 +33,8 @@ module LN.View.Helpers (
   glyphButtonSm_StarEmpty,
   glyphButtonSm_Trash,
   glyphButtonSm_Pencil,
+  glyphButtonSm_Ok,
+  glyphButtonSm_Remove,
 
   glyphButtonLg_ArrowUp,
   glyphButtonLg_ArrowDown,
@@ -38,6 +44,8 @@ module LN.View.Helpers (
   glyphButtonLg_StarEmpty,
   glyphButtonLg_Trash,
   glyphButtonLg_Pencil,
+  glyphButtonLg_Ok,
+  glyphButtonLg_Remove,
 
   glyphButtonLink,
 
@@ -49,6 +57,8 @@ module LN.View.Helpers (
   glyphButtonLink_StarEmpty,
   glyphButtonLink_Trash,
   glyphButtonLink_Pencil,
+  glyphButtonLink_Ok,
+  glyphButtonLink_Remove,
 
   glyphButtonLinkDef_ArrowUp,
   glyphButtonLinkDef_ArrowDown,
@@ -58,6 +68,8 @@ module LN.View.Helpers (
   glyphButtonLinkDef_StarEmpty,
   glyphButtonLinkDef_Trash,
   glyphButtonLinkDef_Pencil,
+  glyphButtonLinkDef_Ok,
+  glyphButtonLinkDef_Remove,
 
   glyphButtonLinkSm_ArrowUp,
   glyphButtonLinkSm_ArrowDown,
@@ -67,6 +79,8 @@ module LN.View.Helpers (
   glyphButtonLinkSm_StarEmpty,
   glyphButtonLinkSm_Trash,
   glyphButtonLinkSm_Pencil,
+  glyphButtonLinkSm_Ok,
+  glyphButtonLinkSm_Remove,
 
   glyphButtonLinkLg_ArrowUp,
   glyphButtonLinkLg_ArrowDown,
@@ -76,6 +90,8 @@ module LN.View.Helpers (
   glyphButtonLinkLg_StarEmpty,
   glyphButtonLinkLg_Trash,
   glyphButtonLinkLg_Pencil,
+  glyphButtonLinkLg_Ok,
+  glyphButtonLinkLg_Remove,
 
   buttonGroup_Horizontal,
   buttonGroup_Vertical,
@@ -145,6 +161,8 @@ glyphButton_Star      = glyphButton B.glyphiconStar
 glyphButton_StarEmpty = glyphButton B.glyphiconStarEmpty
 glyphButton_Trash     = glyphButton B.glyphiconTrash
 glyphButton_Pencil    = glyphButton B.glyphiconPencil
+glyphButton_Ok        = glyphButton B.glyphiconOk
+glyphButton_Remove    = glyphButton B.glyphiconRemove
 
 
 
@@ -156,6 +174,8 @@ glyphButtonDef_Star      = glyphButtonSm_Star
 glyphButtonDef_StarEmpty = glyphButtonSm_StarEmpty
 glyphButtonDef_Trash     = glyphButtonSm_Trash
 glyphButtonDef_Pencil    = glyphButtonSm_Pencil
+glyphButtonDef_Ok        = glyphButtonSm_Ok
+glyphButtonDef_Remove    = glyphButtonSm_Remove
 
 
 
@@ -167,6 +187,8 @@ glyphButtonSm_Star      = glyphButton_Star B.btnSm
 glyphButtonSm_StarEmpty = glyphButton_StarEmpty B.btnSm
 glyphButtonSm_Trash     = glyphButton_Trash B.btnSm
 glyphButtonSm_Pencil    = glyphButton_Pencil B.btnSm
+glyphButtonSm_Ok        = glyphButton_Ok B.btnSm
+glyphButtonSm_Remove    = glyphButton_Remove B.btnSm
 
 
 
@@ -178,6 +200,8 @@ glyphButtonLg_Star      = glyphButton_Star B.btnLg
 glyphButtonLg_StarEmpty = glyphButton_StarEmpty B.btnLg
 glyphButtonLg_Trash     = glyphButton_Trash B.btnLg
 glyphButtonLg_Pencil    = glyphButton_Pencil B.btnLg
+glyphButtonLg_Ok        = glyphButton_Ok B.btnLg
+glyphButtonLg_Remove    = glyphButton_Remove B.btnLg
 
 
 
@@ -204,6 +228,8 @@ glyphButtonLink_Star      = glyphButtonLink B.glyphiconStar
 glyphButtonLink_StarEmpty = glyphButtonLink B.glyphiconStarEmpty
 glyphButtonLink_Trash     = glyphButtonLink B.glyphiconTrash
 glyphButtonLink_Pencil    = glyphButtonLink B.glyphiconPencil
+glyphButtonLink_Ok        = glyphButtonLink B.glyphiconOk
+glyphButtonLink_Remove    = glyphButtonLink B.glyphiconRemove
 
 
 
@@ -215,6 +241,8 @@ glyphButtonLinkDef_Star      = glyphButtonLinkSm_Star
 glyphButtonLinkDef_StarEmpty = glyphButtonLinkSm_StarEmpty
 glyphButtonLinkDef_Trash     = glyphButtonLinkSm_Trash
 glyphButtonLinkDef_Pencil    = glyphButtonLinkSm_Pencil
+glyphButtonLinkDef_Ok        = glyphButtonLinkSm_Ok
+glyphButtonLinkDef_Remove    = glyphButtonLinkSm_Remove
 
 
 
@@ -226,6 +254,8 @@ glyphButtonLinkSm_Star      = glyphButtonLink_Star B.btnSm
 glyphButtonLinkSm_StarEmpty = glyphButtonLink_StarEmpty B.btnSm
 glyphButtonLinkSm_Trash     = glyphButtonLink_Trash B.btnSm
 glyphButtonLinkSm_Pencil    = glyphButtonLink_Pencil B.btnSm
+glyphButtonLinkSm_Ok        = glyphButtonLink_Ok B.btnSm
+glyphButtonLinkSm_Remove    = glyphButtonLink_Remove B.btnSm
 
 
 
@@ -237,6 +267,8 @@ glyphButtonLinkLg_Star      = glyphButtonLink_Star B.btnLg
 glyphButtonLinkLg_StarEmpty = glyphButtonLink_StarEmpty B.btnLg
 glyphButtonLinkLg_Trash     = glyphButtonLink_Trash B.btnLg
 glyphButtonLinkLg_Pencil    = glyphButtonLink_Pencil B.btnLg
+glyphButtonLinkLg_Ok        = glyphButtonLink_Ok B.btnLg
+glyphButtonLinkLg_Remove    = glyphButtonLink_Remove B.btnLg
 
 
 
