@@ -23,7 +23,7 @@ import Data.BBCode.HTML
 import Data.BBCode.Parser
 import Data.BBCode.Types
 
-import LN.Access                       (orgOwner, orgMember, self, notSelf)
+import LN.Access                       (permissionsHTML', unitDiv, self, notSelf)
 import LN.Input.Types                  (Input(..), cThreadPostMod)
 import LN.Input.ThreadPost             (InputThreadPost(..), ThreadPost_Mod(..))
 import LN.Router.Link                  (linkTo, linkToP)
@@ -52,7 +52,7 @@ import LN.T                            ( Ent(..)
                                        , _ThreadPostRequest, _ThreadResponse, thread_, _ThreadPackResponse
                                        , _BoardResponse, board_, _BoardPackResponse, _ForumResponse, forum_
                                        , _ForumPackResponse, _OrganizationResponse, organization_
-                                       , _OrganizationPackResponse, isOwner_
+                                       , _OrganizationPackResponse
                                        , like_, star_)
 
 
@@ -89,11 +89,11 @@ renderView_ThreadPosts_Show' me_id org_pack forum_pack board_pack thread_pack po
         (map (\post_pack ->
           H.li_ [renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_pack post_pack users_map]
         ) $ listToArray $ M.values post_packs)
-        <>
+--        <>
         -- INPUT FORM AT THE BOTTOM
-        if orgOwner org_pack || orgMember org_pack
-           then [renderView_ThreadPosts_Mod' TyCreate thread_pack Nothing post_req post_req_st]
-           else []
+--        if orgOwner org_pack || orgMember org_pack
+--           then [renderView_ThreadPosts_Mod' TyCreate thread_pack Nothing post_req post_req_st]
+--           else []
       )
   , renderPageNumbers posts_page_info posts_route
   ]
@@ -132,19 +132,19 @@ renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_
           , H.p_ $ showTags post.tags
         ]
       , H.div [P.class_ B.colXs1] [
-          if orgOwner org_pack || self me_id post.userId
-             then
-               buttonGroup_VerticalSm1 [
-                 glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) emptyParams,
-                 glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) emptyParams
-               ]
-             else H.div_ []
+--          if orgOwner org_pack || self me_id post.userId
+--             then
+--               buttonGroup_VerticalSm1 [
+--                 glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) emptyParams,
+--                 glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) emptyParams
+--               ]
+--             else H.div_ []
         ]
       , H.div [P.class_ B.colXs1] [
-            if (orgMember org_pack && notSelf me_id post.userId)
-               then renderLike Ent_ThreadPost post.id like star
-               else H.div_ []
-          , displayPostStats stats
+--            if (orgMember org_pack && notSelf me_id post.userId)
+--               then renderLike Ent_ThreadPost post.id like star
+--               else H.div_ []
+--          , displayPostStats stats
         ]
     ]
   ]

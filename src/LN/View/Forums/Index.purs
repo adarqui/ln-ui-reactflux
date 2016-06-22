@@ -5,7 +5,7 @@ module LN.View.Forums.Index (
 
 
 
-import LN.ArrayList           (listToArray)
+import LN.ArrayList                    (listToArray)
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (ComponentHTML)
@@ -15,6 +15,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, show, ($), (<>), (/=))
 
+import LN.Access                       (permissionsHTML', unitDiv)
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -27,7 +28,6 @@ import LN.T                            ( ForumPackResponse
                                        , _ForumPackResponse, _ForumResponse, forum_
                                        , OrganizationPackResponse, OrganizationResponse
                                        , _OrganizationPackResponse, _OrganizationResponse
-                                       , isOwner_
                                        , organization_)
 
 
@@ -48,13 +48,17 @@ renderView_Forums_Index' org_pack forum_packs =
 
     H.h1 [P.class_ B.textCenter] [ H.text "Forums" ],
 
-    (if org_owner
-       then
-         H.div [P.classes [B.clearfix, B.container]] [
-           glyphButtonLinkDef_Plus $ OrganizationsForums org.name New emptyParams
-         ]
-       else
-         H.div_ []),
+--    permissionsHTML'
+--      forum.perms
+--      (_ -> glyphButtonLinkDef_Plus $ OrganizationsForums org.name New emptyParams),
+
+--    (if org_owner
+--       then
+--         H.div [P.classes [B.clearfix, B.container]] [
+--           glyphButtonLinkDef_Plus $ OrganizationsForums org.name New emptyParams
+--         ]
+--       else
+--         H.div_ []),
 
     H.div [P.class_ B.listUnstyled] $
       map (\forum_pack ->
@@ -79,13 +83,16 @@ renderView_Forums_Index' org_pack forum_packs =
               H.p_ [H.text "created-at"]
             ],
             H.div [P.class_ B.colXs1] [
-              if org_owner
-                 then
-                   buttonGroup_Horizontal [
-                     glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams,
-                     glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) emptyParams
-                   ]
-                 else H.div_ []
+--              permissionsHTML'
+--                forum.perms
+--                (_ -> glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams)
+--              if org_owner
+--                 then
+--                   buttonGroup_Horizontal [
+--                     glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams,
+--                     glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) emptyParams
+--                   ]
+--                 else H.div_ []
             ]
           ]
         ])
@@ -93,5 +100,4 @@ renderView_Forums_Index' org_pack forum_packs =
   ]
   where
   org       = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  org_owner = org_pack ^. _OrganizationPackResponse .. isOwner_
-  col_stats = if org_owner then B.colXs2 else B.colXs3
+--  col_stats = if org_owner then B.colXs2 else B.colXs3

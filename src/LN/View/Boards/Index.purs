@@ -15,6 +15,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, negate, ($), (<>))
 
+import LN.Access
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -24,7 +25,7 @@ import LN.View.Helpers
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( Param(..)
                                        , OrganizationPackResponse, ForumPackResponse
-                                       , _OrganizationPackResponse, _OrganizationResponse, organization_, isOwner_
+                                       , _OrganizationPackResponse, _OrganizationResponse, organization_
                                        , _ForumPackResponse, _ForumResponse, forum_
                                        , _BoardPackResponse, _BoardResponse, board_
                                        , _BoardStatResponse, stat_
@@ -92,14 +93,13 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
             ]
           , H.div [P.class_ B.colXs1] [
               H.div [P.class_ B.container] [
-                if org_owner
-                   then
-                     buttonGroup_VerticalSm1 [
-                       glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams,
-                       glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New emptyParams,
-                       glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams
-                     ]
-                   else H.div_ []
+                buttonGroup_VerticalSm1 [
+--                  permissionsHTML'
+--                    forum_pack'.permissions
+--                    (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams)
+--                       glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New emptyParams,
+--                       glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams
+                ]
               ]
             ]
 
@@ -107,6 +107,6 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
       ])
     $ listToArray $ M.values board_packs
   where
-  org       = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  org_owner = org_pack ^. _OrganizationPackResponse .. isOwner_
-  forum     = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
+  org         = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  forum       = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
+  forum_pack' = forum_pack ^. _ForumPackResponse

@@ -24,7 +24,7 @@ import LN.View.Helpers
 import LN.View.Boards.Index            (renderView_Boards_Index')
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( ForumPackResponse
-                                       , _ForumPackResponse, _ForumResponse, organization_, isOwner_
+                                       , _ForumPackResponse, _ForumResponse, organization_
                                        , _ForumPackResponse, _ForumResponse, forum_
                                        , OrganizationPackResponse, OrganizationResponse
                                        , _OrganizationPackResponse, _OrganizationResponse
@@ -61,5 +61,4 @@ renderView_Forums_LatestPosts' org_pack forum_pack =
   ]
   where
   org        = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  org_owner  = org_pack ^. _OrganizationPackResponse .. isOwner_
   forum      = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse

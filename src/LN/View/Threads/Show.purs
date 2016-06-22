@@ -15,6 +15,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, ($), (<>), (==), (||))
 
+import LN.Access                       (permissionsHTML')
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -34,7 +35,7 @@ import LN.T                            ( BoardPackResponse, ForumPackResponse, O
                                        , _ThreadPackResponse, latestThreadPost_, _ThreadStatResponse, stat_
                                        , _ThreadResponse, thread_, _BoardResponse, board_, _BoardPackResponse
                                        , _ForumResponse, forum_, _ForumPackResponse, _OrganizationResponse
-                                       , organization_, _OrganizationPackResponse, isOwner_)
+                                       , organization_, _OrganizationPackResponse)
 
 
 
@@ -57,21 +58,20 @@ renderView_Threads_Show' me_id org_pack forum_pack board_pack thread_pack plumbi
 
   H.div [P.class_ B.containerFluid] [
     H.div [P.class_ B.pageHeader] [
-      H.h2_ [H.text thread.name],
-      if org_owner || thread.userId == me_id
-         then
-           buttonGroup_HorizontalSm1 [
-             glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) emptyParams,
-             glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) emptyParams
-           ]
-         else H.div_ []
+      H.h2_ [H.text thread.name]
+--      if org_owner || thread.userId == me_id
+--         then
+--           buttonGroup_HorizontalSm1 [
+--             glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) emptyParams,
+--             glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) emptyParams
+--           ]
+--         else H.div_ []
     ],
     H.div [] [plumbing_posts]
   ]
 
   where
   org       = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  org_owner = org_pack ^. _OrganizationPackResponse .. isOwner_
   forum     = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
   board     = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
   thread    = thread_pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse

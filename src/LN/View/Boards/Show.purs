@@ -15,7 +15,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, negate, ($), (<>))
 
-import LN.Access                       (orgOwner, orgMember)
+import LN.Access                       (permissionsHTML')
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -27,7 +27,7 @@ import LN.View.Module.Loading          (renderLoading)
 import LN.View.Module.OrderBy          (renderOrderBy)
 import LN.T                            ( Param(..)
                                        , OrganizationPackResponse, ForumPackResponse
-                                       , _OrganizationPackResponse, _OrganizationResponse, organization_, isOwner_
+                                       , _OrganizationPackResponse, _OrganizationResponse, organization_
                                        , _ForumPackResponse, _ForumResponse, forum_
                                        , _BoardPackResponse, _BoardResponse, board_
                                        , _BoardStatResponse, stat_
@@ -66,23 +66,23 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
   H.div [P.class_ B.containerFluid] [
     H.div [P.class_ B.pageHeader] [
       H.h2_ [H.text board.name],
-      H.p [P.class_ B.lead] [H.text board_desc],
+      H.p [P.class_ B.lead] [H.text board_desc]
 
       -- TODO FIXME: clean this nested junk up
-      if orgOwner org_pack
-         then
-           buttonGroup_HorizontalSm1 [
-             glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams,
-             glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams,
-             glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams
-           ]
-         else
-           if orgMember org_pack
-              then
-                buttonGroup_HorizontalSm1 [
-                  glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams
-                ]
-              else H.div_ []
+--      if orgOwner org_pack
+--         then
+--           buttonGroup_HorizontalSm1 [
+--             glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams,
+--             glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams,
+--             glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams
+--           ]
+--         else
+--           if orgMember org_pack
+--              then
+--                buttonGroup_HorizontalSm1 [
+--                  glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams
+--                ]
+--              else H.div_ []
 
     ],
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [

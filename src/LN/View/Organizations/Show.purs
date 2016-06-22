@@ -15,6 +15,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, show, ($), (<>))
 
+import LN.Access
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -25,7 +26,7 @@ import LN.View.Helpers
 import LN.View.Module.Loading          (renderLoading)
 import LN.View.Forums.Index            (renderView_Forums_Index')
 import LN.T                            ( OrganizationPackResponse
-                                       , _OrganizationPackResponse, _OrganizationResponse, organization_, isOwner_
+                                       , _OrganizationPackResponse, _OrganizationResponse, organization_
                                        , ForumPackResponse
                                        , _ForumPackResponse, _ForumResponse, forum_)
 
@@ -48,13 +49,21 @@ renderView_Organizations_Show' org_pack forum_packs =
       H.h1 [P.class_ B.textCenter] [ H.text organization.name ],
       H.p [P.class_ B.textCenter] [ H.text $ maybe "" id organization.description ],
 
-        if org_owner
-           then
-             buttonGroup_HorizontalSm1 [
-               glyphButtonLinkDef_Pencil $ Organizations (Edit organization.name) emptyParams,
-               glyphButtonLinkDef_Trash $ Organizations (Delete organization.name) emptyParams
-             ]
-           else H.div_ []
+        permissionsHTML'
+          org_pack'.permissions
+          permCreateEmpty
+          permReadEmpty
+          (\_ -> glyphButtonLinkDef_Pencil $ Organizations (Edit organization.name) emptyParams)
+          (\_ -> glyphButtonLinkDef_Trash $ Organizations (Delete organization.name) emptyParams)
+          permExecuteEmpty
+
+--        if org_owner
+--           then
+--             buttonGroup_HorizontalSm1 [
+--               glyphButtonLinkDef_Pencil $ Organizations (Edit organization.name) emptyParams,
+--               glyphButtonLinkDef_Trash $ Organizations (Delete organization.name) emptyParams
+--             ]
+--           else H.div_ []
 
     ],
     H.div [P.class_ B.pageHeader] [
@@ -74,4 +83,4 @@ renderView_Organizations_Show' org_pack forum_packs =
   ]
   where
   organization = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  org_owner    = org_pack ^. _OrganizationPackResponse .. isOwner_
+  org_pack'    = org_pack ^. _OrganizationPackResponse

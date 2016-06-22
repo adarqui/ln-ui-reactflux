@@ -15,6 +15,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, show, ($), (<>), (/=))
 
+import LN.Access                       (permissionsHTML')
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -26,7 +27,7 @@ import LN.View.Forums.LatestPosts      (renderView_Forums_LatestPosts')
 import LN.View.Forums.MessagesOfTheWeek(renderView_Forums_MessagesOfTheWeek')
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( ForumPackResponse
-                                       , _ForumPackResponse, _ForumResponse, organization_, isOwner_
+                                       , _ForumPackResponse, _ForumResponse, organization_
                                        , _ForumPackResponse, _ForumResponse, forum_
                                        , OrganizationPackResponse, OrganizationResponse
                                        , _OrganizationPackResponse, _OrganizationResponse
@@ -68,16 +69,16 @@ renderView_Forums_Show'
 
     H.div [P.class_ B.pageHeader] [
       H.h2_ [H.text forum.name],
-      H.p [P.class_ B.lead] [H.text forum_desc],
+      H.p [P.class_ B.lead] [H.text forum_desc]
 
-      if org_owner
-         then
-           buttonGroup_HorizontalSm1 [
-             glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams,
-             glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New emptyParams,
-             glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) emptyParams
-           ]
-         else H.div_ []
+--      if org_owner
+--         then
+--           buttonGroup_HorizontalSm1 [
+--             glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams,
+--             glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New emptyParams,
+--             glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) emptyParams
+--           ]
+--         else H.div_ []
 
     ],
 
@@ -90,6 +91,5 @@ renderView_Forums_Show'
   ]
   where
   org        = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  org_owner  = org_pack ^. _OrganizationPackResponse .. isOwner_
   forum      = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
   forum_desc = maybe "No description." id forum.description

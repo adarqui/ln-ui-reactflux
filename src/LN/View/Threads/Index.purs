@@ -5,7 +5,7 @@ module LN.View.Threads.Index (
 
 
 
-import LN.ArrayList           (listToArray)
+import LN.ArrayList                    (listToArray)
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (ComponentHTML)
@@ -15,6 +15,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, ($), (<>), (||), (==))
 
+import LN.Access                       (permissionsHTML', unitDiv)
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -37,7 +38,7 @@ import LN.T                            (BoardPackResponse, ForumPackResponse, Or
                                        , _ThreadResponse, thread_, _BoardResponse, board_, _BoardPackResponse
                                        , _ForumResponse, forum_, _ForumPackResponse, _OrganizationResponse
                                        , organization_, _OrganizationPackResponse
-                                       , isOwner_)
+                                       )
 
 
 
@@ -101,14 +102,11 @@ renderView_Threads_Index' me_id org_pack forum_pack board_pack thread_packs thre
                      _, _ -> H.div_ [ H.p_ [H.text "No posts."]]
                 ]
               , H.div [P.class_ B.colXs1] [
-                  if org_owner || thread.userId == me_id
-                     then
-                       buttonGroup_VerticalSm1 [
-                         glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) emptyParams,
-                         glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) emptyParams
-                       ]
-                     else H.div_ []
-
+                  buttonGroup_VerticalSm1 [
+--                    permissionsHTML' board_pack'.permissions unitDiv
+--                   glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) emptyParams,
+--                   glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) emptyParams
+                  ]
                 ]
             ]
           ])
@@ -116,7 +114,7 @@ renderView_Threads_Index' me_id org_pack forum_pack board_pack thread_packs thre
     , renderPageNumbers threads_page_info threads_route
   ]
   where
-  org       = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  org_owner = org_pack ^. _OrganizationPackResponse .. isOwner_
-  forum     = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
-  board     = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
+  org         = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  forum       = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
+  board       = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
+  board_pack' = board_pack ^. _BoardPackResponse
