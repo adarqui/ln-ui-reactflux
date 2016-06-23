@@ -58,16 +58,17 @@ eval_Membership eval (CompMembership sub next) = do
     case m_org_pack of
       Nothing       -> eval (AddError "eval_Team(Act/Join)" "Organization doesn't exist" next)
       Just org_pack -> do
+        let org = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
         if Team_Members `elem` (org_pack ^. _OrganizationPackResponse .. teams_)
            then
              -- Already a member
-             eval (Goto (Organizations (Show $ org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. name_) emptyParams) next)
+             eval (Goto (Organizations (Show org.name) emptyParams) next)
            else do
              let team_member_request = mkTeamMemberRequest 0
              e_resp <- rd $ postTeamMember_ByOrganizationId' (org_pack ^. _OrganizationPackResponse .. organizationId_) team_member_request
              case e_resp of
               Left err -> eval (AddErrorApi "eval_Team(Act/Join)::postTeamMember_ByOrganizationId'" err next)
-              Right resp -> eval (Goto (Organizations (Show $ org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. name_) emptyParams) next)
+              Right resp -> eval (Goto (Organizations (Show org.name) emptyParams) next)
 
     pure next
 
