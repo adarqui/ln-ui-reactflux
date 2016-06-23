@@ -1,5 +1,8 @@
 module LN.View.Organizations.MembersOnly (
-  renderView_Organizations_MembersOnly
+  renderView_Organizations_MembersOnly,
+  renderView_Organizations_MembersOnly',
+  renderView_Organizations_MembersOnly_Already',
+  renderView_Organizations_MembersOnly_Join'
 ) where
 
 
@@ -24,11 +27,8 @@ import LN.State.Loading                (getLoading, l_currentOrganization)
 import LN.State.Types                  (State)
 import LN.View.Helpers
 import LN.View.Module.Loading          (renderLoading)
-import LN.View.Forums.Index            (renderView_Forums_Index')
 import LN.T                            ( OrganizationPackResponse
-                                       , _OrganizationPackResponse, _OrganizationResponse, organization_
-                                       , ForumPackResponse
-                                       , _ForumPackResponse, _ForumResponse, forum_)
+                                       , _OrganizationPackResponse, _OrganizationResponse, organization_)
 
 
 

@@ -38,6 +38,7 @@ import LN.View.Organizations.Show                       (renderView_Organization
 import LN.View.Organizations.Mod                        ( renderView_Organizations_NewS, renderView_Organizations_EditS
                                                         , renderView_Organizations_DeleteS)
 import LN.View.Organizations.MembersOnly                (renderView_Organizations_MembersOnly)
+import LN.View.Organizations.Membership                 (renderView_Organizations_Membership_Index, renderView_Organizations_Membership_Delete)
 
 
 
@@ -135,6 +136,11 @@ renderView (Organizations (Show org_name) params)   = renderView_Organizations_S
 
 
 renderView (OrganizationsMembersOnly org_name)      = renderView_Organizations_MembersOnly
+
+
+
+renderView (OrganizationsMembership org_name Index params)   = renderView_Organizations_Membership_Index
+renderView (OrganizationsMembership org_name DeleteZ params) = renderView_Organizations_Membership_Delete
 
 
 
