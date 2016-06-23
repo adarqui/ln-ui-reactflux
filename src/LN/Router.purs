@@ -146,6 +146,7 @@ routing =
       organizations_forums_boards_show <|>
       organizations_forums_show <|>
       organizations_teams_show <|>
+      organizations_members_only <|>
       organizations_show <|>
 
       home <|>
@@ -416,6 +417,12 @@ routing =
       <*> str1
       <*> (ShowI <$> int)
       <*> (params' <|> pure emptyParams)
+
+
+
+    organizations_members_only =
+      OrganizationsMembersOnly
+      <$> (lit "" *> str <* lit "_members_only")
 
 
 

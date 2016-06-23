@@ -37,6 +37,7 @@ data Routes
   | OrganizationsForumsBoardsThreadsPosts String String String String CRUD Params
   | OrganizationsTeams String CRUD Params
   | OrganizationsTeamsMembers String String CRUD Params
+  | OrganizationsMembersOnly String
   | Users CRUD Params
   | UsersProfile String Params
   | UsersSettings String Params
@@ -109,6 +110,9 @@ instance routesHasLink :: HasLink Routes where
 
   link (OrganizationsTeamsMembers org team crud params) =
     Tuple ("#/" <> org <> "/teams/" <> team <> "/" <> (fst $ link crud)) (fixParams params)
+
+  link (OrganizationsMembersOnly org) =
+    Tuple ("#/" <> org <> "/_members_only") emptyParams
 
   link (Users Index params)           = Tuple "#/u" (fixParams params)
   link (Users crud params)            = Tuple ("#/u" ++ (fst $ link crud)) (fixParams params)
