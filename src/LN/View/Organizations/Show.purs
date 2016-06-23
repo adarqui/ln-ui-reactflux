@@ -81,10 +81,8 @@ renderView_Organizations_Show' org_pack forum_packs =
       H.p_ [ H.h4_ [H.text "Tags:", showTagsSmall organization.tags]]
     ],
     renderView_Forums_Index' org_pack forum_packs,
-    H.p_ [ H.h4_ [H.text "Members"]],
-    H.p_ [ H.h4_ [H.text "teams"]],
-    H.p_ [ H.h4_ [H.text "activity"]],
-    H.p_ [ H.h4_ [H.text "stats"]]
+    H.p_ [ linkToP [] (OrganizationsMembership organization.name Index emptyParams) "Membership" ],
+    H.p_ [ linkToP [] (OrganizationsTeams organization.name Index emptyParams) "Teams" ]
   ]
   where
   organization = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse

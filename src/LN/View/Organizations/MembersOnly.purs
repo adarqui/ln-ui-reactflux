@@ -64,7 +64,11 @@ renderView_Organizations_MembersOnly' org_pack =
 renderView_Organizations_MembersOnly_Already' :: OrganizationPackResponse -> ComponentHTML Input
 renderView_Organizations_MembersOnly_Already' org_pack =
   H.div_ [
-    H.p_ [H.text "You are already a member."]
+    H.p_ [
+      H.text "You are already a member. Click ",
+      linkToP [] (OrganizationsMembership organization.name DeleteZ emptyParams) "here",
+      H.text " to leave."
+    ]
   ]
   where
   organization = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse

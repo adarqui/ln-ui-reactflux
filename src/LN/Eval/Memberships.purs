@@ -14,7 +14,7 @@ import Data.Maybe                      (Maybe(..), maybe)
 import Data.String                     (toLower)
 import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
-import Prelude                         (class Eq, id, bind, pure, const, ($), (<>), (<$>), (<<<), (==))
+import Prelude                         (class Eq, id, bind, pure, const, not, ($), (<>), (<$>), (<<<), (==))
 
 import LN.Api                          (rd, postTeamMember_ByOrganizationId')
 import LN.Component.Types              (EvalEff)
@@ -73,5 +73,21 @@ eval_Membership eval (CompMembership sub next) = do
     pure next
 
   act_leave = do
---    delete team members by ... team id
+    {-
+    m_org_pack <- gets _.currentOrganization
+    case m_org_pack of
+      Nothing       -> eval (AddError "eval_Team(Act/Leave)" "Organization doesn't exist" next)
+      Just org_pack -> do
+        let org = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+        if not $ Team_Members `elem` (org_pack ^. _OrganizationPackResponse .. teams_)
+           then
+             -- Not a member
+             eval (Goto (Organizations (Show org.name) emptyParams) next)
+           else do
+             let team_member_request = mkTeamMemberRequest 0
+             e_resp <- rd $ deleteTeamMember_ByOrganizationId' (org_pack ^. _OrganizationPackResponse .. organizationId_) team_member_request
+             case e_resp of
+              Left err -> eval (AddErrorApi "eval_Team(Act/Leave)::postTeamMember_ByOrganizationId'" err next)
+              Right resp -> eval (Goto Home next)
+              -}
     pure next

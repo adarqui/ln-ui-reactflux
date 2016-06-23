@@ -42,6 +42,10 @@ import LN.View.Organizations.Membership                 (renderView_Organization
 
 
 
+import LN.View.Teams.Index                      (renderView_Teams_Index)
+
+
+
 import LN.View.Forums.Index                      (renderView_Forums_Index)
 import LN.View.Forums.Show                       (renderView_Forums_Show)
 import LN.View.Forums.Mod                        ( renderView_Forums_New, renderView_Forums_Edit
@@ -141,6 +145,10 @@ renderView (OrganizationsMembersOnly org_name)      = renderView_Organizations_M
 
 renderView (OrganizationsMembership org_name Index params)   = renderView_Organizations_Membership_Index
 renderView (OrganizationsMembership org_name DeleteZ params) = renderView_Organizations_Membership_Delete
+
+
+
+renderView (OrganizationsTeams org_name Index params)   = renderView_Teams_Index
 
 
 
