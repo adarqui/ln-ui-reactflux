@@ -75,7 +75,10 @@ renderView_Organizations_MembersOnly_Already' org_pack =
 renderView_Organizations_MembersOnly_Join' :: OrganizationPackResponse -> ComponentHTML Input
 renderView_Organizations_MembersOnly_Join' org_pack =
   H.div_ [
-    H.p_ [H.text "This content is only available to members. Please join this organization in order to view this content."]
+    H.p_ [
+      H.text "This content is only available to members. Please ",
+      linkToP [] (OrganizationsMembership organization.name Index emptyParams) "join",
+      H.text " this organization in order to view this content."]
   ]
   where
   organization = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse

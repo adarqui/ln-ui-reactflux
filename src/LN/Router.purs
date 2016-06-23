@@ -125,6 +125,7 @@ routing =
       organizations_forums_boards_threads_new <|>
       organizations_forums_boards_new <|>
       organizations_forums_new <|>
+      organizations_membership_new <|>
 
       organizations_forums_boards_threads_posts_edit_int <|>
       organizations_forums_boards_threads_edit <|>
@@ -135,12 +136,15 @@ routing =
       organizations_forums_boards_threads_delete <|>
       organizations_forums_boards_delete <|>
       organizations_forums_delete <|>
+      organizations_membership_delete <|>
 
       organizations_forums_boards_threads_posts_index <|>
       organizations_forums_boards_threads_index <|>
       organizations_forums_boards_index <|>
       organizations_forums_index <|>
+      organizations_teams_members_index <|>
       organizations_teams_index <|>
+      organizations_membership_index <|>
 
       organizations_forums_boards_threads_show <|>
       organizations_forums_boards_show <|>
@@ -273,6 +277,12 @@ routing =
       <*> (lit "new" *> pure New)
       <*> (params' <|> pure emptyParams)
 
+    organizations_membership_new =
+      OrganizationsMembership
+      <$> (lit "" *> str)
+      <*> (lit "membership" *> lit "new" *> pure New)
+      <*> (params' <|> pure emptyParams)
+
 
 
     organizations_forums_edit =
@@ -337,13 +347,13 @@ routing =
       <*> (lit "_delete" *> (DeleteI <$> int))
       <*> (params' <|> pure emptyParams)
 
-
-
-    organizations_teams_index =
-      OrganizationsTeams
+    organizations_membership_delete =
+      OrganizationsMembership
       <$> (lit "" *> str)
-      <*> (lit "teams" *> pure Index)
+      <*> (lit "membership" *> lit "_delete" *> pure DeleteZ)
       <*> (params' <|> pure emptyParams)
+
+
 
     organizations_forums_index =
       OrganizationsForums
@@ -375,17 +385,30 @@ routing =
       <*> pure Index
       <*> (params' <|> pure emptyParams)
 
+    organizations_teams_index =
+      OrganizationsTeams
+      <$> (lit "" *> str)
+      <*> (lit "teams" *> pure Index)
+      <*> (params' <|> pure emptyParams)
+
+    organizations_teams_members_index =
+      OrganizationsTeamsMembers
+      <$> (lit "" *> str)
+      <*> (lit "teams" *> str1)
+      <*> (lit "members" *> pure Index)
+      <*> (params' <|> pure emptyParams)
+
+    organizations_membership_index =
+      OrganizationsMembership
+      <$> (lit "" *> str)
+      <*> (lit "membership" *> pure Index)
+      <*> (params' <|> pure emptyParams)
+
 
 
     organizations_show =
       Organizations
       <$> (lit "" *> (Show <$> str1))
-      <*> (params' <|> pure emptyParams)
-
-    organizations_teams_show =
-      OrganizationsTeams
-      <$> (lit "" *> str)
-      <*> (lit "teams" *> (Show <$> str1))
       <*> (params' <|> pure emptyParams)
 
     organizations_forums_show =
@@ -416,6 +439,12 @@ routing =
       <*> str1
       <*> str1
       <*> (ShowI <$> int)
+      <*> (params' <|> pure emptyParams)
+
+    organizations_teams_show =
+      OrganizationsTeams
+      <$> (lit "" *> str)
+      <*> (lit "teams" *> (Show <$> str1))
       <*> (params' <|> pure emptyParams)
 
 

@@ -28,6 +28,7 @@ data CRUD
   | Delete String
   | DeleteI Int
   | DeleteN Number
+  | DeleteZ
 
 
 
@@ -44,28 +45,7 @@ instance crudEq :: Eq CRUD where
   eq (Delete t1)  (Delete t2)  = t1 == t2
   eq (DeleteI t1) (DeleteI t2) = t1 == t2
   eq (DeleteN t1) (DeleteN t2) = t1 == t2
-  eq _            _            = false
-
-
-
-
--- derive instance genericCRUD :: Generic CRUD
-
-
-
-instance eqCrud :: Eq CRUD where
-  eq Index        Index        = true
-  eq (Show a)     (Show b)     = a == b
-  eq (ShowI a)    (ShowI b)    = a == b
-  eq (ShowN a)    (ShowN b)    = a == b
-  eq (ShowB a)    (ShowB b)    = a == b
-  eq New          New          = true
-  eq (Edit a)     (Edit b)     = a == b
-  eq (EditI a)    (EditI b)    = a == b
-  eq (EditN a)    (EditN b)    = a == b
-  eq (Delete a)   (Delete b)   = a == b
-  eq (DeleteI a)  (DeleteI b)  = a == b
-  eq (DeleteN a)  (DeleteN b)  = a == b
+  eq DeleteZ      DeleteZ      = true
   eq _            _            = false
 
 
@@ -86,6 +66,7 @@ instance crudHasLink :: HasLink CRUD where
   link (Delete s)     = Tuple ("/_delete/" <> s) emptyParams
   link (DeleteI int)  = Tuple ("/_delete/" <> show int) emptyParams
   link (DeleteN num)  = Tuple ("/_delete/" <> show num) emptyParams
+  link DeleteZ        = Tuple "/_delete" emptyParams
 
 
 
