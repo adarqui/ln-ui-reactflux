@@ -7,15 +7,16 @@ module LN.Eval.Memberships (
 import Data.Array                      (head, deleteAt, modifyAt, nub, sort, (:))
 import Data.Ebyam                      (ebyam)
 import Data.Either                     (Either(..))
+import Data.Foldable                   (elem)
 import Data.Functor                    (($>))
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Data.String                     (toLower)
 import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
-import Prelude                         (class Eq, id, bind, pure, const, ($), (<>), (<$>), (<<<))
+import Prelude                         (class Eq, id, bind, pure, const, ($), (<>), (<$>), (<<<), (==))
 
-import LN.Api                          (rd)
+import LN.Api                          (rd, postTeamMember_ByOrganizationId')
 import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
 import LN.Input.Membership             (InputMembership(..), Membership_Act(..), Membership_Mod(..))
@@ -25,7 +26,11 @@ import LN.Router.Class.Params          (emptyParams)
 import LN.State.Loading                (l_currentOrganization)
 import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.T.Internal.Convert           ()
-import LN.T                            ()
+import LN.T                            ( SystemTeam(..), Membership(..)
+                                       , _OrganizationPackResponse, _OrganizationResponse, organization_, organizationId_, name_
+                                       , TeamPackResponse(..), _TeamPackResponse
+                                       , _TeamResponse, team_, teams_
+                                       , mkTeamMemberRequest)
 
 
 
@@ -49,8 +54,21 @@ eval_Membership eval (CompMembership sub next) = do
  where
 
   act_join = do
---    post team members by ... team id
---    need teams and team members in state
+    m_org_pack <- gets _.currentOrganization
+    case m_org_pack of
+      Nothing       -> eval (AddError "eval_Team(Act/Join)" "Organization doesn't exist" next)
+      Just org_pack -> do
+        if Team_Members `elem` (org_pack ^. _OrganizationPackResponse .. teams_)
+           then
+             -- Already a member
+             eval (Goto (Organizations (Show $ org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. name_) emptyParams) next)
+           else do
+             let team_member_request = mkTeamMemberRequest 0
+             e_resp <- rd $ postTeamMember_ByOrganizationId' (org_pack ^. _OrganizationPackResponse .. organizationId_) team_member_request
+             case e_resp of
+              Left err -> eval (AddErrorApi "eval_Team(Act/Join)::postTeamMember_ByOrganizationId'" err next)
+              Right resp -> eval (Goto (Organizations (Show $ org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse .. name_) emptyParams) next)
+
     pure next
 
   act_leave = do
