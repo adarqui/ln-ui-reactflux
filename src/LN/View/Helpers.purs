@@ -109,7 +109,11 @@ module LN.View.Helpers (
   showBadge',
 
   showTags,
-  showTagsSmall
+  showTagsSmall,
+
+  textButton,
+  textButtonSm,
+  textButtonLg
 ) where
 
 
@@ -325,3 +329,15 @@ showTags tags =
 
 
 showTagsSmall tags = H.small_ [H.span_ $ showTags tags]
+
+
+
+
+textButton sz label handler =
+    H.button [
+      P.classes [B.btn, B.btnDefault, sz],
+      E.onClick $ E.input_ handler
+    ] [H.span [] [H.text label]]
+
+textButtonSm = textButton B.btnSm
+textButtonLg = textButton B.btnLg

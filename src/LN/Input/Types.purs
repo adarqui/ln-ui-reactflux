@@ -6,6 +6,9 @@ module LN.Input.Types (
   cOrganizationAct,
   cTeam,
   cTeamMod,
+  cMembership,
+  cMembershipMod,
+  cMembershipAct,
   cForum,
   cForumMod,
   cForumAct,
@@ -35,6 +38,7 @@ import LN.Input.Forum          (InputForum(..), Forum_Act, Forum_Mod)
 import LN.Input.Leuron         (InputLeuron(..), Leuron_Mod)
 import LN.Input.Like           (InputLike)
 import LN.Input.Star           (InputStar)
+import LN.Input.Membership     (InputMembership(..), Membership_Act, Membership_Mod)
 import LN.Input.OrderBy        (InputOrderBy)
 import LN.Input.Organization   (InputOrganization(..), Organization_Act, Organization_Mod)
 import LN.Input.Profile        (InputProfile)
@@ -87,6 +91,7 @@ data Input a
   | CompOrderBy        InputOrderBy      a
   | CompOrganization   InputOrganization a
   | CompTeam           InputTeam         a
+  | CompMembership     InputMembership   a
   | CompForum          InputForum        a
   | CompBoard          InputBoard        a
   | CompThread         InputThread       a
@@ -117,6 +122,19 @@ cOrganizationAct act next = CompOrganization (InputOrganization_Act act) next
 
 cTeam :: forall a. InputTeam -> a -> Input a
 cTeam sub next = CompTeam sub next
+
+
+
+cMembership :: forall a. InputMembership -> a -> Input a
+cMembership sub next = CompMembership sub next
+
+cMembershipMod :: forall a. Membership_Mod -> a -> Input a
+cMembershipMod mod next = CompMembership (InputMembership_Mod mod) next
+
+cMembershipAct :: forall a. Membership_Act -> a -> Input a
+cMembershipAct act next = CompMembership (InputMembership_Act act) next
+
+
 
 cTeamMod :: forall a. Team_Mod -> a -> Input a
 cTeamMod mod next = CompTeam (InputTeam_Mod mod) next

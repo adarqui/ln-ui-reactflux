@@ -52,7 +52,7 @@ renderView_Organizations_Show' org_pack forum_packs =
         orgMemberHTML
           org_pack
           unitDiv
-          (\_ -> glyphButtonLinkDef_Ok $ OrganizationsTeams organization.name Index emptyParams),
+          (\_ -> glyphButtonLinkDef_Ok $ OrganizationsMembership organization.name Index emptyParams),
 
         permissionsHTML'
           org_pack'.permissions

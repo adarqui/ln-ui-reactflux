@@ -20,6 +20,7 @@ import LN.Eval.Profile
 import LN.Eval.Users
 import LN.Eval.Organizations
 import LN.Eval.Teams
+import LN.Eval.Memberships
 import LN.Eval.Forums
 import LN.Eval.Boards
 import LN.Eval.Threads

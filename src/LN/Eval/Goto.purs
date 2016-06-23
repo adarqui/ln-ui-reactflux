@@ -349,6 +349,17 @@ eval_Goto eval (Goto route next) = do
 
 
 
+    (OrganizationsMembership org_name Index params) -> do
+      eval (cOrganizationAct (Organization.GetSid org_name) next)
+      pure unit
+
+    (OrganizationsMembership org_name DeleteZ params) -> do
+      eval (cOrganizationAct (Organization.GetSid org_name) next)
+      pure unit
+
+
+
+
     (Resources Index params) -> do
       let m_offset = lookupParam ParamTag_Offset params
       maybe
