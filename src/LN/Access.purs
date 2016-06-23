@@ -14,7 +14,11 @@ module LN.Access (
   ifte_OrgMember,
   orgMember,
   orgMemberHTML,
-  orgMemberHTML'
+  orgMemberHTML',
+  ifte_OrgOwner,
+  orgOwner,
+  orgOwnerHTML,
+  orgOwnerHTML'
 ) where
 
 
@@ -109,16 +113,50 @@ notSelf my_id questionable_id = my_id /= questionable_id
 
 
 
+--
+-- Owner Helpers
+--
+
+ifte_OrgOwner :: forall a. OrganizationPackResponse -> a -> a -> a
+ifte_OrgOwner pack t e =
+  if orgOwner pack
+     then t
+     else e
+
+
+
+orgOwner :: OrganizationPackResponse -> Boolean
+orgOwner (OrganizationPackResponse pack) = Team_Owners `elem` pack.teams
+
+
+
+orgOwnerHTML :: OrganizationPackResponse -> (Unit -> HTML _ _) -> (Unit -> HTML _ _) -> HTML _ _
+orgOwnerHTML pack owner_cb no_owner_cb =
+  if orgOwner pack
+    then owner_cb unit
+    else no_owner_cb unit
+
+
+
+orgOwnerHTML' :: OrganizationPackResponse -> (Unit -> HTML _ _) -> HTML _ _
+orgOwnerHTML' pack owner_cb = orgOwnerHTML pack owner_cb unitDiv
+
+
+
+--
+-- Member helpers
+--
+
 ifte_OrgMember :: forall a. OrganizationPackResponse -> a -> a -> a
-ifte_OrgMember (OrganizationPackResponse pack) t e =
-  if pack.isMember == true
+ifte_OrgMember pack t e =
+  if orgMember pack
      then t
      else e
 
 
 
 orgMember :: OrganizationPackResponse -> Boolean
-orgMember (OrganizationPackResponse pack) = pack.isMember
+orgMember (OrganizationPackResponse pack) = Team_Members `elem` pack.teams
 
 
 

@@ -49,10 +49,10 @@ renderView_Organizations_Show' org_pack forum_packs =
       H.h1 [P.class_ B.textCenter] [ H.text organization.name ],
       H.p [P.class_ B.textCenter] [ H.text $ maybe "" id organization.description ],
 
---        orgMemberHTML
---          org_pack
---          (\_ -> glyphButtonLinkDef_Ok $ OrganizationsTeams (Show organization.name) emptyParams)
---          (\_ -> glyphButtonLinkDef_Remove $ OrganizationsTeams (Show organization.name) emptyParams),
+        orgMemberHTML
+          org_pack
+          unitDiv
+          (\_ -> glyphButtonLinkDef_Ok $ OrganizationsTeams organization.name Index emptyParams),
 
         permissionsHTML'
           org_pack'.permissions
