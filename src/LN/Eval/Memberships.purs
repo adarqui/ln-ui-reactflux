@@ -49,7 +49,10 @@ eval_Membership eval (CompMembership sub next) = do
  where
 
   act_join = do
+--    post team members by ... team id
+--    need teams and team members in state
     pure next
 
   act_leave = do
+--    delete team members by ... team id
     pure next

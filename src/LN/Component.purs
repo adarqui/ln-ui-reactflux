@@ -20,6 +20,7 @@ import LN.Eval.Profile
 import LN.Eval.Users
 import LN.Eval.Organizations
 import LN.Eval.Teams
+import LN.Eval.TeamMembers
 import LN.Eval.Memberships
 import LN.Eval.Forums
 import LN.Eval.Boards
@@ -61,11 +62,7 @@ ui = component {render, eval}
   eval z@(GetUsers_MergeMap_ByUser _ _)               = eval_GetUsers_MergeMap_ByUser eval z
   eval z@(GetUsers_MergeMap_ByUserId _ _)             = eval_GetUsers_MergeMap_ByUserId eval z
 
-  eval z@(GetTeams _)                                 = eval_GetTeams eval z
-
   eval (GetThreadPostLikes next)                      = pure next
-
-  eval (GetPMs next)                                  = pure next
 
   eval z@(GetResources _)                             = eval_GetResources eval z
   eval z@(GetResourceId _ _)                          = eval_GetResourceId eval z
@@ -85,6 +82,9 @@ ui = component {render, eval}
 
   eval z@(CompArrayString _ _)                        = eval_ArrayString eval z
   eval z@(CompOrganization _ _)                       = eval_Organization eval z
+  eval z@(CompTeam _ _)                               = eval_Team eval z
+  eval z@(CompTeamMember _ _)                         = eval_TeamMember eval z
+  eval z@(CompMembership _ _)                         = eval_Membership eval z
   eval z@(CompForum _ _)                              = eval_Forum eval z
   eval z@(CompBoard _ _)                              = eval_Board eval z
   eval z@(CompThread _ _)                             = eval_Thread eval z

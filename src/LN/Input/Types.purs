@@ -6,6 +6,10 @@ module LN.Input.Types (
   cOrganizationAct,
   cTeam,
   cTeamMod,
+  cTeamAct,
+  cTeamMember,
+  cTeamMemberMod,
+  cTeamMemberAct,
   cMembership,
   cMembershipMod,
   cMembershipAct,
@@ -29,6 +33,7 @@ module LN.Input.Types (
 ) where
 
 
+
 import Data.Foreign            (ForeignError)
 import Purescript.Api.Helpers  (ApiError)
 
@@ -43,7 +48,8 @@ import LN.Input.OrderBy        (InputOrderBy)
 import LN.Input.Organization   (InputOrganization(..), Organization_Act, Organization_Mod)
 import LN.Input.Profile        (InputProfile)
 import LN.Input.Resource       (InputResource(..), Resource_Mod)
-import LN.Input.Team           (InputTeam(..), Team_Mod)
+import LN.Input.Team           (InputTeam(..), Team_Act, Team_Mod)
+import LN.Input.TeamMember     (InputTeamMember(..), TeamMember_Act, TeamMember_Mod)
 import LN.Input.Thread         (InputThread(..), Thread_Act, Thread_Mod)
 import LN.Input.ThreadPost     (InputThreadPost(..), ThreadPost_Act, ThreadPost_Mod)
 import LN.Router.Class.Routes  (Routes)
@@ -66,11 +72,7 @@ data Input a
   | GetUsers_MergeMap_ByUser (Array UserSanitizedResponse) a
   | GetUsers_MergeMap_ByUserId (Array Int) a
 
-  | GetTeams a
-
   | GetThreadPostLikes a
-
-  | GetPMs a
 
   | GetResources a
   | GetResourceId Int a
@@ -91,6 +93,7 @@ data Input a
   | CompOrderBy        InputOrderBy      a
   | CompOrganization   InputOrganization a
   | CompTeam           InputTeam         a
+  | CompTeamMember     InputTeamMember   a
   | CompMembership     InputMembership   a
   | CompForum          InputForum        a
   | CompBoard          InputBoard        a
@@ -123,6 +126,23 @@ cOrganizationAct act next = CompOrganization (InputOrganization_Act act) next
 cTeam :: forall a. InputTeam -> a -> Input a
 cTeam sub next = CompTeam sub next
 
+cTeamMod :: forall a. Team_Mod -> a -> Input a
+cTeamMod mod next = CompTeam (InputTeam_Mod mod) next
+
+cTeamAct :: forall a. Team_Act -> a -> Input a
+cTeamAct act next = CompTeam (InputTeam_Act act) next
+
+
+
+cTeamMember :: forall a. InputTeamMember -> a -> Input a
+cTeamMember sub next = CompTeamMember sub next
+
+cTeamMemberMod :: forall a. TeamMember_Mod -> a -> Input a
+cTeamMemberMod mod next = CompTeamMember (InputTeamMember_Mod mod) next
+
+cTeamMemberAct :: forall a. TeamMember_Act -> a -> Input a
+cTeamMemberAct act next = CompTeamMember (InputTeamMember_Act act) next
+
 
 
 cMembership :: forall a. InputMembership -> a -> Input a
@@ -133,11 +153,6 @@ cMembershipMod mod next = CompMembership (InputMembership_Mod mod) next
 
 cMembershipAct :: forall a. Membership_Act -> a -> Input a
 cMembershipAct act next = CompMembership (InputMembership_Act act) next
-
-
-
-cTeamMod :: forall a. Team_Mod -> a -> Input a
-cTeamMod mod next = CompTeam (InputTeam_Mod mod) next
 
 
 

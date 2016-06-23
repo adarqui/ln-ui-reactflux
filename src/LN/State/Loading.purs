@@ -8,6 +8,7 @@ module LN.State.Loading (
   l_users,
   l_organizations,
   l_teams,
+  l_teamMembers,
   l_forums,
   l_boards,
   l_threads,
@@ -15,11 +16,20 @@ module LN.State.Loading (
   l_resources,
   l_leurons,
   l_currentOrganization,
+  l_currentOrganizationRequest,
+  l_currentTeam,
+  l_currentTeamRequest,
+  l_currentTeamMember,
+  l_currentTeamMemberRequest,
   l_currentUser,
   l_currentForum,
+  l_currentForumRequest,
   l_currentBoard,
+  l_currentBoardRequest,
   l_currentThread,
+  l_currentThreadRequest,
   l_currentThreadPost,
+  l_currentThreadPostRequest,
   l_currentResource,
   l_currentResourceRequest,
   l_currentLeuron,
@@ -28,7 +38,7 @@ module LN.State.Loading (
 
 
 
-import LN.ArrayList (arrayToList)
+import LN.ArrayList          (arrayToList)
 import Data.List             (List)
 import Data.Maybe            (Maybe(..))
 import Data.Maybe.Unsafe     (fromJust)
@@ -70,6 +80,7 @@ loadingKeys =
     , l_users
     , l_organizations
     , l_teams
+    , l_teamMembers
     , l_forums
     , l_boards
     , l_threads
@@ -78,6 +89,10 @@ loadingKeys =
     , l_leurons
     , l_currentOrganization
     , l_currentOrganizationRequest
+    , l_currentTeam
+    , l_currentTeamRequest
+    , l_currentTeamMember
+    , l_currentTeamMemberRequest
     , l_currentUser
     , l_currentForum
     , l_currentForumRequest
@@ -177,3 +192,12 @@ l_currentLeuron                 = 25
 
 l_currentLeuronRequest          :: Int
 l_currentLeuronRequest          = 26
+
+l_teamMembers                   :: Int
+l_teamMembers                   = 27
+
+l_currentTeamMember             :: Int
+l_currentTeamMember             = 28
+
+l_currentTeamMemberRequest      :: Int
+l_currentTeamMemberRequest      = 29

@@ -53,6 +53,7 @@ initialState ch =
   , usersMap:                     M.empty
   , organizations:                M.empty
   , teams:                        M.empty
+  , teamMembers:                  M.empty
   , forums:                       M.empty
   , boards:                       M.empty
   , threads:                      M.empty

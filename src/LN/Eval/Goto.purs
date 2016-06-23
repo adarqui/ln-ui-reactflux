@@ -4,6 +4,7 @@ module LN.Eval.Goto (
 
 
 
+import Control.Monad.Aff.Free   (fromAff)
 import Data.Functor             (($>))
 import Data.Map                 as M
 import Data.Maybe               (Maybe(..), maybe)
@@ -16,6 +17,7 @@ import Purescript.Api.Helpers   (qp)
 import LN.Component.Types       (EvalEff)
 import LN.Input.Types
 import LN.Input.Organization    as Organization
+import LN.Input.Team            as Team
 import LN.Input.Forum           as Forum
 import LN.Input.Board           as Board
 import LN.Input.Thread          as Thread
@@ -39,7 +41,7 @@ import LN.State.Leuron          (defaultLeuronRequestState, leuronRequestStateFr
 import LN.State.Resource        (defaultResourceRequestState)
 import LN.T
 
-import Control.Monad.Aff.Free (fromAff)
+
 
 
 eval_Goto :: EvalEff
@@ -351,6 +353,7 @@ eval_Goto eval (Goto route next) = do
 
     (OrganizationsMembership org_name Index params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
+      eval (cTeamAct Team.Gets_ByCurrentOrganization next)
       pure unit
 
     (OrganizationsMembership org_name DeleteZ params) -> do

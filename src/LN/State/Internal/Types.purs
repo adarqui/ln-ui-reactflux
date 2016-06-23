@@ -35,6 +35,7 @@ type InternalState routes {- TODO FIXME: driver_ch-} =
   , usersMap                     :: M.Map Int UserSanitizedPackResponse
   , organizations                :: M.Map Int OrganizationPackResponse
   , teams                        :: M.Map Int TeamPackResponse
+  , teamMembers                  :: M.Map Int TeamMemberPackResponse
   , forums                       :: M.Map Int ForumPackResponse
   , boards                       :: M.Map Int BoardPackResponse
   , threads                      :: M.Map Int ThreadPackResponse
