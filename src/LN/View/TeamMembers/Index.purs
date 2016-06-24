@@ -25,11 +25,12 @@ import LN.View.Helpers
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( TeamPackResponse(..), TeamResponse(..)
                                        , TeamMemberPackResponse
-                                       , _TeamMemberPackResponse, _TeamMemberResponse, organization_
-                                       , _TeamMemberPackResponse, _TeamMemberResponse, forum_
+                                       , _TeamMemberPackResponse, _TeamMemberResponse
+                                       , _TeamMemberPackResponse, _TeamMemberResponse, teamMember_
+                                       , _TeamPackResponse, _TeamResponse, team_
                                        , OrganizationPackResponse, OrganizationResponse
                                        , _OrganizationPackResponse, _OrganizationResponse
-                                       , organization_, team_)
+                                       , organization_)
 
 
 
@@ -45,7 +46,17 @@ renderView_TeamMembers_Index st =
 renderView_TeamMembers_Index' :: OrganizationPackResponse -> TeamPackResponse -> M.Map Int TeamMemberPackResponse -> ComponentHTML Input
 renderView_TeamMembers_Index' org_pack team_pack team_member_packs =
   H.div [P.class_ B.pageHeader] [
-    H.h1 [P.class_ B.textCenter] [ H.text "TeamMembers" ]
+    H.h1 [P.class_ B.textCenter] [ H.text "TeamMembers" ],
+
+    H.div [P.class_ B.listUnstyled] $
+      map (\team_member_pack ->
+        let team_member = team_member_pack ^. _TeamMemberPackResponse .. teamMember_ ^. _TeamMemberResponse in
+        H.li_ [
+          linkToP [] (OrganizationsTeamsMembers organization.name (show team.system) (ShowI team_member.id) emptyParams) (show team_member.id)
+        ]
+      ) $ listToArray $ M.values team_member_packs
+
   ]
   where
   organization = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  team         = team_pack ^. _TeamPackResponse .. team_ ^. _TeamResponse

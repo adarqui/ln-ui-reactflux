@@ -385,7 +385,7 @@ eval_Goto eval (Goto route next) = do
       pure unit
 
     (OrganizationsTeams org_name (Show team_name) params) -> do
---      eval (Goto (OrganizationsTeamsMembers org_name team_name Index params) next)
+      eval (Goto (OrganizationsTeamsMembers org_name team_name Index params) next)
       pure unit
 
 
@@ -401,6 +401,7 @@ eval_Goto eval (Goto route next) = do
     (OrganizationsTeamsMembers org_name team_name (ShowI team_member_id) params) -> do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
       eval (cTeamAct (Team.GetSid_ByCurrentOrganization team_name) next)
+      eval (cTeamMemberAct (TeamMember.GetId team_member_id) next)
       pure unit
 
 

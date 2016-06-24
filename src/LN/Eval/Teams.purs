@@ -15,7 +15,7 @@ import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
 import Prelude                         (class Eq, id, bind, pure, const, ($), (<>), (<$>), (<<<))
 
-import LN.Api                          (rd, putTeam', getTeamPacks_ByOrganizationId')
+import LN.Api                          (rd, putTeam', getTeamPacks_ByOrganizationId', getTeamPack')
 import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
@@ -47,8 +47,8 @@ eval_Team eval (CompTeam sub next) = do
     InputTeam_Act q -> do
       case q of
         Gets_ByCurrentOrganization            -> act_gets_by_current_organization
-        GetId team_id                         -> pure next
-        GetSid_ByCurrentOrganization team_sid -> pure next
+        GetId team_id                         -> act_get_id team_id
+        GetSid_ByCurrentOrganization team_sid -> act_get_sid_by_current_organization team_sid
 
 
 
@@ -77,11 +77,34 @@ eval_Team eval (CompTeam sub next) = do
         let org_id = org_pack ^. _OrganizationPackResponse .. organizationId_
         e_teams <- rd $ getTeamPacks_ByOrganizationId' org_id
         case e_teams of
-          Left err -> eval (AddErrorApi "eval_Team(Act/Gets)::getTeams_ByOrganizationId'" err next)
+          Left err -> eval (AddErrorApi "eval_Team(Act/Gets)::getTeamPacks_ByOrganizationId'" err next)
           Right (TeamPackResponses team_packs) -> do
             let
               teams_map = idmapFrom (\(TeamPackResponse pack) -> pack.teamId) team_packs.teamPackResponses
             modify (_{ teams = teams_map })
+            pure next
+
+
+
+  act_get_id team_id = do
+    e_team_pack <- rd $ getTeamPack' team_id
+    case e_team_pack of
+      Left err -> eval (AddErrorApi "eval_Team(Act/GetId)::getTeamPack'" err next)
+      Right team_pack -> modify (_ { currentTeam = Just $ team_pack }) $> next
+
+
+
+  act_get_sid_by_current_organization team_sid = do
+    m_org <- gets _.currentOrganization
+    case m_org of
+      Nothing       -> eval (AddError "eval_Team(Act/GetSid)" "Organization doesn't exist" next)
+      Just org_pack -> do
+        let org_id = org_pack ^. _OrganizationPackResponse .. organizationId_
+        e_team <- rd $ ApiS.getTeamPack_ByOrganizationId' team_sid org_id
+        case e_team of
+          Left err        -> eval (AddErrorApi "eval_Team(Act/GetSid)::ApiS.getTeamPack_ByOrganizationId'" err next)
+          Right team_pack -> do
+            modify (_{ currentTeam = Just team_pack })
             pure next
 
 
