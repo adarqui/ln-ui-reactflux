@@ -49,7 +49,7 @@ renderView_Organizations_Show' org_pack forum_packs =
       H.h1 [P.class_ B.textCenter] [ H.text organization.name ],
       H.p [P.class_ B.textCenter] [ H.text $ maybe "" id organization.description ],
 
-        -- ACCESS:
+        -- ACCESS: Organization
         -- * Member: if not a member, this is a shortcut to join an organization
         -- 
         orgMemberHTML

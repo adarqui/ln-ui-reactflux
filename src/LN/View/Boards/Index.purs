@@ -5,7 +5,7 @@ module LN.View.Boards.Index (
 
 
 
-import LN.ArrayList           (listToArray)
+import LN.ArrayList                    (listToArray)
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (ComponentHTML)
@@ -94,11 +94,25 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
           , H.div [P.class_ B.colXs1] [
               H.div [P.class_ B.container] [
                 buttonGroup_VerticalSm1 [
---                  permissionsHTML'
---                    forum_pack'.permissions
---                    (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams)
---                       glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New emptyParams,
---                       glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams
+                  -- ACCESS: Forum
+                  -- * Create: can create boards
+                  --
+                  permissionsMatchCreateHTML
+                    forum_pack'.permissions
+                    (\_ -> glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New emptyParams)
+                    unitDiv,
+
+                  -- ACCESS: Board
+                  -- * Update: can edit board settings
+                  -- * Delete: can delete boards
+                  --
+                  permissionsHTML'
+                    board_pack.permissions
+                    permCreateEmpty
+                    permReadEmpty
+                    (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams)
+                    (\_ -> glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams)
+                    permExecuteEmpty
                 ]
               ]
             ]
