@@ -62,14 +62,6 @@ renderView_Organizations_Show' org_pack forum_packs =
           (\_ -> glyphButtonLinkDef_Trash $ Organizations (Delete organization.name) emptyParams)
           permExecuteEmpty
 
---        if org_owner
---           then
---             buttonGroup_HorizontalSm1 [
---               glyphButtonLinkDef_Pencil $ Organizations (Edit organization.name) emptyParams,
---               glyphButtonLinkDef_Trash $ Organizations (Delete organization.name) emptyParams
---             ]
---           else H.div_ []
-
     ],
     H.div [P.class_ B.pageHeader] [
       H.p_ [ H.h4_ [H.text "Name:", H.small_ [H.text $ " " <> organization.name]]],
