@@ -50,6 +50,23 @@ instance crudEq :: Eq CRUD where
 
 
 
+instance crudShow :: Show CRUD where
+  show Index       = "Index"
+  show (Show s)    = "Show " <> s
+  show (ShowI i)   = "ShowI " <> show i
+  show (ShowN n)   = "ShowN " <> show n
+  show (ShowB b)   = "ShowB " <> show b
+  show New         = "New"
+  show (Edit s)    = "Edit " <> s
+  show (EditI i)   = "EditI " <> show i
+  show (EditN n)   = "EditN " <> show n
+  show (Delete s)  = "Delete " <> show s
+  show (DeleteI i) = "DeleteI " <> show i
+  show (DeleteN n) = "DeleteN " <> show n
+  show DeleteZ     = "DeleteZ"
+
+
+
 instance crudHasLink :: HasLink CRUD where
 -- TODO FIXME:
 -- well this could be fixed.. changed from "" in order to match CRUD Index routes

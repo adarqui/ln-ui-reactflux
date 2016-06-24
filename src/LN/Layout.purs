@@ -41,6 +41,7 @@ defaultLayout :: State -> Array (HTML _ _) -> HTML _ _
 defaultLayout st page =
   H.div [ P.class_ B.containerFluid ] [
     header st.me (length st.errors),
+    H.p_ [H.text $ show st.currentPage],
     renderBreadcrumbs st.currentPage st,
     row page
   ]

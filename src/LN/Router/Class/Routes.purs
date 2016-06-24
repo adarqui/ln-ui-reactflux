@@ -559,32 +559,50 @@ instance routesHasOrderBy :: HasOrderBy Routes where
 
 
 instance routesShow :: Show Routes where
-  show Home = "#/"
-  show About = "#/about"
-  show Me = "#/me"
-  show Errors = "#/errors"
-  show Portal = "#/portal"
-  show (Organizations crud params) = "#/organizations/..."
-  show (OrganizationsForums org crud params) = "#/" <> org <> "/f/..."
-  show (OrganizationsForumsBoards org forum crud params) = "#/" <> org <> "/f/" <> forum <> "/b/" <> "..."
-  show (OrganizationsForumsBoardsThreads org forum board crud params) = "#/" <> org <> "/f/" <> forum <> "/b/" <> board <> "/t/" <> "..."
-  show (OrganizationsForumsBoardsThreadsPosts org forum board thread crud params) = "#/" <> org <> "/f/" <> forum <> "/" <> board <> "/" <> thread <> "/..."
-  show (Users crud params) = "#/u/..."
-  show (UsersProfile user params) = "#/u/profile"
-  show (UsersSettings user params) = "#/u/settings"
-  show (UsersPMs user params) = "#/u/pms"
-  show (UsersThreads user params) = "#/u/threads"
-  show (UsersThreadPosts user params) = "#/u/thread_posts"
-  show (UsersWorkouts user params) = "#/u/workouts"
-  show (UsersResources user params) = "#/u/resources"
-  show (UsersLeurons user params) = "#/u/leurons"
-  show (UsersLikes user params) = "#/u/likes"
-  show (Resources crud params) = "#/resources/..."
-  show (ResourcesLeurons resource_id crud params) = "#/resources/" <> show resource_id <> "/leurons/..."
-  show (ResourcesSiftLeurons resource_id params) = "#/resources/" <> show resource_id <> "/sift/..."
-  show (ResourcesSiftLeuronsLinear resource_id crud params) = "#/resources/" <> show resource_id <> "/sift/linear/..."
-  show (ResourcesSiftLeuronsRandom resource_id params) = "#/resources/" <> show resource_id <> "/sift/random"
---  show (Leurons crud params) = "#/leurons/..."
-  show Login = "/auth/login"
-  show Logout = "/auth/logout"
-  show NotFound = "#/404"
+  show Home   = "Home"
+  show About  = "About"
+  show Me     = "Me"
+  show Errors = "Errors"
+  show Portal = "Portal"
+  show (Organizations crud params) =
+    "Organizations " <> show crud
+  show (OrganizationsForums org crud params) =
+    "OrganizationsForums " <> org <> sp <> show crud
+  show (OrganizationsForumsBoards org forum crud params) =
+    "OrganizationsForumsBoards " <> org <> sp <> forum <> sp <> show crud
+  show (OrganizationsForumsBoardsThreads org forum board crud params) =
+    "OrganizationsForumsBoardsThreads " <> org <> sp <> forum <> sp <> board <> sp <> show crud
+  show (OrganizationsForumsBoardsThreadsPosts org forum board thread crud params) =
+    "OrganizationsForumsBoardsThreads " <> org <> sp <> forum <> sp <> board <> sp <> thread <> sp <> show crud
+  show (OrganizationsTeams org crud params) =
+    "OrganizationsTeams " <> org <> sp <> show crud
+  show (OrganizationsTeamsMembers org team crud params) =
+    "OrganizationsTeamsMembers " <> org <> sp <> team <> sp <> show crud
+  show (OrganizationsMembersOnly org) =
+    "OrganizationsMembersOnly " <> org
+  show (OrganizationsMembership org crud params) =
+    "OrganizationsMembership " <> org <> sp <> show crud
+  show (Users crud params)            = "Users " <> show crud
+  show (UsersProfile user params)     = "UsersProfile " <> user
+  show (UsersSettings user params)    = "UsersSettings " <> user
+  show (UsersPMs user params)         = "UsersPMs " <> user
+  show (UsersThreads user params)     = "UsersThreads " <> user
+  show (UsersThreadPosts user params) = "UsersThreadPosts " <> user
+  show (UsersWorkouts user params)    = "UsersWorkouts " <> user
+  show (UsersResources user params)   = "UsersResources " <> user
+  show (UsersLeurons user params)     = "UsersLeurons " <> user
+  show (UsersLikes user params)       = "UsersLikes " <> user
+  show (Resources crud params)        = "Resources " <> show crud
+  show (ResourcesLeurons resource_id crud params)           = "ResourcesLeurons " <> show resource_id <> sp <> show crud
+  show (ResourcesSiftLeurons resource_id params)            = "ResourcesSiftLeurons " <> show resource_id
+  show (ResourcesSiftLeuronsLinear resource_id crud params) = "ResourcesSiftLeuronsLinear " <> show resource_id <> sp <> show crud
+  show (ResourcesSiftLeuronsRandom resource_id params)      = "ResourcesSiftLeuronsRandom " <> show resource_id
+  show Login    = "Login"
+  show Logout   = "Logout"
+  show NotFound = "NotFound"
+  show _ = "make sure Show covers all Routes"
+
+
+
+sp :: String
+sp = " "
