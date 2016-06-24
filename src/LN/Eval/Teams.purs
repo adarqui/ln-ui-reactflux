@@ -15,7 +15,7 @@ import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
 import Prelude                         (class Eq, id, bind, pure, const, ($), (<>), (<$>), (<<<))
 
-import LN.Api                          (rd, putTeam')
+import LN.Api                          (rd, putTeam', getTeamPacks_ByOrganizationId')
 import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Helpers.Map                  (idmapFrom)
@@ -29,7 +29,8 @@ import LN.State.Team                   (TeamRequestState, defaultTeamRequestStat
 import LN.T.Internal.Convert           (teamResponseToTeamRequest)
 import LN.T                            ( OrganizationPackResponses(..), OrganizationPackResponse(..)
                                        , OrganizationResponse(..)
-                                       , _TeamPackResponse, TeamPackResponse(..)
+                                       , _OrganizationPackResponse, organizationId_
+                                       , _TeamPackResponse, TeamPackResponse(..), TeamPackResponses(..)
                                        , _TeamResponse, TeamResponse(..)
                                        , _TeamRequest, TeamRequest(..)
                                        , membership_, visibility_)
@@ -45,7 +46,7 @@ eval_Team eval (CompTeam sub next) = do
 
     InputTeam_Act q -> do
       case q of
-        Gets_ByCurrentOrganization            -> pure next
+        Gets_ByCurrentOrganization            -> act_gets_by_current_organization
         GetId team_id                         -> pure next
         GetSid_ByCurrentOrganization team_sid -> pure next
 
@@ -65,6 +66,24 @@ eval_Team eval (CompTeam sub next) = do
   append (Just arr) a = Just $ nub $ arr <> [a]
   set v req           = Just (v req)
   mod new             = modify (\st->st{ currentTeamRequest = maybe Nothing new st.currentTeamRequest }) $> next
+
+
+
+  act_gets_by_current_organization = do
+    m_org <- gets _.currentOrganization
+    case m_org of
+      Nothing       -> eval (AddError "eval_Team(Act/Gets)" "Organization doesn't exist" next)
+      Just org_pack -> do
+        let org_id = org_pack ^. _OrganizationPackResponse .. organizationId_
+        e_teams <- rd $ getTeamPacks_ByOrganizationId' org_id
+        case e_teams of
+          Left err -> eval (AddErrorApi "eval_Team(Act/Gets)::getTeams_ByOrganizationId'" err next)
+          Right (TeamPackResponses team_packs) -> do
+            let
+              teams_map = idmapFrom (\(TeamPackResponse pack) -> pack.teamId) team_packs.teamPackResponses
+            modify (_{ teams = teams_map })
+            pure next
+
 
   mod_edit team_id = do
     m_req <- gets _.currentTeamRequest

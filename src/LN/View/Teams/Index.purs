@@ -51,7 +51,10 @@ renderView_Teams_Index' org_pack team_packs =
       map (\team_pack ->
         let team = team_pack ^. _TeamPackResponse .. team_ ^. _TeamResponse in
         H.li_ [
+          linkToP [] (OrganizationsTeams organization.name (Show $ show team.system) emptyParams) (show team.system)
         ]
-      )
+      ) $ listToArray $ M.values team_packs
 
   ]
+  where
+  organization = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
