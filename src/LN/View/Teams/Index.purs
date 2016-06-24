@@ -28,7 +28,7 @@ import LN.T                            ( TeamPackResponse
                                        , _TeamPackResponse, _TeamResponse, forum_
                                        , OrganizationPackResponse, OrganizationResponse
                                        , _OrganizationPackResponse, _OrganizationResponse
-                                       , organization_)
+                                       , organization_, team_)
 
 
 
@@ -45,6 +45,13 @@ renderView_Teams_Index' :: OrganizationPackResponse -> M.Map Int TeamPackRespons
 renderView_Teams_Index' org_pack team_packs =
   H.div [P.class_ B.pageHeader] [
 
-    H.h1 [P.class_ B.textCenter] [ H.text "Teams" ]
+    H.h1 [P.class_ B.textCenter] [ H.text "Teams" ],
+
+    H.div [P.class_ B.listUnstyled] $
+      map (\team_pack ->
+        let team = team_pack ^. _TeamPackResponse .. team_ ^. _TeamResponse in
+        H.li_ [
+        ]
+      )
 
   ]
