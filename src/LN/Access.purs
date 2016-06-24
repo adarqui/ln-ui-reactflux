@@ -1,6 +1,12 @@
 module LN.Access (
   permissionsHTML,
   permissionsHTML',
+  permissionsMatchHTML,
+  permissionsMatchCreateHTML,
+  permissionsMatchReadHTML,
+  permissionsMatchUpdateHTML,
+  permissionsMatchDeleteHTML,
+  permissionsMatchExecuteHTML,
   unitDiv,
   permCreateEmpty,
   permReadEmpty,
@@ -84,6 +90,45 @@ permReadEmpty    = unitDiv
 permUpdateEmpty  = unitDiv
 permDeleteEmpty  = unitDiv
 permExecuteEmpty = unitDiv
+
+
+
+permissionsMatchCreateHTML :: Permissions -> (Unit -> HTML _ _) -> (Unit -> HTML _ _) -> HTML _ _
+permissionsMatchCreateHTML = permissionsMatchHTML Perm_Create
+
+
+
+permissionsMatchReadHTML :: Permissions -> (Unit -> HTML _ _) -> (Unit -> HTML _ _) -> HTML _ _
+permissionsMatchReadHTML = permissionsMatchHTML Perm_Read
+
+
+
+permissionsMatchUpdateHTML :: Permissions -> (Unit -> HTML _ _) -> (Unit -> HTML _ _) -> HTML _ _
+permissionsMatchUpdateHTML = permissionsMatchHTML Perm_Update
+
+
+
+permissionsMatchDeleteHTML :: Permissions -> (Unit -> HTML _ _) -> (Unit -> HTML _ _) -> HTML _ _
+permissionsMatchDeleteHTML = permissionsMatchHTML Perm_Delete
+
+
+
+permissionsMatchExecuteHTML :: Permissions -> (Unit -> HTML _ _) -> (Unit -> HTML _ _) -> HTML _ _
+permissionsMatchExecuteHTML = permissionsMatchHTML Perm_Execute
+
+
+
+permissionsMatchHTML
+  :: Permission
+  -> Permissions
+  -> (Unit -> HTML _ _)
+  -> (Unit -> HTML _ _)
+  -> HTML _ _
+permissionsMatchHTML perm_to_match permissions match_cb no_match_cb =
+  if perm_to_match `elem` permissions then (match_cb unit) else (no_match_cb unit)
+
+
+
 
 
 

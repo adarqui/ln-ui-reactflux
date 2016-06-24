@@ -15,7 +15,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, map, show, ($), (<>), (/=))
 
-import LN.Access                       (permissionsHTML', unitDiv)
+import LN.Access
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -48,21 +48,17 @@ renderView_Forums_Index' org_pack forum_packs =
 
     H.h1 [P.class_ B.textCenter] [ H.text "Forums" ],
 
---    permissionsHTML'
---      forum.perms
---      (_ -> glyphButtonLinkDef_Plus $ OrganizationsForums org.name New emptyParams),
-
---    (if org_owner
---       then
---         H.div [P.classes [B.clearfix, B.container]] [
---           glyphButtonLinkDef_Plus $ OrganizationsForums org.name New emptyParams
---         ]
---       else
---         H.div_ []),
+    permissionsMatchCreateHTML
+      org_pack'.permissions
+      (\_ -> glyphButtonLinkDef_Plus $ OrganizationsForums org.name New emptyParams)
+      unitDiv,
 
     H.div [P.class_ B.listUnstyled] $
       map (\forum_pack ->
-        let forum = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse in
+        let
+          forum       = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
+          forum_pack' = forum_pack ^. _ForumPackResponse
+        in
         H.li_ [
           H.div [P.class_ B.row] [
             H.div [P.class_ B.colXs1] [
@@ -83,6 +79,15 @@ renderView_Forums_Index' org_pack forum_packs =
               H.p_ [H.text "created-at"]
             ],
             H.div [P.class_ B.colXs1] [
+
+              permissionsHTML'
+                forum_pack'.permissions
+                permCreateEmpty
+                permReadEmpty
+                (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams)
+                (\_ -> glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) emptyParams)
+                permExecuteEmpty
+
 --              permissionsHTML'
 --                forum.perms
 --                (_ -> glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams)
@@ -100,4 +105,5 @@ renderView_Forums_Index' org_pack forum_packs =
   ]
   where
   org       = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  org_pack' = org_pack ^. _OrganizationPackResponse
 --  col_stats = if org_owner then B.colXs2 else B.colXs3
