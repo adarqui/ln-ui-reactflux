@@ -48,6 +48,9 @@ renderView_Forums_Index' org_pack forum_packs =
 
     H.h1 [P.class_ B.textCenter] [ H.text "Forums" ],
 
+    -- ACCESS: Organization
+    -- * Create: can create forums
+    --
     permissionsMatchCreateHTML
       org_pack'.permissions
       (\_ -> glyphButtonLinkDef_Plus $ OrganizationsForums org.name New emptyParams)
@@ -79,6 +82,11 @@ renderView_Forums_Index' org_pack forum_packs =
               H.p_ [H.text "created-at"]
             ],
             H.div [P.class_ B.colXs1] [
+
+              -- ACCESS: Forum
+              -- * Update: can edit forum settings
+              -- * Delete: can delete a forum
+              --
               permissionsHTML'
                 forum_pack'.permissions
                 permCreateEmpty
