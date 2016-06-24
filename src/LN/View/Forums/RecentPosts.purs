@@ -23,13 +23,7 @@ import LN.State.Types                  (State)
 import LN.View.Helpers
 import LN.View.Boards.Index            (renderView_Boards_Index')
 import LN.View.Module.Loading          (renderLoading)
-import LN.T                            ( ForumPackResponse
-                                       , _ForumPackResponse, _ForumResponse, organization_
-                                       , _ForumPackResponse, _ForumResponse, forum_
-                                       , OrganizationPackResponse, OrganizationResponse
-                                       , _OrganizationPackResponse, _OrganizationResponse
-                                       , organization_
-                                       , ThreadPostPackResponse)
+import LN.T
 
 
 
@@ -59,7 +53,19 @@ renderView_Forums_RecentPosts' org_pack forum_pack posts_map =
 
     H.div [P.class_ B.pageHeader] [
       H.h4_ [H.text "Recent Posts"]
-    ]
+    ],
+
+
+    H.ul [P.class_ B.listUnstyled] $
+      map (\pack ->
+        let
+          post       = pack ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse
+        in
+        H.li_ [
+          H.p_ [H.text $ show post.id]
+        ]
+      ) $ listToArray $ M.values posts_map
+
   ]
   where
   org        = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
