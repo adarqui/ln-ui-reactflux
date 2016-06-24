@@ -15,7 +15,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, ($), (<>), (||), (==))
 
-import LN.Access                       (permissionsHTML', unitDiv)
+import LN.Access
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -103,9 +103,17 @@ renderView_Threads_Index' me_id org_pack forum_pack board_pack thread_packs thre
                 ]
               , H.div [P.class_ B.colXs1] [
                   buttonGroup_VerticalSm1 [
---                    permissionsHTML' board_pack'.permissions unitDiv
---                   glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) emptyParams,
---                   glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) emptyParams
+                    -- ACCESS: Thread
+                    -- * Update: edit thread settings
+                    -- * Delete: delete thread
+                    --
+                    permissionsHTML'
+                      thread_pack.permissions
+                      permCreateEmpty
+                      permReadEmpty
+                      (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Edit thread.name) emptyParams)
+                      (\_ ->  glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreads org.name forum.name board.name (Delete thread.name) emptyParams)
+                      permExecuteEmpty
                   ]
                 ]
             ]
