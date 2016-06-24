@@ -49,11 +49,18 @@ renderView_Organizations_Show' org_pack forum_packs =
       H.h1 [P.class_ B.textCenter] [ H.text organization.name ],
       H.p [P.class_ B.textCenter] [ H.text $ maybe "" id organization.description ],
 
+        -- ACCESS:
+        -- * Member: if not a member, this is a shortcut to join an organization
+        -- 
         orgMemberHTML
           org_pack
           unitDiv
           (\_ -> glyphButtonLinkDef_Ok $ OrganizationsMembership organization.name Index emptyParams),
 
+        -- ACCESS: Organization
+        -- * Update: can edit organization settings
+        -- * Delete: can delete organization
+        --
         permissionsHTML'
           org_pack'.permissions
           permCreateEmpty

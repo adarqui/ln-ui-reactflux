@@ -71,7 +71,7 @@ renderView_Forums_Show'
       H.h2_ [H.text forum.name],
       H.p [P.class_ B.lead] [H.text forum_desc],
 
-        -- ACCESS:
+        -- ACCESS: Forum
         -- * Create: can create boards within a forum
         -- * Update: can edit forum settings
         -- * Delete: can delete the forum
