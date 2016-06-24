@@ -51,6 +51,8 @@ eval_Forum eval (CompForum sub next) = do
         Gets_ByCurrentOrganization             -> act_gets_by_current_organization
         GetId forum_id                         -> pure next
         GetSid_ByCurrentOrganization forum_sid -> act_get_sid_by_current_organization forum_sid
+        GetRecentPosts_ByCurrentForum          -> act_get_recent_posts_by_current_forum
+        GetMessagesOfTheWeek_ByCurrentForum    -> act_get_messages_of_the_week_by_current_forum
 
 
 
@@ -127,6 +129,14 @@ eval_Forum eval (CompForum sub next) = do
           Right forum_pack -> do
             modify (_{ currentForum = Just forum_pack })
             pure next
+
+
+
+  act_get_recent_posts_by_current_forum = pure next
+
+
+
+  act_get_messages_of_the_week_by_current_forum = pure next
 
 
 

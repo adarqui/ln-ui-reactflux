@@ -23,10 +23,12 @@ data InputForum
 
 data Forum_Act
   = Gets
-  | Gets_ByOrganizationId        Int
+  | Gets_ByOrganizationId               Int
   | Gets_ByCurrentOrganization
-  | GetId                        Int
-  | GetSid_ByCurrentOrganization String
+  | GetId                               Int
+  | GetSid_ByCurrentOrganization        String
+  | GetRecentPosts_ByCurrentForum
+  | GetMessagesOfTheWeek_ByCurrentForum
 
 
 

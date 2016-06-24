@@ -152,6 +152,10 @@ eval_Goto eval (Goto route next) = do
       eval (cOrganizationAct (Organization.GetSid org_name) next)
       eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
       eval (cBoardAct Board.Gets_ByCurrentForum next)
+      -- Recent Posts
+      eval (cForumAct Forum.GetRecentPosts_ByCurrentForum next)
+      -- Messages of the week
+      eval (cForumAct Forum.GetMessagesOfTheWeek_ByCurrentForum next)
       pure unit
 
     (OrganizationsForumsBoards org_name forum_name New params) -> do
