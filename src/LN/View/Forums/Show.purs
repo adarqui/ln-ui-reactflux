@@ -31,7 +31,8 @@ import LN.T                            ( ForumPackResponse
                                        , _ForumPackResponse, _ForumResponse, forum_
                                        , OrganizationPackResponse, OrganizationResponse
                                        , _OrganizationPackResponse, _OrganizationResponse
-                                       , organization_)
+                                       , organization_
+                                       , ThreadPostPackResponse)
 
 
 
@@ -44,7 +45,7 @@ renderView_Forums_Show st =
        Just org_pack, Just forum_pack ->
          renderView_Forums_Show' org_pack forum_pack
            (renderView_Boards_Index' org_pack forum_pack st.boards)
-           (renderView_Forums_RecentPosts' org_pack forum_pack)
+           (renderView_Forums_RecentPosts' org_pack forum_pack st.recentThreadPosts)
            (renderView_Forums_MessagesOfTheWeek' org_pack forum_pack)
 
        _, _                           -> renderLoading

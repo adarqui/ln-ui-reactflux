@@ -28,7 +28,8 @@ import LN.T                            ( ForumPackResponse
                                        , _ForumPackResponse, _ForumResponse, forum_
                                        , OrganizationPackResponse, OrganizationResponse
                                        , _OrganizationPackResponse, _OrganizationResponse
-                                       , organization_)
+                                       , organization_
+                                       , ThreadPostPackResponse)
 
 
 
@@ -39,7 +40,7 @@ renderView_Forums_RecentPosts st =
   case st.currentOrganization, st.currentForum of
 
        Just org_pack, Just forum_pack ->
-         renderView_Forums_RecentPosts' org_pack forum_pack -- st.recentPosts
+         renderView_Forums_RecentPosts' org_pack forum_pack st.recentThreadPosts
 
        _, _                           -> renderLoading
 
@@ -51,8 +52,9 @@ renderView_Forums_RecentPosts st =
 renderView_Forums_RecentPosts'
   :: OrganizationPackResponse
   -> ForumPackResponse
+  -> M.Map Int ThreadPostPackResponse
   -> ComponentHTML Input
-renderView_Forums_RecentPosts' org_pack forum_pack =
+renderView_Forums_RecentPosts' org_pack forum_pack posts_map =
   H.div [P.class_ B.containerFluid] [
 
     H.div [P.class_ B.pageHeader] [

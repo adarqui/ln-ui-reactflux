@@ -40,7 +40,8 @@ import LN.T                            ( ForumPackResponses(..), ForumPackRespon
                                        , _ForumRequest, displayName_, description_, icon_, tags_, visibility_, guard_
                                        , threadsPerBoard_, threadPostsPerThread_
                                        , _OrganizationPackResponse, _OrganizationResponse, organization_, organizationId_
-                                       , ThreadPostPackResponse)
+                                       , ThreadPostPackResponse(..), ThreadPostPackResponses(..)
+                                       , Param(..))
 
 
 
@@ -152,7 +153,7 @@ eval_Forum eval (CompForum sub next) = do
           Left err -> eval (AddErrorApi "eval_Forum(Act/Gets/Recent)::getThreadPostPacks_ByForumId" err next)
           Right (ThreadPostPackResponses post_packs) -> do
             let
-              posts_map = idmapFrom (\(ThreadPostPackResponse pack) -> pack.forumId) post_packs.threadPostPackResponses
+              posts_map = idmapFrom (\(ThreadPostPackResponse pack) -> pack.threadPostId) post_packs.threadPostPackResponses
             modify (_{ recentThreadPosts = posts_map })
             pure next
 
