@@ -79,7 +79,6 @@ renderView_Forums_Index' org_pack forum_packs =
               H.p_ [H.text "created-at"]
             ],
             H.div [P.class_ B.colXs1] [
-
               permissionsHTML'
                 forum_pack'.permissions
                 permCreateEmpty
@@ -87,17 +86,6 @@ renderView_Forums_Index' org_pack forum_packs =
                 (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams)
                 (\_ -> glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) emptyParams)
                 permExecuteEmpty
-
---              permissionsHTML'
---                forum.perms
---                (_ -> glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams)
---              if org_owner
---                 then
---                   buttonGroup_Horizontal [
---                     glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams,
---                     glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) emptyParams
---                   ]
---                 else H.div_ []
             ]
           ]
         ])
