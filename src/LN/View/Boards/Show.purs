@@ -15,7 +15,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (id, show, map, negate, ($), (<>))
 
-import LN.Access                       (permissionsHTML')
+import LN.Access
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes, linkToP_Glyph')
 import LN.Router.Types                 (Routes(..), CRUD(..))
@@ -66,23 +66,22 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
   H.div [P.class_ B.containerFluid] [
     H.div [P.class_ B.pageHeader] [
       H.h2_ [H.text board.name],
-      H.p [P.class_ B.lead] [H.text board_desc]
+      H.p [P.class_ B.lead] [H.text board_desc],
 
-      -- TODO FIXME: clean this nested junk up
---      if orgOwner org_pack
---         then
---           buttonGroup_HorizontalSm1 [
---             glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams,
---             glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams,
---             glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams
---           ]
---         else
---           if orgMember org_pack
---              then
---                buttonGroup_HorizontalSm1 [
---                  glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams
---                ]
---              else H.div_ []
+        buttonGroup_HorizontalSm1 [
+          -- ACCESS: Board
+          -- * Create: can create threads AND sub-boards
+          -- * Update: can edit board settings
+          -- * Delete: can delete board
+          --
+          permissionsHTML'
+            board_pack'.permissions
+            (\_ -> glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams)
+            permReadEmpty
+            (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams)
+            (\_ -> glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams)
+            permExecuteEmpty
+        ]
 
     ],
     H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [
@@ -91,7 +90,8 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
     H.div [] [plumbing_threads]
   ]
   where
-  org        = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  forum      = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
-  board      = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
-  board_desc = maybe "No description." id board.description
+  org         = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  forum       = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
+  board       = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
+  board_pack' = board_pack ^. _BoardPackResponse
+  board_desc  = maybe "No description." id board.description
