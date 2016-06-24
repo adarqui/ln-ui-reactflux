@@ -395,7 +395,7 @@ routing =
       OrganizationsTeamsMembers
       <$> (lit "" *> str)
       <*> (lit "teams" *> str1)
-      <*> (lit "members" *> pure Index)
+      <*> pure Index
       <*> (params' <|> pure emptyParams)
 
     organizations_membership_index =
