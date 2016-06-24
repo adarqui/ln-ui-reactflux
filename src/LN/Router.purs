@@ -179,31 +179,31 @@ routing =
 
 
     users_profile =
-      UsersProfile <$> (lit "" *> lit "u" *> str) <*> (lit "profile" *> (params' <|> pure emptyParams))
+      UsersProfile <$> (lit "" *> lit "u" *> str1) <*> (lit "profile" *> (params' <|> pure emptyParams))
 
     users_settings =
-      UsersSettings <$> (lit "" *> lit "u" *> str) <*> (lit "settings" *> (params' <|> pure emptyParams))
+      UsersSettings <$> (lit "" *> lit "u" *> str1) <*> (lit "settings" *> (params' <|> pure emptyParams))
 
     users_pms =
-      UsersPMs <$> (lit "" *> lit "u" *> str) <*> (lit "pms" *> (params' <|> pure emptyParams))
+      UsersPMs <$> (lit "" *> lit "u" *> str1) <*> (lit "pms" *> (params' <|> pure emptyParams))
 
     users_threads =
-      UsersThreads <$> (lit "" *> lit "u" *> str) <*> (lit "threads" *> (params' <|> pure emptyParams))
+      UsersThreads <$> (lit "" *> lit "u" *> str1) <*> (lit "threads" *> (params' <|> pure emptyParams))
 
     users_thread_posts =
-      UsersThreadPosts <$> (lit "" *> lit "u" *> str) <*> (lit "thread_posts" *> (params' <|> pure emptyParams))
+      UsersThreadPosts <$> (lit "" *> lit "u" *> str1) <*> (lit "thread_posts" *> (params' <|> pure emptyParams))
 
     users_workouts =
-      UsersWorkouts <$> (lit "" *> lit "u" *> str) <*> (lit "workouts" *> (params' <|> pure emptyParams))
+      UsersWorkouts <$> (lit "" *> lit "u" *> str1) <*> (lit "workouts" *> (params' <|> pure emptyParams))
 
     users_resources =
-      UsersResources <$> (lit "" *> lit "u" *> str) <*> (lit "resources" *> (params' <|> pure emptyParams))
+      UsersResources <$> (lit "" *> lit "u" *> str1) <*> (lit "resources" *> (params' <|> pure emptyParams))
 
     users_leurons =
-      UsersLeurons <$> (lit "" *> lit "u" *> str) <*> (lit "leurons" *> (params' <|> pure emptyParams))
+      UsersLeurons <$> (lit "" *> lit "u" *> str1) <*> (lit "leurons" *> (params' <|> pure emptyParams))
 
     users_likes =
-      UsersLikes <$> (lit "" *> lit "u" *> str) <*> (lit "likes" *> (params' <|> pure emptyParams))
+      UsersLikes <$> (lit "" *> lit "u" *> str1) <*> (lit "likes" *> (params' <|> pure emptyParams))
 
 
 
@@ -249,20 +249,20 @@ routing =
 
     organizations_forums_new =
       OrganizationsForums
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> lit "new" *> pure New)
       <*> (params' <|> pure emptyParams)
 
     organizations_forums_boards_new =
       OrganizationsForumsBoards
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> (lit "new" *> pure New)
       <*> (params' <|> pure emptyParams)
 
     organizations_forums_boards_threads_new =
       OrganizationsForumsBoardsThreads
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> str1
       <*> (lit "new" *> pure New)
@@ -270,7 +270,7 @@ routing =
 
     organizations_forums_boards_threads_posts_new =
       OrganizationsForumsBoardsThreadsPosts
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> str1
       <*> str1
@@ -279,7 +279,7 @@ routing =
 
     organizations_membership_new =
       OrganizationsMembership
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "membership" *> lit "new" *> pure New)
       <*> (params' <|> pure emptyParams)
 
@@ -287,20 +287,20 @@ routing =
 
     organizations_forums_edit =
       OrganizationsForums
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> lit "_edit" *> (Edit <$> str1))
       <*> (params' <|> pure emptyParams)
 
     organizations_forums_boards_edit =
       OrganizationsForumsBoards
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> (lit "_edit" *> (Edit <$> str1))
       <*> (params' <|> pure emptyParams)
 
     organizations_forums_boards_threads_edit =
       OrganizationsForumsBoardsThreads
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> str1
       <*> (lit "_edit" *> (Edit <$> str1))
@@ -308,7 +308,7 @@ routing =
 
     organizations_forums_boards_threads_posts_edit_int =
       OrganizationsForumsBoardsThreadsPosts
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> str1
       <*> str1
@@ -319,20 +319,20 @@ routing =
 
     organizations_forums_delete =
       OrganizationsForums
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> lit "_delete" *> (Delete <$> str1))
       <*> (params' <|> pure emptyParams)
 
     organizations_forums_boards_delete =
       OrganizationsForumsBoards
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> (lit "_delete" *> (Delete <$> str1))
       <*> (params' <|> pure emptyParams)
 
     organizations_forums_boards_threads_delete =
       OrganizationsForumsBoardsThreads
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> str1
       <*> (lit "_delete" *> (Delete <$> str1))
@@ -340,7 +340,7 @@ routing =
 
     organizations_forums_boards_threads_posts_delete_int =
       OrganizationsForumsBoardsThreadsPosts
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> str1
       <*> str1
@@ -349,7 +349,7 @@ routing =
 
     organizations_membership_delete =
       OrganizationsMembership
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "membership" *> lit "_delete" *> pure DeleteZ)
       <*> (params' <|> pure emptyParams)
 
@@ -357,20 +357,20 @@ routing =
 
     organizations_forums_index =
       OrganizationsForums
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> pure Index)
       <*> (params' <|> pure emptyParams)
 
     organizations_forums_boards_index =
       OrganizationsForumsBoards
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> pure Index
       <*> (params' <|> pure emptyParams)
 
     organizations_forums_boards_threads_index =
       OrganizationsForumsBoardsThreads
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> str1
       <*> pure Index
@@ -378,7 +378,7 @@ routing =
 
     organizations_forums_boards_threads_posts_index =
       OrganizationsForumsBoardsThreadsPosts
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> str1
       <*> str1
@@ -387,20 +387,20 @@ routing =
 
     organizations_teams_index =
       OrganizationsTeams
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "teams" *> pure Index)
       <*> (params' <|> pure emptyParams)
 
     organizations_teams_members_index =
       OrganizationsTeamsMembers
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "teams" *> str1)
       <*> pure Index
       <*> (params' <|> pure emptyParams)
 
     organizations_membership_index =
       OrganizationsMembership
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "membership" *> pure Index)
       <*> (params' <|> pure emptyParams)
 
@@ -413,20 +413,20 @@ routing =
 
     organizations_forums_show =
       OrganizationsForums
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> (Show <$> str1))
       <*> (params' <|> pure emptyParams)
 
     organizations_forums_boards_show =
       OrganizationsForumsBoards
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> (Show <$> str1)
       <*> (params' <|> pure emptyParams)
 
     organizations_forums_boards_threads_show =
       OrganizationsForumsBoardsThreads
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> str1
       <*> (Show <$> str1)
@@ -434,7 +434,7 @@ routing =
 
     organizations_forums_boards_threads_posts_show_int =
       OrganizationsForumsBoardsThreadsPosts
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "f" *> str1)
       <*> str1
       <*> str1
@@ -443,7 +443,7 @@ routing =
 
     organizations_teams_show =
       OrganizationsTeams
-      <$> (lit "" *> str)
+      <$> (lit "" *> str1)
       <*> (lit "teams" *> (Show <$> str1))
       <*> (params' <|> pure emptyParams)
 
