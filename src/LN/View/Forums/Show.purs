@@ -23,7 +23,7 @@ import LN.Router.Class.Params          (emptyParams)
 import LN.State.Types                  (State)
 import LN.View.Helpers
 import LN.View.Boards.Index            (renderView_Boards_Index')
-import LN.View.Forums.LatestPosts      (renderView_Forums_LatestPosts')
+import LN.View.Forums.RecentPosts      (renderView_Forums_RecentPosts')
 import LN.View.Forums.MessagesOfTheWeek(renderView_Forums_MessagesOfTheWeek')
 import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( ForumPackResponse
@@ -44,7 +44,7 @@ renderView_Forums_Show st =
        Just org_pack, Just forum_pack ->
          renderView_Forums_Show' org_pack forum_pack
            (renderView_Boards_Index' org_pack forum_pack st.boards)
-           (renderView_Forums_LatestPosts' org_pack forum_pack)
+           (renderView_Forums_RecentPosts' org_pack forum_pack)
            (renderView_Forums_MessagesOfTheWeek' org_pack forum_pack)
 
        _, _                           -> renderLoading
@@ -62,7 +62,7 @@ renderView_Forums_Show'
   org_pack
   forum_pack
   plumbing_boards
-  plumbing_latest_posts
+  plumbing_recent_posts
   plumbing_messages_of_the_week
   =
   H.div [P.class_ B.containerFluid] [
@@ -90,7 +90,7 @@ renderView_Forums_Show'
 
     H.div [] [plumbing_boards],
 
-    H.div [] [plumbing_latest_posts],
+    H.div [] [plumbing_recent_posts],
 
     H.div [] [plumbing_messages_of_the_week]
 

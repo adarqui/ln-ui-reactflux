@@ -1,6 +1,6 @@
-module LN.View.Forums.LatestPosts (
-  renderView_Forums_LatestPosts,
-  renderView_Forums_LatestPosts'
+module LN.View.Forums.RecentPosts (
+  renderView_Forums_RecentPosts,
+  renderView_Forums_RecentPosts'
 ) where
 
 
@@ -33,13 +33,13 @@ import LN.T                            ( ForumPackResponse
 
 
 
-renderView_Forums_LatestPosts :: State -> ComponentHTML Input
-renderView_Forums_LatestPosts st =
+renderView_Forums_RecentPosts :: State -> ComponentHTML Input
+renderView_Forums_RecentPosts st =
 
   case st.currentOrganization, st.currentForum of
 
        Just org_pack, Just forum_pack ->
-         renderView_Forums_LatestPosts' org_pack forum_pack -- st.latestPosts
+         renderView_Forums_RecentPosts' org_pack forum_pack -- st.recentPosts
 
        _, _                           -> renderLoading
 
@@ -48,11 +48,11 @@ renderView_Forums_LatestPosts st =
 --
 -- Re: ADARQ's Journal by adarqui (Progress Journals & Experimental Routines) Today at 06:00:30 pm
 --
-renderView_Forums_LatestPosts'
+renderView_Forums_RecentPosts'
   :: OrganizationPackResponse
   -> ForumPackResponse
   -> ComponentHTML Input
-renderView_Forums_LatestPosts' org_pack forum_pack =
+renderView_Forums_RecentPosts' org_pack forum_pack =
   H.div [P.class_ B.containerFluid] [
 
     H.div [P.class_ B.pageHeader] [

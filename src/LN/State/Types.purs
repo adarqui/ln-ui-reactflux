@@ -58,6 +58,8 @@ initialState ch =
   , boards:                       M.empty
   , threads:                      M.empty
   , threadPosts:                  M.empty
+  , recentThreadPosts:            M.empty
+  , motwThreadPosts:              M.empty
   , resources:                    M.empty
   , leurons:                      M.empty
 --  , workouts:                   M.empty

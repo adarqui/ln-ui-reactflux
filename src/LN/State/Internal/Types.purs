@@ -41,6 +41,8 @@ type InternalState routes {- TODO FIXME: driver_ch-} =
   , boards                       :: M.Map Int BoardPackResponse
   , threads                      :: M.Map Int ThreadPackResponse
   , threadPosts                  :: M.Map Int ThreadPostPackResponse
+  , recentThreadPosts            :: M.Map Int ThreadPostPackResponse
+  , motwThreadPosts              :: M.Map Int ThreadPostPackResponse
   , resources                    :: M.Map Int ResourcePackResponse
   , leurons                      :: M.Map Int LeuronPackResponse
 --  , workouts                   :: M.Map Int WorkoutPackResponse

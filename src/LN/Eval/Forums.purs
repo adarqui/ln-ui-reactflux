@@ -15,7 +15,13 @@ import Halogen                         (gets, modify)
 import Optic.Core                      ((^.), (..), (.~))
 import Prelude                         (class Eq, id, bind, pure, ($), (<>), (<$>), (<<<))
 
-import LN.Api                          (rd, getForumPacks_ByOrganizationName', getForumPack', postForum_ByOrganizationId', putForum', getForumPacks_ByOrganizationId')
+import LN.Api                          ( rd
+                                       , getForumPacks_ByOrganizationName'
+                                       , getForumPack'
+                                       , postForum_ByOrganizationId'
+                                       , putForum'
+                                       , getForumPacks_ByOrganizationId'
+                                       , getThreadPostPacks_ByForumId)
 import LN.Api.Internal.String          as ApiS
 import LN.Component.Types              (EvalEff)
 import LN.Input.Forum                  (InputForum(..), Forum_Act(..), Forum_Mod(..))
@@ -29,11 +35,12 @@ import LN.State.Loading.Helpers        (setLoading, clearLoading)
 import LN.T.Internal.Convert           (forumResponseToForumRequest)
 import LN.T                            ( ForumPackResponses(..), ForumPackResponse(..)
                                        , ForumResponse(..)
-                                       , _ForumResponse, name_
+                                       , _ForumPackResponse, _ForumResponse, name_, forum_
                                        , ForumRequest(..)
                                        , _ForumRequest, displayName_, description_, icon_, tags_, visibility_, guard_
                                        , threadsPerBoard_, threadPostsPerThread_
-                                       , _OrganizationPackResponse, _OrganizationResponse, organization_, organizationId_)
+                                       , _OrganizationPackResponse, _OrganizationResponse, organization_, organizationId_
+                                       , ThreadPostPackResponse)
 
 
 
@@ -132,7 +139,22 @@ eval_Forum eval (CompForum sub next) = do
 
 
 
-  act_get_recent_posts_by_current_forum = pure next
+  act_get_recent_posts_by_current_forum = do
+    modify (_{ recentThreadPosts = (M.empty :: M.Map Int ThreadPostPackResponse) })
+    m_forum_pack <- gets _.currentForum
+    case m_forum_pack of
+      Nothing                             -> eval (AddError "eval_Forum(Act/Gets/Recent)" "Forum doesn't exist" next)
+      Just forum_pack -> do
+        let forum = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
+        -- TODO FIXME: using threads per board for now
+        e_posts <- rd $ getThreadPostPacks_ByForumId [Limit forum.threadsPerBoard] forum.id
+        case e_posts of
+          Left err -> eval (AddErrorApi "eval_Forum(Act/Gets/Recent)::getThreadPostPacks_ByForumId" err next)
+          Right (ThreadPostPackResponses post_packs) -> do
+            let
+              posts_map = idmapFrom (\(ThreadPostPackResponse pack) -> pack.forumId) post_packs.threadPostPackResponses
+            modify (_{ recentThreadPosts = posts_map })
+            pure next
 
 
 
