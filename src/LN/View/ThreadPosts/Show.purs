@@ -23,7 +23,7 @@ import Data.BBCode.HTML
 import Data.BBCode.Parser
 import Data.BBCode.Types
 
-import LN.Access                       (permissionsHTML', unitDiv, self, notSelf)
+import LN.Access
 import LN.Input.Types                  (Input(..), cThreadPostMod)
 import LN.Input.ThreadPost             (InputThreadPost(..), ThreadPost_Mod(..))
 import LN.Router.Link                  (linkTo, linkToP)
@@ -89,19 +89,24 @@ renderView_ThreadPosts_Show' me_id org_pack forum_pack board_pack thread_pack po
         (map (\post_pack ->
           H.li_ [renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_pack post_pack users_map]
         ) $ listToArray $ M.values post_packs)
---        <>
+        <>
         -- INPUT FORM AT THE BOTTOM
---        if orgOwner org_pack || orgMember org_pack
---           then [renderView_ThreadPosts_Mod' TyCreate thread_pack Nothing post_req post_req_st]
---           else []
+        -- ACCESS: Thread
+        -- * Create: post within a thread
+        --
+        [permissionsMatchCreateHTML
+          thread_pack'.permissions
+          (\_ -> renderView_ThreadPosts_Mod' TyCreate thread_pack Nothing post_req post_req_st)
+          unitDiv]
       )
   , renderPageNumbers posts_page_info posts_route
   ]
   where
-  org    = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
-  forum  = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
-  board  = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
-  thread = thread_pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse
+  org          = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse
+  forum        = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
+  board        = board_pack ^. _BoardPackResponse .. board_ ^. _BoardResponse
+  thread       = thread_pack ^. _ThreadPackResponse .. thread_ ^. _ThreadResponse
+  thread_pack' = thread_pack ^. _ThreadPackResponse
 
 
 
@@ -132,19 +137,28 @@ renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_
           , H.p_ $ showTags post.tags
         ]
       , H.div [P.class_ B.colXs1] [
---          if orgOwner org_pack || self me_id post.userId
---             then
---               buttonGroup_VerticalSm1 [
---                 glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) emptyParams,
---                 glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) emptyParams
---               ]
---             else H.div_ []
+        buttonGroup_VerticalSm1 [
+          -- ACCESS: ThreadPost
+          -- * Update: edit thread post
+          -- * Delete: delete thread post
+          --
+          permissionsHTML'
+            post_pack'.permissions
+            permCreateEmpty
+            permReadEmpty
+            (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) emptyParams)
+            (\_ -> glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) emptyParams)
+            permExecuteEmpty
         ]
+      ]
       , H.div [P.class_ B.colXs1] [
---            if (orgMember org_pack && notSelf me_id post.userId)
---               then renderLike Ent_ThreadPost post.id like star
---               else H.div_ []
---          , displayPostStats stats
+        -- ACCESS: Member & Not self
+        -- Member: must be a member to like/star
+        -- Not Self: can't like/star your own posts
+        if (orgMember org_pack && notSelf me_id post.userId)
+               then renderLike Ent_ThreadPost post.id like star
+               else H.div_ []
+        , displayPostStats stats
         ]
     ]
   ]
@@ -157,3 +171,4 @@ renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_
   like      = post_pack ^. _ThreadPostPackResponse .. like_
   star      = post_pack ^. _ThreadPostPackResponse .. star_
   stats     = post_pack ^. _ThreadPostPackResponse .. stat_
+  post_pack'= post_pack ^. _ThreadPostPackResponse
