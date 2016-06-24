@@ -68,6 +68,9 @@ initialState ch =
   , currentTeam:                  Nothing
   , currentTeamRequest:           Nothing
   , currentTeamRequestSt:         Nothing
+  , currentTeamMember:            Nothing
+  , currentTeamMemberRequest:     Nothing
+  , currentTeamMemberRequestSt:   Nothing
   , currentForum:                 Nothing
   , currentForumRequest:          Nothing
   , currentForumRequestSt:        Nothing

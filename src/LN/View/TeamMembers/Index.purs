@@ -1,6 +1,6 @@
-module LN.View.Teams.Index (
-  renderView_Teams_Index,
-  renderView_Teams_Index'
+module LN.View.TeamMembers.Index (
+  renderView_TeamMembers_Index,
+  renderView_TeamMembers_Index'
 ) where
 
 
@@ -23,39 +23,29 @@ import LN.Router.Class.Params          (emptyParams)
 import LN.State.Types                  (State)
 import LN.View.Helpers
 import LN.View.Module.Loading          (renderLoading)
-import LN.T                            ( TeamPackResponse
-                                       , _TeamPackResponse, _TeamResponse, organization_
-                                       , _TeamPackResponse, _TeamResponse, forum_
+import LN.T                            ( TeamPackResponse(..), TeamResponse(..)
+                                       , TeamMemberPackResponse
+                                       , _TeamMemberPackResponse, _TeamMemberResponse, organization_
+                                       , _TeamMemberPackResponse, _TeamMemberResponse, forum_
                                        , OrganizationPackResponse, OrganizationResponse
                                        , _OrganizationPackResponse, _OrganizationResponse
                                        , organization_, team_)
 
 
 
-renderView_Teams_Index :: State -> ComponentHTML Input
-renderView_Teams_Index st =
+renderView_TeamMembers_Index :: State -> ComponentHTML Input
+renderView_TeamMembers_Index st =
 
-  case st.currentOrganization of
-       Just org_pack -> renderView_Teams_Index' org_pack st.teams
-       _             -> renderLoading
+  case st.currentOrganization, st.currentTeam of
+       Just org_pack, Just team_pack -> renderView_TeamMembers_Index' org_pack team_pack st.teamMembers
+       _, _                          -> renderLoading
 
 
 
-renderView_Teams_Index' :: OrganizationPackResponse -> M.Map Int TeamPackResponse -> ComponentHTML Input
-renderView_Teams_Index' org_pack team_packs =
-  H.div_ [
-    H.div [P.class_ B.pageHeader] [
-
-      H.h1 [P.class_ B.textCenter] [ H.text "Teams" ]
-    ],
-
-    H.div [P.class_ B.listUnstyled] $
-      map (\team_pack ->
-        let team = team_pack ^. _TeamPackResponse .. team_ ^. _TeamResponse in
-        H.li_ [
-          linkToP [] (OrganizationsTeams organization.name (Show $ show team.system) emptyParams) (show team.system)
-        ]
-      ) $ listToArray $ M.values team_packs
+renderView_TeamMembers_Index' :: OrganizationPackResponse -> TeamPackResponse -> M.Map Int TeamMemberPackResponse -> ComponentHTML Input
+renderView_TeamMembers_Index' org_pack team_pack team_member_packs =
+  H.div [P.class_ B.pageHeader] [
+    H.h1 [P.class_ B.textCenter] [ H.text "TeamMembers" ]
   ]
   where
   organization = org_pack ^. _OrganizationPackResponse .. organization_ ^. _OrganizationResponse

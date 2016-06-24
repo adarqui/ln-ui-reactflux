@@ -22,6 +22,7 @@ import LN.State.PageInfo            (PageInfo)
 import LN.State.Thread              (ThreadRequestState)
 import LN.State.ThreadPost          (ThreadPostRequestState)
 import LN.State.Team                (TeamRequestState)
+import LN.State.TeamMember          (TeamMemberRequestState)
 import LN.T
 
 
@@ -47,9 +48,12 @@ type InternalState routes {- TODO FIXME: driver_ch-} =
   , currentOrganization          :: Maybe OrganizationPackResponse
   , currentOrganizationRequest   :: Maybe OrganizationRequest
   , currentOrganizationRequestSt :: Maybe OrganizationRequestState
-  , currentTeam                  :: Maybe TeamResponse
+  , currentTeam                  :: Maybe TeamPackResponse
   , currentTeamRequest           :: Maybe TeamRequest
   , currentTeamRequestSt         :: Maybe TeamRequestState
+  , currentTeamMember            :: Maybe TeamMemberPackResponse
+  , currentTeamMemberRequest     :: Maybe TeamMemberRequest
+  , currentTeamMemberRequestSt   :: Maybe TeamMemberRequestState
   , currentUser                  :: Maybe UserSanitizedPackResponse
   , currentForum                 :: Maybe ForumPackResponse
   , currentForumRequest          :: Maybe ForumRequest

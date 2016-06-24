@@ -398,6 +398,11 @@ eval_Goto eval (Goto route next) = do
       eval (cTeamMemberAct TeamMember.Gets_ByCurrentTeam next)
       pure unit
 
+    (OrganizationsTeamsMembers org_name team_name (ShowI team_member_id) params) -> do
+      eval (cOrganizationAct (Organization.GetSid org_name) next)
+      eval (cTeamAct (Team.GetSid_ByCurrentOrganization team_name) next)
+      pure unit
+
 
 
     -- Resources
