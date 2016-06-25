@@ -29,6 +29,15 @@ module LN.Input.Types (
   cResourceMod,
   cLeuron,
   cLeuronMod,
+  cPm,
+  cPmMod,
+  cPmAct,
+  cPmIn,
+  cPmInMod,
+  cPmInAct,
+  cPmOut,
+  cPmOutMod,
+  cPmOutAct,
   cArrayString
 ) where
 
@@ -52,6 +61,9 @@ import LN.Input.Team           (InputTeam(..), Team_Act, Team_Mod)
 import LN.Input.TeamMember     (InputTeamMember(..), TeamMember_Act, TeamMember_Mod)
 import LN.Input.Thread         (InputThread(..), Thread_Act, Thread_Mod)
 import LN.Input.ThreadPost     (InputThreadPost(..), ThreadPost_Act, ThreadPost_Mod)
+import LN.Input.Pm             (InputPm(..), Pm_Act, Pm_Mod)
+import LN.Input.PmIn           (InputPmIn(..), PmIn_Act, PmIn_Mod)
+import LN.Input.PmOut          (InputPmOut(..), PmOut_Act, PmOut_Mod)
 import LN.Router.Class.Routes  (Routes)
 import LN.T
 
@@ -104,6 +116,9 @@ data Input a
   | CompStar           InputStar         a
   | CompResource       InputResource     a
   | CompLeuron         InputLeuron       a
+  | CompPm             InputPm           a
+  | CompPmIn           InputPmIn         a
+  | CompPmOut          InputPmOut        a
 
   | Nop a
 
@@ -213,6 +228,39 @@ cLeuron sub next = CompLeuron sub next
 
 cLeuronMod :: forall a. Leuron_Mod -> a -> Input a
 cLeuronMod mod next = CompLeuron (InputLeuron_Mod mod) next
+
+
+
+cPm :: forall a. InputPm -> a -> Input a
+cPm sub next = CompPm sub next
+
+cPmMod :: forall a. Pm_Mod -> a -> Input a
+cPmMod mod next = CompPm (InputPm_Mod mod) next
+
+cPmAct :: forall a. Pm_Act -> a -> Input a
+cPmAct act next = CompPm (InputPm_Act act) next
+
+
+
+cPmIn :: forall a. InputPmIn -> a -> Input a
+cPmIn sub next = CompPmIn sub next
+
+cPmInMod :: forall a. PmIn_Mod -> a -> Input a
+cPmInMod mod next = CompPmIn (InputPmIn_Mod mod) next
+
+cPmInAct :: forall a. PmIn_Act -> a -> Input a
+cPmInAct act next = CompPmIn (InputPmIn_Act act) next
+
+
+
+cPmOut :: forall a. InputPmOut -> a -> Input a
+cPmOut sub next = CompPmOut sub next
+
+cPmOutMod :: forall a. PmOut_Mod -> a -> Input a
+cPmOutMod mod next = CompPmOut (InputPmOut_Mod mod) next
+
+cPmOutAct :: forall a. PmOut_Act -> a -> Input a
+cPmOutAct act next = CompPmOut (InputPmOut_Act act) next
 
 
 
