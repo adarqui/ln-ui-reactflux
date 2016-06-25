@@ -30,7 +30,7 @@ build:
 	pulp -w build
 
 build-psa:
-	pulp -w build --stash --censor-lib --censor-codes=ImplicitImport,UnusedExplicitImport,HidingImport,WildcardInferredType,ImplicitQualifiedImport,DeprecatedOperatorDecl
+	pulp -w build --censor-codes=ImplicitImport,UnusedExplicitImport,HidingImport,WildcardInferredType,ImplicitQualifiedImport,DeprecatedOperatorDecl
 
 build-psa-no-opts:
 	pulp -w build --stash --censor-lib --censor-codes=ImplicitImport,UnusedExplicitImport,HidingImport,WildcardInferredType,ImplicitQualifiedImport,DeprecatedOperatorDecl --no-opts
@@ -40,21 +40,6 @@ tests:
 
 bower:
 	bower install
-
-reset:
-	rm -rf bower_components/purescript-ln
-	rm -rf bower_components/purescript-bbcode-parser
-	bower install
-
-wtf:
-	rm -rf bower_components/purescript-daimyo
-	bower install
-
-copy-bbcode:
-	rsync -av /Users/x/code/github/adarqui/purescript-bbcode-parser/src/ ./bower_components/purescript-bbcode-parser/src/
-
-copy-foreign:
-	rsync -av /Users/x/code/github/adarqui/purescript-foreign/src/ ./bower_components/purescript-foreign/src/
 
 deps:
 	npm install -g pulp
