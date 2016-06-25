@@ -9,6 +9,8 @@ module LN.View.ThreadPosts.Show (
 import Data.Either                     (Either(..))
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
+import CSS                             as CSS
+import Halogen.HTML.CSS.Indexed        as HCSS
 import Halogen                         (ComponentHTML, HTML)
 import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
@@ -132,7 +134,10 @@ renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_
             linkTo (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (ShowI post.id) emptyParams) (thread.name <> "/" <> show post.id)
           , H.p_ [H.text $ show post.createdAt]
           , H.p_ [H.text "quote / reply"]
-          , displayPostData post.body
+
+          -- white-space: pre ... for proper output of multiple spaces etc.
+          , H.div [HCSS.style $ CSS.textWhitespace CSS.whitespacePre] [displayPostData post.body]
+
           , H.p_ [H.text $ maybe "" (\user -> maybe "" id $ user ^. _UserSanitizedPackResponse .. profile_ ^. _ProfileResponse .. signature_) (usersMapLookup' users_map post.userId)]
           , H.p_ $ showTags post.tags
         ]
