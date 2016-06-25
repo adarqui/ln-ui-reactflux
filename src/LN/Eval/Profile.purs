@@ -18,7 +18,7 @@ import LN.Api             (rd, putUserProfile')
 import LN.T               (UserPackResponse(..), _UserPackResponse
                           , ProfileResponse(..), _ProfileResponse
                           , ProfileGender(..)
-                          , profile_, id_, gender_, birthdate_, signature_, website_, location_
+                          , profile_, id_, gender_, birthdate_, signature_, website_, location_, debug_
                           , profileResponseToProfileRequest)
 
 
@@ -75,6 +75,12 @@ eval_Profile eval (CompProfile (InputProfile_Location mlocation) next) = do
 eval_Profile eval (CompProfile (InputProfile_Signature msignature) next) = do
 
   eval_Profile_Setter signature_ msignature next
+
+
+
+eval_Profile eval (CompProfile (InputProfile_SetDebug b) next) = do
+
+  eval_Profile_Setter debug_ b next
 
 
 

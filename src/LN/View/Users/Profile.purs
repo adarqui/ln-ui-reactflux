@@ -18,6 +18,7 @@ import LN.Input.Profile                (InputProfile (..))
 import LN.Input.Types                  (Input (..))
 import LN.State.Types                  (State)
 import LN.T
+import LN.View.Fields
 import LN.View.Users
 import LN.View.Util
 
@@ -97,6 +98,7 @@ profile_Self' st user =
       P.value $ maybe "" id prof.signature,
       E.onValueChange $ E.input (\v -> CompProfile (InputProfile_Signature (Just v)))
     ],
+    mandatoryBooleanYesNoField "Debug" prof.debug false (\v -> CompProfile (InputProfile_SetDebug v)),
     H.button [
       E.onClick $ E.input_ $ CompProfile InputProfile_Post
     ] [H.text "save"]

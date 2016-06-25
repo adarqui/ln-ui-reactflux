@@ -38,6 +38,7 @@ import LN.T                            ( ForumPackResponses(..), ForumPackRespon
                                        , _ForumPackResponse, _ForumResponse, name_, forum_
                                        , ForumRequest(..)
                                        , _ForumRequest, displayName_, description_, icon_, tags_, visibility_, guard_
+                                       , recentThreadsLimit_, recentPostsLimit_, motwLimit_
                                        , threadsPerBoard_, threadPostsPerThread_
                                        , _OrganizationPackResponse, _OrganizationResponse, organization_, organizationId_
                                        , ThreadPostPackResponse(..), ThreadPostPackResponses(..)
@@ -71,6 +72,9 @@ eval_Forum eval (CompForum sub next) = do
         RemoveDescription         -> mod $ set (\req -> _ForumRequest .. description_ .~ Nothing $ req)
         SetThreadsPerBoard n      -> mod $ set (\req -> _ForumRequest .. threadsPerBoard_ .~ n $ req)
         SetThreadPostsPerThread n -> mod $ set (\req -> _ForumRequest .. threadPostsPerThread_ .~ n $ req)
+        SetRecentThreadsLimit n   -> mod $ set (\req -> _ForumRequest .. recentThreadsLimit_ .~ n $ req)
+        SetRecentPostsLimit n     -> mod $ set (\req -> _ForumRequest .. recentPostsLimit_ .~ n $ req)
+        SetMotwLimit n            -> mod $ set (\req -> _ForumRequest .. motwLimit_ .~ n $ req)
         SetIcon s                 -> mod $ set (\req -> _ForumRequest .. icon_ .~ Just s $ req)
         RemoveIcon                -> mod $ set (\req -> _ForumRequest .. icon_ .~ Nothing $ req)
 

@@ -15,4 +15,5 @@ data InputProfile
   | InputProfile_Website   (Maybe String)
   | InputProfile_Location  (Maybe String)
   | InputProfile_Signature (Maybe String)
+  | InputProfile_SetDebug  Boolean
   | InputProfile_Nop

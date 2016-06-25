@@ -40,6 +40,10 @@ data Forum_Mod
 
   | SetThreadsPerBoard      Int
   | SetThreadPostsPerThread Int
+  | SetRecentThreadsLimit   Int
+  | SetRecentPostsLimit     Int
+  | SetMotwLimit            Int
+
   | SetIcon                 String
   | RemoveIcon
 

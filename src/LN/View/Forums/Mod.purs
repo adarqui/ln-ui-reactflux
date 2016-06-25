@@ -91,6 +91,12 @@ renderView_Forums_Mod' crud organization_id m_forum_id forum_req forum_req_st =
 
   , mandatoryIntegerField "Posts per thread" forum.threadPostsPerThread 20 10 50 10 (cForumMod <<< SetThreadPostsPerThread)
 
+  , mandatoryIntegerField "Recent threads (limit)" forum.recentThreadsLimit 10 0 20 1 (cForumMod <<< SetRecentThreadsLimit)
+
+  , mandatoryIntegerField "Recent posts (limit)" forum.recentPostsLimit 10 0 20 1 (cForumMod <<< SetRecentPostsLimit)
+
+  , mandatoryIntegerField "Messages of the week (limit)" forum.motwLimit 10 0 20 1 (cForumMod <<< SetMotwLimit)
+
   , mandatoryVisibilityField forum.visibility (cForumMod <<< SetVisibility)
 
   , tagsField
