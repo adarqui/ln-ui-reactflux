@@ -45,7 +45,7 @@ defaultLayout st page =
 
     ifDebug
       st
-      (\_ -> H.p_ [H.text $ show st.currentPage])
+      (\_ -> H.p_ [H.text $ "DEBUG(currentPage): " <> show st.currentPage])
       (\_ -> H.div_ []),
 
     renderBreadcrumbs st.currentPage st,
