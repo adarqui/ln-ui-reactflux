@@ -47,6 +47,8 @@ type InternalState routes {- TODO FIXME: driver_ch-} =
   , leurons                      :: M.Map Int LeuronPackResponse
 --  , workouts                   :: M.Map Int WorkoutPackResponse
 --  , pms                        :: Maybe (Array PmResponse)
+  , pmsIn                        :: M.Map Int PmInPackResponse
+  , pmsOut                       :: M.Map Int PmOutPackResponse
   , currentOrganization          :: Maybe OrganizationPackResponse
   , currentOrganizationRequest   :: Maybe OrganizationRequest
   , currentOrganizationRequestSt :: Maybe OrganizationRequestState
@@ -75,6 +77,12 @@ type InternalState routes {- TODO FIXME: driver_ch-} =
   , currentLeuron                :: Maybe LeuronPackResponse
   , currentLeuronRequest         :: Maybe LeuronRequest
   , currentLeuronRequestSt       :: Maybe LeuronRequestState
+  , currentPm                    :: Maybe PmResponse
+  , currentPmRequest             :: Maybe PmRequest
+  , currentPmIn                  :: Maybe PmInResponse
+  , currentPmInRequest           :: Maybe PmInRequest
+  , currentPmOut                 :: Maybe PmOutResponse
+  , currentPmOutRequest          :: Maybe PmOutRequest
 --  , currentWorkout             :: Maybe WorkoutResponse
   , currentPageInfo              :: PageInfo
   , organizationsPageInfo        :: PageInfo

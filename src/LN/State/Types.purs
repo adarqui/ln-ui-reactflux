@@ -63,6 +63,8 @@ initialState ch =
   , resources:                    M.empty
   , leurons:                      M.empty
 --  , workouts:                   M.empty
+  , pmsIn:                        M.empty
+  , pmsOut:                       M.empty
   , currentOrganization:          Nothing
   , currentOrganizationRequest:   Nothing
   , currentOrganizationRequestSt: Nothing
@@ -92,6 +94,12 @@ initialState ch =
   , currentLeuronRequest:         Nothing
   , currentLeuronRequestSt:       Nothing
 --  , currentWorkout:             Nothing
+  , currentPm:                    Nothing
+  , currentPmRequest:             Nothing
+  , currentPmIn:                  Nothing
+  , currentPmInRequest:           Nothing
+  , currentPmOut:                 Nothing
+  , currentPmOutRequest:          Nothing
   , currentPageInfo:              defaultPageInfo
   , organizationsPageInfo:        defaultPageInfo_Organizations
   , usersPageInfo:                defaultPageInfo_Users
