@@ -13,6 +13,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (map, show, ($), (<>))
 
+import LN.Debug                        (ifDebug)
 import LN.Router.Link                  (linkToHref, linkTo)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.Router.Class.Params          (emptyParams)
@@ -41,8 +42,12 @@ defaultLayout :: State -> Array (HTML _ _) -> HTML _ _
 defaultLayout st page =
   H.div [ P.class_ B.containerFluid ] [
     header st.me (length st.errors),
-    -- TODO FIXME: DEBUG
-    H.p_ [H.text $ show st.currentPage],
+
+    ifDebug
+      st
+      (\_ -> H.p_ [H.text $ show st.currentPage])
+      (\_ -> H.div_ []),
+
     renderBreadcrumbs st.currentPage st,
     row page
   ]

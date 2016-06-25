@@ -147,8 +147,7 @@ eval_Forum eval (CompForum sub next) = do
       Nothing                             -> eval (AddError "eval_Forum(Act/Gets/Recent)" "Forum doesn't exist" next)
       Just forum_pack -> do
         let forum = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
-        -- TODO FIXME: using threads per board for now
-        e_posts <- rd $ getThreadPostPacks_ByForumId [Limit forum.threadsPerBoard] forum.id
+        e_posts <- rd $ getThreadPostPacks_ByForumId [Limit forum.recentPostsLimit, WithBoard true, WithThread true] forum.id
         case e_posts of
           Left err -> eval (AddErrorApi "eval_Forum(Act/Gets/Recent)::getThreadPostPacks_ByForumId" err next)
           Right (ThreadPostPackResponses post_packs) -> do

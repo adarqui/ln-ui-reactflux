@@ -59,10 +59,23 @@ renderView_Forums_RecentPosts' org_pack forum_pack posts_map =
     H.ul [P.class_ B.listUnstyled] $
       map (\pack ->
         let
-          post       = pack ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse
+          post        = pack ^. _ThreadPostPackResponse .. threadPost_ ^. _ThreadPostResponse
+          m_board     = pack ^. _ThreadPostPackResponse .. withBoard_
+          m_thread    = pack ^. _ThreadPostPackResponse .. withThread_
+          board_name  = maybe "unknown" (\(BoardResponse board) -> board.name) m_board
+          thread_name = maybe "unknown" (\(ThreadResponse thread) -> thread.name) m_thread
+          user        = pack ^. _ThreadPostPackResponse .. user_ ^. _UserSanitizedResponse
         in
         H.li_ [
-          H.p_ [H.text $ show post.id]
+          H.p_ [
+            linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board_name (Show thread_name) emptyParams) thread_name,
+            H.text " by ",
+            linkToP [] (Users (Show user.nick) emptyParams) user.nick,
+            H.text " in ",
+            linkToP [] (OrganizationsForumsBoards org.name forum.name (Show board_name) emptyParams) board_name,
+            H.text " at ",
+            H.text $ show post.createdAt
+          ]
         ]
       ) $ listToArray $ M.values posts_map
 

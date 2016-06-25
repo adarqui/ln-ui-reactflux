@@ -14,4 +14,4 @@ import LN.T
 
 
 defaultForumRequest :: ForumRequest
-defaultForumRequest = mkForumRequest "" Nothing 20 20 Nothing [] Public 0
+defaultForumRequest = mkForumRequest "" Nothing 20 20 10 10 10 Nothing [] Public 0
