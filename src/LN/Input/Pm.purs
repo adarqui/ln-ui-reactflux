@@ -28,3 +28,4 @@ data Pm_Mod
   = SetSubject    String
   | SetBody       String
   | Send          Int -- user id
+  | EditP         Int -- pm id

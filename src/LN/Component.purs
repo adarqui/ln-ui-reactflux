@@ -28,6 +28,9 @@ import LN.Eval.Threads
 import LN.Eval.ThreadPosts
 import LN.Eval.Resources
 import LN.Eval.Leurons
+import LN.Eval.Pm
+import LN.Eval.PmIn
+import LN.Eval.PmOut
 import LN.Eval.Socket
 import LN.Eval.Nop
 
@@ -92,6 +95,9 @@ ui = component {render, eval}
   eval z@(CompProfile _ _)                            = eval_Profile eval z
   eval z@(CompResource _ _)                           = eval_Resource eval z
   eval z@(CompLeuron _ _)                             = eval_Leuron eval z
+  eval z@(CompPm _ _)                                 = eval_Pm eval z
+  eval z@(CompPmIn _ _)                               = eval_PmIn eval z
+  eval z@(CompPmOut _ _)                              = eval_PmOut eval z
   eval z@(CompLike _ _)                               = eval_Like eval z
   eval z@(CompStar _ _)                               = eval_Star eval z
   eval z@(CompOrderBy _ _)                            = eval_OrderBy eval z
