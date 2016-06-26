@@ -70,7 +70,7 @@ renderView_Forums_RecentPosts' org_pack forum_pack posts_map =
         in
         H.li_ [
           H.p_ [
-            linkToP [] (OrganizationsForumsBoardsThreads org.name forum.name board_name (Show thread_name) emptyParams) thread_name,
+            linkToP [] (OrganizationsForumsBoardsThreadsPosts org.name forum.name board_name thread_name (ShowI post.id) emptyParams) thread_name,
             H.text " by ",
             linkToP [] (Users (Show user.nick) emptyParams) user.nick,
             H.text " in ",
