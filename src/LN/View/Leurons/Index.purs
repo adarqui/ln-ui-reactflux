@@ -46,8 +46,9 @@ renderView_Leurons_Index' st =
       H.h2_ [H.text "Leurons"]
     ],
 
-    -- Page Numbers
-    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
+-- TODO FIXME: Bring back renderOrderBy once we figure out how we want to sort (LN.Sort)
+-- Page Numbers
+--    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
 
     -- Leurons
     H.div [] [renderLeurons st]

@@ -50,8 +50,9 @@ renderView_Resources_Index' st =
       linkToP_Classes [B.btn, B.btnLg, B.btnInfo, B.btnBlock] [] (Resources New emptyParams) "new"
     ],
 
-    -- Page Numbers
-    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
+-- TODO FIXME: Bring back renderOrderBy once we figure out how we want to sort (LN.Sort)
+-- Page Numbers
+--    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [renderOrderBy st.currentPage]],
 
     -- Resources
     H.div [] [resources st]

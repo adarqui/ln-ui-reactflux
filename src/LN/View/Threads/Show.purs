@@ -27,7 +27,6 @@ import LN.View.Helpers
 import LN.View.ThreadPosts.Show        (renderView_ThreadPosts_Show')
 import LN.View.Module.Gravatar         (renderGravatarForUser)
 import LN.View.Module.Loading          (renderLoading)
-import LN.View.Module.OrderBy          (renderOrderBy)
 import LN.View.Module.PageNumbers      (renderPageNumbers)
 import LN.T                            ( BoardPackResponse, ForumPackResponse, OrganizationPackResponse, ThreadPackResponse
                                        , Size(Small), ThreadPostResponse(ThreadPostResponse)

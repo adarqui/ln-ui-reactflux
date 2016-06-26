@@ -84,9 +84,10 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
         ]
 
     ],
-    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [
-      renderOrderBy $ OrganizationsForumsBoards org.name forum.name (Show board.name) emptyParams
-    ]],
+-- TODO FIXME: Bring back renderOrderBy once we figure out how we want to sort (LN.Sort)
+--    H.div [P.class_ B.clearfix] [H.span [P.classes [B.pullLeft]] [
+--      renderOrderBy $ OrganizationsForumsBoards org.name forum.name (Show board.name) emptyParams
+--    ]],
     H.div [] [plumbing_threads]
   ]
   where
