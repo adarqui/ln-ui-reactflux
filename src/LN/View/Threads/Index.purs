@@ -20,6 +20,7 @@ import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP, linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.Router.Class.Params          (emptyParams)
+import LN.Sort                         (sortThreadPacks)
 import LN.State.PageInfo               (PageInfo)
 import LN.State.Types                  (State)
 import LN.State.User                   (usersMapLookup_ToUser')
@@ -38,6 +39,7 @@ import LN.T                            (BoardPackResponse, ForumPackResponse, Or
                                        , _ThreadResponse, thread_, _BoardResponse, board_, _BoardPackResponse
                                        , _ForumResponse, forum_, _ForumPackResponse, _OrganizationResponse
                                        , organization_, _OrganizationPackResponse
+                                       , Param(..), SortOrderBy(..)
                                        )
 
 
@@ -118,7 +120,8 @@ renderView_Threads_Index' me_id org_pack forum_pack board_pack thread_packs thre
                 ]
             ]
           ])
-        $ listToArray $ M.values thread_packs
+        -- TODO FIXME: sorting is hard coded using this function
+        $ sortThreadPacks SortOrderBy_Dsc thread_packs
     , renderPageNumbers threads_page_info threads_route
   ]
   where

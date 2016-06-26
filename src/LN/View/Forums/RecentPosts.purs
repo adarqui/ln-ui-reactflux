@@ -79,6 +79,7 @@ renderView_Forums_RecentPosts' org_pack forum_pack posts_map =
             H.text $ show post.createdAt
           ]
         ]
+        -- TODO FIXME: sorting is hard coded using this function
       ) $ sortThreadPostPacks SortOrderBy_Dsc posts_map
 
   ]
