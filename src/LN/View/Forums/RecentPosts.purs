@@ -5,7 +5,7 @@ module LN.View.Forums.RecentPosts (
 
 
 
-import LN.ArrayList                    (listToArray)
+import Data.Array                      as A
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (ComponentHTML, HTML)
@@ -13,12 +13,14 @@ import Halogen.HTML.Indexed            as H
 import Halogen.HTML.Properties.Indexed as P
 import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
-import Prelude                         (id, map, show, ($), (<>), (/=))
+import Prelude                         (id, map, show, compare, ($), (<>), (/=))
 
+import LN.ArrayList                    (listToArray)
 import LN.Input.Types                  (Input)
 import LN.Router.Link                  (linkToP_Classes, linkToP_Glyph', linkToP)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.Router.Class.Params          (emptyParams)
+import LN.Sort                         (sortThreadPostPacks)
 import LN.State.Types                  (State)
 import LN.View.Helpers
 import LN.View.Boards.Index            (renderView_Boards_Index')
@@ -77,7 +79,7 @@ renderView_Forums_RecentPosts' org_pack forum_pack posts_map =
             H.text $ show post.createdAt
           ]
         ]
-      ) $ listToArray $ M.values posts_map
+      ) $ sortThreadPostPacks SortOrderBy_Dsc posts_map
 
   ]
   where

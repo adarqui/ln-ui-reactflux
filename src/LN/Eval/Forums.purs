@@ -42,7 +42,7 @@ import LN.T                            ( ForumPackResponses(..), ForumPackRespon
                                        , threadsPerBoard_, threadPostsPerThread_
                                        , _OrganizationPackResponse, _OrganizationResponse, organization_, organizationId_
                                        , ThreadPostPackResponse(..), ThreadPostPackResponses(..)
-                                       , Param(..))
+                                       , Param(..), SortOrderBy(..), OrderBy(..))
 
 
 
@@ -151,7 +151,10 @@ eval_Forum eval (CompForum sub next) = do
       Nothing                             -> eval (AddError "eval_Forum(Act/Gets/Recent)" "Forum doesn't exist" next)
       Just forum_pack -> do
         let forum = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
-        e_posts <- rd $ getThreadPostPacks_ByForumId [Limit forum.recentPostsLimit, WithBoard true, WithThread true] forum.id
+        e_posts <- rd $
+          getThreadPostPacks_ByForumId
+            [Limit forum.recentPostsLimit, WithBoard true, WithThread true, SortOrder SortOrderBy_Dsc, Order OrderBy_CreatedAt]
+            forum.id
         case e_posts of
           Left err -> eval (AddErrorApi "eval_Forum(Act/Gets/Recent)::getThreadPostPacks_ByForumId" err next)
           Right (ThreadPostPackResponses post_packs) -> do
