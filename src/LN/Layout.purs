@@ -4,7 +4,7 @@ module LN.Layout (
 
 
 
-import Data.Array                      ((:), length)
+import Data.Array                      ((:), length, concat)
 import Data.Maybe                      (Maybe(..))
 import Halogen.HTML.Indexed            (HTML(), ClassName())
 import Halogen.HTML.Indexed            as H
@@ -13,7 +13,7 @@ import Halogen.Themes.Bootstrap3       as B
 import Optic.Core                      ((^.), (..))
 import Prelude                         (map, show, ($), (<>))
 
-import LN.Debug                        (ifDebug)
+import LN.Debug                        (ifDebug_ByUser)
 import LN.Router.Link                  (linkToHref, linkTo)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.Router.Class.Params          (emptyParams)
@@ -43,8 +43,8 @@ defaultLayout st page =
   H.div [ P.class_ B.containerFluid ] [
     header st.me (length st.errors),
 
-    ifDebug
-      st
+    ifDebug_ByUser
+      st.me
       (\_ -> H.p_ [H.text $ "DEBUG(currentPage): " <> show st.currentPage])
       (\_ -> H.div_ []),
 
@@ -70,16 +70,23 @@ header muser n_errors =
     H.nav [P.classes [B.navbarNav, B.navbarStaticTop]] [
       container_ [
         H.a [P.classes [B.navbarBrand], linkToHref Home] [H.text "Home"],
-        H.ul [P.classes [B.navbarNav, B.nav, B.navTabs]] [
-          H.li_ [linkTo About "About"],
-          H.li_ [me],
-          H.li_ [errors],
-          H.li_ [linkTo Portal "Portal"]
-        ],
---        case muser of
---          Nothing -> H.div [P.classes [B.nav, B.navbarNav, B.navTabs, B.navbarRight]] [linkTo Login "Log in"]
---          Just u  -> H.div [P.classes [B.nav, B.navbarNav, B.navTabs, B.navbarRight]] [linkTo Logout "Log out"]
---      ]
+
+        -- TODO FIXME: ugly, but need to make sure the debug check doesn't wreck the navbar
+        H.ul [P.classes [B.navbarNav, B.nav, B.navTabs]]
+          (concat [
+            [
+              H.li_ [linkTo About "About"],
+              H.li_ [me]
+            ],
+            ifDebug_ByUser
+              muser
+              (\_ -> [H.li_ [errors]])
+              (\_ -> []),
+            [
+              H.li_ [linkTo Portal "Portal"]
+            ]
+          ]),
+
         case muser of
           Nothing ->
             H.ul [P.classes [B.nav, B.navbarNav, B.navTabs, B.navbarRight ]] [

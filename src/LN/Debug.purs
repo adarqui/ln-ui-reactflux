@@ -1,5 +1,6 @@
 module LN.Debug (
-  ifDebug
+  ifDebug,
+  ifDebug_ByUser
 ) where
 
 
@@ -14,8 +15,13 @@ import LN.T           (UserPackResponse(..), _ProfileResponse)
 
 
 ifDebug :: forall a. State -> (Unit -> a) -> (Unit -> a) -> a
-ifDebug st t e =
-  case st.me of
+ifDebug st = ifDebug_ByUser st.me
+
+
+
+ifDebug_ByUser :: forall a. Maybe UserPackResponse -> (Unit -> a) -> (Unit -> a) -> a
+ifDebug_ByUser me t e =
+  case me of
     Nothing                    -> e unit
     Just (UserPackResponse me) ->
       let profile = me.profile ^. _ProfileResponse in
