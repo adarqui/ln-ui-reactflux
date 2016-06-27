@@ -61,6 +61,7 @@ renderView_Forums_Index' org_pack forum_packs =
         let
           forum       = forum_pack ^. _ForumPackResponse .. forum_ ^. _ForumResponse
           forum_pack' = forum_pack ^. _ForumPackResponse
+          stat        = forum_pack ^. _ForumPackResponse .. stat_ ^. _ForumStatResponse
         in
         H.li_ [
           H.div [P.class_ B.row] [
@@ -73,10 +74,10 @@ renderView_Forums_Index' org_pack forum_packs =
               showTagsSmall forum.tags
             ],
             H.div [P.class_ B.colXs2] [
-              showBadge' "boards "  0,
-              showBadge' "threads " 0,
-              showBadge' "posts "   0,
-              showBadge' "views "   0
+              showBadge' "boards "  stat.boards,
+              showBadge' "threads " stat.threads,
+              showBadge' "posts "   stat.threadPosts,
+              showBadge' "views "   stat.views
             ],
             H.div [P.class_ B.colXs2] [
               H.p_ [H.text "created-at"]
