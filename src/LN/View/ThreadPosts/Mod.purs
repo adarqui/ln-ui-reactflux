@@ -77,31 +77,32 @@ renderView_ThreadPosts_Mod' crud thread_pack m_post_id post_req post_req_st =
 
     H.h1_ [ H.text $ show crud <> " Post" ]
 
-  , H.p_ [H.text "TODO FIXME: Add suggested tags for the board we're in. These should go to public tags."]
+-- TODO FIXME: Add suggested tags for the board we're in. These should go to public tags.
 
-  , tagsField
-      post.tags
-      (maybe "" id post_req_st.currentTag)
-      (cThreadPostMod <<< SetTag)
-      (cThreadPostMod AddTag)
-      (cThreadPostMod <<< DeleteTag)
-      (cThreadPostMod ClearTags)
-
-   , privateTagsField
-       post.privateTags
-       (maybe "" id post_req_st.currentPrivateTag)
-       (cThreadPostMod <<< SetPrivateTag)
-       (cThreadPostMod AddPrivateTag)
-       (cThreadPostMod <<< DeletePrivateTag)
-       (cThreadPostMod ClearPrivateTags)
+-- TODO FIXME: bring this back?
+--
+--   , privateTagsField
+--       post.privateTags
+--       (maybe "" id post_req_st.currentPrivateTag)
+--       (cThreadPostMod <<< SetPrivateTag)
+--       (cThreadPostMod AddPrivateTag)
+--       (cThreadPostMod <<< DeletePrivateTag)
+--       (cThreadPostMod ClearPrivateTags)
 
   , H.li_ [
       H.div [P.class_ B.row] [
           H.div [P.class_ B.colXs2] [
-            H.p_ [H.text "1"]
           ]
         , H.div [P.class_ B.colXs9] [
-            H.p_ [H.text "2"]
+
+          tagsField
+            post.tags
+            (maybe "" id post_req_st.currentTag)
+            (cThreadPostMod <<< SetTag)
+            (cThreadPostMod AddTag)
+            (cThreadPostMod <<< DeleteTag)
+            (cThreadPostMod ClearTags)
+
           , H.div [P.class_ B.well] [
             -- TODO FIXME , need to fix this input form, doesnt do anything
                  H.a [P.href "#"] [H.text "Bold"]
@@ -128,7 +129,6 @@ renderView_ThreadPosts_Mod' crud thread_pack m_post_id post_req post_req_st =
             ]
           ]
         , H.div [P.class_ B.colXs1] [
-            H.p_ [H.text "3"]
           ]
      ]
     ]
