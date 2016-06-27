@@ -17,13 +17,13 @@ import Prelude                         (id, show, map, ($), (<>), (||), (==))
 
 import LN.Access
 import LN.Input.Types                  (Input)
-import LN.Router.Link                  (linkToP, linkToP_Classes)
+import LN.Router.Link                  (linkTo, linkToP, linkToP_Classes)
 import LN.Router.Types                 (Routes(..), CRUD(..))
 import LN.Router.Class.Params          (emptyParams)
 import LN.Sort                         (sortThreadPacks)
 import LN.State.PageInfo               (PageInfo)
 import LN.State.Types                  (State)
-import LN.State.User                   (usersMapLookup_ToUser')
+import LN.State.User                   (usersMapLookup_ToUser', usersMapLookup_ToNick')
 -- import LN.View.Module.CreateThread     (renderCreateThread)
 import LN.View.Helpers
 import LN.View.Module.Gravatar         (renderGravatarForUser)
@@ -82,6 +82,7 @@ renderView_Threads_Index' me_id org_pack forum_pack board_pack thread_packs thre
           H.li_ [
             H.div [P.class_ B.row] [
                 H.div [P.class_ B.colXs1] [
+                  H.p_ [linkTo (Users (Show (usersMapLookup_ToNick' users_map thread.userId)) emptyParams) (usersMapLookup_ToNick' users_map thread.userId)],
                   renderGravatarForUser Small (usersMapLookup_ToUser' users_map thread.userId)
                 ]
               , H.div [P.class_ B.colXs5] [
@@ -97,7 +98,12 @@ renderView_Threads_Index' me_id org_pack forum_pack board_pack thread_packs thre
                 case post, user of
                      Just (ThreadPostResponse post'), Just (UserSanitizedResponse user') ->
                        H.div_ [
-                         H.p_ [H.text $ user'.nick],
+                         H.p_ [
+                           H.text $ "Last ",
+                           linkToP [] (OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (ShowI post'.id) emptyParams) "post",
+                           H.text " by ",
+                           linkToP [] (Users (Show user'.nick) emptyParams) user'.nick
+                         ],
                          H.p_ [H.text $ show post'.createdAt]
                        ]
                      _, _ -> H.div_ [ H.p_ [H.text "No posts."]]
