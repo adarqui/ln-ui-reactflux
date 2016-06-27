@@ -16,7 +16,7 @@ import LN.Input.Types                        (Input)
 import LN.Router.Link                        (linkTo', linkTo, linkToP)
 import LN.Router.Types                       (Routes(..))
 import LN.State.Entity                       (Entity)
-import LN.View.Helpers                       (glyphButtonLinkDef_Plus)
+import LN.View.Helpers                       (button_newOrganization)
 
 
 
@@ -27,7 +27,7 @@ renderEntityListing title m_new entities page_numbers =
         H.h1 [P.class_ B.textCenter] [H.text title],
         case m_new of
              Nothing  -> H.div_ []
-             Just new -> glyphButtonLinkDef_Plus new
+             Just new -> button_newOrganization new
       ]
     , page_numbers
     , H.div [P.class_ B.container] [

@@ -151,8 +151,8 @@ renderView_ThreadPosts_Show_Single' me_id org_pack forum_pack board_pack thread_
             post_pack'.permissions
             permCreateEmpty
             permReadEmpty
-            (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) emptyParams)
-            (\_ -> glyphButtonLinkDef_Trash $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) emptyParams)
+            (\_ -> button_editThreadPost $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (EditI post.id) emptyParams)
+            (\_ -> button_deleteThreadPost $ OrganizationsForumsBoardsThreadsPosts org.name forum.name board.name thread.name (DeleteI post.id) emptyParams)
             permExecuteEmpty
         ]
       ]

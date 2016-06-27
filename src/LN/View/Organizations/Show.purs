@@ -55,7 +55,7 @@ renderView_Organizations_Show' org_pack forum_packs =
         orgMemberHTML
           org_pack
           unitDiv
-          (\_ -> glyphButtonLinkDef_Ok $ OrganizationsMembership organization.name Index emptyParams),
+          (\_ -> button_joinOrganization $ OrganizationsMembership organization.name Index emptyParams),
 
         -- ACCESS: Organization
         -- * Update: can edit organization settings
@@ -65,8 +65,8 @@ renderView_Organizations_Show' org_pack forum_packs =
           org_pack'.permissions
           permCreateEmpty
           permReadEmpty
-          (\_ -> glyphButtonLinkDef_Pencil $ Organizations (Edit organization.name) emptyParams)
-          (\_ -> glyphButtonLinkDef_Trash $ Organizations (Delete organization.name) emptyParams)
+          (\_ -> button_editOrganization $ Organizations (Edit organization.name) emptyParams)
+          (\_ -> button_deleteOrganization $ Organizations (Delete organization.name) emptyParams)
           permExecuteEmpty
 
     ],

@@ -53,7 +53,7 @@ renderView_Forums_Index' org_pack forum_packs =
     --
     permissionsMatchCreateHTML
       org_pack'.permissions
-      (\_ -> glyphButtonLinkDef_Plus $ OrganizationsForums org.name New emptyParams)
+      (\_ -> button_newForum $ OrganizationsForums org.name New emptyParams)
       unitDiv,
 
     H.div [P.class_ B.listUnstyled] $
@@ -91,8 +91,8 @@ renderView_Forums_Index' org_pack forum_packs =
                 forum_pack'.permissions
                 permCreateEmpty
                 permReadEmpty
-                (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams)
-                (\_ -> glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) emptyParams)
+                (\_ -> button_editForum $ OrganizationsForums org.name (Edit forum.name) emptyParams)
+                (\_ -> button_deleteForum $ OrganizationsForums org.name (Delete forum.name) emptyParams)
                 permExecuteEmpty
             ]
           ]

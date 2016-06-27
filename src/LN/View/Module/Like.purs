@@ -18,12 +18,7 @@ import Prelude                            (($), (<<<))
 import LN.Input.Like                      (InputLike(..))
 import LN.Input.Star                      (InputStar(..))
 import LN.Input.Types                     (Input(..))
-import LN.View.Helpers                    ( glyphButtonDef_ArrowUp
-                                          , glyphButtonDef_ArrowDown
-                                          , glyphButtonDef_Minus
-                                          , glyphButtonDef_Star
-                                          , glyphButtonDef_StarEmpty
-                                          )
+import LN.View.Helpers
 import LN.T                               ( Ent
                                           , LikeOpt(..)
                                           , LikeResponse, _LikeResponse
@@ -38,13 +33,13 @@ renderLike ent ent_id m_like m_star =
 
   H.div [P.class_ B.row] [
 
-    glyphButtonDef_ArrowUp colorLike $ CompLike (likeInput ent ent_id m_like),
-    glyphButtonDef_Minus colorNeutral $ CompLike (neutralInput ent ent_id m_like),
-    glyphButtonDef_ArrowDown colorDislike $ CompLike (dislikeInput ent ent_id m_like),
+    button_like colorLike $ CompLike (likeInput ent ent_id m_like),
+    button_neutral colorNeutral $ CompLike (neutralInput ent ent_id m_like),
+    button_dislike colorDislike $ CompLike (dislikeInput ent ent_id m_like),
 
     (case m_star of
-         Nothing   -> glyphButtonDef_StarEmpty colorStar
-         Just star -> glyphButtonDef_Star colorStar) $ CompStar (InputStar ent ent_id m_star)
+         Nothing   -> button_starEmpty colorStar
+         Just star -> button_star colorStar) $ CompStar (InputStar ent ent_id m_star)
   ]
 
   where
@@ -72,11 +67,6 @@ renderLike ent ent_id m_like m_star =
     case m_star of
          Nothing -> color CSS.black
          Just _  -> color CSS.orange
-
-  starButton  =
-    case m_star of
-         Nothing -> B.glyphiconStarEmpty
-         Just _  -> B.glyphiconStar
 
   likeInput   =
     case m_like of

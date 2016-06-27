@@ -102,6 +102,29 @@ module LN.View.Helpers (
   buttonGroup_Horizontal',
   buttonGroup_Vertical',
 
+  button_newOrganization,
+  button_newOrganization,
+  button_editOrganization,
+  button_deleteOrganization,
+  button_joinOrganization,
+  button_newForum,
+  button_editForum,
+  button_deleteForum,
+  button_newBoard,
+  button_editBoard,
+  button_deleteBoard,
+  button_newThread,
+  button_editThread,
+  button_deleteThread,
+  button_newThreadPost,
+  button_editThreadPost,
+  button_deleteThreadPost,
+  button_like,
+  button_neutral,
+  button_dislike,
+  button_starEmpty,
+  button_star,
+
   linkBadge,
   linkBadge',
 
@@ -129,6 +152,7 @@ import Prelude                         (id, show, map, ($), (<>))
 import LN.Halogen.Util
 import LN.Input.Types                  (Input(..))
 import LN.Router.Link                  (linkToHref)
+import LN.Router.Class.Routes          (Routes(..))
 
 
 
@@ -145,15 +169,17 @@ buttons_CreateEditCancel m_edit_id save edit cancel =
 
 
 
-glyphButton glyph sz attrs handler =
---  H.span [P.class_ B.inputGroupBtn] [
-    H.button [
-      attrs,
---      P.alt alt,
-      P.classes [B.btn, B.btnDefault, sz],
-      E.onClick $ E.input_ handler
-    ] [H.span [P.classes [B.glyphicon, glyph]] []]
---  ]
+glyphButton glyph sz m_text attrs handler =
+  H.button [
+    attrs,
+    P.classes [B.btn, B.btnDefault, sz],
+    E.onClick $ E.input_ handler
+  ] [H.span [P.classes [B.glyphicon, glyph]] text]
+  where
+  text =
+    case m_text of
+      Nothing   -> []
+      Just text -> [H.text text]
 
 
 
@@ -219,8 +245,8 @@ glyphButtonLg_Remove    = glyphButton_Remove B.btnLg
 --    ] [H.span [P.classes [B.glyphicon, glyph]] []]
 --  ]
 
-glyphButtonLink glyph sz link =
-  glyphButton glyph sz (P.classes []) $ Goto link
+glyphButtonLink glyph sz m_text link =
+  glyphButton glyph sz m_text (P.classes []) $ Goto link
 
 
 
@@ -292,6 +318,45 @@ buttonGroup_Horizontal' sz xs =
 buttonGroup_Vertical' sz xs =
   H.div [P.classes [B.btnGroupVertical]] xs
 
+
+
+button_newOrganization     = glyphButtonLinkDef_Plus (Just " new-organization")
+button_editOrganization    = glyphButtonLinkDef_Pencil Nothing
+button_editOrganization'   = glyphButtonLinkDef_Pencil (Just "edit organization")
+button_deleteOrganization  = glyphButtonLinkDef_Trash Nothing
+button_deleteOrganization' = glyphButtonLinkDef_Trash (Just "delete organization")
+button_joinOrganization    = glyphButtonLinkDef_Ok (Just " join-organization")
+
+button_newForum     = glyphButtonLinkDef_Plus (Just " new-forum")
+button_editForum    = glyphButtonLinkDef_Pencil Nothing
+button_editForum'   = glyphButtonLinkDef_Pencil (Just "edit forum")
+button_deleteForum  = glyphButtonLinkDef_Trash Nothing
+button_deleteForum' = glyphButtonLinkDef_Trash (Just "delete forum")
+
+button_newBoard     = glyphButtonLinkDef_Plus (Just " new-board")
+button_editBoard    = glyphButtonLinkDef_Pencil Nothing
+button_editBoard'   = glyphButtonLinkDef_Pencil (Just "edit board")
+button_deleteBoard  = glyphButtonLinkDef_Trash Nothing
+button_deleteBoard' = glyphButtonLinkDef_Trash (Just "delete board")
+
+button_newThread     = glyphButtonLinkDef_Plus (Just " new-thread")
+button_editThread    = glyphButtonLinkDef_Pencil Nothing
+button_editThread'   = glyphButtonLinkDef_Pencil (Just "edit thread")
+button_deleteThread  = glyphButtonLinkDef_Trash Nothing
+button_deleteThread' = glyphButtonLinkDef_Trash (Just "delete thread")
+
+button_newThreadPost     = glyphButtonLinkDef_Plus (Just " new-thread-post")
+button_editThreadPost    = glyphButtonLinkDef_Pencil Nothing
+button_editThreadPost'   = glyphButtonLinkDef_Pencil (Just "edit thread post")
+button_deleteThreadPost  = glyphButtonLinkDef_Trash Nothing
+button_deleteThreadPost' = glyphButtonLinkDef_Trash (Just "delete thread post")
+
+button_like classes handler    = glyphButtonDef_ArrowUp Nothing classes handler
+button_neutral classes handler = glyphButtonDef_Minus Nothing classes handler
+button_dislike classes handler = glyphButtonDef_ArrowDown Nothing classes handler
+
+button_starEmpty classes handler = glyphButtonDef_StarEmpty Nothing classes handler
+button_star classes handler      = glyphButtonDef_Star Nothing classes handler
 
 
 

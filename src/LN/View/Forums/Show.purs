@@ -5,7 +5,7 @@ module LN.View.Forums.Show (
 
 
 
-import LN.ArrayList           (listToArray)
+import LN.ArrayList                    (listToArray)
 import Data.Map                        as M
 import Data.Maybe                      (Maybe(..), maybe)
 import Halogen                         (ComponentHTML, HTML)
@@ -80,10 +80,10 @@ renderView_Forums_Show'
         buttonGroup_HorizontalSm1 [
           permissionsHTML'
             forum_pack'.permissions
-            (\_ -> glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New emptyParams)
+            (\_ -> button_newBoard $ OrganizationsForumsBoards org.name forum.name New emptyParams)
             permReadEmpty
-            (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForums org.name (Edit forum.name) emptyParams)
-            (\_ -> glyphButtonLinkDef_Trash $ OrganizationsForums org.name (Delete forum.name) emptyParams)
+            (\_ -> button_editForum $ OrganizationsForums org.name (Edit forum.name) emptyParams)
+            (\_ -> button_deleteForum $ OrganizationsForums org.name (Delete forum.name) emptyParams)
             permExecuteEmpty
         ]
 

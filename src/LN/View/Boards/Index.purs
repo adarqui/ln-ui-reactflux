@@ -99,7 +99,7 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
                   --
                   permissionsMatchCreateHTML
                     forum_pack'.permissions
-                    (\_ -> glyphButtonLinkDef_Plus $ OrganizationsForumsBoards org.name forum.name New emptyParams)
+                    (\_ -> button_newBoard $ OrganizationsForumsBoards org.name forum.name New emptyParams)
                     unitDiv,
 
                   -- ACCESS: Board
@@ -110,8 +110,8 @@ renderView_Boards_Index' org_pack forum_pack board_packs =
                     board_pack.permissions
                     permCreateEmpty
                     permReadEmpty
-                    (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams)
-                    (\_ -> glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams)
+                    (\_ -> button_editBoard $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams)
+                    (\_ -> button_deleteBoard $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams)
                     permExecuteEmpty
                 ]
               ]

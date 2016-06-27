@@ -76,10 +76,10 @@ renderView_Boards_Show' org_pack forum_pack board_pack thread_packs plumbing_thr
           --
           permissionsHTML'
             board_pack'.permissions
-            (\_ -> glyphButtonLinkDef_Plus $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams)
+            (\_ -> button_newThread $ OrganizationsForumsBoardsThreads org.name forum.name board.name New emptyParams)
             permReadEmpty
-            (\_ -> glyphButtonLinkDef_Pencil $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams)
-            (\_ -> glyphButtonLinkDef_Trash $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams)
+            (\_ -> button_editBoard $ OrganizationsForumsBoards org.name forum.name (Edit board.name) emptyParams)
+            (\_ -> button_deleteBoard $ OrganizationsForumsBoards org.name forum.name (Delete board.name) emptyParams)
             permExecuteEmpty
         ]
 
