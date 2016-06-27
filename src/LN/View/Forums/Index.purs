@@ -26,9 +26,11 @@ import LN.View.Module.Loading          (renderLoading)
 import LN.T                            ( ForumPackResponse
                                        , _ForumPackResponse, _ForumResponse, organization_
                                        , _ForumPackResponse, _ForumResponse, forum_
+                                       , _ForumStatResponse
                                        , OrganizationPackResponse, OrganizationResponse
                                        , _OrganizationPackResponse, _OrganizationResponse
-                                       , organization_)
+                                       , organization_
+                                       , stat_)
 
 
 
