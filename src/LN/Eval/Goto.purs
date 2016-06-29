@@ -5,6 +5,7 @@ module LN.Eval.Goto (
 
 
 import Control.Monad.Aff.Free   (fromAff)
+import Data.Ebyam               (ebyam)
 import Data.Functor             (($>))
 import Data.Map                 as M
 import Data.Maybe               (Maybe(..), maybe)
@@ -33,6 +34,7 @@ import LN.Internal.Resource     (defaultResourceRequest, resourceTypeToTyResourc
 import LN.Router.Link           (updateUrl)
 import LN.Router.Types          (Routes(..), CRUD(..))
 import LN.Router.Class.Params   (lookupParam)
+import LN.State.PageInfo        (defaultPageInfo_Threads)
 import LN.State.Organization    (defaultOrganizationRequestState)
 import LN.State.Forum           (defaultForumRequestState)
 import LN.State.Board           (defaultBoardRequestState)
@@ -203,32 +205,12 @@ eval_Goto eval (Goto route next) = do
       eval (cForumAct (Forum.GetSid_ByCurrentOrganization forum_name) next)
       eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
 
-      let m_offset = lookupParam ParamTag_Offset params
-      maybe
-        (pure unit)
-        (\(Offset offset) -> do
-          pageInfo <- gets _.threadsPageInfo
-          modify (_{ threadsPageInfo = pageInfo { currentPage = offset } })
-          pure unit)
-        m_offset
+      let offset     = ebyam (lookupParam ParamTag_Offset params) defaultPageInfo_Threads.currentPage (\(Offset v) -> v)
+      let order      = ebyam (lookupParam ParamTag_Order params) defaultPageInfo_Threads.order (\(Order v) -> v)
+      let sort_order = ebyam (lookupParam ParamTag_SortOrder params) defaultPageInfo_Threads.sortOrder (\(SortOrder v) -> v)
 
-      let m_order = lookupParam ParamTag_Order params
-      maybe
-        (pure unit)
-        (\(Order order_by) -> do
-          pageInfo <- gets _.threadsPageInfo
-          modify (_{ threadsPageInfo = pageInfo { order = order_by } })
-          pure unit)
-        m_order
-
-      let m_sort_order = lookupParam ParamTag_SortOrder params
-      maybe
-        (pure unit)
-        (\(SortOrder sort_order) -> do
-          pageInfo <- gets _.threadsPageInfo
-          modify (_{ threadsPageInfo = pageInfo { sortOrder = sort_order } })
-          pure unit)
-        m_sort_order
+      pageInfo <- gets _.threadsPageInfo
+      modify (_{ threadsPageInfo = pageInfo { currentPage = offset, order = order, sortOrder = sort_order } })
 
       eval (cThreadAct Thread.Gets_ByCurrentBoard next)
       pure unit
