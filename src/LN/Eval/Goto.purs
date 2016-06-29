@@ -34,7 +34,11 @@ import LN.Internal.Resource     (defaultResourceRequest, resourceTypeToTyResourc
 import LN.Router.Link           (updateUrl)
 import LN.Router.Types          (Routes(..), CRUD(..))
 import LN.Router.Class.Params   (lookupParam)
-import LN.State.PageInfo        (defaultPageInfo_Threads)
+import LN.State.PageInfo        (defaultPageInfo_Threads
+                                ,defaultPageInfo_ThreadPosts
+                                ,defaultPageInfo_Resources
+                                ,defaultPageInfo_Leurons
+                                ,defaultPageInfo_Users)
 import LN.State.Organization    (defaultOrganizationRequestState)
 import LN.State.Forum           (defaultForumRequestState)
 import LN.State.Board           (defaultBoardRequestState)
@@ -261,20 +265,10 @@ eval_Goto eval (Goto route next) = do
       eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
       eval (cThreadAct (Thread.GetSid_ByCurrentBoard thread_name) next)
 
-      let m_offset = lookupParam ParamTag_Offset params
-      maybe
-        (pure unit)
-        (\(Offset offset) -> do
-          pageInfo <- gets _.threadPostsPageInfo
-          modify (_{
-            threadPostsPageInfo = pageInfo
-            -- TODO FIXME: offset=-1 just makes us go to the last page
-              { currentPage = if offset < 0 then pageInfo.totalPages else offset }
-          })
-          pure unit)
-        m_offset
+      pageInfo <- gets _.threadPostsPageInfo
+      let offset = ebyam (lookupParam ParamTag_Offset params) defaultPageInfo_ThreadPosts.currentPage (\(Offset v) -> if v < 0 then pageInfo.totalPages else v)
 
-      modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState })
+      modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState, threadPostsPageInfo = pageInfo { currentPage = offset } })
 
       eval (cThreadPostAct ThreadPost.Gets_ByCurrentThread next)
       pure unit
@@ -322,20 +316,10 @@ eval_Goto eval (Goto route next) = do
       eval (cBoardAct (Board.GetSid_ByCurrentForum board_name) next)
       eval (cThreadAct (Thread.GetSid_ByCurrentBoard thread_name) next)
 
-      let m_offset = lookupParam ParamTag_Offset params
-      maybe
-        (pure unit)
-        (\(Offset offset) -> do
-          pageInfo <- gets _.threadPostsPageInfo
-          modify (_{
-            threadPostsPageInfo = pageInfo
-            -- TODO FIXME: offset=-1 just makes us go to the last page
-              { currentPage = if offset < 0 then pageInfo.totalPages else offset }
-          })
-          pure unit)
-        m_offset
+      pageInfo <- gets _.threadPostsPageInfo
+      let offset = ebyam (lookupParam ParamTag_Offset params) defaultPageInfo_ThreadPosts.currentPage (\(Offset v) -> if v < 0 then pageInfo.totalPages else v)
 
-      modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState })
+      modify (_{ currentThreadPostRequest = Just defaultThreadPostRequest, currentThreadPostRequestSt = Just defaultThreadPostRequestState, threadPostsPageInfo = pageInfo{currentPage = offset} })
 
       eval (cThreadPostAct (ThreadPost.Gets_ByCurrentThread_And_ThreadPostId post_id) next)
       pure unit
@@ -395,14 +379,11 @@ eval_Goto eval (Goto route next) = do
     -- Resources
     --
     (Resources Index params) -> do
-      let m_offset = lookupParam ParamTag_Offset params
-      maybe
-        (pure unit)
-        (\(Offset offset) -> do
-          pageInfo <- gets _.resourcesPageInfo
-          modify (_{ resourcesPageInfo = pageInfo { currentPage = offset } })
-          pure unit)
-        m_offset
+
+      pageInfo <- gets _.resourcesPageInfo
+      let offset = ebyam (lookupParam ParamTag_Offset params) defaultPageInfo_Resources.currentPage (\(Offset v) -> if v < 0 then pageInfo.totalPages else v)
+      modify (_{ resourcesPageInfo = pageInfo { currentPage = offset } })
+
       eval (GetResources next) $> unit
 
 
@@ -439,14 +420,11 @@ eval_Goto eval (Goto route next) = do
 
 
     (ResourcesLeurons resource_id Index params) -> do
-      let m_offset = lookupParam ParamTag_Offset params
-      maybe
-        (pure unit)
-        (\(Offset offset) -> do
-          pageInfo <- gets _.leuronsPageInfo
-          modify (_{ leuronsPageInfo = pageInfo { currentPage = offset } })
-          pure unit)
-        m_offset
+
+      pageInfo <- gets _.leuronsPageInfo
+      let offset = ebyam (lookupParam ParamTag_Offset params) defaultPageInfo_Leurons.currentPage (\(Offset v) -> if v < 0 then pageInfo.totalPages else v)
+      modify (_{ leuronsPageInfo = pageInfo { currentPage = offset } })
+
       eval (GetLeurons next) $> unit
 
     (ResourcesLeurons resource_id New params) -> do
@@ -549,14 +527,9 @@ eval_Goto eval (Goto route next) = do
 
 
     (Users Index params) -> do
-      let m_offset = lookupParam ParamTag_Offset params
-      maybe
-        (pure unit)
-        (\(Offset offset) -> do
-          pageInfo <- gets _.usersPageInfo
-          modify (_{ usersPageInfo = pageInfo { currentPage = offset } })
-          pure unit)
-        m_offset
+      pageInfo <- gets _.usersPageInfo
+      let offset = ebyam (lookupParam ParamTag_Offset params) defaultPageInfo_Users.currentPage (\(Offset v) -> if v < 0 then pageInfo.totalPages else v)
+      modify (_{ usersPageInfo = pageInfo { currentPage = offset } })
       eval (GetUsers next) $> unit
 
     (Users (Show user_nick) params) -> eval (GetUser user_nick next) $> unit
