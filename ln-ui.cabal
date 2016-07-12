@@ -15,25 +15,14 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Lib
+  exposed-modules:     LN.UI
+                     , LN.UI.Main
   build-depends:       base >= 4.7 && < 5
-  default-language:    Haskell2010
-
-executable ln-ui-exe
-  hs-source-dirs:      app
-  main-is:             Main.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  build-depends:       base
-                     , ln-ui
-  default-language:    Haskell2010
-
-test-suite ln-ui-test
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test
-  main-is:             Spec.hs
-  build-depends:       base
-                     , ln-ui
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+                     , aeson == 0.10.0.0
+                     , reflex == 0.4.0
+                     , reflex-dom == 0.3
+                     , reflex-dom-contrib == 0.4.1
+                     , transformers
   default-language:    Haskell2010
 
 source-repository head
