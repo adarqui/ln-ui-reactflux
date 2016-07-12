@@ -4,9 +4,7 @@ module LN.UI.Main (
 
 
 
-import           Control.Monad.IO.Class    (liftIO)
 import           Reflex.Dom
-import           Reflex.Dom.Contrib.Router
 
 
 

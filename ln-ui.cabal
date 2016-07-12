@@ -18,10 +18,8 @@ library
   exposed-modules:     LN.UI
                      , LN.UI.Main
   build-depends:       base >= 4.7 && < 5
-                     , aeson == 0.10.0.0
                      , reflex == 0.4.0
                      , reflex-dom == 0.3
-                     , reflex-dom-contrib == 0.4.1
                      , transformers
   default-language:    Haskell2010
 
