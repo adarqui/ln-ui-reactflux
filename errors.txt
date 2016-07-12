@@ -1,0 +1,37 @@
+    /private/var/folders/gr/r_z143dj5b7_x35n34szlyxm0000gn/T/stack33863/reflex-dom-contrib-0.4.1/src/Reflex/Dom/Contrib/Router.hs:54:5:
+        Ambiguous occurrence ‘error’
+        It could refer to either ‘GHCJS.DOM.Document.error’,
+                                 imported from ‘GHCJS.DOM.Document’ at src/Reflex/Dom/Contrib/Router.hs:18:1-35
+                                 (and originally defined in ‘webkitgtk3-0.14.1.1:Graphics.UI.Gtk.WebKit.DOM.Document’)
+                              or ‘Prelude.error’,
+                                 imported from ‘Prelude’ at src/Reflex/Dom/Contrib/Router.hs:27:1-60
+                                 (and originally defined in ‘GHC.Err’)
+                              or ‘GHCJS.DOM.Window.error’,
+                                 imported from ‘GHCJS.DOM.Window’ at src/Reflex/Dom/Contrib/Router.hs:20:1-33
+                                 (and originally defined in ‘webkitgtk3-0.14.1.1:Graphics.UI.Gtk.WebKit.DOM.Window’)
+
+    /private/var/folders/gr/r_z143dj5b7_x35n34szlyxm0000gn/T/stack33863/reflex-dom-contrib-0.4.1/src/Reflex/Dom/Contrib/Router.hs:70:5:
+        Ambiguous occurrence ‘error’
+        It could refer to either ‘GHCJS.DOM.Document.error’,
+                                 imported from ‘GHCJS.DOM.Document’ at src/Reflex/Dom/Contrib/Router.hs:18:1-35
+                                 (and originally defined in ‘webkitgtk3-0.14.1.1:Graphics.UI.Gtk.WebKit.DOM.Document’)
+                              or ‘Prelude.error’,
+                                 imported from ‘Prelude’ at src/Reflex/Dom/Contrib/Router.hs:27:1-60
+                                 (and originally defined in ‘GHC.Err’)
+                              or ‘GHCJS.DOM.Window.error’,
+                                 imported from ‘GHCJS.DOM.Window’ at src/Reflex/Dom/Contrib/Router.hs:20:1-33
+                                 (and originally defined in ‘webkitgtk3-0.14.1.1:Graphics.UI.Gtk.WebKit.DOM.Window’)
+
+
+
+
+stack setup --upgrade-cabal
+
+    /private/var/folders/gr/r_z143dj5b7_x35n34szlyxm0000gn/T/stack75541/webkitgtk3-0.14.2.0/Setup.hs:5:8:
+            Could not find module ‘Gtk2HsSetup’
+                    Use -v to see a list of the files searched for.
+                    y:ln-ui x$ stack setup --upgrade-cabal
+                    Trying to upgrade Cabal library on a GHC not installed by stack.
+                    This may fail, caveat emptor!
+                    Installing Cabal-1.24.0.0 to replace 1.22.5.0
+                    Cabal-1.24.0.0: download
