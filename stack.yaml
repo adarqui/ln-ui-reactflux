@@ -38,6 +38,14 @@ resolver: lts-6.6
 packages:
 - '.'
 - '../reflex-dom'
+- '../ln-sanitize'
+- '../ln-validate'
+- '../haskell-ln-types'
+- '../haskell-api-helpers'
+- '../haskell-ebyam'
+- '../haskell-ifte'
+- '../haskell-rehtie'
+
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)
 extra-deps:
