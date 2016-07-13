@@ -10,7 +10,7 @@ module LN.UI.Types (
 
 
 
-import Prelude
+import           Prelude
 
 
 
