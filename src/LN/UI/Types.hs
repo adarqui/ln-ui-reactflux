@@ -1,11 +1,25 @@
 module LN.UI.Types (
   Array,
   List,
-  Tuple
+  Number,
+  Tuple,
+  tuple,
+  String,
+  Int
 ) where
 
 
 
-type Array a  = [a]
-type List a   = [a]
+import Prelude
+
+
+
+type Array a   = [a]
+type List a    = [a]
+type Number    = Double
 type Tuple a b = (a, b)
+
+
+
+tuple :: a -> b -> (a, b)
+tuple = (,)

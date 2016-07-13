@@ -18,6 +18,13 @@ library
   exposed-modules:     LN.UI
                      , LN.UI.Main
                      , LN.UI.Types
+                     , LN.UI.Router.Types
+                     , LN.UI.Router.Class.CRUD
+                     , LN.UI.Router.Class.Crumb
+                     , LN.UI.Router.Class.Link
+                     , LN.UI.Router.Class.OrderBy
+                     , LN.UI.Router.Class.Params
+                     , LN.UI.Router.Class.Routes
                      , LN.UI.State.Internal.Types
                      , LN.UI.State.PageInfo
                      , LN.UI.State.Organization
