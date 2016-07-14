@@ -37,7 +37,6 @@ resolver: lts-6.6
 # will not be run. This is useful for tweaking upstream packages.
 packages:
 - '.'
-- '../reflex-dom'
 - '../ln-sanitize'
 - '../ln-validate'
 - '../haskell-ln-types'
@@ -50,8 +49,7 @@ packages:
 # (e.g., acme-missiles-0.3)
 extra-deps:
   - haskell-src-exts-1.16.0.1
-  - reflex-0.4.0
-  - reflex-dom-0.3
+  - react-flux-1.1.1
   - ref-tf-0.4
 
 # Override default flag values for local packages and extra-deps

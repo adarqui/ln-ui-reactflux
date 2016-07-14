@@ -18,7 +18,11 @@ library
   exposed-modules:     LN.UI
                      , LN.UI.Main
                      , LN.UI.Types
+                     , LN.UI.App.Counter
+                     , LN.UI.Router.Internal
                      , LN.UI.Router.Types
+                     , LN.UI.Router.Util
+                     , LN.UI.Router.Tabbed
                      , LN.UI.Router.Class.CRUD
                      , LN.UI.Router.Class.Crumb
                      , LN.UI.Router.Class.Link
@@ -26,6 +30,7 @@ library
                      , LN.UI.Router.Class.Params
                      , LN.UI.Router.Class.Routes
                      , LN.UI.State.Internal.Types
+                     , LN.UI.State.Loading
                      , LN.UI.State.PageInfo
                      , LN.UI.State.Organization
                      , LN.UI.State.TeamMember
@@ -37,13 +42,19 @@ library
                      , LN.UI.State.Resource
                      , LN.UI.State.Leuron
   build-depends:       base >= 4.7 && < 5
+                     , aeson
+                     , bytestring
                      , containers
-                     , reflex == 0.4.0
-                     , reflex-dom == 0.3
+                     , deepseq
+                     , react-flux == 1.1.1
+                     , text
                      , transformers
+                     , web-routes
                      , ln-sanitize
                      , ln-validate
                      , haskell-ln-types
+  if impl(ghcjs)
+     build-depends:    ghcjs-base
   default-language:    Haskell2010
 
 source-repository head
