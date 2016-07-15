@@ -15,6 +15,7 @@ import           Data.Text              (Text)
 import qualified Data.Text              as Text
 import qualified LN.UI.App.Counter      as Counter
 import qualified LN.UI.App.About        as About
+import qualified LN.UI.App.Home         as Home
 import           LN.UI.Router.Internal
 import qualified LN.UI.Router.Tabbed    as Tabbed
 import           LN.UI.Router.Types
@@ -32,6 +33,7 @@ runReactMain = do
   liftIO $ print "runReactMain"
   let apps =
             [ aboutApp "About"
+            , homeApp "Home"
             , counterApp "Counter"
             , counterApp "Counter2"
             , counterApp "counter3"
@@ -54,6 +56,11 @@ runReactMain = do
 
 aboutApp :: Text -> App Tabbed.ParentRouter
 aboutApp name = App name About.store (\st _ -> About.view_ st) About.AboutAction Nothing
+
+
+
+homeApp :: Text -> App Tabbed.ParentRouter
+homeApp name = App name Home.store (\st _ -> Home.view_ st) Home.HomeAction Nothing
 
 
 

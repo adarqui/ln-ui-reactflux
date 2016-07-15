@@ -59,7 +59,7 @@ data TabbedState = TabbedState {
 
 
 data TabbedAction
-  = About
+  = R_About
   | SwitchApp !Int (Maybe [T.Text])
   | TabbedInit
   deriving (Show, Typeable, Generic, NFData)
@@ -67,13 +67,18 @@ data TabbedAction
 
 
 instance WR.PathInfo TabbedAction where
-  toPathSegments (SwitchApp aidx apath) =
-    "switchapp":WR.toPathSegments aidx ++ fromMaybe [] apath
-  toPathSegments TabbedInit = ["tabbedinit"]
-  fromPathSegments = SwitchApp <$ WR.segment "switchapp"
-                     <*> WR.pToken ("app-num"::String) intParser
-                     <*> WR.patternParse subRouteParser
-                     <|> TabbedInit <$ WR.segment "tabbedinit"
+  toPathSegments route =
+    case route of
+      SwitchApp aidx apath -> "switchapp":WR.toPathSegments aidx ++ fromMaybe [] apath
+      R_About              -> ["about"]
+      TabbedInit           -> ["tabbedinit"]
+  fromPathSegments =
+        SwitchApp
+          <$ WR.segment "switchapp"
+          <*> WR.pToken ("app-num"::String) intParser
+          <*> WR.patternParse subRouteParser
+    <|> R_About <$ WR.segment "about"
+    <|> TabbedInit <$ WR.segment "tabbedinit"
     where
       intParser v =
         case TR.decimal v of
@@ -96,6 +101,7 @@ instance StoreData TabbedState where
     case action of
       TabbedInit ->
         return st
+      R_About -> pure st
       SwitchApp idx tabRoute
         | idx >= 0 && idx <= length tsTabs -> do
             let Tab{..} = tsTabs !! idx
