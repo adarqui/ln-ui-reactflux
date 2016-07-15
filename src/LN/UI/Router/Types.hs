@@ -50,13 +50,14 @@ type AppName   = Text
 type AppView   = ReactElementM ViewEventHandler
 type AppRouter = [Text] -> IO ()
 
-data App props = forall state. StoreData state =>
-  App {
-    appName       :: AppName
-  , appState      :: ReactStore state
-  , appView       :: Typeable props => state -> props -> AppView ()
-  , appInitAction :: StoreAction state
-  , appRouter     :: Maybe AppRouter
+data App props =
+     forall state. StoreData state
+  => App {
+    appName       :: AppName,
+    appState      :: ReactStore state,
+    appView       :: Typeable props => state -> props -> AppView (),
+    appInitAction :: StoreAction state,
+    appRouter     :: Maybe AppRouter
   }
   deriving Typeable
 
