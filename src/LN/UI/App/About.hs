@@ -1,8 +1,8 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE DeriveAnyClass             #-}
+{-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE OverloadedStrings          #-}
+{-# LANGUAGE TypeFamilies               #-}
 
 module LN.UI.App.About (
   AboutState,
@@ -14,11 +14,11 @@ module LN.UI.App.About (
 
 
 
-import React.Flux hiding (view)
-import qualified React.Flux as RF
-import Control.DeepSeq (NFData)
-import Data.Typeable (Typeable)
-import GHC.Generics (Generic)
+import           Control.DeepSeq (NFData)
+import           Data.Typeable   (Typeable)
+import           GHC.Generics    (Generic)
+import           React.Flux      hiding (view)
+import qualified React.Flux      as RF
 
 
 
