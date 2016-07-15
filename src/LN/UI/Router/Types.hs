@@ -32,7 +32,7 @@ import           LN.UI.Router.Class.OrderBy as OrderBy
 import           LN.UI.Router.Class.Routes  as Routes
 
 
-import qualified Data.Text                  as T
+import           Data.Text                  (Text)
 import           Data.Typeable              (Typeable)
 import           React.Flux
 -- import qualified Data.JSString.Text as JSS
@@ -46,9 +46,9 @@ type Routing e = ()
 
 
 
-type AppName = T.Text
+type AppName = Text
 type AppView = ReactElementM ViewEventHandler
-type AppRouter = [T.Text] -> IO ()
+type AppRouter = [Text] -> IO ()
 
 data App props = forall state. StoreData state =>
            App {appName        :: AppName
