@@ -46,18 +46,19 @@ type Routing e = ()
 
 
 
-type AppName = Text
-type AppView = ReactElementM ViewEventHandler
+type AppName   = Text
+type AppView   = ReactElementM ViewEventHandler
 type AppRouter = [Text] -> IO ()
 
 data App props = forall state. StoreData state =>
-           App {appName        :: AppName
-               , appState      :: ReactStore state
-               , appView       :: Typeable props => state -> props -> AppView ()
-               , appInitAction :: StoreAction state
-               , appRouter     :: Maybe AppRouter
-               }
-               deriving Typeable
+  App {
+    appName        :: AppName
+  , appState      :: ReactStore state
+  , appView       :: Typeable props => state -> props -> AppView ()
+  , appInitAction :: StoreAction state
+  , appRouter     :: Maybe AppRouter
+  }
+  deriving Typeable
 
 initApp :: Typeable props => App props -> IO (ReactView props)
 initApp App{..} = do

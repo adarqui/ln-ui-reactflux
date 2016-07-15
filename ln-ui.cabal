@@ -18,7 +18,10 @@ library
   exposed-modules:     LN.UI
                      , LN.UI.Main
                      , LN.UI.Types
+                     , LN.UI.App.About
                      , LN.UI.App.Counter
+                     , LN.UI.App.Home
+                     , LN.UI.App.Organization
                      , LN.UI.Router.Internal
                      , LN.UI.Router.Types
                      , LN.UI.Router.Util

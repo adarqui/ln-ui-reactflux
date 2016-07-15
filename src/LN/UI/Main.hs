@@ -7,17 +7,18 @@ module LN.UI.Main (
 
 
 
-import Control.Monad
-import Control.Monad.IO.Class
-import qualified Data.Map as Map
-import Data.Monoid
-import React.Flux
-import qualified Data.Text as Text
-import Data.Text (Text)
-import qualified LN.UI.Router.Tabbed as Tabbed
-import LN.UI.Router.Internal
-import LN.UI.Router.Types
-import qualified LN.UI.App.Counter as Counter
+import           Control.Monad
+import           Control.Monad.IO.Class
+import qualified Data.Map               as Map
+import           Data.Monoid
+import           Data.Text              (Text)
+import qualified Data.Text              as Text
+import qualified LN.UI.App.Counter      as Counter
+import qualified LN.UI.App.About        as About
+import           LN.UI.Router.Internal
+import qualified LN.UI.Router.Tabbed    as Tabbed
+import           LN.UI.Router.Types
+import           React.Flux
 
 
 
@@ -29,7 +30,12 @@ runMain = pure ()
 runReactMain :: IO ()
 runReactMain = do
   liftIO $ print "runReactMain"
-  let apps = [counterApp "Counter", counterApp "Counter2", counterApp "counter3"]
+  let apps =
+            [ aboutApp "About"
+            , counterApp "Counter"
+            , counterApp "Counter2"
+            , counterApp "counter3"
+            ]
   appViews <- mapM initApp apps
   let tabs = appsToTabs "main tabs" apps appViews
   tabView <- initApp tabs
@@ -43,6 +49,11 @@ runReactMain = do
       zipWith (\a v ->
         Tabbed.Tab (appName a) (\pr -> view v pr mempty) (appRouter a))
       apps appViews
+
+
+
+aboutApp :: Text -> App Tabbed.ParentRouter
+aboutApp name = App name About.store (\st _ -> About.view_ st) About.AboutAction Nothing
 
 
 
