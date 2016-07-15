@@ -52,13 +52,15 @@ type AppRouter = [Text] -> IO ()
 
 data App props = forall state. StoreData state =>
   App {
-    appName        :: AppName
+    appName       :: AppName
   , appState      :: ReactStore state
   , appView       :: Typeable props => state -> props -> AppView ()
   , appInitAction :: StoreAction state
   , appRouter     :: Maybe AppRouter
   }
   deriving Typeable
+
+
 
 initApp :: Typeable props => App props -> IO (ReactView props)
 initApp App{..} = do

@@ -8,49 +8,63 @@
 {-# LANGUAGE TupleSections      #-}
 {-# LANGUAGE TypeFamilies       #-}
 
--- |
+module LN.UI.Router.Tabbed (
+  TabbedAction(..),
+  TabbedState(..),
+  Tab(..),
+  ParentRouter,
+  dispatch,
+  newStore,
+  view,
+  view_
+) where
 
-module LN.UI.Router.Tabbed
-  ( TabbedAction(..)
-  , TabbedState(..)
-  , Tab(..)
-  , ParentRouter
-  , dispatch
-  , newStore
-  , view
-  , view_) where
 
-import           React.Flux          hiding (view)
-import qualified React.Flux          as RF
+
+import           Control.Applicative   ((<|>))
+import           Control.DeepSeq
+import qualified Data.Aeson            as A
+import           Data.Maybe            (fromMaybe)
+import qualified Data.Text             as T
+import qualified Data.Text.Read        as TR
+import           Data.Typeable         (Typeable)
+import           GHC.Generics          (Generic)
+import qualified Web.Routes            as WR
+
+import           React.Flux            hiding (view)
+import qualified React.Flux            as RF
 
 import           LN.UI.Router.Internal
 import           LN.UI.Router.Types
 
-import           Control.Applicative ((<|>))
-import           Control.DeepSeq
-import qualified Data.Aeson          as A
-import           Data.Maybe          (fromMaybe)
-import qualified Data.Text           as T
-import qualified Data.Text.Read      as TR
-import           Data.Typeable       (Typeable)
-import           GHC.Generics        (Generic)
-import qualified Web.Routes          as WR
+
 
 type ParentRouter = Maybe ([T.Text] -> T.Text)
 
-data Tab = Tab {tabName    :: AppName
-               , tabView   :: ParentRouter -> AppView ()
-               , tabRouter :: Maybe AppRouter
-               }
-data TabbedState =
-  TabbedState { tsFocus :: !Int
-              , tsTabs  :: ![Tab]
-              }
-  deriving Typeable
 
-data TabbedAction = SwitchApp !Int (Maybe [T.Text])
-                  | TabbedInit
-                  deriving (Show, Typeable, Generic, NFData)
+
+data Tab = Tab {
+  tabName   :: AppName,
+  tabView   :: ParentRouter -> AppView (),
+  tabRouter :: Maybe AppRouter
+}
+
+
+
+data TabbedState = TabbedState {
+  tsFocus :: !Int,
+  tsTabs  :: ![Tab]
+} deriving Typeable
+
+
+
+data TabbedAction
+  = About
+  | SwitchApp !Int (Maybe [T.Text])
+  | TabbedInit
+  deriving (Show, Typeable, Generic, NFData)
+
+
 
 instance WR.PathInfo TabbedAction where
   toPathSegments (SwitchApp aidx apath) =
@@ -68,9 +82,12 @@ instance WR.PathInfo TabbedAction where
       subRouteParser apath =
         Right $ if null apath then Nothing else Just apath
 
+
+
 instance Show TabbedState where
-  showsPrec prec TabbedState{..} =
-    showsPrec prec ("TabbedState" :: String, tsFocus, map tabName tsTabs)
+  showsPrec prec TabbedState{..} = showsPrec prec ("TabbedState" :: String, tsFocus, map tabName tsTabs)
+
+
 
 instance StoreData TabbedState where
   type StoreAction TabbedState = TabbedAction
@@ -91,8 +108,12 @@ instance StoreData TabbedState where
         | otherwise ->
           error $ "Application index is out of range " ++ show idx
 
+
+
 newStore :: [Tab] -> ReactStore TabbedState
 newStore tabs = mkStore $ TabbedState 0 tabs
+
+
 
 view :: ReactStore TabbedState -> ParentRouter -> ReactView TabbedState
 view _ prouter = defineView "tabbed" $ \TabbedState{..} ->
@@ -107,6 +128,8 @@ view _ prouter = defineView "tabbed" $ \TabbedState{..} ->
     router cur action =
       actionRoute prouter $ SwitchApp cur (Just $ childRoutePath action)
 
+
+
 tabItem :: ReactView ((ParentRouter, Int), (Int, AppName))
 tabItem =
   defineView "tab-item" $ \((prouter, cur), (aidx, aname)) ->
@@ -115,13 +138,19 @@ tabItem =
   then elemText aname
   else a_ ["href" &= actionRoute prouter (SwitchApp aidx Nothing)] $ elemText aname
 
+
+
 tabItem_ :: ((ParentRouter, Int), (Int, AppName)) -> ReactElementM eventHandler ()
 tabItem_ tab =
   viewWithKey tabItem (fst $ snd tab) tab mempty
 
+
+
 view_ :: ReactStore TabbedState -> ParentRouter -> TabbedState -> ReactElementM eventHandler ()
 view_ rst pr st =
   RF.view (view rst pr) st mempty
+
+
 
 dispatch :: ReactStore TabbedState -> TabbedAction -> [SomeStoreAction]
 dispatch rst a = [SomeStoreAction rst a]
