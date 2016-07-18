@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.Router.Core.Store (
@@ -18,6 +19,7 @@ import           Control.DeepSeq        (NFData)
 import           Data.Text              (Text)
 import           Data.Typeable          (Typeable)
 import           GHC.Generics           (Generic)
+import           LN.T.Pack.User         (UserPackResponse (..))
 import           LN.UI.Router.Class.App
 import           React.Flux             hiding (view)
 import qualified React.Flux             as RF
@@ -25,12 +27,14 @@ import qualified React.Flux             as RF
 
 
 data CoreStore = CoreStore {
-  coreStoreRoute :: RoutingApp
+  coreStore_Route :: RoutingApp,
+  coreStore_Me    :: Maybe UserPackResponse
 } deriving (Show, Typeable, Generic, NFData)
 
 defaultCoreStore :: CoreStore
 defaultCoreStore = CoreStore {
-  coreStoreRoute = AppHome
+  coreStore_Route = AppHome,
+  coreStore_Me    = Nothing
 }
 
 
@@ -58,10 +62,23 @@ coreStore = mkStore defaultCoreStore
 coreView :: ReactView CoreStore
 coreView =
   defineView "core" $ \st ->
-  div_ $ p_ $ elemText "Core"
+    defaultLayout st (div_ $ p_ $ elemText "page")
 
 
 
 coreView_ :: CoreStore -> ReactElementM eventHandler ()
 coreView_ st =
   RF.view coreView st mempty
+
+
+
+defaultLayout :: CoreStore -> ReactElementM ViewEventHandler () -> ReactElementM ViewEventHandler ()
+defaultLayout st@CoreStore{..} page = do
+  div_ $
+    navBar coreStore_Me
+
+
+
+navBar :: Maybe UserPackResponse -> ReactElementM ViewEventHandler ()
+navBar m_user_pack =
+  div_ $ p_ $ elemText "user"
