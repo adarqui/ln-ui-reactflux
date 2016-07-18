@@ -11,6 +11,7 @@
 module LN.UI.Router.Tabbed (
   TabbedAction(..),
   TabbedState(..),
+  defaultTabbedState,
   Tab(..),
   ParentRouter,
   dispatch,
@@ -21,8 +22,10 @@ module LN.UI.Router.Tabbed (
 
 
 
+import Control.Monad.IO.Class (liftIO)
 import           Control.Applicative   ((<|>))
 import           Control.DeepSeq
+import Data.Text (Text)
 import qualified Data.Aeson            as A
 import           Data.Maybe            (fromMaybe)
 import qualified Data.Text             as T
@@ -45,52 +48,65 @@ type ParentRouter = Maybe ([T.Text] -> T.Text)
 
 data Tab = Tab {
   tabName   :: AppName,
-  tabView   :: ParentRouter -> AppView (),
-  tabRouter :: Maybe AppRouter
+  tabView   :: ParentRouter -> AppView ()
+--  tabRouter :: Maybe AppRouter
 }
 
 
 
 data TabbedState = TabbedState {
-  tsFocus :: !Int,
-  tsTabs  :: ![Tab]
-} deriving Typeable
+  tsState       :: !Int,
+  tsCurrentPage :: !TabbedAction,
+  tsAboutApp    :: App (),
+  tsHomeApp     :: App (),
+  tsView        :: AppView ()
+} deriving (Show, Typeable)
+
+defaultTabbedState :: TabbedState
+defaultTabbedState = TabbedState {
+  tsState       = 0,
+  tsCurrentPage = R_Home,
+  tsAboutApp    = undefined,
+  tsHomeApp     = undefined,
+  tsView        = undefined
+}
 
 
 
 data TabbedAction
   = R_About
-  | SwitchApp !Int (Maybe [T.Text])
-  | TabbedInit
-  deriving (Show, Typeable, Generic, NFData)
+  | R_Home
+  | R_404
+  deriving (Show, Enum, Typeable, Generic, NFData)
 
 
 
 instance WR.PathInfo TabbedAction where
   toPathSegments route =
     case route of
-      SwitchApp aidx apath -> "switchapp":WR.toPathSegments aidx ++ fromMaybe [] apath
+--      SwitchApp aidx apath -> "switchapp":WR.toPathSegments aidx ++ fromMaybe [] apath
       R_About              -> ["about"]
-      TabbedInit           -> ["tabbedinit"]
+      R_Home               -> ["home"]
   fromPathSegments =
-        SwitchApp
-          <$ WR.segment "switchapp"
-          <*> WR.pToken ("app-num"::String) intParser
-          <*> WR.patternParse subRouteParser
-    <|> R_About <$ WR.segment "about"
-    <|> TabbedInit <$ WR.segment "tabbedinit"
-    where
-      intParser v =
-        case TR.decimal v of
-        Right (aidx, "") -> Just aidx
-        _ -> Nothing
-      subRouteParser apath =
-        Right $ if null apath then Nothing else Just apath
+        -- SwitchApp
+        --   <$ WR.segment "switchapp"
+        --   <*> WR.pToken ("app-num"::String) intParser
+        --   <*> WR.patternParse subRouteParser
+        R_About <$ WR.segment "about"
+    <|> R_Home <$ WR.segment "home"
+    <|> pure R_404
+    -- where
+    --   intParser v =
+    --     case TR.decimal v of
+    --     Right (aidx, "") -> Just aidx
+    --     _ -> Nothing
+    --   subRouteParser apath =
+    --     Right $ if null apath then Nothing else Just apath
 
 
 
-instance Show TabbedState where
-  showsPrec prec TabbedState{..} = showsPrec prec ("TabbedState" :: String, tsFocus, map tabName tsTabs)
+-- instance Show TabbedState where
+--  showsPrec prec TabbedState{..} = showsPrec prec ("TabbedState" :: String, tsFocus, map tabName tsTabs)
 
 
 
@@ -98,62 +114,117 @@ instance StoreData TabbedState where
   type StoreAction TabbedState = TabbedAction
   transform action st@TabbedState{..} = do
     putStrLn $ "Action: " ++ show action
+    putStrLn $ "State: " ++ show st
     case action of
-      TabbedInit ->
-        return st
-      R_About -> pure st
-      SwitchApp idx tabRoute
-        | idx >= 0 && idx <= length tsTabs -> do
-            let Tab{..} = tsTabs !! idx
-            case (tabRouter, tabRoute) of
-              (Just tr, Just rt) ->
-                tr rt
-              _ ->
-                return ()
-            return $ st{tsFocus = idx}
-        | otherwise ->
-          error $ "Application index is out of range " ++ show idx
+      R_About  -> pure (st { tsCurrentPage = R_About })
+--      R_About -> do
+--        case tsAboutApp of
+--          App { appView = av, appState = ast } -> pure (st { tsCurrentPage = R_About, tsView = av mempty ()})
+      R_Home  -> pure (st { tsCurrentPage = R_Home })
+      -- TabbedInit ->
+      --   return st
+      -- SwitchApp idx tabRoute
+      --   | idx >= 0 && idx <= length tsTabs -> do
+      --       let Tab{..} = tsTabs !! idx
+      --       case (tabRouter, tabRoute) of
+      --         (Just tr, Just rt) ->
+      --           tr rt
+      --         _ ->
+      --           return ()
+      --       return $ st{tsFocus = idx}
+      --   | otherwise ->
+      --     error $ "Application index is out of range " ++ show idx
 
 
 
-newStore :: [Tab] -> ReactStore TabbedState
-newStore tabs = mkStore $ TabbedState 0 tabs
+-- newStore :: [Tab] -> ReactStore TabbedState
+-- newStore tabs = mkStore $ TabbedState 0 tabs
+newStore :: TabbedState -> ReactStore TabbedState
+newStore initial_state = mkStore initial_state
 
 
 
 view :: ReactStore TabbedState -> ParentRouter -> ReactView TabbedState
 view _ prouter = defineView "tabbed" $ \TabbedState{..} ->
+
   div_ $ do
-    div_ ["className" $= "tabbed-app-picker"] $
-      mapM_ (tabItem_ . ((prouter,tsFocus),)) $ zip [0..] $ map tabName tsTabs
-    div_ ["className" $= "tabbed-internal-app"] $
-      if tsFocus < length tsTabs
-       then tabView (tsTabs !! tsFocus) (Just $ router tsFocus)
-      else mempty
-  where
-    router cur action =
-      actionRoute prouter $ SwitchApp cur (Just $ childRoutePath action)
+
+    div_ $ do
+      homeNav_ prouter
+      aboutNav_ prouter
+
+    div_ $ do
+      p_ $ elemText "body"
+
+
+--    mapM_ (tabItem_ . ((prouter,tsFocus),)) $ zip [0..] $ map tabName tsTabs
+
+  --   div_ ["className" $= "tabbed-internal-app"] $
+  --     if tsFocus < length tsTabs
+  --      then tabView (tsTabs !! tsFocus) (Just $ router tsFocus)
+  --     else mempty
+  -- where
+  --   router cur action =
+  --     actionRoute prouter $ SwitchApp cur (Just $ childRoutePath action)
+--   div_ $ p_ $ elemText "tabbed view"
+
+  -- div_ $ do
+  --   div_ ["className" $= "tabbed-app-picker"] $
+  --     mapM_ (tabItem_ . ((prouter,tsFocus),)) $ zip [0..] $ map tabName tsTabs
+  --   div_ ["className" $= "tabbed-internal-app"] $
+  --     if tsFocus < length tsTabs
+  --      then tabView (tsTabs !! tsFocus) (Just $ router tsFocus)
+  --     else mempty
+  -- where
+  --   router cur action =
+  --     actionRoute prouter $ SwitchApp cur (Just $ childRoutePath action)
 
 
 
-tabItem :: ReactView ((ParentRouter, Int), (Int, AppName))
-tabItem =
-  defineView "tab-item" $ \((prouter, cur), (aidx, aname)) ->
-  span_ ["style" @= A.object ["color" A..= ("#eee"::String)] | cur == aidx] $
-  if cur == aidx
-  then elemText aname
-  else a_ ["href" &= actionRoute prouter (SwitchApp aidx Nothing)] $ elemText aname
+-- tabItem :: ReactView ((ParentRouter, Int), (Int, AppName))
+-- tabItem =
+--   defineView "tab-item" $ \((prouter, cur), (aidx, aname)) ->
+--   span_ ["style" @= A.object ["color" A..= ("#eee"::String)] | cur == aidx] $
+--   if cur == aidx
+--   then elemText aname
+--   else a_ ["href" &= actionRoute prouter (SwitchApp aidx Nothing)] $ elemText aname
 
 
 
-tabItem_ :: ((ParentRouter, Int), (Int, AppName)) -> ReactElementM eventHandler ()
-tabItem_ tab =
-  viewWithKey tabItem (fst $ snd tab) tab mempty
+aboutNav :: ReactView ParentRouter
+aboutNav =
+  defineView "about-nav" $ \prouter ->
+    span_ ["style" @= A.object ["color" A..= ("#eee"::String)]] $ a_ ["href" &= actionRoute prouter R_About] $ elemText "About"
+
+
+
+aboutNav_ :: ParentRouter -> ReactElementM eventHandler ()
+aboutNav_ tab =
+  viewWithIKey aboutNav (fromEnum R_About) tab mempty
+
+
+
+homeNav :: ReactView ParentRouter
+homeNav =
+  defineView "home-nav" $ \prouter ->
+    span_ ["style" @= A.object ["color" A..= ("#eee"::String)]] $ a_ ["href" &= actionRoute prouter R_Home] $ elemText "Home"
+
+
+
+homeNav_ :: ParentRouter -> ReactElementM eventHandler ()
+homeNav_ tab =
+  viewWithIKey homeNav (fromEnum R_Home) tab mempty
+
+
+
+-- tabItem_ :: ((ParentRouter, Int), (Int, AppName)) -> ReactElementM eventHandler ()
+-- tabItem_ tab =
+--   viewWithKey tabItem (fst $ snd tab) tab mempty
 
 
 
 view_ :: ReactStore TabbedState -> ParentRouter -> TabbedState -> ReactElementM eventHandler ()
-view_ rst pr st =
+view_ rst pr st = do
   RF.view (view rst pr) st mempty
 
 

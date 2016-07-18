@@ -31,36 +31,51 @@ runMain = pure ()
 runReactMain :: IO ()
 runReactMain = do
   liftIO $ print "runReactMain"
-  let apps =
-            [ aboutApp "About"
-            , homeApp "Home"
-            , counterApp "Counter"
-            , counterApp "Counter2"
-            , counterApp "counter3"
-            ]
-  appViews <- mapM initApp apps
-  let tabs = appsToTabs "main tabs" apps appViews
+  -- let apps =
+  --           [ aboutApp "About"
+  --           , homeApp "Home"
+  --           , counterApp "Counter"
+  --           ]
+  -- appViews <- mapM initApp apps
+  let tabs = tabApp "tabs" -- appsToTabs "main tabs" apps appViews
   tabView <- initApp tabs
   case tabs of
     App{appRouter = Just ar} -> initRouter ar
     _                        -> pure ()
   reactRender "ln" tabView Nothing
-  where
-  appsToTabs tabsName apps appViews =
-    tabApp tabsName $
-      zipWith (\a v ->
-        Tabbed.Tab (appName a) (\pr -> view v pr mempty) (appRouter a))
-      apps appViews
+
+  -- where
+  -- appsToTabs tabsName apps appViews =
+  --   tabApp tabsName $
+  --     zipWith (\a v ->
+  --       Tabbed.Tab (appName a) (\pr -> view v pr mempty)) -- (appRouter a))
+  --     apps appViews
+  -- where
+  -- appsToTabs tabsName apps appViews =
+  --   tabApp tabsName $
+  --     zipWith (\a v ->
+  --       Tabbed.Tab (appName a) (\pr -> view v pr mempty) (appRouter a))
+  --     apps appViews
 
 
 
-aboutApp :: Text -> App Tabbed.ParentRouter
-aboutApp name = App name About.store (\st _ -> About.view_ st) About.AboutAction Nothing
+-- aboutApp :: Text -> App Tabbed.ParentRouter
+-- aboutApp name = App name About.store (\st _ -> About.view_ st) About.AboutAction Nothing
 
 
 
-homeApp :: Text -> App Tabbed.ParentRouter
-homeApp name = App name Home.store (\st _ -> Home.view_ st) Home.HomeAction Nothing
+-- homeApp :: Text -> App Tabbed.ParentRouter
+-- homeApp name = App name Home.store (\st _ -> Home.view_ st) Home.HomeAction Nothing
+
+
+
+aboutApp :: App ()
+aboutApp = App "about-app" About.store (\st _ -> About.view_ st) About.AboutAction Nothing
+
+
+
+homeApp :: App ()
+homeApp = App "home-app" Home.store (\st _ -> Home.view_ st) Home.HomeAction Nothing
 
 
 
@@ -69,8 +84,20 @@ counterApp name = App name Counter.store (\st _ -> Counter.view_ st) Counter.Cou
 
 
 
-tabApp :: Text -> [Tabbed.Tab] -> App Tabbed.ParentRouter
-tabApp name tabs =
-  let rst = Tabbed.newStore tabs
+tabApp :: Text -> App Tabbed.ParentRouter
+tabApp name =
+  let rst = Tabbed.newStore Tabbed.defaultTabbedState { Tabbed.tsAboutApp = aboutApp, Tabbed.tsHomeApp = homeApp }
   in
-    App name rst (\st rt -> Tabbed.view_ rst rt st) Tabbed.TabbedInit (Just $ storeRouter rst)
+    App {
+      appName       = name,
+      appState      = rst,
+      appView       = (\st rt -> Tabbed.view_ rst rt st),
+      appInitAction = Tabbed.R_Home,
+      appRouter     = (Just $ storeRouter rst)
+    }
+
+-- tabApp :: Text -> [Tabbed.Tab] -> App Tabbed.ParentRouter
+-- tabApp name tabs =
+--   let rst = Tabbed.newStore tabs
+--   in
+--     App name rst (\st rt -> Tabbed.view_ rst rt st) Tabbed.TabbedInit (Just $ storeRouter rst)

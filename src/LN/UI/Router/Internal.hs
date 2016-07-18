@@ -50,10 +50,13 @@ foreign import javascript unsafe
   js_getLocationHash :: IO JSString
 
 setLocationHash :: String -> IO ()
-setLocationHash = js_setLocationHash . JSS.pack
+setLocationHash loc = do
+  putStrLn "setLocationHash"
+  js_setLocationHash $ JSS.pack loc
 
 getLocationHash :: IO (Maybe String)
 getLocationHash = do
+  putStrLn "getLocationHash"
   rt <- liftM JSS.unpack js_getLocationHash
   return $ case rt of
     "" -> Nothing
@@ -61,6 +64,7 @@ getLocationHash = do
 
 onLocationHashChange :: (String -> IO ()) -> IO ()
 onLocationHashChange fn = do
+  putStrLn "onLocationHashChange"
   cb <- syncCallback1 ThrowWouldBlock (fn . JSS.unpack . unsafeCoerce)
   js_attachtLocationHashCb cb
 
@@ -90,7 +94,8 @@ actionRoute mparentRouter action =
            else T.cons '#' path
 
 initRouter :: ([T.Text] -> IO ()) -> IO ()
-initRouter router =
+initRouter router = do
+  putStrLn "initRouter"
   onLocationHashChange $ router . stripHash . WR.decodePathInfo . BC.pack
   where
     stripHash ("#":path) = path
@@ -103,5 +108,6 @@ storeRouter store =
   in
     \rt -> either (const $ return ()) id $ WR.runSite "" site rt
   where
-    routerAlterStore action =
+    routerAlterStore action = do
+      liftIO $ putStrLn "storeRouter"
       liftIO $ alterStore store action

@@ -5,6 +5,8 @@
 {-# LANGUAGE OverloadedStrings         #-}
 {-# LANGUAGE RankNTypes                #-}
 {-# LANGUAGE RecordWildCards           #-}
+{-# LANGUAGE TypeSynonymInstances      #-}
+{-# LANGUAGE FlexibleInstances         #-}
 
 -- |
 
@@ -24,7 +26,7 @@ module LN.UI.Router.Types (
 
 
 import           Data.Maybe                 (Maybe)
-import           Prelude                    (IO, pure, undefined)
+import           Prelude                    (Show, IO, show, pure, undefined)
 
 import           LN.UI.Router.Class.CRUD    as CRUD
 import           LN.UI.Router.Class.Link    as Link
@@ -53,14 +55,19 @@ type AppRouter = [Text] -> IO ()
 data App props =
      forall state. StoreData state
   => App {
-    appName       :: AppName,
-    appState      :: ReactStore state,
-    appView       :: Typeable props => state -> props -> AppView (),
-    appInitAction :: StoreAction state,
-    appRouter     :: Maybe AppRouter
+     appName       :: AppName,
+     appState      :: ReactStore state,
+     appView       :: Typeable props => state -> props -> AppView (),
+     appInitAction :: StoreAction state,
+     appRouter     :: Maybe AppRouter
   }
   deriving Typeable
 
+instance Show (App a) where
+  show _ = "App"
+
+instance Show (AppView a) where
+  show _ = "AppView"
 
 
 initApp :: Typeable props => App props -> IO (ReactView props)
