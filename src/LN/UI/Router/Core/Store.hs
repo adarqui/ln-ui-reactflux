@@ -1,8 +1,7 @@
-{-# LANGUAGE DeriveAnyClass             #-}
-{-# LANGUAGE DeriveGeneric              #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE TypeFamilies               #-}
+{-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.Router.Core.Store (
   CoreStore (..),
@@ -15,20 +14,24 @@ module LN.UI.Router.Core.Store (
 
 
 
-import           Control.DeepSeq (NFData)
-import           Data.Text       (Text)
-import           Data.Typeable   (Typeable)
-import           GHC.Generics    (Generic)
-import           React.Flux      hiding (view)
-import qualified React.Flux      as RF
+import           Control.DeepSeq        (NFData)
+import           Data.Text              (Text)
+import           Data.Typeable          (Typeable)
+import           GHC.Generics           (Generic)
+import           LN.UI.Router.Class.App
+import           React.Flux             hiding (view)
+import qualified React.Flux             as RF
 
 
 
-data CoreStore = CoreStore
-  deriving (Show, Typeable, Generic, NFData)
+data CoreStore = CoreStore {
+  coreStoreRoute :: RoutingApp
+} deriving (Show, Typeable, Generic, NFData)
 
 defaultCoreStore :: CoreStore
-defaultCoreStore = CoreStore
+defaultCoreStore = CoreStore {
+  coreStoreRoute = AppHome
+}
 
 
 
@@ -43,12 +46,12 @@ instance StoreData CoreStore where
   type StoreAction CoreStore = CoreAction
   transform action st = do
     putStrLn "Core"
-    pure CoreStore
+    pure st
 
 
 
 coreStore :: ReactStore CoreStore
-coreStore = mkStore CoreStore
+coreStore = mkStore defaultCoreStore
 
 
 

@@ -23,6 +23,7 @@ library
                      , LN.UI.App.Home
                      , LN.UI.App.Organization
                      , LN.UI.Router.Core
+                     , LN.UI.Router.Core.Store
                      , LN.UI.Router.Types
                      , LN.UI.Router.Util
                      , LN.UI.Router.Class.App

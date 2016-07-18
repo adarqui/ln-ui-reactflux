@@ -1,4 +1,5 @@
-{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module LN.UI.Router.Class.App (
@@ -7,17 +8,18 @@ module LN.UI.Router.Class.App (
 
 
 
-import Control.Applicative ((<|>))
+import           Control.Applicative ((<|>))
+import           Control.DeepSeq     (NFData)
+import           Data.Typeable       (Typeable)
+import           GHC.Generics        (Generic)
 import           Web.Routes
-import GHC.Generics (Generic)
-import Data.Typeable (Typeable)
 
 
 
 data RoutingApp
   = AppHome
   | AppAbout
-  deriving (Show, Generic, Typeable)
+  deriving (Show, Generic, Typeable, NFData)
 
 
 
