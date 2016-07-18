@@ -44,6 +44,8 @@ packages:
 - '../haskell-ebyam'
 - '../haskell-ifte'
 - '../haskell-rehtie'
+- '../react-flux-router'
+- '../ghcjs-router'
 
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)

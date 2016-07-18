@@ -15,12 +15,7 @@ module LN.UI.Router.Types (
   module CRUD,
   module Link,
   module OrderBy,
-  module Routes,
-  AppName,
-  AppView,
-  AppRouter,
-  App (..),
-  initApp
+  module Routes
 ) where
 
 
@@ -43,36 +38,3 @@ import           React.Flux
 
 
 type Routing e = ()
-
-
-
-
-
-type AppName   = Text
-type AppView   = ReactElementM ViewEventHandler
-type AppRouter = [Text] -> IO ()
-
-data App props =
-     forall state. StoreData state
-  => App {
-     appName       :: AppName,
-     appState      :: ReactStore state,
-     appView       :: Typeable props => state -> props -> AppView (),
-     appInitAction :: StoreAction state,
-     appRouter     :: Maybe AppRouter
-  }
-  deriving Typeable
-
-instance Show (App a) where
-  show _ = "App"
-
-instance Show (AppView a) where
-  show _ = "AppView"
-
-
-initApp :: Typeable props => App props -> IO (ReactView props)
-initApp App{..} = do
---  let view' = defineControllerView (JSS.textToJSString appName) appState (\st props -> appView st props)
-  let view' = defineControllerView "appName" appState (\st props -> appView st props)
-  alterStore appState appInitAction
-  pure view'
