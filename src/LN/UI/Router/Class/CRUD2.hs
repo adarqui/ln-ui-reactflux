@@ -97,16 +97,28 @@ instance HasLink CRUD where
 instance PathInfo CRUD where
   toPathSegments crud =
     case crud of
-      Index   -> pure ""
-      New     -> pure "new"
-      ShowS s -> pure s
-      ShowI i -> pure $ Text.pack (show i)
-      ShowB b -> pure (bool2Text b)
+      Index     -> [""]
+      New       -> ["new"]
+      ShowS s   -> [s]
+      ShowI i   -> [Text.pack $ show i]
+      ShowB b   -> [bool2Text b]
+      EditS s   -> ["_edit", s]
+      EditI i   -> ["_edit", Text.pack $ show i]
+      DeleteS s -> ["_delete", s]
+      DeleteI i -> ["_delete", Text.pack $ show i]
+      DeleteZ   -> ["_delete"]
   fromPathSegments =
-        Index <$ segment ""
-    <|> New   <$ segment "new"
-    <|> ShowS <$> fromPathSegments
-    <|> ShowI <$> fromPathSegments
+        New     <$  segment "new"
+    <|> ShowI   <$> fromPathSegments
+    <|> ShowB   <$> fromPathSegments
+    <|> ShowS   <$> fromPathSegments
+    <|> EditI   <$  segment "_edit" <*> fromPathSegments
+    <|> EditS   <$  segment "_edit" <*> fromPathSegments
+    <|> DeleteI <$  segment "_delete" <*> fromPathSegments
+    <|> DeleteS <$  segment "_delete" <*> fromPathSegments
+    <|> DeleteZ <$  segment "_delete"
+    <|> pure Index
+    -- TODO FIXME: Can't do Index <$ segment "" because it fails to pattern match. Though, pure Index works because it's terminal.
 
 
 bool2Text :: Bool -> Text
