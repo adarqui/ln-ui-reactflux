@@ -671,12 +671,13 @@ instance PathInfo Routes where
       _                        -> pure ""
 
   fromPathSegments =
-        Home          <$ segment ""
-    <|> About         <$ segment "about"
+        About         <$ segment "about"
     <|> Me            <$ segment "me"
     <|> Errors        <$ segment "errors"
     <|> Portal        <$ segment "portal"
     <|> Organizations <$ segment "organizations" <*> fromPathSegments
+    <|> pure Home
+    -- TODO FIXME: Can't do Home <$ segment "" because it fails to pattern match. Though, pure Index works because it's terminal.
 
 
   -- link Errors = tuple "#/errors" emptyParams

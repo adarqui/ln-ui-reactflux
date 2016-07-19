@@ -8,6 +8,7 @@ module LN.UI.Router.Class.CRUD2 (
 
 
 
+import Text.ParserCombinators.Parsec.Prim (try)
 import Control.Applicative
 import qualified Data.Map                  as M
 import           Data.Monoid               ((<>))
@@ -74,14 +75,19 @@ instance PathInfo CRUD where
       DeleteZ   -> ["_delete"]
   fromPathSegments =
         New     <$  segment "new"
+
+    -- TODO FIXME: This is hideous.
+    <|>      (try (EditI <$  segment "_edit"   <*> fromPathSegments)
+         <|> EditS <$  segment "_edit"   <*> fromPathSegments)
+
+    -- TODO FIXME: This is hideous.
+    <|>      (try (DeleteI <$  segment "_delete" <*> fromPathSegments)
+         <|> (try (DeleteS <$  segment "_delete" <*> fromPathSegments)
+         <|> DeleteZ <$  segment "_delete"))
+
     <|> ShowI   <$> fromPathSegments
     <|> ShowB   <$> fromPathSegments
     <|> ShowS   <$> fromPathSegments
-    <|> EditI   <$  segment "_edit" <*> fromPathSegments
-    <|> EditS   <$  segment "_edit" <*> fromPathSegments
-    <|> DeleteI <$  segment "_delete" <*> fromPathSegments
-    <|> DeleteS <$  segment "_delete" <*> fromPathSegments
-    <|> DeleteZ <$  segment "_delete"
     <|> pure Index
     -- TODO FIXME: Can't do Index <$ segment "" because it fails to pattern match. Though, pure Index works because it's terminal.
 

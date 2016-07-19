@@ -36,9 +36,14 @@ spec = do
       toPathInfo DeleteZ        `shouldBe` "/_delete"
 
     it "fromPathInfo should work" $ do
-      fromPathInfo "/"      `shouldBe` (Right Index)
-      fromPathInfo "/ln"    `shouldBe` (Right $ ShowS "ln")
-      fromPathInfo "/9"     `shouldBe` (Right $ ShowI 9)
-      fromPathInfo "/true"  `shouldBe` (Right $ ShowB True)
-      fromPathInfo "/false" `shouldBe` (Right $ ShowB False)
-      fromPathInfo "/new"   `shouldBe` (Right New)
+      fromPathInfo "/"           `shouldBe` (Right Index)
+      fromPathInfo "/ln"         `shouldBe` (Right $ ShowS "ln")
+      fromPathInfo "/9"          `shouldBe` (Right $ ShowI 9)
+      fromPathInfo "/true"       `shouldBe` (Right $ ShowB True)
+      fromPathInfo "/false"      `shouldBe` (Right $ ShowB False)
+      fromPathInfo "/new"        `shouldBe` (Right New)
+      fromPathInfo "/_edit/ln"   `shouldBe` (Right $ EditS "ln")
+      fromPathInfo "/_edit/9"    `shouldBe` (Right $ EditI 9)
+      fromPathInfo "/_delete/ln" `shouldBe` (Right $ DeleteS "ln")
+      fromPathInfo "/_delete/9"  `shouldBe` (Right $ DeleteI 9)
+      fromPathInfo "/_delete"    `shouldBe` (Right DeleteZ)

@@ -54,6 +54,7 @@ library
                      , containers
                      , deepseq
                      , ghcjs-router
+                     , parsec
                      , react-flux == 1.1.1
                      , react-flux-router
                      , text

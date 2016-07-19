@@ -36,10 +36,12 @@ spec = do
       toPathInfo (Organizations (DeleteS "ln")) `shouldBe` "/organizations/_delete/ln"
 
     it "fromPathInfo should work" $ do
-      fromPathInfo "/home"       `shouldBe` (Right Home)
-
-
---      >>> toPathInfo (BlogPost 123)
---      "/blog-post/123"
---      >>> fromPathInfo "/blog-post/123" :: Either String Sitemap
---      Right (BlogPost 123)
+      fromPathInfo "/"                         `shouldBe` (Right Home)
+      fromPathInfo "/about"                    `shouldBe` (Right About)
+      fromPathInfo "/me"                       `shouldBe` (Right Me)
+      fromPathInfo "/errors"                   `shouldBe` (Right Errors)
+      fromPathInfo "/portal"                   `shouldBe` (Right Portal)
+      fromPathInfo "/organizations"            `shouldBe` (Right $ Organizations Index)
+      fromPathInfo "/organizations/new"        `shouldBe` (Right $ Organizations New)
+      fromPathInfo "/organizations/_edit/ln"   `shouldBe` (Right $ Organizations (EditS "ln"))
+      fromPathInfo "/organizations/_delete/ln" `shouldBe` (Right $ Organizations (DeleteS "ln"))
