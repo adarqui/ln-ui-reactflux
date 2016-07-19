@@ -46,6 +46,7 @@ packages:
 - '../haskell-rehtie'
 - '../react-flux-router'
 - '../ghcjs-router'
+- '../web-routes'        ## custom web-routes with my fromPathInfoParams function
 
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)

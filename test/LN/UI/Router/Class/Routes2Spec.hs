@@ -9,8 +9,10 @@ module LN.UI.Router.Class.Routes2Spec (
 
 import           LN.UI.Router.Class.CRUD2
 import           LN.UI.Router.Class.Routes2
+import           LN.UI.Router.Class.Params2
 import           Test.Hspec
 import           Web.Routes
+import LN.T.Param
 
 
 
@@ -45,3 +47,12 @@ spec = do
       fromPathInfo "/organizations/new"        `shouldBe` (Right $ Organizations New)
       fromPathInfo "/organizations/_edit/ln"   `shouldBe` (Right $ Organizations (EditS "ln"))
       fromPathInfo "/organizations/_delete/ln" `shouldBe` (Right $ Organizations (DeleteS "ln"))
+
+
+  describe "route with tests" $ do
+    it "fromRoutesWith should give us a proper url string" $ do
+      fromRoutesWith (routeWith' About)
+        `shouldBe` "/about"
+
+      fromRoutesWith (routeWith About [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
+        `shouldBe` "/about?limit=1&offset=2"

@@ -34,6 +34,7 @@ library
                      , LN.UI.Router.Class.Link
                      , LN.UI.Router.Class.OrderBy
                      , LN.UI.Router.Class.Params
+                     , LN.UI.Router.Class.Params2
                      , LN.UI.Router.Class.Routes
                      , LN.UI.Router.Class.Routes2
                      , LN.UI.State.Internal.Types
@@ -63,6 +64,7 @@ library
                      , ln-sanitize
                      , ln-validate
                      , haskell-ln-types
+                     , haskell-api-helpers
   if impl(ghcjs)
      build-depends:    ghcjs-base
   default-language:    Haskell2010

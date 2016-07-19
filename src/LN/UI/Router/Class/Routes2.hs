@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections     #-}
 
 module LN.UI.Router.Class.Routes2 (
   RoutesWith (..),
@@ -16,22 +17,26 @@ module LN.UI.Router.Class.Routes2 (
 
 
 
+import Data.Either (Either(..))
 import           Control.Applicative        ((<$), (<$>), (<*>), (<|>))
-import           Data.Map                   as M
-import           Data.Maybe                 (maybe)
-import           Data.Monoid                ((<>))
+import           Data.Map                   (Map)
+import qualified Data.Map                   as Map
+import           Data.Maybe                 (Maybe (..), maybe)
+import           Data.Monoid                (mempty, (<>))
 import           Data.Text                  (Text)
 import qualified Data.Text                  as Text (concat)
 import           Data.Tuple                 (fst)
-import           Prelude                    (Eq, Show, pure, show, ($), (.),
-                                             (==))
+import           Prelude                    (Eq, Show, map, pure, show, ($), fmap,
+                                             (.), (==))
 import           Web.Routes
 
+import           Haskell.Api.Helpers        (qp)
 import           LN.T
 import           LN.UI.Router.Class.CRUD2
 import           LN.UI.Router.Class.Link
 import           LN.UI.Router.Class.OrderBy
-import           LN.UI.Router.Class.Params  (Params, emptyParams, fixParams)
+import           LN.UI.Router.Class.Params2 (Params, buildParams, emptyParams,
+                                             fixParams)
 import           LN.UI.Router.Util          (slash)
 import           LN.UI.State.Internal.Types (InternalState)
 import           LN.UI.Types                (Array, Int, String, Tuple, tuple)
@@ -44,25 +49,29 @@ data RoutesWith
 
 
 
-routeWith :: Routes -> Params -> RoutesWith
-routeWith route params = RoutesWith route params
+routeWith :: Routes -> [(ParamTag, Param)] -> RoutesWith
+routeWith route params = RoutesWith route (buildParams params)
 
 
 
 routeWith' :: Routes -> RoutesWith
-routeWith' route = routeWith route emptyParams
+routeWith' route = routeWith route mempty
 
 
 
 fromRoutesWith :: RoutesWith -> Text
 fromRoutesWith (RoutesWith route params) =
-  toPathInfo route
+  toPathInfoParams route params'
+  where
+  params' = map (fmap Just . qp) $ Map.elems params
 
 
 
-toRoutesWith :: Text -> RoutesWith
+-- toRoutesWith :: Text -> RoutesWith
 toRoutesWith url =
-  RoutesWith About emptyParams
+  case (fromPathInfoParams url) of
+    Left err            -> routeWith' NotFound
+    Right (url, params) -> routeWith url []
 
 
 
