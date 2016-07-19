@@ -17,8 +17,8 @@ module LN.UI.Router.Class.Routes2 (
 
 
 
-import Data.Either (Either(..))
 import           Control.Applicative        ((<$), (<$>), (<*>), (<|>))
+import           Data.Either                (Either (..))
 import           Data.Map                   (Map)
 import qualified Data.Map                   as Map
 import           Data.Maybe                 (Maybe (..), maybe)
@@ -26,8 +26,8 @@ import           Data.Monoid                (mempty, (<>))
 import           Data.Text                  (Text)
 import qualified Data.Text                  as Text (concat)
 import           Data.Tuple                 (fst)
-import           Prelude                    (Eq, Show, map, pure, show, ($), fmap,
-                                             (.), (==))
+import           Prelude                    (Eq, Show, fmap, map, pure, show,
+                                             ($), (.), (==))
 import           Web.Routes
 
 import           Haskell.Api.Helpers        (qp)
@@ -36,7 +36,7 @@ import           LN.UI.Router.Class.CRUD2
 import           LN.UI.Router.Class.Link
 import           LN.UI.Router.Class.OrderBy
 import           LN.UI.Router.Class.Params2 (Params, buildParams, emptyParams,
-                                             fixParams)
+                                             fixParams, fromWebRoutesParams)
 import           LN.UI.Router.Util          (slash)
 import           LN.UI.State.Internal.Types (InternalState)
 import           LN.UI.Types                (Array, Int, String, Tuple, tuple)
@@ -71,7 +71,7 @@ fromRoutesWith (RoutesWith route params) =
 toRoutesWith url =
   case (fromPathInfoParams url) of
     Left err            -> routeWith' NotFound
-    Right (url, params) -> routeWith url []
+    Right (url, params) -> routeWith url $ fromWebRoutesParams params
 
 
 

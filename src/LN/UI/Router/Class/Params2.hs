@@ -5,7 +5,8 @@ module LN.UI.Router.Class.Params2 (
   emptyParams,
   lookupParam,
   fixParams,
-  buildParams
+  buildParams,
+  fromWebRoutesParams
 ) where
 
 
@@ -52,7 +53,7 @@ sanitizeWebRoutesParams m_params = catMaybes $ map mapParam m_params
 
 
 
-fromWebRoutesParams :: [(Text, Maybe Text)] -> [Param]
+fromWebRoutesParams :: [(Text, Maybe Text)] -> [(ParamTag, Param)]
 fromWebRoutesParams = catMaybes . map paramFromKV'' . sanitizeWebRoutesParams
 
 
@@ -82,12 +83,12 @@ paramFromKV' k v =
 
 
 
-paramFromKV'' :: (Text, Text) -> Maybe Param
+paramFromKV'' :: (Text, Text) -> Maybe (ParamTag, Param)
 paramFromKV'' (k, v) =
   case (read $ Text.unpack k) of
     Nothing    -> Nothing
-    Just ParamTag_Limit     -> maybe Nothing (\v' -> Just (Limit v')) (read $ Text.unpack v)
-    Just ParamTag_Offset    -> maybe Nothing (\v' -> Just (Offset v')) (read $ Text.unpack v)
-    Just ParamTag_Order     -> Just (Order $ read $ Text.unpack v)
-    Just ParamTag_SortOrder -> Just (SortOrder $ read $ Text.unpack v)
+    Just ParamTag_Limit     -> maybe Nothing (\v' -> Just (ParamTag_Limit, Limit v')) (read $ Text.unpack v)
+    Just ParamTag_Offset    -> maybe Nothing (\v' -> Just (ParamTag_Offset, Offset v')) (read $ Text.unpack v)
+    Just ParamTag_Order     -> Just (ParamTag_Order, Order $ read $ Text.unpack v)
+    Just ParamTag_SortOrder -> Just (ParamTag_SortOrder, SortOrder $ read $ Text.unpack v)
     Just _                  -> Nothing

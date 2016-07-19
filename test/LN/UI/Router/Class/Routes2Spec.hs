@@ -50,6 +50,13 @@ spec = do
 
 
   describe "route with tests" $ do
+    it "toRoutesWith should gives us a proper RoutesWith" $ do
+      toRoutesWith "/about"
+        `shouldBe` (RoutesWith About emptyParams)
+
+      toRoutesWith "/about?limit=1&offset=2"
+        `shouldBe` (RoutesWith About $ buildParams [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
+
     it "fromRoutesWith should give us a proper url string" $ do
       fromRoutesWith (routeWith' About)
         `shouldBe` "/about"
