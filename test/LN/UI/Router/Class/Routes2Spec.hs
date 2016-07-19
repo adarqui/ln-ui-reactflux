@@ -35,6 +35,8 @@ spec = do
       toPathInfo (Organizations (EditS "ln"))   `shouldBe` "/organizations/_edit/ln"
       toPathInfo (Organizations (DeleteS "ln")) `shouldBe` "/organizations/_delete/ln"
 
+    it "fromPathInfo should work" $ do
+      fromPathInfo "/home"       `shouldBe` (Right Home)
 
 
 --      >>> toPathInfo (BlogPost 123)

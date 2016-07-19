@@ -38,7 +38,7 @@ import           LN.UI.Types                (Array, Int, String, Tuple, tuple)
 
 data RoutesWith
   = RoutesWith Routes Params
-  deriving (Generic)
+  deriving (Eq, Show, Generic)
 
 
 
@@ -85,7 +85,7 @@ data Routes
   | Login
   | Logout
   | NotFound
-  deriving (Generic)
+  deriving (Eq, Show, Generic)
 
 
 
