@@ -5,6 +5,8 @@ module LN.UI.Router.Class.Routes2 (
   RoutesWith (..),
   routeWith,
   routeWith',
+  fromRoutesWith,
+  toRoutesWith,
   Routes (..),
   HasLinkName,
   linkName,
@@ -49,6 +51,18 @@ routeWith route params = RoutesWith route params
 
 routeWith' :: Routes -> RoutesWith
 routeWith' route = routeWith route emptyParams
+
+
+
+fromRoutesWith :: RoutesWith -> Text
+fromRoutesWith (RoutesWith route params) =
+  toPathInfo route
+
+
+
+toRoutesWith :: Text -> RoutesWith
+toRoutesWith url =
+  RoutesWith About emptyParams
 
 
 
