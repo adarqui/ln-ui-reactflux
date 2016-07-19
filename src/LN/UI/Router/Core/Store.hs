@@ -15,6 +15,7 @@ module LN.UI.Router.Core.Store (
 
 
 
+import Data.Monoid ((<>))
 import           Control.DeepSeq        (NFData)
 import           Data.Text              (Text)
 import           Data.Typeable          (Typeable)
@@ -23,6 +24,8 @@ import           LN.T.Pack.User         (UserPackResponse (..))
 import           LN.UI.Router.Class.App
 import           React.Flux             hiding (view)
 import qualified React.Flux             as RF
+import LN.UI.ReactFlux.DOM (ahref)
+import LN.UI.Router.Class.Routes2
 
 
 
@@ -40,7 +43,8 @@ defaultCoreStore = CoreStore {
 
 
 data CoreAction
-  = Core_SetHash Text
+  = Core_Init
+  | Core_SetHash Text
   | Core_Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -48,9 +52,14 @@ data CoreAction
 
 instance StoreData CoreStore where
   type StoreAction CoreStore = CoreAction
-  transform action st = do
-    putStrLn "Core"
-    pure st
+  transform action st@CoreStore{..} = do
+    case action of
+      Core_Init -> action_core_init
+      _         -> pure st
+    where
+    action_core_init = do
+      putStrLn "Core_Init"
+      pure st
 
 
 
@@ -73,7 +82,7 @@ coreView_ st =
 
 
 defaultLayout :: CoreStore -> ReactElementM ViewEventHandler () -> ReactElementM ViewEventHandler ()
-defaultLayout st@CoreStore{..} page = do
+defaultLayout st@CoreStore{..} page =
   div_ $
     navBar coreStore_Me
 
@@ -81,4 +90,10 @@ defaultLayout st@CoreStore{..} page = do
 
 navBar :: Maybe UserPackResponse -> ReactElementM ViewEventHandler ()
 navBar m_user_pack =
-  div_ $ p_ $ elemText "user"
+  div_ $ do
+    ahref $ routeWith' Home
+    ahref $ routeWith' About
+    ahref $ routeWith' Portal
+    case m_user_pack of
+      Nothing                   -> ahref $ routeWith' Login
+      Just UserPackResponse{..} -> ahref $ routeWith' Logout -- : user

@@ -22,17 +22,20 @@ library
                      , LN.UI.App.Counter
                      , LN.UI.App.Home
                      , LN.UI.App.Organization
+                     , LN.UI.ReactFlux.DOM
                      , LN.UI.Router.Core
                      , LN.UI.Router.Core.Store
                      , LN.UI.Router.Types
                      , LN.UI.Router.Util
                      , LN.UI.Router.Class.App
                      , LN.UI.Router.Class.CRUD
+                     , LN.UI.Router.Class.CRUD2
                      , LN.UI.Router.Class.Crumb
                      , LN.UI.Router.Class.Link
                      , LN.UI.Router.Class.OrderBy
                      , LN.UI.Router.Class.Params
                      , LN.UI.Router.Class.Routes
+                     , LN.UI.Router.Class.Routes2
                      , LN.UI.State.Internal.Types
                      , LN.UI.State.Loading
                      , LN.UI.State.PageInfo
@@ -61,6 +64,21 @@ library
                      , haskell-ln-types
   if impl(ghcjs)
      build-depends:    ghcjs-base
+  default-language:    Haskell2010
+
+test-suite ln-ui-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  other-modules:       LN.UI.Router.Class.Routes2Spec
+                     , LN.UI.Router.Class.CRUD2Spec
+  build-depends:       base
+                     , hspec
+                     , text
+                     , web-routes
+                     , haskell-ln-types
+                     , ln-ui
+  ghc-options:         -Wall -O2 -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
 
 source-repository head

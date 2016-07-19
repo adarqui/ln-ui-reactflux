@@ -26,4 +26,6 @@ runReactMain = do
     Core.coreView
     Core.defaultCoreStore
 
+  executeAction $ SomeStoreAction Core.coreStore Core.Core_Init
+
   Core.initCoreRouter

@@ -6,3 +6,6 @@ clean:
 
 until:
 	until stack build; do echo eek; done
+
+make tests:
+	stack test --fast
