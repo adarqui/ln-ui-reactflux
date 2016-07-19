@@ -11,13 +11,14 @@ module LN.UI.Router.Class.Params2 (
 
 
 
+import           Data.Map    (Map)
 import qualified Data.Map    as Map
-import Data.Text (Text)
-import qualified Data.Text as Text
-import Data.Map (Map)
 import           Data.Maybe  (Maybe (..), catMaybes, maybe)
 import           Data.Monoid ((<>))
+import           Data.Text   (Text)
+import qualified Data.Text   as Text
 import           Prelude     (String, id, map, read, show, ($), (.))
+import           Text.Read   (readMaybe)
 
 import           LN.T        (OrderBy (..), Param (..), ParamTag (..),
                               SortOrderBy (..))
@@ -85,10 +86,10 @@ paramFromKV' k v =
 
 paramFromKV'' :: (Text, Text) -> Maybe (ParamTag, Param)
 paramFromKV'' (k, v) =
-  case (read $ Text.unpack k) of
+  case (readMaybe $ Text.unpack k) of
     Nothing    -> Nothing
-    Just ParamTag_Limit     -> maybe Nothing (\v' -> Just (ParamTag_Limit, Limit v')) (read $ Text.unpack v)
-    Just ParamTag_Offset    -> maybe Nothing (\v' -> Just (ParamTag_Offset, Offset v')) (read $ Text.unpack v)
+    Just ParamTag_Limit     -> maybe Nothing (\v' -> Just (ParamTag_Limit, Limit v')) (readMaybe $ Text.unpack v)
+    Just ParamTag_Offset    -> maybe Nothing (\v' -> Just (ParamTag_Offset, Offset v')) (readMaybe $ Text.unpack v)
     Just ParamTag_Order     -> Just (ParamTag_Order, Order $ read $ Text.unpack v)
     Just ParamTag_SortOrder -> Just (ParamTag_SortOrder, SortOrder $ read $ Text.unpack v)
     Just _                  -> Nothing
