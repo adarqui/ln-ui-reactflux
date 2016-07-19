@@ -38,42 +38,7 @@ data CRUD
   | DeleteI Int
 --  | DeleteN Number
   | DeleteZ
-  deriving (Generic)
-
-
-
-instance Eq CRUD where
-  (==) Index        Index        = True
-  (==) (ShowS t1)   (ShowS t2)   = t1 == t2
-  (==) (ShowI t1)   (ShowI t2)   = t1 == t2
---  (==) (ShowN t1)   (ShowN t2)   = t1 == t2
-  (==) (ShowB t1)   (ShowB t2)   = t1 == t2
-  (==) New          New          = True
-  (==) (EditS t1)   (EditS t2)   = t1 == t2
-  (==) (EditI t1)   (EditI t2)   = t1 == t2
---  (==) (EditN t1)   (EditN t2)   = t1 == t2
-  (==) (DeleteS t1) (DeleteS t2) = t1 == t2
-  (==) (DeleteI t1) (DeleteI t2) = t1 == t2
---  (==) (DeleteN t1) (DeleteN t2) = t1 == t2
-  (==) DeleteZ      DeleteZ      = True
-  (==) _            _            = False
-
-
-
-instance Show CRUD where
-  show Index       = "Index"
-  show (ShowS s)   = "Show " <> Text.unpack s
-  show (ShowI i)   = "ShowI " <> show i
---  show (ShowN n)   = "ShowN " <> show n
-  show (ShowB b)   = "ShowB " <> show b
-  show New         = "New"
-  show (EditS s)   = "Edit " <> Text.unpack s
-  show (EditI i)   = "EditI " <> show i
---  show (EditN n)   = "EditN " <> show n
-  show (DeleteS s) = "Delete " <> Text.unpack s
-  show (DeleteI i) = "DeleteI " <> show i
---  show (DeleteN n) = "DeleteN " <> show n
-  show DeleteZ     = "DeleteZ"
+  deriving (Eq, Show, Generic)
 
 
 
@@ -160,15 +125,7 @@ data TyCRUD
   | TyEdit
   | TyDelete
   | TyView
-
-
-
-instance Eq TyCRUD where
-  (==) TyCreate TyCreate = True
-  (==) TyEdit   TyEdit   = True
-  (==) TyDelete TyDelete = True
-  (==) TyView   TyView   = True
-  (==) _        _        = False
+  deriving (Eq, Generic)
 
 
 
