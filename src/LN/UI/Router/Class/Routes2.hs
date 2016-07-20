@@ -47,6 +47,7 @@ import           LN.UI.State.Internal.Types (InternalState)
 import           LN.UI.Types                (Array, Int, String, Tuple, tuple)
 
 #ifdef __GHCJS__
+import qualified Data.JSString.Text         as JSString (textToJSString)
 import           React.Flux.Internal        (JSString)
 #endif
 
@@ -78,7 +79,7 @@ fromRoutesWith (RoutesWith route params) =
 
 #ifdef __GHCJS__
 fromRoutesWithHash :: RoutesWith -> JSString
-fromRoutesWithHash = ("#" <>) <$> fromRoutesWith
+fromRoutesWithHash = JSString.textToJSString . ("#" <>) <$> fromRoutesWith
 #else
 fromRoutesWithHash :: RoutesWith -> String
 fromRoutesWithHash = Text.unpack . ("#" <>) . fromRoutesWith
