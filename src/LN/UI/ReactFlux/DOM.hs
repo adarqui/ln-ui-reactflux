@@ -21,5 +21,5 @@ ahref route_with = ahrefName (linkName route_with) route_with
 
 
 ahrefName :: Text -> RoutesWith -> ReactElementM eventHandler ()
-ahrefName name route_with =
-  a_ ["href" $= "#"] $ elemText name
+ahrefName name route =
+  a_ ["href" $= fromRoutesWithHash route] $ elemText name

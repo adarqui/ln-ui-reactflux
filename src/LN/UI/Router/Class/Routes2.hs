@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP               #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections     #-}
@@ -7,8 +8,8 @@ module LN.UI.Router.Class.Routes2 (
   routeWith,
   routeWith',
   fromRoutesWith,
-  toRoutesWith,
   fromRoutesWithHash,
+  toRoutesWith,
   toRoutesWithHash,
   Routes (..),
   HasLinkName,
@@ -28,7 +29,7 @@ import qualified Data.Map                   as Map
 import           Data.Maybe                 (Maybe (..), maybe)
 import           Data.Monoid                (mempty, (<>))
 import           Data.Text                  (Text)
-import qualified Data.Text                  as Text (concat)
+import qualified Data.Text                  as Text (concat, unpack)
 import           Data.Tuple                 (fst)
 import           Prelude                    (Eq, Show, fmap, map, pure, show,
                                              ($), (.), (==))
@@ -44,6 +45,10 @@ import           LN.UI.Router.Class.Params2 (Params, buildParams, emptyParams,
 import           LN.UI.Router.Util          (slash)
 import           LN.UI.State.Internal.Types (InternalState)
 import           LN.UI.Types                (Array, Int, String, Tuple, tuple)
+
+#ifdef __GHCJS__
+import           React.Flux.Internal        (JSString)
+#endif
 
 
 
@@ -71,8 +76,13 @@ fromRoutesWith (RoutesWith route params) =
 
 
 
-fromRoutesWithHash :: RoutesWith -> Text
+#ifdef __GHCJS__
+fromRoutesWithHash :: RoutesWith -> JSString
 fromRoutesWithHash = ("#" <>) <$> fromRoutesWith
+#else
+fromRoutesWithHash :: RoutesWith -> String
+fromRoutesWithHash = Text.unpack . ("#" <>) . fromRoutesWith
+#endif
 
 
 
@@ -86,6 +96,7 @@ toRoutesWith url =
 
 toRoutesWithHash :: ByteString -> RoutesWith
 toRoutesWithHash = toRoutesWith . BSC.drop 1
+
 
 
 data Routes
