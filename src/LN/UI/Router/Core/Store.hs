@@ -18,13 +18,14 @@ module LN.UI.Router.Core.Store (
 import           Control.DeepSeq            (NFData)
 import           Control.Monad              (void)
 import           Data.Monoid                ((<>))
+import           Data.Rehtie                (rehtie)
 import           Data.Text                  (Text)
 import           Data.Typeable              (Typeable)
 import           GHC.Generics               (Generic)
 import           LN.Api                     (getMe')
-import           LN.T.Pack.User             (UserPackResponse (..))
+import           LN.T.User                  (UserResponse (..))
 import           LN.UI.HaskellApiHelpers    (rd)
-import           LN.UI.ReactFlux.DOM        (ahref)
+import           LN.UI.ReactFlux.DOM        (ahref, ahrefName)
 import           LN.UI.Router.Class.App
 import           LN.UI.Router.Class.Routes2
 import           React.Flux                 hiding (view)
@@ -34,7 +35,7 @@ import qualified React.Flux                 as RF
 
 data CoreStore = CoreStore {
   coreStore_Route :: RoutingApp,
-  coreStore_Me    :: Maybe UserPackResponse
+  coreStore_Me    :: Maybe UserResponse
 } deriving (Show, Typeable, Generic, NFData)
 
 defaultCoreStore :: CoreStore
@@ -62,8 +63,10 @@ instance StoreData CoreStore where
     where
     action_core_init = do
       putStrLn "Core_Init"
-      void $ rd getMe'
-      pure st
+      lr <- rd getMe'
+      print lr
+      rehtie lr (const $ pure st) $ \user_pack ->
+        pure $ st{ coreStore_Me = Just user_pack }
 
 
 
@@ -74,12 +77,12 @@ coreStore = mkStore defaultCoreStore
 
 coreView :: ReactView CoreStore
 coreView =
-  defineView "core" $ \st ->
+  defineControllerView "core" coreStore $ \st _ ->
     defaultLayout st (div_ $ p_ $ elemText "page")
 
 
 
-coreView_ :: CoreStore -> ReactElementM eventHandler ()
+coreView_ :: CoreStore  -> ReactElementM eventHandler ()
 coreView_ st =
   RF.view coreView st mempty
 
@@ -92,12 +95,14 @@ defaultLayout st@CoreStore{..} page =
 
 
 
-navBar :: Maybe UserPackResponse -> ReactElementM ViewEventHandler ()
+navBar :: Maybe UserResponse -> ReactElementM ViewEventHandler ()
 navBar m_user_pack =
   div_ $ do
-    ahref $ routeWith' Home
-    ahref $ routeWith' About
-    ahref $ routeWith' Portal
-    case m_user_pack of
-      Nothing                   -> ahref $ routeWith' Login
-      Just UserPackResponse{..} -> ahref $ routeWith' Logout -- : user
+    ol_ $ do
+      li_ $ ahref $ routeWith' Home
+      li_ $ ahref $ routeWith' About
+      li_ $ ahref $ routeWith' Portal
+      li_ $ do
+        case m_user_pack of
+          Nothing               -> ahref $ routeWith' Login
+          Just UserResponse{..} -> ahrefName ("Logout: " <> userResponseName) $ routeWith' Logout
