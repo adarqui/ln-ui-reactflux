@@ -8,6 +8,8 @@ module LN.UI.Router.Class.Routes2 (
   routeWith',
   fromRoutesWith,
   toRoutesWith,
+  fromRoutesWithHash,
+  toRoutesWithHash,
   Routes (..),
   HasLinkName,
   linkName,
@@ -18,6 +20,8 @@ module LN.UI.Router.Class.Routes2 (
 
 
 import           Control.Applicative        ((<$), (<$>), (<*>), (<|>))
+import           Data.ByteString.Char8      (ByteString)
+import qualified Data.ByteString.Char8      as BSC
 import           Data.Either                (Either (..))
 import           Data.Map                   (Map)
 import qualified Data.Map                   as Map
@@ -67,12 +71,21 @@ fromRoutesWith (RoutesWith route params) =
 
 
 
--- toRoutesWith :: Text -> RoutesWith
+fromRoutesWithHash :: RoutesWith -> Text
+fromRoutesWithHash = ("#" <>) <$> fromRoutesWith
+
+
+
+toRoutesWith :: ByteString -> RoutesWith
 toRoutesWith url =
   case (fromPathInfoParams url) of
     Left err            -> routeWith' NotFound
     Right (url, params) -> routeWith url $ fromWebRoutesParams params
 
+
+
+toRoutesWithHash :: ByteString -> RoutesWith
+toRoutesWithHash = toRoutesWith . BSC.drop 1
 
 
 data Routes

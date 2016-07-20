@@ -63,3 +63,21 @@ spec = do
 
       fromRoutesWith (routeWith About [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
         `shouldBe` "/about?limit=1&offset=2"
+
+    --
+    -- HASHES
+    --
+
+    it "toRoutesWithHash should gives us a proper RoutesWith" $ do
+      toRoutesWithHash "#/about"
+        `shouldBe` (RoutesWith About emptyParams)
+
+      toRoutesWithHash "#/about?limit=1&offset=2"
+        `shouldBe` (RoutesWith About $ buildParams [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
+
+    it "fromRoutesWithHash should give us a proper url string" $ do
+      fromRoutesWithHash (routeWith' About)
+        `shouldBe` "#/about"
+
+      fromRoutesWithHash (routeWith About [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
+        `shouldBe` "#/about?limit=1&offset=2"
