@@ -64,7 +64,6 @@ instance StoreData CoreStore where
     action_core_init = do
       putStrLn "Core_Init"
       lr <- rd getMe'
-      print lr
       rehtie lr (const $ pure st) $ \user_pack ->
         pure $ st{ coreStore_Me = Just user_pack }
 
