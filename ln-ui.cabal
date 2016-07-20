@@ -54,6 +54,7 @@ library
                      , aeson
                      , bytestring
                      , containers
+                     , data-default
                      , deepseq
                      , ghcjs-router
                      , parsec
@@ -64,6 +65,7 @@ library
                      , web-routes
                      , ln-sanitize
                      , ln-validate
+                     , ln-api-ghcjs
                      , haskell-ln-types
                      , haskell-api-helpers-shared
                      , haskell-api-helpers-ghcjs

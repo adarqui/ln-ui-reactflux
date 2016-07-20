@@ -15,17 +15,20 @@ module LN.UI.Router.Core.Store (
 
 
 
-import Data.Monoid ((<>))
-import           Control.DeepSeq        (NFData)
-import           Data.Text              (Text)
-import           Data.Typeable          (Typeable)
-import           GHC.Generics           (Generic)
-import           LN.T.Pack.User         (UserPackResponse (..))
+import           Control.DeepSeq            (NFData)
+import           Control.Monad              (void)
+import           Data.Monoid                ((<>))
+import           Data.Text                  (Text)
+import           Data.Typeable              (Typeable)
+import           GHC.Generics               (Generic)
+import           LN.Api                     (getMe')
+import           LN.T.Pack.User             (UserPackResponse (..))
+import           LN.UI.HaskellApiHelpers    (rd)
+import           LN.UI.ReactFlux.DOM        (ahref)
 import           LN.UI.Router.Class.App
-import           React.Flux             hiding (view)
-import qualified React.Flux             as RF
-import LN.UI.ReactFlux.DOM (ahref)
-import LN.UI.Router.Class.Routes2
+import           LN.UI.Router.Class.Routes2
+import           React.Flux                 hiding (view)
+import qualified React.Flux                 as RF
 
 
 
@@ -59,6 +62,7 @@ instance StoreData CoreStore where
     where
     action_core_init = do
       putStrLn "Core_Init"
+      void $ rd getMe'
       pure st
 
 
