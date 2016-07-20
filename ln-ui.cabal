@@ -64,7 +64,8 @@ library
                      , ln-sanitize
                      , ln-validate
                      , haskell-ln-types
-                     , haskell-api-helpers
+                     , haskell-api-helpers-shared
+                     , haskell-api-helpers-ghcjs
   if impl(ghcjs)
      build-depends:    ghcjs-base
   default-language:    Haskell2010

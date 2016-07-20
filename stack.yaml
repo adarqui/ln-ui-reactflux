@@ -40,13 +40,15 @@ packages:
 - '../ln-sanitize'
 - '../ln-validate'
 - '../haskell-ln-types'
-- '../haskell-api-helpers'
+- '../haskell-api-helpers-shared'
+- '../haskell-api-helpers-ghcjs'
 - '../haskell-ebyam'
 - '../haskell-ifte'
 - '../haskell-rehtie'
 - '../react-flux-router'
 - '../ghcjs-router'
-- '../web-routes'        ## custom web-routes with my fromPathInfoParams function
+- '../ghcjs-ajax/ghcjs-ajax'
+- '../web-routes' ## <-- custom web-routes with my fromPathInfoParams function
 
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)

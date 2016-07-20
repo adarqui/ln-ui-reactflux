@@ -30,7 +30,7 @@ import           Prelude                    (Eq, Show, fmap, map, pure, show,
                                              ($), (.), (==))
 import           Web.Routes
 
-import           Haskell.Api.Helpers        (qp)
+import           Haskell.Api.Helpers.Shared (qp)
 import           LN.T
 import           LN.UI.Router.Class.CRUD2
 import           LN.UI.Router.Class.Link
