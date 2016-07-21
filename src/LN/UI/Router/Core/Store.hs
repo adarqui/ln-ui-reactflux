@@ -48,7 +48,6 @@ defaultCoreStore = CoreStore {
 
 data CoreAction
   = Core_Init
-  | Core_SetHash Text
   | Core_Route Routes
   | Core_Nop
   deriving (Show, Typeable, Generic, NFData)
