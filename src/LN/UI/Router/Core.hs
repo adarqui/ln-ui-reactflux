@@ -10,15 +10,15 @@ module LN.UI.Router.Core where
 
 
 
-import           Control.Applicative                      ((<|>))
-import           Control.Monad.IO.Class                   (liftIO)
-import           Data.Typeable                            (Typeable)
-import           GHC.Generics                             ()
-import           React.Flux
-import           React.Flux.Router.WebRoutes              (initRouter)
-import           Web.Routes
+import           Control.Applicative         ((<|>))
+import           Control.Monad.IO.Class      (liftIO)
+import           Data.Typeable               (Typeable)
+import           GHC.Generics                ()
+import           LN.UI.Router.Class.Routes2
 import           LN.UI.Router.Core.Store
-import LN.UI.Router.Class.Routes2
+import           React.Flux
+import           React.Flux.Router.WebRoutes (initRouter)
+import           Web.Routes
 
 
 
