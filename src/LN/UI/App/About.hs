@@ -5,9 +5,6 @@
 {-# LANGUAGE TypeFamilies               #-}
 
 module LN.UI.App.About (
-  AboutStore,
-  AboutAction (..),
-  aboutStore,
   aboutView,
   aboutView_
 ) where
@@ -22,35 +19,12 @@ import qualified React.Flux      as RF
 
 
 
-data AboutStore = AboutStore
-  deriving (Show, Typeable, Generic, NFData)
+aboutView :: ReactView ()
+aboutView = defineView "about" $ \_ ->
+  div_ $ p_ $ elemText "LN is a full stack haskell system which powers adarq.org"
 
 
 
-data AboutAction = AboutAction
-  deriving (Show, Typeable, Generic, NFData)
-
-
-
-instance StoreData AboutStore where
-  type StoreAction AboutStore = AboutAction
-  transform action st = do
-    putStrLn "About"
-    pure AboutStore
-
-
-
-aboutStore :: ReactStore AboutStore
-aboutStore = mkStore AboutStore
-
-
-
-aboutView :: ReactView AboutStore
-aboutView = defineView "about" $ \st ->
-  div_ $ p_ $ elemText "About"
-
-
-
-aboutView_ :: AboutStore -> ReactElementM eventHandler ()
-aboutView_ st =
-  RF.view aboutView st mempty
+aboutView_ :: ReactElementM eventHandler ()
+aboutView_ =
+  RF.view aboutView () mempty

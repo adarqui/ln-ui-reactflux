@@ -30,6 +30,8 @@ import           LN.UI.Router.Class.App
 import           LN.UI.Router.Class.Routes
 import           React.Flux                hiding (view)
 import qualified React.Flux                as RF
+import qualified LN.UI.App.Home as App
+import qualified LN.UI.App.About as App
 
 
 
@@ -113,6 +115,12 @@ navBar m_user_pack =
           Just UserResponse{..} -> ahrefName ("Logout: " <> userResponseName) $ routeWith' Logout
 
 
+
 renderRouteView :: CoreStore -> ReactElementM ViewEventHandler ()
 renderRouteView CoreStore{..} = do
-  div_ $ p_ $ elemShow coreStore_Route
+  div_ $ do
+    p_ $ elemShow coreStore_Route
+    case coreStore_Route of
+      RoutesWith Home _  -> p_ $ elemText "Home" -- App.homeView_ ()
+      RoutesWith About _ -> App.aboutView_
+      RoutesWith _ _     -> p_ $ elemText "Unknown"
