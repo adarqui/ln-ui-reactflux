@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP               #-}
+{-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections     #-}
@@ -20,6 +21,7 @@ module LN.UI.Router.Class.Routes2 (
 
 
 
+import Control.DeepSeq (NFData)
 import           Control.Applicative        ((<$), (<$>), (<*>), (<|>))
 import           Data.ByteString.Char8      (ByteString)
 import qualified Data.ByteString.Char8      as BSC
@@ -55,7 +57,7 @@ import           React.Flux.Internal        (JSString)
 
 data RoutesWith
   = RoutesWith Routes Params
-  deriving (Eq, Show, Generic)
+  deriving (Eq, Show, Generic, NFData)
 
 
 
@@ -133,7 +135,7 @@ data Routes
   | Login
   | Logout
   | NotFound
-  deriving (Eq, Show, Generic)
+  deriving (Eq, Show, Generic, NFData)
 
 
 

@@ -49,6 +49,7 @@ defaultCoreStore = CoreStore {
 data CoreAction
   = Core_Init
   | Core_SetHash Text
+  | Core_Route Routes
   | Core_Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -58,14 +59,19 @@ instance StoreData CoreStore where
   type StoreAction CoreStore = CoreAction
   transform action st@CoreStore{..} = do
     case action of
-      Core_Init -> action_core_init
-      _         -> pure st
+      Core_Init        -> action_core_init
+      Core_Route route -> action_core_route route
+      _                -> pure st
     where
     action_core_init = do
       putStrLn "Core_Init"
       lr <- rd getMe'
       rehtie lr (const $ pure st) $ \user_pack ->
         pure $ st{ coreStore_Me = Just user_pack }
+
+    action_core_route route = do
+      putStrLn $ show route
+      pure st
 
 
 

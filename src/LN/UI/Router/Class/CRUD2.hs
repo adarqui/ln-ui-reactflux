@@ -1,5 +1,6 @@
+{-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DeriveGeneric #-}
 
 module LN.UI.Router.Class.CRUD2 (
   CRUD (..),
@@ -8,20 +9,21 @@ module LN.UI.Router.Class.CRUD2 (
 
 
 
-import Text.ParserCombinators.Parsec.Prim (try)
-import Control.Applicative
-import qualified Data.Map                  as M
-import           Data.Monoid               ((<>))
-import           Data.Text                 (Text)
-import qualified Data.Text                 as Text
-import           Data.Tuple                (fst)
-import           Prelude                   (pure, Bool (..), Eq, Show, show, ($),
-                                            (++), (==))
-import Web.Routes
+import           Control.Applicative
+import           Control.DeepSeq                    (NFData)
+import qualified Data.Map                           as M
+import           Data.Monoid                        ((<>))
+import           Data.Text                          (Text)
+import qualified Data.Text                          as Text
+import           Data.Tuple                         (fst)
+import           Prelude                            (Bool (..), Eq, Show, pure,
+                                                     show, ($), (++), (==))
+import           Text.ParserCombinators.Parsec.Prim (try)
+import           Web.Routes
 
-import           LN.UI.Router.Class.Link   (HasLink (..))
-import           LN.UI.Router.Class.Params (emptyParams)
-import           LN.UI.Types               (Int, Number, String, tuple)
+import           LN.UI.Router.Class.Link            (HasLink (..))
+import           LN.UI.Router.Class.Params          (emptyParams)
+import           LN.UI.Types                        (Int, Number, String, tuple)
 
 
 
@@ -39,7 +41,7 @@ data CRUD
   | DeleteI Int
 --  | DeleteN Number
   | DeleteZ
-  deriving (Eq, Show, Generic)
+  deriving (Eq, Show, Generic, NFData)
 
 
 

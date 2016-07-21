@@ -18,7 +18,7 @@ import           React.Flux
 import           React.Flux.Router.WebRoutes              (initRouter)
 import           Web.Routes
 import           LN.UI.Router.Core.Store
-import LN.UI.Router.Class.App
+import LN.UI.Router.Class.Routes2
 
 
 
@@ -29,11 +29,8 @@ initCoreRouter =
   go = \segments -> do
     either (const routeError) id $ runSite "" site segments
     where
-      site = mkSitePI $ runRouteT routerAlterStore
-      routerAlterStore action = do
-        case action of
-          AppHome  -> liftIO $ alterStore coreStore Core_Nop
-          AppAbout -> liftIO $ alterStore coreStore Core_Nop
-          _        -> liftIO $ alterStore coreStore Core_Nop
-
-      routeError = alterStore coreStore $ Core_SetHash "#/"
+      site = mkSitePI $ runRouteT routeAlterStore
+      routeAlterStore action =
+        -- Update CoreStore with our new route
+        liftIO $ alterStore coreStore $ Core_Route action
+      routeError = alterStore coreStore $ Core_Route Home
