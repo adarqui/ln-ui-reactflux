@@ -12,7 +12,7 @@ module LN.UI.Router.Core where
 
 import           Control.Monad.IO.Class      (liftIO)
 import           GHC.Generics                ()
-import           LN.UI.Router.Class.Routes2
+import           LN.UI.Router.Class.Routes
 import           LN.UI.Router.Core.Store
 import           React.Flux
 import           React.Flux.Router.WebRoutes (initRouterRaw'ByteString)

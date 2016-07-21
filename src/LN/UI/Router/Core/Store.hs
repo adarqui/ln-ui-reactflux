@@ -15,21 +15,21 @@ module LN.UI.Router.Core.Store (
 
 
 
-import           Control.DeepSeq            (NFData)
-import           Control.Monad              (void)
-import           Data.Monoid                ((<>))
-import           Data.Rehtie                (rehtie)
-import           Data.Text                  (Text)
-import           Data.Typeable              (Typeable)
-import           GHC.Generics               (Generic)
-import           LN.Api                     (getMe')
-import           LN.T.User                  (UserResponse (..))
-import           LN.UI.HaskellApiHelpers    (rd)
-import           LN.UI.ReactFlux.DOM        (ahref, ahrefName)
+import           Control.DeepSeq           (NFData)
+import           Control.Monad             (void)
+import           Data.Monoid               ((<>))
+import           Data.Rehtie               (rehtie)
+import           Data.Text                 (Text)
+import           Data.Typeable             (Typeable)
+import           GHC.Generics              (Generic)
+import           LN.Api                    (getMe')
+import           LN.T.User                 (UserResponse (..))
+import           LN.UI.HaskellApiHelpers   (rd)
+import           LN.UI.ReactFlux.DOM       (ahref, ahrefName)
 import           LN.UI.Router.Class.App
-import           LN.UI.Router.Class.Routes2
-import           React.Flux                 hiding (view)
-import qualified React.Flux                 as RF
+import           LN.UI.Router.Class.Routes
+import           React.Flux                hiding (view)
+import qualified React.Flux                as RF
 
 
 
