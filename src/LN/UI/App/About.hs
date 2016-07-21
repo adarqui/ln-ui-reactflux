@@ -5,11 +5,11 @@
 {-# LANGUAGE TypeFamilies               #-}
 
 module LN.UI.App.About (
-  AboutState,
+  AboutStore,
   AboutAction (..),
-  store,
-  view,
-  view_
+  aboutStore,
+  aboutView,
+  aboutView_
 ) where
 
 
@@ -22,7 +22,7 @@ import qualified React.Flux      as RF
 
 
 
-data AboutState = AboutState
+data AboutStore = AboutStore
   deriving (Show, Typeable, Generic, NFData)
 
 
@@ -32,25 +32,25 @@ data AboutAction = AboutAction
 
 
 
-instance StoreData AboutState where
-  type StoreAction AboutState = AboutAction
+instance StoreData AboutStore where
+  type StoreAction AboutStore = AboutAction
   transform action st = do
     putStrLn "About"
-    pure AboutState
+    pure AboutStore
 
 
 
-store :: ReactStore AboutState
-store = mkStore AboutState
+aboutStore :: ReactStore AboutStore
+aboutStore = mkStore AboutStore
 
 
 
-view :: ReactView AboutState
-view = defineView "about" $ \st ->
+aboutView :: ReactView AboutStore
+aboutView = defineView "about" $ \st ->
   div_ $ p_ $ elemText "About"
 
 
 
-view_ :: AboutState -> ReactElementM eventHandler ()
-view_ st =
-  RF.view view st mempty
+aboutView_ :: AboutStore -> ReactElementM eventHandler ()
+aboutView_ st =
+  RF.view aboutView st mempty

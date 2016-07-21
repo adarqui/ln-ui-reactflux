@@ -34,13 +34,13 @@ import qualified React.Flux                as RF
 
 
 data CoreStore = CoreStore {
-  coreStore_Route :: RoutingApp,
+  coreStore_Route :: RoutesWith,
   coreStore_Me    :: Maybe UserResponse
 } deriving (Show, Typeable, Generic, NFData)
 
 defaultCoreStore :: CoreStore
 defaultCoreStore = CoreStore {
-  coreStore_Route = AppHome,
+  coreStore_Route = routeWith' Home,
   coreStore_Me    = Nothing
 }
 
@@ -70,7 +70,7 @@ instance StoreData CoreStore where
 
     action_core_route route = do
       putStrLn $ show route
-      pure st
+      pure $ st{ coreStore_Route = route }
 
 
 
@@ -82,7 +82,7 @@ coreStore = mkStore defaultCoreStore
 coreView :: ReactView CoreStore
 coreView =
   defineControllerView "core" coreStore $ \st _ ->
-    defaultLayout st (div_ $ p_ $ elemText "page")
+    defaultLayout st (renderRouteView st)
 
 
 
@@ -94,8 +94,9 @@ coreView_ st =
 
 defaultLayout :: CoreStore -> ReactElementM ViewEventHandler () -> ReactElementM ViewEventHandler ()
 defaultLayout st@CoreStore{..} page =
-  div_ $
+  div_ $ do
     navBar coreStore_Me
+    div_ $ page
 
 
 
@@ -110,3 +111,8 @@ navBar m_user_pack =
         case m_user_pack of
           Nothing               -> ahref $ routeWith' Login
           Just UserResponse{..} -> ahrefName ("Logout: " <> userResponseName) $ routeWith' Logout
+
+
+renderRouteView :: CoreStore -> ReactElementM ViewEventHandler ()
+renderRouteView CoreStore{..} = do
+  div_ $ p_ $ elemShow coreStore_Route
