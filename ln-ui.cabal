@@ -30,14 +30,11 @@ library
                      , LN.UI.Router.Util
                      , LN.UI.Router.Class.App
                      , LN.UI.Router.Class.CRUD
-                     , LN.UI.Router.Class.CRUD2
                      , LN.UI.Router.Class.Crumb
                      , LN.UI.Router.Class.Link
                      , LN.UI.Router.Class.OrderBy
                      , LN.UI.Router.Class.Params
-                     , LN.UI.Router.Class.Params2
                      , LN.UI.Router.Class.Routes
-                     , LN.UI.Router.Class.Routes2
                      , LN.UI.State.Internal.Types
                      , LN.UI.State.Loading
                      , LN.UI.State.PageInfo
@@ -78,8 +75,8 @@ test-suite ln-ui-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
-  other-modules:       LN.UI.Router.Class.Routes2Spec
-                     , LN.UI.Router.Class.CRUD2Spec
+  other-modules:       LN.UI.Router.Class.RoutesSpec
+                     , LN.UI.Router.Class.CRUDSpec
   build-depends:       base
                      , hspec
                      , text

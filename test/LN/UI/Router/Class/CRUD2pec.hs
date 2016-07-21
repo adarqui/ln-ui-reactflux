@@ -1,15 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module LN.UI.Router.Class.CRUD2Spec (
+module LN.UI.Router.Class.CRUDSpec (
   main,
   spec
 ) where
 
 
 
-import           LN.UI.Router.Class.CRUD2
+import           LN.UI.Router.Class.CRUD
 import           Test.Hspec
-import Web.Routes
+import           Web.Routes
 
 
 

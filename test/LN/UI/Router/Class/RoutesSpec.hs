@@ -1,18 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module LN.UI.Router.Class.Routes2Spec (
+module LN.UI.Router.Class.RoutesSpec (
   main,
   spec
 ) where
 
 
 
-import           LN.UI.Router.Class.CRUD2
-import           LN.UI.Router.Class.Routes2
-import           LN.UI.Router.Class.Params2
+import           LN.T.Param
+import           LN.UI.Router.Class.CRUD
+import           LN.UI.Router.Class.Params
+import           LN.UI.Router.Class.Routes
 import           Test.Hspec
 import           Web.Routes
-import LN.T.Param
 
 
 
