@@ -11,9 +11,6 @@ module LN.UI.App.About (
 
 
 
-import           Control.DeepSeq (NFData)
-import           Data.Typeable   (Typeable)
-import           GHC.Generics    (Generic)
 import           React.Flux      hiding (view)
 import qualified React.Flux      as RF
 
