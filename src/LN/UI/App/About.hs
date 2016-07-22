@@ -5,8 +5,8 @@
 {-# LANGUAGE TypeFamilies               #-}
 
 module LN.UI.App.About (
-  aboutView,
-  aboutView_
+  view,
+  view_
 ) where
 
 
@@ -16,12 +16,12 @@ import qualified React.Flux      as RF
 
 
 
-aboutView :: ReactView ()
-aboutView = defineView "about" $ \_ ->
+view :: ReactView ()
+view = defineView "about" $ \_ ->
   div_ $ p_ $ elemText "LN is a full stack haskell system which powers adarq.org"
 
 
 
-aboutView_ :: ReactElementM eventHandler ()
-aboutView_ =
-  RF.view aboutView () mempty
+view_ :: ReactElementM eventHandler ()
+view_ =
+  RF.view view () mempty

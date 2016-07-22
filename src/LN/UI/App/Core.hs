@@ -30,7 +30,7 @@ import           React.Flux.Router.WebRoutes     (initRouterRaw'ByteString)
 
 import           LN.Api                          (getMe')
 import           LN.T.User                       (UserResponse (..))
-import qualified LN.UI.App.About                 as App
+import qualified LN.UI.App.About                 as About
 import qualified LN.UI.App.Breadcrumbs           as App
 import qualified LN.UI.App.Home                  as App
 import qualified LN.UI.App.Organization          as App
@@ -159,7 +159,7 @@ renderRouteView Store{..} = do
   div_ $ do
     case _route of
       RouteWith Home _                        -> App.homeView_
-      RouteWith About _                       -> App.aboutView_
+      RouteWith About _                       -> About.view_
       RouteWith Portal _                      -> App.portalView_
       RouteWith (Organizations Index) params  -> Organizations.view_
       RouteWith (Organizations crud) params   -> App.organizationView_ crud
