@@ -11,7 +11,7 @@ module LN.UI.App.Core (
   coreStore,
   coreView,
   coreView_,
-  initRouter
+  initCoreRouter
 ) where
 
 
