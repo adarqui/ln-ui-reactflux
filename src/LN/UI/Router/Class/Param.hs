@@ -6,7 +6,10 @@ module LN.UI.Router.Class.Param (
   lookupParam,
   fixParams,
   buildParams,
-  fromWebRoutesParams
+  fromWebRoutesParams,
+  updateParams_Offset,
+  updateParams_Limit,
+  updateParams_Offset_Limit
 ) where
 
 
@@ -17,7 +20,7 @@ import           Data.Maybe  (Maybe (..), catMaybes, maybe)
 import           Data.Monoid ((<>))
 import           Data.Text   (Text)
 import qualified Data.Text   as Text
-import           Prelude     (String, id, map, read, show, ($), (.))
+import           Prelude
 import           Text.Read   (readMaybe)
 
 import           LN.T        (OrderBy (..), Param (..), ParamTag (..),
@@ -93,3 +96,19 @@ paramFromKV'' (k, v) =
     Just ParamTag_Order     -> Just (ParamTag_Order, Order $ read $ Text.unpack v)
     Just ParamTag_SortOrder -> Just (ParamTag_SortOrder, SortOrder $ read $ Text.unpack v)
     Just _                  -> Nothing
+
+
+
+-- | Updates only the Offset param
+updateParams_Offset :: Int -> Params -> Params
+updateParams_Offset offset = Map.alter (\_ -> Just $ Offset offset) ParamTag_Offset
+
+
+
+updateParams_Limit :: Int -> Params -> Params
+updateParams_Limit limit = Map.alter (\_ -> Just $ Limit limit) ParamTag_Limit
+
+
+
+updateParams_Offset_Limit :: Int -> Int -> Params -> Params
+updateParams_Offset_Limit offset limit params = updateParams_Offset offset $ updateParams_Limit limit params
