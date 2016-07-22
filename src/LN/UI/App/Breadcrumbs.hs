@@ -14,7 +14,7 @@ import qualified React.Flux                as RF
 
 import           LN.UI.ReactFlux.DOM
 import           LN.UI.Router.Class.CRUD
-import           LN.UI.Router.Class.Routes
+import           LN.UI.Router.Class.Route
 
 
 
@@ -24,7 +24,7 @@ breadcrumbsView = defineView "breadcrumbs" $ \(RouteWith route params) ->
     [] -> pure ()
     xs -> do
       div_ $ p_ $ do
-        ol_ $ do
+        ol_ $
           mapM_ (\breadcrumb -> li_ $ ahref $ routeWith' breadcrumb) xs
 
 

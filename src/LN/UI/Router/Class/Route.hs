@@ -4,7 +4,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections     #-}
 
-module LN.UI.Router.Class.Routes (
+module LN.UI.Router.Class.Route (
   RouteWith (..),
   routeWith,
   routeWith',
@@ -12,7 +12,7 @@ module LN.UI.Router.Class.Routes (
   fromRouteWithHash,
   toRouteWith,
   toRouteWithHash,
-  Routes (..),
+  Route (..),
   HasLinkName,
   linkName,
   HasCrumb,
@@ -42,7 +42,7 @@ import           LN.T
 import           LN.UI.Router.Class.CRUD
 import           LN.UI.Router.Class.Link
 import           LN.UI.Router.Class.OrderBy
-import           LN.UI.Router.Class.Params  (Params, buildParams, emptyParams,
+import           LN.UI.Router.Class.Param   (Params, buildParams, emptyParams,
                                              fixParams, fromWebRoutesParams)
 import           LN.UI.Router.Util          (slash)
 import           LN.UI.State.Internal.Types (InternalState)
@@ -56,17 +56,17 @@ import           React.Flux.Internal        (JSString)
 
 
 data RouteWith
-  = RouteWith Routes Params
+  = RouteWith Route Params
   deriving (Eq, Show, Generic, NFData)
 
 
 
-routeWith :: Routes -> [(ParamTag, Param)] -> RouteWith
+routeWith :: Route -> [(ParamTag, Param)] -> RouteWith
 routeWith route params = RouteWith route (buildParams params)
 
 
 
-routeWith' :: Routes -> RouteWith
+routeWith' :: Route -> RouteWith
 routeWith' route = routeWith route mempty
 
 
@@ -102,7 +102,7 @@ toRouteWithHash = toRouteWith . BSC.drop 1
 
 
 
-data Routes
+data Route
   = Home
   | About
   | Me
@@ -144,28 +144,26 @@ class HasLinkName a where
 
 
 
-instance HasLinkName Routes where
-  linkName Home              = "Home"
-  linkName About             = "About"
-  linkName Portal            = "Portal"
-  linkName (Organizations _) = "Organizations"
-  linkName (Users _)         = "Users"
-  linkName Login             = "Login"
-  linkName Logout            = "Logout"
-  linkName _                 = "Unknown"
+instance HasLinkName Route where
+  linkName route = case route of
+    Home              -> "Home"
+    About             -> "About"
+    Portal            -> "Portal"
+    (Organizations _) -> "Organizations"
+    (Users _)         -> "Users"
+    Login             -> "Login"
+    Logout            -> "Logout"
+    _                 -> "Unknown"
+
+
 
 instance HasLinkName RouteWith where
   linkName (RouteWith route params) = linkName route
 
 
 
--- class HasCrumb a where
---   crumb :: a -> InternalState Routes -> Array (Tuple Routes String)
-
-
-
 class HasCrumb a where
-  crumb :: a -> [Routes]
+  crumb :: a -> [Route]
 
 
 
@@ -242,7 +240,7 @@ class HasCrumb a where
 
 
 
-instance HasCrumb Routes where
+instance HasCrumb Route where
 
   crumb route =
     case route of
@@ -710,22 +708,21 @@ preps = Text.concat . prep
 
 
 
-instance PathInfo Routes where
+instance PathInfo Route where
 
-  toPathSegments route =
-    case route of
-      Home                     -> pure ""
-      About                    -> pure "about"
-      Me                       -> pure "me"
-      Errors                   -> pure "errors"
-      Portal                   -> pure "portal"
-      Organizations Index      -> pure "organizations"
-      Organizations (ShowS s)  -> pure s
-      Organizations crud       -> (pure $ "organizations") <> toPathSegments crud
-      Users Index              -> pure "users"
-      Users (ShowS s)          -> pure s
-      Users crud               -> (pure $ "users") <> toPathSegments crud
-      _                        -> pure ""
+  toPathSegments route = case route of
+    Home                     -> pure ""
+    About                    -> pure "about"
+    Me                       -> pure "me"
+    Errors                   -> pure "errors"
+    Portal                   -> pure "portal"
+    Organizations Index      -> pure "organizations"
+    Organizations (ShowS s)  -> pure s
+    Organizations crud       -> (pure $ "organizations") <> toPathSegments crud
+    Users Index              -> pure "users"
+    Users (ShowS s)          -> pure s
+    Users crud               -> (pure $ "users") <> toPathSegments crud
+    _                        -> pure ""
 
   fromPathSegments =
         About         <$ segment "about"

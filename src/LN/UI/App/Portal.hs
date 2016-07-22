@@ -14,7 +14,7 @@ import qualified React.Flux                as RF
 
 import           LN.UI.ReactFlux.DOM
 import           LN.UI.Router.Class.CRUD
-import           LN.UI.Router.Class.Routes
+import           LN.UI.Router.Class.Route
 
 
 

@@ -38,7 +38,7 @@ import           LN.UI.HaskellApiHelpers   (rd)
 import           LN.UI.ReactFlux.DOM       (ahref, ahrefName)
 import           LN.UI.Router.Class.App
 import           LN.UI.Router.Class.CRUD
-import           LN.UI.Router.Class.Routes
+import           LN.UI.Router.Class.Route
 import           LN.UI.State.PageInfo      (PageInfo, defaultPageInfo)
 
 

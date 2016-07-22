@@ -26,7 +26,7 @@ import Routing.Types           (RoutePart(..))
 
 import LN.Input.Types          (Input(..))
 import LN.Router.Types         (Routing, Routes(..), CRUD(..))
-import LN.Router.Class.Params  (Params, emptyParams, psRoutingParamsToParams)
+import LN.Router.Class.Param  (Params, emptyParams, psRoutingParamsToParams)
 
 
 

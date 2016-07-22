@@ -26,7 +26,7 @@ import           Prelude                    (Show, IO, show, pure, undefined)
 import           LN.UI.Router.Class.CRUD    as CRUD
 import           LN.UI.Router.Class.Link    as Link
 import           LN.UI.Router.Class.OrderBy as OrderBy
-import           LN.UI.Router.Class.Routes  as Routes
+import           LN.UI.Router.Class.Route  as Routes
 
 
 import           Data.Text                  (Text)

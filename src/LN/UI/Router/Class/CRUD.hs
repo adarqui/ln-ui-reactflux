@@ -22,7 +22,7 @@ import           Text.ParserCombinators.Parsec.Prim (try)
 import           Web.Routes
 
 import           LN.UI.Router.Class.Link            (HasLink (..))
-import           LN.UI.Router.Class.Params          (emptyParams)
+import           LN.UI.Router.Class.Param          (emptyParams)
 import           LN.UI.Types                        (Int, Number, String, tuple)
 
 

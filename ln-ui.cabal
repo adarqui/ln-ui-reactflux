@@ -36,8 +36,8 @@ library
                      , LN.UI.Router.Class.Crumb
                      , LN.UI.Router.Class.Link
                      , LN.UI.Router.Class.OrderBy
-                     , LN.UI.Router.Class.Params
-                     , LN.UI.Router.Class.Routes
+                     , LN.UI.Router.Class.Param
+                     , LN.UI.Router.Class.Route
                      , LN.UI.State.Internal.Types
                      , LN.UI.State.Loading
                      , LN.UI.State.PageInfo

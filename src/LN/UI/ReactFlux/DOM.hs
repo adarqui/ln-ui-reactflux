@@ -10,7 +10,7 @@ module LN.UI.ReactFlux.DOM (
 import           Data.Monoid                ((<>))
 import           Data.Text                  (Text)
 import qualified Data.Text                  as Text
-import           LN.UI.Router.Class.Routes
+import           LN.UI.Router.Class.Route
 import           React.Flux
 
 

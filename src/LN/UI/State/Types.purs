@@ -6,7 +6,7 @@ module LN.State.Types (
 
 
 
-import LN.Router.Class.Routes       (Routes)
+import LN.Router.Class.Route       (Routes)
 import LN.State.Internal.Types      (InternalState)
 import Control.Monad.Aff.AVar       (AVar())
 import Data.Map                     as M
@@ -17,7 +17,7 @@ import Prelude                      (Unit)
 -- import LN.Router.Types              (Routes(..))
 import LN.Component.CreateThread    (Comp_CreateThread_State)
 import LN.Input.Types               (Input)
-import LN.Router.Class.Routes       (Routes(..))
+import LN.Router.Class.Route       (Routes(..))
 import LN.State.ArrayString         (defaultArrayStringState)
 import LN.State.Leuron              (LeuronRequestState, defaultLeuronRequestState)
 import LN.State.Loading             (LoadingMap, defaultLoadingMap)

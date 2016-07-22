@@ -33,7 +33,7 @@ import           LN.T                      (CountResponses, OrderBy (..),
                                             OrderBy (..), Param (..),
                                             ParamTag (..), SortOrderBy (..),
                                             SortOrderBy (..))
-import           LN.UI.Router.Class.Params (Params)
+import           LN.UI.Router.Class.Param (Params)
 
 
 
