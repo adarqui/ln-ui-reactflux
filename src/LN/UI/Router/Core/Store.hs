@@ -79,6 +79,13 @@ instance StoreData CoreStore where
 
     action_core_route route = do
       putStrLn $ show route
+
+      case route of
+
+        RouteWith Home _                       -> pure ()
+        RouteWith About _                      -> pure ()
+        RouteWith (Organizations Index) params -> pure ()
+
       pure $ st{ coreStore_Route = route }
 
 

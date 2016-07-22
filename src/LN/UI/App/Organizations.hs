@@ -15,20 +15,31 @@ module LN.UI.App.Organizations (
 
 
 
-import           Control.DeepSeq (NFData)
-import           Data.Typeable   (Typeable)
-import           GHC.Generics    (Generic)
-import           React.Flux      hiding (view)
-import qualified React.Flux      as RF
+import           Control.DeepSeq         (NFData)
+import           Data.Map                (Map)
+import qualified Data.Map                as Map
+import           Data.Typeable           (Typeable)
+import           GHC.Generics            (Generic)
+import           LN.Api                  (getOrganizationPacks)
+import           LN.T.Pack.Organization  (OrganizationPackResponse (..))
+import           LN.UI.HaskellApiHelpers (rd)
+import           LN.UI.State.PageInfo    (PageInfo (..), defaultPageInfo,
+                                          paramsFromPageInfo)
+import           React.Flux              hiding (view)
+import qualified React.Flux              as RF
 
 
 
-data OrganizationsStore = OrganizationsStore
-  deriving (Show, Typeable, Generic, NFData)
+data OrganizationsStore = OrganizationsStore {
+  organizationsStore_PageInfo      :: PageInfo,
+  organizationsStore_Organizations :: Map Int OrganizationPackResponse
+}
 
 
 
-data OrganizationsAction = OrganizationsAction
+data OrganizationsAction
+  = Organizations_Init PageInfo
+  | Organizations_Nop
   deriving (Show, Typeable, Generic, NFData)
 
 
@@ -37,7 +48,11 @@ instance StoreData OrganizationsStore where
   type StoreAction OrganizationsStore = OrganizationsAction
   transform action st = do
     putStrLn "Organizations"
-    pure OrganizationsStore
+
+    case action of
+      Organizations_Init page_info -> do
+        lr <- rd $ getOrganizationPacks $ paramsFromPageInfo page_info
+        pure $ st{ organizationsStore_PageInfo = page_info }
 
 
 
@@ -47,7 +62,10 @@ organizationsStore = mkStore defaultOrganizationsStore
 
 
 defaultOrganizationsStore :: OrganizationsStore
-defaultOrganizationsStore = OrganizationsStore
+defaultOrganizationsStore = OrganizationsStore {
+  organizationsStore_PageInfo      = defaultPageInfo,
+  organizationsStore_Organizations = Map.empty
+}
 
 
 

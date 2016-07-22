@@ -1,9 +1,12 @@
-{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE DeriveAnyClass  #-}
+{-# LANGUAGE DeriveGeneric   #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module LN.UI.State.PageInfo (
   PageInfo (..),
   defaultPageInfo,
   pageInfoFromParams,
+  paramsFromPageInfo
   -- defaultPageInfo,
   -- defaultPageInfo_Users,
   -- defaultPageInfo_Organizations,
@@ -19,13 +22,18 @@ module LN.UI.State.PageInfo (
 
 
 
-import           Data.List  (head)
-import           Data.Maybe (maybe)
-import qualified Data.Map as Map (lookup)
+import           Control.DeepSeq           (NFData)
+import           Data.List                 (head)
+import qualified Data.Map                  as Map (lookup)
+import           Data.Maybe                (maybe)
+import           Data.Typeable             (Typeable)
+import           GHC.Generics              (Generic)
 
-import           LN.T       (ParamTag(..), SortOrderBy(..), OrderBy(..), CountResponses, OrderBy (..), Param (..),
-                             SortOrderBy (..))
-import LN.UI.Router.Class.Params (Params)
+import           LN.T                      (CountResponses, OrderBy (..),
+                                            OrderBy (..), Param (..),
+                                            ParamTag (..), SortOrderBy (..),
+                                            SortOrderBy (..))
+import           LN.UI.Router.Class.Params (Params)
 
 
 
@@ -36,7 +44,7 @@ data PageInfo = PageInfo {
   totalPages     :: !Int,
   sortOrder      :: !SortOrderBy,
   order          :: !OrderBy
-} deriving (Show)
+} deriving (Show, Generic, Typeable, NFData)
 
 
 
@@ -87,6 +95,15 @@ pageInfoFromParams params =
   m_limit      = Map.lookup ParamTag_Limit params
   m_sort_order = Map.lookup ParamTag_SortOrder params
   m_order      = Map.lookup ParamTag_Order params
+
+
+
+paramsFromPageInfo :: PageInfo -> [Param]
+paramsFromPageInfo PageInfo{..} =
+  [ Offset currentPage
+  , Limit resultsPerPage
+  , SortOrder sortOrder, Order order
+  ]
 
 
 
