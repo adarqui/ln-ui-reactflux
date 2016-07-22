@@ -16,15 +16,18 @@ module LN.UI.App.Organizations (
 
 
 import           Control.DeepSeq                 (NFData)
+import           Control.Monad.Trans.Either      (EitherT, runEitherT)
 import           Data.Int                        (Int64)
 import           Data.Map                        (Map)
 import qualified Data.Map                        as Map
 import           Data.Typeable                   (Typeable)
 import           GHC.Generics                    (Generic)
+import           Haskell.Helpers.Either          (mustPassT)
 import           React.Flux                      hiding (view)
 import qualified React.Flux                      as RF
 
-import           LN.Api                          (getOrganizationPacks)
+import           LN.Api                          (getOrganizationPacks,
+                                                  getOrganizationsCount')
 import           LN.T.Organization               (OrganizationResponse (..))
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
@@ -60,10 +63,13 @@ instance StoreData Store where
 
     where
     actions_init page_info = do
-      lr <- rd $ getOrganizationPacks $ paramsFromPageInfo page_info
+      lr <- runEitherT $ do
+        count         <- mustPassT $ rd $ getOrganizationsCount'
+        organizations <- mustPassT $ rd $ getOrganizationPacks $ paramsFromPageInfo page_info
+        pure (count, organizations)
       case lr of
         Left _ -> pure st
-        Right organization_packs -> do
+        Right (count, organization_packs) -> do
           pure $ st{ _organizations = idmapFrom organizationPackResponseOrganizationId (organizationPackResponses organization_packs)
                    , _pageInfo = page_info }
 

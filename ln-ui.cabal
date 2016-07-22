@@ -58,6 +58,7 @@ library
                      , containers
                      , data-default
                      , deepseq
+                     , either
                      , ghcjs-router
                      , parsec
                      , react-flux == 1.1.1
@@ -71,6 +72,7 @@ library
                      , haskell-ln-types
                      , haskell-api-helpers-shared
                      , haskell-api-helpers-ghcjs
+                     , haskell-either-helpers
                      , haskell-rehtie
   if impl(ghcjs)
      build-depends:    ghcjs-base

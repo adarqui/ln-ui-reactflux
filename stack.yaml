@@ -43,6 +43,7 @@ packages:
 - '../haskell-ln-types'
 - '../haskell-api-helpers-shared'
 - '../haskell-api-helpers-ghcjs'
+- '../haskell-either-helpers'
 - '../haskell-ebyam'
 - '../haskell-ifte'
 - '../haskell-rehtie'
