@@ -5,12 +5,12 @@
 {-# LANGUAGE TypeFamilies               #-}
 
 module LN.UI.App.Home (
-  HomeStore,
-  defaultHomeStore,
-  HomeAction (..),
-  homeStore,
-  homeView,
-  homeView_
+  Store,
+  defaultStore,
+  Action (..),
+  store,
+  view,
+  view_
 ) where
 
 
@@ -23,40 +23,40 @@ import qualified React.Flux      as RF
 
 
 
-data HomeStore = HomeStore
+data Store = Store
   deriving (Show, Typeable, Generic, NFData)
 
 
 
-data HomeAction = HomeAction
+data Action = Action
   deriving (Show, Typeable, Generic, NFData)
 
 
 
-instance StoreData HomeStore where
-  type StoreAction HomeStore = HomeAction
+instance StoreData Store where
+  type StoreAction Store = Action
   transform action st = do
     putStrLn "Home"
-    pure HomeStore
+    pure Store
 
 
 
-homeStore :: ReactStore HomeStore
-homeStore = mkStore defaultHomeStore
+store :: ReactStore Store
+store = mkStore defaultStore
 
 
 
-defaultHomeStore :: HomeStore
-defaultHomeStore = HomeStore
+defaultStore :: Store
+defaultStore = Store
 
 
 
-homeView :: ReactView ()
-homeView = defineControllerView "home" homeStore $ \st _ ->
+view :: ReactView ()
+view = defineControllerView "home" store $ \st _ ->
   div_ $ p_ $ elemText "Welcome to LN!"
 
 
 
-homeView_ :: ReactElementM eventHandler ()
-homeView_ =
-  RF.view homeView () mempty
+view_ :: ReactElementM eventHandler ()
+view_ =
+  RF.view view () mempty

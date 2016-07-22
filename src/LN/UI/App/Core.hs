@@ -32,7 +32,7 @@ import           LN.Api                          (getMe')
 import           LN.T.User                       (UserResponse (..))
 import qualified LN.UI.App.About                 as About
 import qualified LN.UI.App.Breadcrumbs           as Breadcrumbs
-import qualified LN.UI.App.Home                  as App
+import qualified LN.UI.App.Home                  as Home
 import qualified LN.UI.App.Organization          as App
 import qualified LN.UI.App.Organizations         as Organizations
 import qualified LN.UI.App.Portal                as App
@@ -158,7 +158,7 @@ renderRouteView :: Store -> ReactElementM ViewEventHandler ()
 renderRouteView Store{..} = do
   div_ $ do
     case _route of
-      RouteWith Home _                        -> App.homeView_
+      RouteWith Home _                        -> Home.view_
       RouteWith About _                       -> About.view_
       RouteWith Portal _                      -> App.portalView_
       RouteWith (Organizations Index) params  -> Organizations.view_
