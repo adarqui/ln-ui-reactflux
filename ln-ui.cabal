@@ -29,6 +29,7 @@ library
                      , LN.UI.App.Portal
                      , LN.UI.Helpers.DataText
                      , LN.UI.Helpers.HaskellApiHelpers
+                     , LN.UI.Helpers.Map
                      , LN.UI.Helpers.ReactFluxDOM
                      , LN.UI.Router.Types
                      , LN.UI.Router.Util

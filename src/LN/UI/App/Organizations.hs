@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.App.Organizations (
@@ -15,6 +16,7 @@ module LN.UI.App.Organizations (
 
 
 import           Control.DeepSeq                 (NFData)
+import           Data.Int                        (Int64)
 import           Data.Map                        (Map)
 import qualified Data.Map                        as Map
 import           Data.Typeable                   (Typeable)
@@ -23,8 +25,9 @@ import           React.Flux                      hiding (view)
 import qualified React.Flux                      as RF
 
 import           LN.Api                          (getOrganizationPacks)
-import           LN.T.Pack.Organization          (OrganizationPackResponse (..))
+import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
+import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   paramsFromPageInfo)
@@ -33,7 +36,7 @@ import           LN.UI.State.PageInfo            (PageInfo (..),
 
 data OrganizationsStore = OrganizationsStore {
   organizationsStore_PageInfo      :: PageInfo,
-  organizationsStore_Organizations :: Map Int OrganizationPackResponse
+  organizationsStore_Organizations :: Map Int64 OrganizationPackResponse
 }
 
 
@@ -53,7 +56,11 @@ instance StoreData OrganizationsStore where
     case action of
       Organizations_Init page_info -> do
         lr <- rd $ getOrganizationPacks $ paramsFromPageInfo page_info
-        pure $ st{ organizationsStore_PageInfo = page_info }
+        case lr of
+          Left _ -> pure st
+          Right organization_packs -> do
+            pure $ st{ organizationsStore_Organizations = idmapFrom organizationPackResponseOrganizationId (organizationPackResponses organization_packs)
+                     , organizationsStore_PageInfo = page_info }
 
 
 
@@ -71,8 +78,11 @@ defaultOrganizationsStore = OrganizationsStore {
 
 
 organizationsView :: ReactView ()
-organizationsView = defineControllerView "organizations" organizationsStore $ \st _ ->
-  div_ $ p_ $ elemText "Organizations Index"
+organizationsView = defineControllerView "organizations" organizationsStore $ \OrganizationsStore{..} _ ->
+  div_ $ do
+    h1_ "Organizations"
+    ul_ $ do
+      mapM_ (\OrganizationPackResponse{..} -> li_ $ p_ $ elemShow organizationPackResponseOrganizationId) organizationsStore_Organizations
 
 
 
