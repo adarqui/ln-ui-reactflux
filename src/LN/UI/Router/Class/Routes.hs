@@ -159,8 +159,13 @@ instance HasLinkName RouteWith where
 
 
 
+-- class HasCrumb a where
+--   crumb :: a -> InternalState Routes -> Array (Tuple Routes String)
+
+
+
 class HasCrumb a where
-  crumb :: a -> InternalState Routes -> Array (Tuple Routes String)
+  crumb :: a -> [Routes]
 
 
 
@@ -237,32 +242,29 @@ class HasCrumb a where
 
 
 
--- instance HasCrumb Routes where
+instance HasCrumb Routes where
 
---   crumb route st =
+  crumb route =
+    case route of
+       Home   -> []
+       About  -> []
+       Me     -> []
+       Errors -> []
+       Portal -> []
 
---     case route of
+       Organizations Index             -> []
+       Organizations New               -> [Organizations Index]
+       Organizations (ShowS org_sid)   -> [Organizations Index]
+       Organizations (EditS org_sid)   -> organizations_repetitive org_sid
+       Organizations (DeleteS org_sid) -> organizations_repetitive org_sid
 
+       -- TODO FIXME: Remove eventually, needs to be accurately total
+       _ -> [NotFound]
 
-
---       Home   -> [tuple Home "Home"]
-
-
-
---       About  -> [tuple About "About"]
-
-
-
---       Me     -> [tuple Me "Me"]
-
-
-
---       Errors -> [tuple Errors "Errors"]
-
-
-
---       Portal -> [tuple Portal "Portal"]
-
+    where
+    organizations_repetitive org_sid =
+      [ Organizations Index
+      , Organizations (ShowS org_sid) ]
 
 
 --       Organizations Index params ->

@@ -29,6 +29,7 @@ import qualified React.Flux                as RF
 import           LN.Api                    (getMe')
 import           LN.T.User                 (UserResponse (..))
 import qualified LN.UI.App.About           as App
+import qualified LN.UI.App.Breadcrumbs     as App
 import qualified LN.UI.App.Home            as App
 import qualified LN.UI.App.Organization    as App
 import qualified LN.UI.App.Organizations   as App
@@ -118,6 +119,7 @@ defaultLayout :: CoreStore -> ReactElementM ViewEventHandler () -> ReactElementM
 defaultLayout st@CoreStore{..} page =
   div_ $ do
     navBar coreStore_Me
+    App.breadcrumbsView_ coreStore_Route
     div_ page
 
 

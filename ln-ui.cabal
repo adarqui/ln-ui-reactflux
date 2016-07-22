@@ -19,6 +19,7 @@ library
                      , LN.UI.Main
                      , LN.UI.Types
                      , LN.UI.App.About
+                     , LN.UI.App.Breadcrumbs
                      , LN.UI.App.Counter
                      , LN.UI.App.Home
                      , LN.UI.App.Organizations
