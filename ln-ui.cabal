@@ -20,6 +20,7 @@ library
                      , LN.UI.Types
                      , LN.UI.App.About
                      , LN.UI.App.Breadcrumbs
+                     , LN.UI.App.Core
                      , LN.UI.App.Counter
                      , LN.UI.App.Home
                      , LN.UI.App.Organizations
@@ -28,8 +29,6 @@ library
                      , LN.UI.App.Portal
                      , LN.UI.HaskellApiHelpers
                      , LN.UI.ReactFlux.DOM
-                     , LN.UI.Router.Core
-                     , LN.UI.Router.Core.Store
                      , LN.UI.Router.Types
                      , LN.UI.Router.Util
                      , LN.UI.Router.Class.App

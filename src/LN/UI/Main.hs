@@ -7,8 +7,7 @@ module LN.UI.Main (
 
 
 
-import qualified LN.UI.Router.Core       as Core
-import qualified LN.UI.Router.Core.Store as Core
+import qualified LN.UI.App.Core as Core
 import           React.Flux
 
 
