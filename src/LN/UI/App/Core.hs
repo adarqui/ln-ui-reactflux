@@ -31,7 +31,7 @@ import           React.Flux.Router.WebRoutes     (initRouterRaw'ByteString)
 import           LN.Api                          (getMe')
 import           LN.T.User                       (UserResponse (..))
 import qualified LN.UI.App.About                 as About
-import qualified LN.UI.App.Breadcrumbs           as App
+import qualified LN.UI.App.Breadcrumbs           as Breadcrumbs
 import qualified LN.UI.App.Home                  as App
 import qualified LN.UI.App.Organization          as App
 import qualified LN.UI.App.Organizations         as Organizations
@@ -135,7 +135,7 @@ defaultLayout :: Store -> ReactElementM ViewEventHandler () -> ReactElementM Vie
 defaultLayout st@Store{..} page =
   div_ $ do
     navBar _me
-    App.breadcrumbsView_ _route
+    Breadcrumbs.view_ _route
     div_ page
 
 
