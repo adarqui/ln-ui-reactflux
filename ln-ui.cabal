@@ -24,6 +24,7 @@ library
                      , LN.UI.App.Home
                      , LN.UI.App.Organizations
                      , LN.UI.App.Organization
+                     , LN.UI.App.PageNumbers
                      , LN.UI.App.Portal
                      , LN.UI.HaskellApiHelpers
                      , LN.UI.ReactFlux.DOM
