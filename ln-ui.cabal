@@ -27,7 +27,8 @@ library
                      , LN.UI.App.Organization
                      , LN.UI.App.PageNumbers
                      , LN.UI.App.Portal
-                     , LN.UI.HaskellApiHelpers
+                     , LN.UI.Helpers.HaskellApiHelpers
+                     , LN.UI.Helpers.DataText
                      , LN.UI.ReactFlux.DOM
                      , LN.UI.Router.Types
                      , LN.UI.Router.Util

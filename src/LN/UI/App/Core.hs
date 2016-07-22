@@ -16,32 +16,32 @@ module LN.UI.App.Core (
 
 
 
-import           Control.DeepSeq             (NFData)
-import           Control.Monad               (void)
-import           Control.Monad.IO.Class      (liftIO)
-import           Data.Monoid                 ((<>))
-import           Data.Rehtie                 (rehtie)
-import           Data.Text                   (Text)
-import           Data.Typeable               (Typeable)
-import           GHC.Generics                (Generic)
-import           React.Flux                  hiding (view)
-import qualified React.Flux                  as RF
-import           React.Flux.Router.WebRoutes (initRouterRaw'ByteString)
+import           Control.DeepSeq                 (NFData)
+import           Control.Monad                   (void)
+import           Control.Monad.IO.Class          (liftIO)
+import           Data.Monoid                     ((<>))
+import           Data.Rehtie                     (rehtie)
+import           Data.Text                       (Text)
+import           Data.Typeable                   (Typeable)
+import           GHC.Generics                    (Generic)
+import           React.Flux                      hiding (view)
+import qualified React.Flux                      as RF
+import           React.Flux.Router.WebRoutes     (initRouterRaw'ByteString)
 
-import           LN.Api                      (getMe')
-import           LN.T.User                   (UserResponse (..))
-import qualified LN.UI.App.About             as App
-import qualified LN.UI.App.Breadcrumbs       as App
-import qualified LN.UI.App.Home              as App
-import qualified LN.UI.App.Organization      as App
-import qualified LN.UI.App.Organizations     as App
-import qualified LN.UI.App.Portal            as App
-import           LN.UI.HaskellApiHelpers     (rd)
-import           LN.UI.ReactFlux.DOM         (ahref, ahrefName)
+import           LN.Api                          (getMe')
+import           LN.T.User                       (UserResponse (..))
+import qualified LN.UI.App.About                 as App
+import qualified LN.UI.App.Breadcrumbs           as App
+import qualified LN.UI.App.Home                  as App
+import qualified LN.UI.App.Organization          as App
+import qualified LN.UI.App.Organizations         as App
+import qualified LN.UI.App.Portal                as App
+import           LN.UI.Helpers.HaskellApiHelpers (rd)
+import           LN.UI.ReactFlux.DOM             (ahref, ahrefName)
 import           LN.UI.Router.Class.App
 import           LN.UI.Router.Class.CRUD
 import           LN.UI.Router.Class.Route
-import           LN.UI.State.PageInfo        (PageInfo, defaultPageInfo)
+import           LN.UI.State.PageInfo            (PageInfo, defaultPageInfo)
 
 
 

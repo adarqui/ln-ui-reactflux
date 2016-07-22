@@ -1,7 +1,7 @@
-{-# LANGUAGE DeriveAnyClass             #-}
-{-# LANGUAGE DeriveGeneric              #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE TypeFamilies               #-}
+{-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.App.Organizations (
   OrganizationsStore,
@@ -14,19 +14,20 @@ module LN.UI.App.Organizations (
 
 
 
-import           Control.DeepSeq         (NFData)
-import           Data.Map                (Map)
-import qualified Data.Map                as Map
-import           Data.Typeable           (Typeable)
-import           GHC.Generics            (Generic)
-import           React.Flux              hiding (view)
-import qualified React.Flux              as RF
+import           Control.DeepSeq                 (NFData)
+import           Data.Map                        (Map)
+import qualified Data.Map                        as Map
+import           Data.Typeable                   (Typeable)
+import           GHC.Generics                    (Generic)
+import           React.Flux                      hiding (view)
+import qualified React.Flux                      as RF
 
-import           LN.Api                  (getOrganizationPacks)
-import           LN.T.Pack.Organization  (OrganizationPackResponse (..))
-import           LN.UI.HaskellApiHelpers (rd)
-import           LN.UI.State.PageInfo    (PageInfo (..), defaultPageInfo,
-                                          paramsFromPageInfo)
+import           LN.Api                          (getOrganizationPacks)
+import           LN.T.Pack.Organization          (OrganizationPackResponse (..))
+import           LN.UI.Helpers.HaskellApiHelpers (rd)
+import           LN.UI.State.PageInfo            (PageInfo (..),
+                                                  defaultPageInfo,
+                                                  paramsFromPageInfo)
 
 
 

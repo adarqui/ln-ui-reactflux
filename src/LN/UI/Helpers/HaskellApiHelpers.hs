@@ -3,7 +3,7 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module LN.UI.HaskellApiHelpers (
+module LN.UI.Helpers.HaskellApiHelpers (
   rd
 ) where
 
