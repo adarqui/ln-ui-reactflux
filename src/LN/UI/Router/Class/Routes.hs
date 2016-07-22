@@ -147,7 +147,9 @@ class HasLinkName a where
 instance HasLinkName Routes where
   linkName Home              = "Home"
   linkName About             = "About"
+  linkName Portal            = "Portal"
   linkName (Organizations _) = "Organizations"
+  linkName (Users _)         = "Users"
   linkName Login             = "Login"
   linkName Logout            = "Logout"
   linkName _                 = "Unknown"
@@ -718,6 +720,9 @@ instance PathInfo Routes where
       Organizations Index      -> pure "organizations"
       Organizations (ShowS s)  -> pure s
       Organizations crud       -> (pure $ "organizations") <> toPathSegments crud
+      Users Index              -> pure "users"
+      Users (ShowS s)          -> pure s
+      Users crud               -> (pure $ "users") <> toPathSegments crud
       _                        -> pure ""
 
   fromPathSegments =
@@ -726,6 +731,7 @@ instance PathInfo Routes where
     <|> Errors        <$ segment "errors"
     <|> Portal        <$ segment "portal"
     <|> Organizations <$ segment "organizations" <*> fromPathSegments
+    <|> Users         <$ segment "users" <*> fromPathSegments
     <|> pure Home
     -- TODO FIXME: Can't do Home <$ segment "" because it fails to pattern match. Though, pure Index works because it's terminal.
 

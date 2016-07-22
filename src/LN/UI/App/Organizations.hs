@@ -1,6 +1,5 @@
 {-# LANGUAGE DeriveAnyClass             #-}
 {-# LANGUAGE DeriveGeneric              #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE TypeFamilies               #-}
 
@@ -20,13 +19,14 @@ import           Data.Map                (Map)
 import qualified Data.Map                as Map
 import           Data.Typeable           (Typeable)
 import           GHC.Generics            (Generic)
+import           React.Flux              hiding (view)
+import qualified React.Flux              as RF
+
 import           LN.Api                  (getOrganizationPacks)
 import           LN.T.Pack.Organization  (OrganizationPackResponse (..))
 import           LN.UI.HaskellApiHelpers (rd)
 import           LN.UI.State.PageInfo    (PageInfo (..), defaultPageInfo,
                                           paramsFromPageInfo)
-import           React.Flux              hiding (view)
-import qualified React.Flux              as RF
 
 
 
@@ -71,7 +71,7 @@ defaultOrganizationsStore = OrganizationsStore {
 
 organizationsView :: ReactView ()
 organizationsView = defineControllerView "organizations" organizationsStore $ \st _ ->
-  div_ $ p_ $ elemText "Welcome to LN!"
+  div_ $ p_ $ elemText "Organizations Index"
 
 
 

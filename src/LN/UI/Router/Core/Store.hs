@@ -23,20 +23,22 @@ import           Data.Rehtie               (rehtie)
 import           Data.Text                 (Text)
 import           Data.Typeable             (Typeable)
 import           GHC.Generics              (Generic)
+import           React.Flux                hiding (view)
+import qualified React.Flux                as RF
+
 import           LN.Api                    (getMe')
 import           LN.T.User                 (UserResponse (..))
 import qualified LN.UI.App.About           as App
 import qualified LN.UI.App.Home            as App
-import qualified LN.UI.App.Organizations   as App
 import qualified LN.UI.App.Organization    as App
+import qualified LN.UI.App.Organizations   as App
+import qualified LN.UI.App.Portal          as App
 import           LN.UI.HaskellApiHelpers   (rd)
 import           LN.UI.ReactFlux.DOM       (ahref, ahrefName)
 import           LN.UI.Router.Class.App
+import           LN.UI.Router.Class.CRUD
 import           LN.UI.Router.Class.Routes
-import LN.UI.Router.Class.CRUD
-import           React.Flux                hiding (view)
-import qualified React.Flux                as RF
-import LN.UI.State.PageInfo (PageInfo, defaultPageInfo)
+import           LN.UI.State.PageInfo      (PageInfo, defaultPageInfo)
 
 
 
@@ -78,13 +80,17 @@ instance StoreData CoreStore where
         pure $ st{ coreStore_Me = Just user_pack }
 
     action_core_route route = do
+
       putStrLn $ show route
 
       case route of
 
         RouteWith Home _                       -> pure ()
         RouteWith About _                      -> pure ()
+        RouteWith Portal _                     -> pure ()
         RouteWith (Organizations Index) params -> pure ()
+        RouteWith (Users Index) params         -> pure ()
+        RouteWith _ _                          -> pure ()
 
       pure $ st{ coreStore_Route = route }
 
@@ -112,14 +118,14 @@ defaultLayout :: CoreStore -> ReactElementM ViewEventHandler () -> ReactElementM
 defaultLayout st@CoreStore{..} page =
   div_ $ do
     navBar coreStore_Me
-    div_ $ page
+    div_ page
 
 
 
 navBar :: Maybe UserResponse -> ReactElementM ViewEventHandler ()
 navBar m_user_pack =
   div_ $ do
-    ol_ $ do
+    ul_ $ do
       li_ $ ahref $ routeWith' Home
       li_ $ ahref $ routeWith' About
       li_ $ ahref $ routeWith' Portal
@@ -133,10 +139,12 @@ navBar m_user_pack =
 renderRouteView :: CoreStore -> ReactElementM ViewEventHandler ()
 renderRouteView CoreStore{..} = do
   div_ $ do
-    p_ $ elemShow coreStore_Route
     case coreStore_Route of
       RouteWith Home _                        -> App.homeView_
       RouteWith About _                       -> App.aboutView_
+      RouteWith Portal _                      -> App.portalView_
       RouteWith (Organizations Index) params  -> App.organizationsView_
       RouteWith (Organizations crud) params   -> App.organizationView_ crud
+      RouteWith (Users Index) params          -> p_ $ elemText "Users Index"
+      RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
       RouteWith _ _                           -> p_ $ elemText "Unknown"
