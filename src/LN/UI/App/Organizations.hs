@@ -25,6 +25,7 @@ import           React.Flux                      hiding (view)
 import qualified React.Flux                      as RF
 
 import           LN.Api                          (getOrganizationPacks)
+import           LN.T.Organization               (OrganizationResponse (..))
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
@@ -82,7 +83,7 @@ organizationsView = defineControllerView "organizations" organizationsStore $ \O
   div_ $ do
     h1_ "Organizations"
     ul_ $ do
-      mapM_ (\OrganizationPackResponse{..} -> li_ $ p_ $ elemShow organizationPackResponseOrganizationId) organizationsStore_Organizations
+      mapM_ (\OrganizationPackResponse{..} -> li_ $ p_ $ elemShow (organizationResponseName organizationPackResponseOrganization)) organizationsStore_Organizations
 
 
 
