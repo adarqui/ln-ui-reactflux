@@ -6,6 +6,7 @@
 
 module LN.UI.App.Home (
   HomeStore,
+  defaultHomeStore,
   HomeAction (..),
   homeStore,
   homeView,
@@ -41,16 +42,21 @@ instance StoreData HomeStore where
 
 
 homeStore :: ReactStore HomeStore
-homeStore = mkStore HomeStore
+homeStore = mkStore defaultHomeStore
 
 
 
-homeView :: ReactView HomeStore
-homeView = defineView "home" $ \st ->
+defaultHomeStore :: HomeStore
+defaultHomeStore = HomeStore
+
+
+
+homeView :: ReactView ()
+homeView = defineControllerView "home" homeStore $ \st _ ->
   div_ $ p_ $ elemText "Welcome to LN!"
 
 
 
-homeView_ :: HomeStore -> ReactElementM eventHandler ()
-homeView_ st =
-  RF.view homeView st mempty
+homeView_ :: ReactElementM eventHandler ()
+homeView_ =
+  RF.view homeView () mempty
