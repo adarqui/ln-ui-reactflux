@@ -15,6 +15,7 @@ module LN.UI.App.Core (
 ) where
 
 
+import Control.Concurrent (forkIO)
 
 import           Control.DeepSeq                 (NFData)
 import           Control.Monad                   (void)
@@ -91,7 +92,7 @@ instance StoreData CoreStore where
         RouteWith Home _                       -> pure ()
         RouteWith About _                      -> pure ()
         RouteWith Portal _                     -> pure ()
-        RouteWith (Organizations Index) params -> pure ()
+        RouteWith (Organizations Index) params -> void $ forkIO $ executeAction $ SomeStoreAction App.organizationsStore $ App.Organizations_Init coreStore_PageInfo
         RouteWith (Users Index) params         -> pure ()
         RouteWith _ _                          -> pure ()
 
