@@ -4,8 +4,8 @@
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.App.PageNumbers (
-  pageNumbersView,
-  pageNumbersView_,
+  view,
+  view_,
   pageRange
 ) where
 
@@ -32,8 +32,8 @@ type Pages =
 
 
 
-pageNumbersView :: ReactView (PageInfo, RouteWith)
-pageNumbersView = defineView "pageNumbers" $ \(page_info, route_with@(RouteWith route params)) -> do
+view :: ReactView (PageInfo, RouteWith)
+view = defineView "pageNumbers" $ \(page_info, route_with@(RouteWith route params)) -> do
   let
     (prev, pages, next, limit) = buildPages page_info route_with
     upd off                    = RouteWith route (updateParams_Offset_Limit off limit params)
@@ -48,9 +48,9 @@ pageNumbersView = defineView "pageNumbers" $ \(page_info, route_with@(RouteWith 
 
 
 
-pageNumbersView_ :: (PageInfo, RouteWith) -> ReactElementM eventHandler ()
-pageNumbersView_ (page_info, route_with) =
-  RF.view pageNumbersView (page_info, route_with) mempty
+view_ :: (PageInfo, RouteWith) -> ReactElementM eventHandler ()
+view_ (page_info, route_with) =
+  RF.view view (page_info, route_with) mempty
 
 
 
