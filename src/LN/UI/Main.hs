@@ -22,9 +22,9 @@ runReactMain = do
 
   reactRender
     "ln"
-    Core.coreView
-    Core.defaultCoreStore
+    Core.view
+    Core.defaultStore
 
-  executeAction $ SomeStoreAction Core.coreStore Core.Core_Init
+  executeAction $ SomeStoreAction Core.store Core.Init
 
-  Core.initCoreRouter
+  Core.initRouter

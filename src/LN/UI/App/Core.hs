@@ -5,18 +5,17 @@
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.App.Core (
-  CoreStore (..),
-  defaultCoreStore,
-  CoreAction (..),
-  coreStore,
-  coreView,
-  coreView_,
-  initCoreRouter
+  Store (..),
+  defaultStore,
+  Action (..),
+  store,
+  view,
+  view_,
+  initRouter
 ) where
 
 
-import Control.Concurrent (forkIO)
-
+import           Control.Concurrent              (forkIO)
 import           Control.DeepSeq                 (NFData)
 import           Control.Monad                   (void)
 import           Control.Monad.IO.Class          (liftIO)
@@ -35,7 +34,7 @@ import qualified LN.UI.App.About                 as App
 import qualified LN.UI.App.Breadcrumbs           as App
 import qualified LN.UI.App.Home                  as App
 import qualified LN.UI.App.Organization          as App
-import qualified LN.UI.App.Organizations         as App
+import qualified LN.UI.App.Organizations         as Organizations
 import qualified LN.UI.App.Portal                as App
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName)
@@ -46,44 +45,44 @@ import           LN.UI.State.PageInfo            (PageInfo, defaultPageInfo)
 
 
 
-data CoreStore = CoreStore {
-  coreStore_Route    :: RouteWith,
-  coreStore_Me       :: Maybe UserResponse,
-  coreStore_PageInfo :: PageInfo
+data Store = Store {
+  _route    :: RouteWith,
+  _me       :: Maybe UserResponse,
+  _pageInfo :: PageInfo
 } deriving (Typeable, Generic)
 
-defaultCoreStore :: CoreStore
-defaultCoreStore = CoreStore {
-  coreStore_Route    = routeWith' Home,
-  coreStore_Me       = Nothing,
-  coreStore_PageInfo = defaultPageInfo
+defaultStore :: Store
+defaultStore = Store {
+  _route    = routeWith' Home,
+  _me       = Nothing,
+  _pageInfo = defaultPageInfo
 }
 
 
 
-data CoreAction
-  = Core_Init
-  | Core_Route RouteWith
-  | Core_Nop
+data Action
+  = Init
+  | SetRoute RouteWith
+  | Nop
   deriving (Show, Typeable, Generic, NFData)
 
 
 
-instance StoreData CoreStore where
-  type StoreAction CoreStore = CoreAction
-  transform action st@CoreStore{..} = do
+instance StoreData Store where
+  type StoreAction Store = Action
+  transform action st@Store{..} = do
     case action of
-      Core_Init        -> action_core_init
-      Core_Route route -> action_core_route route
-      _                -> pure st
+      Init           -> action_init
+      SetRoute route -> action_set_route route
+      _              -> pure st
     where
-    action_core_init = do
-      putStrLn "Core_Init"
+    action_init = do
+      putStrLn "Init"
       lr <- rd getMe'
       rehtie lr (const $ pure st) $ \user_pack ->
-        pure $ st{ coreStore_Me = Just user_pack }
+        pure $ st{ _me = Just user_pack }
 
-    action_core_route route = do
+    action_set_route route = do
 
       putStrLn $ show route
 
@@ -92,34 +91,34 @@ instance StoreData CoreStore where
         RouteWith Home _                       -> pure ()
         RouteWith About _                      -> pure ()
         RouteWith Portal _                     -> pure ()
-        RouteWith (Organizations Index) params -> void $ forkIO $ executeAction $ SomeStoreAction App.organizationsStore $ App.Organizations_Init coreStore_PageInfo
+        RouteWith (Organizations Index) params -> void $ forkIO $ executeAction $ SomeStoreAction Organizations.store $ Organizations.Init _pageInfo
         RouteWith (Users Index) params         -> pure ()
         RouteWith _ _                          -> pure ()
 
-      pure $ st{ coreStore_Route = route }
+      pure $ st{ _route = route }
 
 
 
-coreStore :: ReactStore CoreStore
-coreStore = mkStore defaultCoreStore
+store :: ReactStore Store
+store = mkStore defaultStore
 
 
 
-coreView :: ReactView CoreStore
-coreView =
-  defineControllerView "core" coreStore $ \st _ ->
+view :: ReactView Store
+view =
+  defineControllerView "core" store $ \st _ ->
     defaultLayout st (renderRouteView st)
 
 
 
-coreView_ :: CoreStore  -> ReactElementM eventHandler ()
-coreView_ st =
-  RF.view coreView st mempty
+view_ :: Store  -> ReactElementM eventHandler ()
+view_ st =
+  RF.view view st mempty
 
 
 
-initCoreRouter :: IO ()
-initCoreRouter =
+initRouter :: IO ()
+initRouter =
   initRouterRaw'ByteString (Just go) go
   where
   go = \raw_uri -> do
@@ -127,16 +126,16 @@ initCoreRouter =
     routeAlterStore $ toRouteWithHash raw_uri
     where
       routeAlterStore action =
-        -- Update CoreStore with our new route
-        liftIO $ alterStore coreStore $ Core_Route action
+        -- Update Store with our new route
+        liftIO $ alterStore store $ SetRoute action
 
 
 
-defaultLayout :: CoreStore -> ReactElementM ViewEventHandler () -> ReactElementM ViewEventHandler ()
-defaultLayout st@CoreStore{..} page =
+defaultLayout :: Store -> ReactElementM ViewEventHandler () -> ReactElementM ViewEventHandler ()
+defaultLayout st@Store{..} page =
   div_ $ do
-    navBar coreStore_Me
-    App.breadcrumbsView_ coreStore_Route
+    navBar _me
+    App.breadcrumbsView_ _route
     div_ page
 
 
@@ -155,14 +154,14 @@ navBar m_user_pack =
 
 
 
-renderRouteView :: CoreStore -> ReactElementM ViewEventHandler ()
-renderRouteView CoreStore{..} = do
+renderRouteView :: Store -> ReactElementM ViewEventHandler ()
+renderRouteView Store{..} = do
   div_ $ do
-    case coreStore_Route of
+    case _route of
       RouteWith Home _                        -> App.homeView_
       RouteWith About _                       -> App.aboutView_
       RouteWith Portal _                      -> App.portalView_
-      RouteWith (Organizations Index) params  -> App.organizationsView_
+      RouteWith (Organizations Index) params  -> Organizations.view_
       RouteWith (Organizations crud) params   -> App.organizationView_ crud
       RouteWith (Users Index) params          -> p_ $ elemText "Users Index"
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
