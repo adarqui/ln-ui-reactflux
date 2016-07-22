@@ -33,7 +33,7 @@ import           LN.T.User                       (UserResponse (..))
 import qualified LN.UI.App.About                 as About
 import qualified LN.UI.App.Breadcrumbs           as Breadcrumbs
 import qualified LN.UI.App.Home                  as Home
-import qualified LN.UI.App.Organization          as App
+import qualified LN.UI.App.Organization          as Organization
 import qualified LN.UI.App.Organizations         as Organizations
 import qualified LN.UI.App.Portal                as App
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
@@ -162,7 +162,7 @@ renderRouteView Store{..} = do
       RouteWith About _                       -> About.view_
       RouteWith Portal _                      -> App.portalView_
       RouteWith (Organizations Index) params  -> Organizations.view_
-      RouteWith (Organizations crud) params   -> App.organizationView_ crud
+      RouteWith (Organizations crud) params   -> Organization.view_ crud
       RouteWith (Users Index) params          -> p_ $ elemText "Users Index"
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
       RouteWith _ _                           -> p_ $ elemText "Unknown"

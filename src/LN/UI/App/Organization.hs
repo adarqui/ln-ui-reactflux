@@ -1,63 +1,62 @@
 {-# LANGUAGE DeriveAnyClass             #-}
 {-# LANGUAGE DeriveGeneric              #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE TypeFamilies               #-}
 
 module LN.UI.App.Organization (
-  OrganizationStore,
-  defaultOrganizationStore,
-  OrganizationAction (..),
-  organizationStore,
-  organizationView,
-  organizationView_
+  Store,
+  defaultStore,
+  Action (..),
+  store,
+  view,
+  view_
 ) where
 
 
 
-import           Control.DeepSeq (NFData)
-import           Data.Typeable   (Typeable)
-import           GHC.Generics    (Generic)
-import           React.Flux      hiding (view)
-import qualified React.Flux      as RF
-import LN.UI.Router.Class.CRUD
+import           Control.DeepSeq         (NFData)
+import           Data.Typeable           (Typeable)
+import           GHC.Generics            (Generic)
+import           LN.UI.Router.Class.CRUD
+import           React.Flux              hiding (view)
+import qualified React.Flux              as RF
 
 
 
-data OrganizationStore = OrganizationStore
+data Store = Store
   deriving (Show, Typeable, Generic, NFData)
 
 
 
-data OrganizationAction = OrganizationAction
+data Action = Action
   deriving (Show, Typeable, Generic, NFData)
 
 
 
-instance StoreData OrganizationStore where
-  type StoreAction OrganizationStore = OrganizationAction
+instance StoreData Store where
+  type StoreAction Store = Action
   transform action st = do
     putStrLn "Organization"
-    pure OrganizationStore
+    pure Store
 
 
 
-organizationStore :: ReactStore OrganizationStore
-organizationStore = mkStore defaultOrganizationStore
+store :: ReactStore Store
+store = mkStore defaultStore
 
 
 
-defaultOrganizationStore :: OrganizationStore
-defaultOrganizationStore = OrganizationStore
+defaultStore :: Store
+defaultStore = Store
 
 
 
-organizationView :: ReactView CRUD
-organizationView = defineControllerView "organization" organizationStore $ \st _ ->
+view :: ReactView CRUD
+view = defineControllerView "organization" store $ \st _ ->
   div_ $ p_ $ elemText "Welcome to LN!"
 
 
 
-organizationView_ :: CRUD -> ReactElementM eventHandler ()
-organizationView_ crud =
-  RF.view organizationView crud mempty
+view_ :: CRUD -> ReactElementM eventHandler ()
+view_ crud =
+  RF.view view crud mempty
