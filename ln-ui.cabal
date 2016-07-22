@@ -23,7 +23,6 @@ library
                      , LN.UI.App.Home
                      , LN.UI.App.Organizations
                      , LN.UI.App.Organization
-                     , LN.UI.App.Organization
                      , LN.UI.HaskellApiHelpers
                      , LN.UI.ReactFlux.DOM
                      , LN.UI.Router.Core
