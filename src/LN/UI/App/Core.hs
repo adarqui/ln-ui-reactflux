@@ -35,7 +35,7 @@ import qualified LN.UI.App.Breadcrumbs           as Breadcrumbs
 import qualified LN.UI.App.Home                  as Home
 import qualified LN.UI.App.Organization          as Organization
 import qualified LN.UI.App.Organizations         as Organizations
-import qualified LN.UI.App.Portal                as App
+import qualified LN.UI.App.Portal                as Portal
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName)
 import           LN.UI.Router.Class.App
@@ -160,7 +160,7 @@ renderRouteView Store{..} = do
     case _route of
       RouteWith Home _                        -> Home.view_
       RouteWith About _                       -> About.view_
-      RouteWith Portal _                      -> App.portalView_
+      RouteWith Portal _                      -> Portal.view_
       RouteWith (Organizations Index) params  -> Organizations.view_
       RouteWith (Organizations crud) params   -> Organization.view_ crud
       RouteWith (Users Index) params          -> p_ $ elemText "Users Index"
