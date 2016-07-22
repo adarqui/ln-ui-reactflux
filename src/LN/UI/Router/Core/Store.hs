@@ -27,24 +27,30 @@ import           LN.Api                    (getMe')
 import           LN.T.User                 (UserResponse (..))
 import qualified LN.UI.App.About           as App
 import qualified LN.UI.App.Home            as App
+import qualified LN.UI.App.Organizations   as App
+import qualified LN.UI.App.Organization    as App
 import           LN.UI.HaskellApiHelpers   (rd)
 import           LN.UI.ReactFlux.DOM       (ahref, ahrefName)
 import           LN.UI.Router.Class.App
 import           LN.UI.Router.Class.Routes
+import LN.UI.Router.Class.CRUD
 import           React.Flux                hiding (view)
 import qualified React.Flux                as RF
+import LN.UI.State.PageInfo (PageInfo, defaultPageInfo)
 
 
 
 data CoreStore = CoreStore {
-  coreStore_Route :: RouteWith,
-  coreStore_Me    :: Maybe UserResponse
+  coreStore_Route    :: RouteWith,
+  coreStore_Me       :: Maybe UserResponse,
+  coreStore_PageInfo :: PageInfo
 } deriving (Typeable, Generic)
 
 defaultCoreStore :: CoreStore
 defaultCoreStore = CoreStore {
-  coreStore_Route = routeWith' Home,
-  coreStore_Me    = Nothing
+  coreStore_Route    = routeWith' Home,
+  coreStore_Me       = Nothing,
+  coreStore_PageInfo = defaultPageInfo
 }
 
 
@@ -122,6 +128,8 @@ renderRouteView CoreStore{..} = do
   div_ $ do
     p_ $ elemShow coreStore_Route
     case coreStore_Route of
-      RouteWith Home _  -> App.homeView_
-      RouteWith About _ -> App.aboutView_
-      RouteWith _ _     -> p_ $ elemText "Unknown"
+      RouteWith Home _                        -> App.homeView_
+      RouteWith About _                       -> App.aboutView_
+      RouteWith (Organizations Index) params  -> App.organizationsView_
+      RouteWith (Organizations crud) params   -> App.organizationView_ crud
+      RouteWith _ _                           -> p_ $ elemText "Unknown"

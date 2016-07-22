@@ -1,5 +1,9 @@
+{-# LANGUAGE BangPatterns #-}
+
 module LN.UI.State.PageInfo (
   PageInfo (..),
+  defaultPageInfo,
+  pageInfoFromParams,
   -- defaultPageInfo,
   -- defaultPageInfo_Users,
   -- defaultPageInfo_Organizations,
@@ -17,32 +21,72 @@ module LN.UI.State.PageInfo (
 
 import           Data.List  (head)
 import           Data.Maybe (maybe)
+import qualified Data.Map as Map (lookup)
 
-import           LN.T       (CountResponses, OrderBy (..), Param (..),
+import           LN.T       (ParamTag(..), SortOrderBy(..), OrderBy(..), CountResponses, OrderBy (..), Param (..),
                              SortOrderBy (..))
+import LN.UI.Router.Class.Params (Params)
 
 
 
 data PageInfo = PageInfo {
-  currentPage    :: Int,
-  resultsPerPage :: Int,
-  totalResults   :: Int,
-  totalPages     :: Int,
-  sortOrder      :: SortOrderBy,
-  order          :: OrderBy
-  }
+  currentPage    :: !Int,
+  resultsPerPage :: !Int,
+  totalResults   :: !Int,
+  totalPages     :: !Int,
+  sortOrder      :: !SortOrderBy,
+  order          :: !OrderBy
+} deriving (Show)
 
 
 
 defaultPageInfo :: PageInfo
 defaultPageInfo = PageInfo {
-  currentPage = 1,
-  resultsPerPage = 20,
-  totalResults = 0,
-  totalPages = 1,
-  sortOrder = SortOrderBy_Asc,
-  order = OrderBy_Id
+  currentPage    = defaultCurrentPage,
+  resultsPerPage = defaultResultsPerPage,
+  totalResults   = defaultTotalResults,
+  totalPages     = defaultTotalPages,
+  sortOrder      = SortOrderBy_Asc,
+  order          = OrderBy_Id
+}
+
+
+
+defaultCurrentPage :: Int
+defaultCurrentPage = 1
+
+defaultResultsPerPage :: Int
+defaultResultsPerPage = 20
+
+defaultTotalResults :: Int
+defaultTotalResults = 0
+
+defaultTotalPages :: Int
+defaultTotalPages = 1
+
+defaultSortOrder :: SortOrderBy
+defaultSortOrder = SortOrderBy_Asc
+
+defaultOrder :: OrderBy
+defaultOrder = OrderBy_Id
+
+
+
+pageInfoFromParams :: Params -> PageInfo
+pageInfoFromParams params =
+  PageInfo {
+    currentPage    = maybe defaultCurrentPage (\(Offset offset) -> offset) m_offset,
+    resultsPerPage = maybe defaultResultsPerPage (\(Limit limit) -> limit) m_limit,
+    totalResults   = 0,
+    totalPages     = 1,
+    sortOrder      = maybe defaultSortOrder (\(SortOrder sort_order) -> sort_order) m_sort_order,
+    order          = maybe defaultOrder (\(Order order) -> order) m_order
   }
+  where
+  m_offset     = Map.lookup ParamTag_Offset params
+  m_limit      = Map.lookup ParamTag_Limit params
+  m_sort_order = Map.lookup ParamTag_SortOrder params
+  m_order      = Map.lookup ParamTag_Order params
 
 
 
