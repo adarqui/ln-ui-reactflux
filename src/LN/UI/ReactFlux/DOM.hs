@@ -15,11 +15,11 @@ import           React.Flux
 
 
 
-ahref :: RoutesWith -> ReactElementM eventHandler ()
+ahref :: RouteWith -> ReactElementM eventHandler ()
 ahref route_with = ahrefName (linkName route_with) route_with
 
 
 
-ahrefName :: Text -> RoutesWith -> ReactElementM eventHandler ()
+ahrefName :: Text -> RouteWith -> ReactElementM eventHandler ()
 ahrefName name route =
-  a_ ["href" $= fromRoutesWithHash route] $ elemText name
+  a_ ["href" $= fromRouteWithHash route] $ elemText name

@@ -37,7 +37,7 @@ import qualified React.Flux                as RF
 
 
 data CoreStore = CoreStore {
-  coreStore_Route :: RoutesWith,
+  coreStore_Route :: RouteWith,
   coreStore_Me    :: Maybe UserResponse
 } deriving (Typeable, Generic)
 
@@ -51,7 +51,7 @@ defaultCoreStore = CoreStore {
 
 data CoreAction
   = Core_Init
-  | Core_Route RoutesWith
+  | Core_Route RouteWith
   | Core_Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -122,6 +122,6 @@ renderRouteView CoreStore{..} = do
   div_ $ do
     p_ $ elemShow coreStore_Route
     case coreStore_Route of
-      RoutesWith Home _  -> App.homeView_
-      RoutesWith About _ -> App.aboutView_
-      RoutesWith _ _     -> p_ $ elemText "Unknown"
+      RouteWith Home _  -> App.homeView_
+      RouteWith About _ -> App.aboutView_
+      RouteWith _ _     -> p_ $ elemText "Unknown"

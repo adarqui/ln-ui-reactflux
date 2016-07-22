@@ -50,34 +50,34 @@ spec = do
 
 
   describe "route with tests" $ do
-    it "toRoutesWith should gives us a proper RoutesWith" $ do
-      toRoutesWith "/about"
-        `shouldBe` (RoutesWith About emptyParams)
+    it "toRouteWith should gives us a proper RouteWith" $ do
+      toRouteWith "/about"
+        `shouldBe` (RouteWith About emptyParams)
 
-      toRoutesWith "/about?limit=1&offset=2"
-        `shouldBe` (RoutesWith About $ buildParams [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
+      toRouteWith "/about?limit=1&offset=2"
+        `shouldBe` (RouteWith About $ buildParams [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
 
-    it "fromRoutesWith should give us a proper url string" $ do
-      fromRoutesWith (routeWith' About)
+    it "fromRouteWith should give us a proper url string" $ do
+      fromRouteWith (routeWith' About)
         `shouldBe` "/about"
 
-      fromRoutesWith (routeWith About [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
+      fromRouteWith (routeWith About [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
         `shouldBe` "/about?limit=1&offset=2"
 
     --
     -- HASHES
     --
 
-    it "toRoutesWithHash should gives us a proper RoutesWith" $ do
-      toRoutesWithHash "#/about"
-        `shouldBe` (RoutesWith About emptyParams)
+    it "toRouteWithHash should gives us a proper RouteWith" $ do
+      toRouteWithHash "#/about"
+        `shouldBe` (RouteWith About emptyParams)
 
-      toRoutesWithHash "#/about?limit=1&offset=2"
-        `shouldBe` (RoutesWith About $ buildParams [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
+      toRouteWithHash "#/about?limit=1&offset=2"
+        `shouldBe` (RouteWith About $ buildParams [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
 
-    it "fromRoutesWithHash should give us a proper url string" $ do
-      fromRoutesWithHash (routeWith' About)
+    it "fromRouteWithHash should give us a proper url string" $ do
+      fromRouteWithHash (routeWith' About)
         `shouldBe` "#/about"
 
-      fromRoutesWithHash (routeWith About [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
+      fromRouteWithHash (routeWith About [(ParamTag_Limit, Limit 1), (ParamTag_Offset, Offset 2)])
         `shouldBe` "#/about?limit=1&offset=2"

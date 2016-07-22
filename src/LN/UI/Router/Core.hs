@@ -25,7 +25,7 @@ initCoreRouter =
   where
   go = \raw_uri -> do
     print raw_uri
-    routeAlterStore $ toRoutesWithHash raw_uri
+    routeAlterStore $ toRouteWithHash raw_uri
     where
       routeAlterStore action =
         -- Update CoreStore with our new route

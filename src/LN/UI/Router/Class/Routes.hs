@@ -5,13 +5,13 @@
 {-# LANGUAGE TupleSections     #-}
 
 module LN.UI.Router.Class.Routes (
-  RoutesWith (..),
+  RouteWith (..),
   routeWith,
   routeWith',
-  fromRoutesWith,
-  fromRoutesWithHash,
-  toRoutesWith,
-  toRoutesWithHash,
+  fromRouteWith,
+  fromRouteWithHash,
+  toRouteWith,
+  toRouteWithHash,
   Routes (..),
   HasLinkName,
   linkName,
@@ -55,24 +55,24 @@ import           React.Flux.Internal        (JSString)
 
 
 
-data RoutesWith
-  = RoutesWith Routes Params
+data RouteWith
+  = RouteWith Routes Params
   deriving (Eq, Show, Generic, NFData)
 
 
 
-routeWith :: Routes -> [(ParamTag, Param)] -> RoutesWith
-routeWith route params = RoutesWith route (buildParams params)
+routeWith :: Routes -> [(ParamTag, Param)] -> RouteWith
+routeWith route params = RouteWith route (buildParams params)
 
 
 
-routeWith' :: Routes -> RoutesWith
+routeWith' :: Routes -> RouteWith
 routeWith' route = routeWith route mempty
 
 
 
-fromRoutesWith :: RoutesWith -> Text
-fromRoutesWith (RoutesWith route params) =
+fromRouteWith :: RouteWith -> Text
+fromRouteWith (RouteWith route params) =
   toPathInfoParams route params'
   where
   params' = map (fmap Just . qp) $ Map.elems params
@@ -80,25 +80,25 @@ fromRoutesWith (RoutesWith route params) =
 
 
 #ifdef __GHCJS__
-fromRoutesWithHash :: RoutesWith -> JSString
-fromRoutesWithHash = JSString.textToJSString . ("#" <>) <$> fromRoutesWith
+fromRouteWithHash :: RouteWith -> JSString
+fromRouteWithHash = JSString.textToJSString . ("#" <>) <$> fromRouteWith
 #else
-fromRoutesWithHash :: RoutesWith -> String
-fromRoutesWithHash = Text.unpack . ("#" <>) . fromRoutesWith
+fromRouteWithHash :: RouteWith -> String
+fromRouteWithHash = Text.unpack . ("#" <>) . fromRouteWith
 #endif
 
 
 
-toRoutesWith :: ByteString -> RoutesWith
-toRoutesWith url =
+toRouteWith :: ByteString -> RouteWith
+toRouteWith url =
   case (fromPathInfoParams url) of
     Left err            -> routeWith' NotFound
     Right (url, params) -> routeWith url $ fromWebRoutesParams params
 
 
 
-toRoutesWithHash :: ByteString -> RoutesWith
-toRoutesWithHash = toRoutesWith . BSC.drop 1
+toRouteWithHash :: ByteString -> RouteWith
+toRouteWithHash = toRouteWith . BSC.drop 1
 
 
 
@@ -152,8 +152,8 @@ instance HasLinkName Routes where
   linkName Logout            = "Logout"
   linkName _                 = "Unknown"
 
-instance HasLinkName RoutesWith where
-  linkName (RoutesWith route params) = linkName route
+instance HasLinkName RouteWith where
+  linkName (RouteWith route params) = linkName route
 
 
 
@@ -162,7 +162,7 @@ class HasCrumb a where
 
 
 
--- instance HasLink RoutesWith where
+-- instance HasLink RouteWith where
 
 --   link Home   = tuple "#/"       emptyParams
 
