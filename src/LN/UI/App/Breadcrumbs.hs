@@ -9,10 +9,10 @@ module LN.UI.App.Breadcrumbs (
 
 
 
-import           React.Flux                hiding (view)
-import qualified React.Flux                as RF
+import           React.Flux                 hiding (view)
+import qualified React.Flux                 as RF
 
-import           LN.UI.ReactFlux.DOM
+import           LN.UI.Helpers.ReactFluxDOM
 import           LN.UI.Router.Class.CRUD
 import           LN.UI.Router.Class.Route
 

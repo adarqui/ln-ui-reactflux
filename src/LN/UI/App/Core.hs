@@ -37,7 +37,7 @@ import qualified LN.UI.App.Organization          as App
 import qualified LN.UI.App.Organizations         as App
 import qualified LN.UI.App.Portal                as App
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
-import           LN.UI.ReactFlux.DOM             (ahref, ahrefName)
+import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName)
 import           LN.UI.Router.Class.App
 import           LN.UI.Router.Class.CRUD
 import           LN.UI.Router.Class.Route

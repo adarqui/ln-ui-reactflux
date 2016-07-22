@@ -11,14 +11,14 @@ module LN.UI.App.PageNumbers (
 
 
 
-import           React.Flux               hiding (view)
-import qualified React.Flux               as RF
+import           React.Flux                 hiding (view)
+import qualified React.Flux                 as RF
 
-import           LN.UI.Helpers.DataText   (tshow)
-import           LN.UI.ReactFlux.DOM
+import           LN.UI.Helpers.DataText     (tshow)
+import           LN.UI.Helpers.ReactFluxDOM
 import           LN.UI.Router.Class.CRUD
 import           LN.UI.Router.Class.Route
-import           LN.UI.State.PageInfo     (PageInfo (..))
+import           LN.UI.State.PageInfo       (PageInfo (..))
 
 
 

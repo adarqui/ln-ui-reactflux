@@ -1,15 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module LN.UI.ReactFlux.DOM (
+module LN.UI.Helpers.ReactFluxDOM (
   ahref,
   ahrefName
 ) where
 
 
 
-import           Data.Monoid                ((<>))
-import           Data.Text                  (Text)
-import qualified Data.Text                  as Text
+import           Data.Monoid              ((<>))
+import           Data.Text                (Text)
+import qualified Data.Text                as Text
 import           LN.UI.Router.Class.Route
 import           React.Flux
 
