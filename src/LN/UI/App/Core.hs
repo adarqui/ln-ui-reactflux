@@ -32,6 +32,8 @@ import           LN.Api                          (getMe')
 import           LN.T.User                       (UserResponse (..))
 import qualified LN.UI.App.About                 as About
 import qualified LN.UI.App.Breadcrumbs           as Breadcrumbs
+import           LN.UI.App.Core.Shared           (Action (..), Store (..),
+                                                  defaultStore)
 import qualified LN.UI.App.Home                  as Home
 import qualified LN.UI.App.Organization          as Organization
 import qualified LN.UI.App.Organizations         as Organizations
@@ -45,24 +47,24 @@ import           LN.UI.State.PageInfo            (PageInfo, defaultPageInfo)
 
 
 
-data Store = Store {
-  _route    :: RouteWith,
-  _me       :: Maybe UserResponse
-} deriving (Typeable, Generic)
+-- data Store = Store {
+--   _route    :: RouteWith,
+--   _me       :: Maybe UserResponse
+-- } deriving (Typeable, Generic)
 
-defaultStore :: Store
-defaultStore = Store {
-  _route    = routeWith' Home,
-  _me       = Nothing
-}
+-- defaultStore :: Store
+-- defaultStore = Store {
+--   _route    = routeWith' Home,
+--   _me       = Nothing
+-- }
 
 
 
-data Action
-  = Init
-  | SetRoute RouteWith
-  | Nop
-  deriving (Show, Typeable, Generic, NFData)
+-- data Action
+--   = Init
+--   | SetRoute RouteWith
+--   | Nop
+--   deriving (Show, Typeable, Generic, NFData)
 
 
 
