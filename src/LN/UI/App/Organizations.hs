@@ -20,6 +20,7 @@ import           Control.Monad.Trans.Either      (EitherT, runEitherT)
 import           Data.Int                        (Int64)
 import           Data.Map                        (Map)
 import qualified Data.Map                        as Map
+import           Data.Rehtie                     (rehtie)
 import           Data.Typeable                   (Typeable)
 import           GHC.Generics                    (Generic)
 import           Haskell.Helpers.Either          (mustPassT)
@@ -30,8 +31,12 @@ import           LN.Api                          (getOrganizationPacks,
                                                   getOrganizationsCount')
 import           LN.T.Organization               (OrganizationResponse (..))
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
+import           LN.UI.App.PageNumbers           (runPageInfo)
+import qualified LN.UI.App.PageNumbers           as PageNumbers
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
+import           LN.UI.Router.Class.CRUD         (CRUD (..))
+import           LN.UI.Router.Class.Route        (Route (..), routeWith')
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   paramsFromPageInfo)
@@ -67,11 +72,10 @@ instance StoreData Store where
         count         <- mustPassT $ rd $ getOrganizationsCount'
         organizations <- mustPassT $ rd $ getOrganizationPacks $ paramsFromPageInfo page_info
         pure (count, organizations)
-      case lr of
-        Left _ -> pure st
-        Right (count, organization_packs) -> do
-          pure $ st{ _organizations = idmapFrom organizationPackResponseOrganizationId (organizationPackResponses organization_packs)
-                   , _pageInfo = page_info }
+      rehtie lr (const $ pure st) $ \(count, organization_packs) -> do
+        let new_page_info = runPageInfo count page_info
+        pure $ st{ _organizations = idmapFrom organizationPackResponseOrganizationId (organizationPackResponses organization_packs)
+                 , _pageInfo = new_page_info }
 
 
 
@@ -92,6 +96,7 @@ view :: ReactView ()
 view = defineControllerView "organizations" store $ \Store{..} _ ->
   div_ $ do
     h1_ "Organizations"
+    PageNumbers.view_ (_pageInfo, routeWith' $ Organizations Index)
     ul_ $ do
       mapM_ (\OrganizationPackResponse{..} -> li_ $ p_ $ elemShow (organizationResponseName organizationPackResponseOrganization)) _organizations
 

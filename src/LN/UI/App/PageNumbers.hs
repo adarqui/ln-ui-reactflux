@@ -6,7 +6,8 @@
 module LN.UI.App.PageNumbers (
   view,
   view_,
-  pageRange
+  pageRange,
+  runPageInfo
 ) where
 
 

@@ -14,7 +14,7 @@ module LN.UI.Router.Class.Param (
 
 
 
-import Data.Int (Int64)
+import           Data.Int    (Int64)
 import           Data.Map    (Map)
 import qualified Data.Map    as Map
 import           Data.Maybe  (Maybe (..), catMaybes, maybe)
