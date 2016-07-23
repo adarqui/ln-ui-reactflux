@@ -25,6 +25,7 @@ import qualified LN.UI.App.Delete        as Delete
 import LN.T.Organization (OrganizationRequest (..), OrganizationResponse(..))
 import LN.T.Pack.Organization (OrganizationPackResponse(..))
 import           LN.UI.Router.Class.CRUD
+import           LN.UI.Router.Class.Param
 import LN.UI.Router.Class.Route (RouteWith)
 
 
@@ -38,7 +39,7 @@ data Store = Store {
 
 
 data Action
-  = Init RouteWith
+  = Init CRUD Params
   | Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -49,10 +50,14 @@ instance StoreData Store where
   transform action st = do
     putStrLn "Organization"
     case action of
-      Init route_with -> action_init route_with
+      Init crud params -> action_init crud params
       Nop -> pure st
     where
-    action_init route_with = pure st
+    action_init crud params = case crud of
+      ShowS org_sid   -> pure st
+      New             -> pure st
+      EditS org_sid   -> pure st
+      DeleteS org_sid -> pure st
 
 
 
