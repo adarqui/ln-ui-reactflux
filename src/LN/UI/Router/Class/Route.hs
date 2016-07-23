@@ -716,7 +716,6 @@ instance PathInfo Route where
     Organizations (ShowS s)  -> pure s
     Organizations crud       -> (pure $ "organizations") <> toPathSegments crud
     Users Index              -> pure "users"
-    Users (ShowS s)          -> pure s
     Users crud               -> (pure $ "users") <> toPathSegments crud
     _                        -> pure ""
 
