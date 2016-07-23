@@ -51,12 +51,16 @@ defaultStore = Store
 
 
 
-view :: ReactView CRUD
-view = defineControllerView "organization" store $ \st _ ->
-  div_ $ p_ $ elemText "Welcome to LN!"
-
-
-
 view_ :: CRUD -> ReactElementM eventHandler ()
 view_ crud =
   RF.view view crud mempty
+
+
+
+view :: ReactView CRUD
+view = defineControllerView "organization" store $ \st crud ->
+  case crud of
+    ShowS org_sid   -> pure ()
+    New             -> pure ()
+    EditS org_sid   -> pure ()
+    DeleteS org_sid -> pure ()
