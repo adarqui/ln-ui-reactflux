@@ -1,4 +1,4 @@
-module LN.UI.Router.Class.OrderBy (
+module LN.UI.Router.OrderBy (
   HasOrderBy,
   orderBy
 ) where

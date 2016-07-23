@@ -32,9 +32,9 @@ import           LN.T.Pack.Organization          (OrganizationPackResponse (..))
 import qualified LN.UI.App.Delete                as Delete
 import           LN.UI.App.Types                 (UsersMap)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
-import           LN.UI.Router.Class.CRUD
-import           LN.UI.Router.Class.Param
-import           LN.UI.Router.Class.Route        (RouteWith)
+import           LN.UI.Router.CRUD
+import           LN.UI.Router.Param
+import           LN.UI.Router.Route        (RouteWith)
 
 
 

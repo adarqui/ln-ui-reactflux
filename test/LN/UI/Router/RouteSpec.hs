@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module LN.UI.Router.Class.RouteSpec (
+module LN.UI.Router.RouteSpec (
   main,
   spec
 ) where
@@ -8,9 +8,9 @@ module LN.UI.Router.Class.RouteSpec (
 
 
 import           LN.T.Param
-import           LN.UI.Router.Class.CRUD
-import           LN.UI.Router.Class.Param
-import           LN.UI.Router.Class.Route
+import           LN.UI.Router.CRUD
+import           LN.UI.Router.Param
+import           LN.UI.Router.Route
 import           Test.Hspec
 import           Web.Routes
 

@@ -22,19 +22,18 @@ module LN.UI.State.PageInfo (
 
 
 
-import           Control.DeepSeq          (NFData)
-import           Data.Int                 (Int64)
-import           Data.List                (head)
-import qualified Data.Map                 as Map (lookup)
-import           Data.Maybe               (maybe)
-import           Data.Typeable            (Typeable)
-import           GHC.Generics             (Generic)
+import           Control.DeepSeq    (NFData)
+import           Data.Int           (Int64)
+import           Data.List          (head)
+import qualified Data.Map           as Map (lookup)
+import           Data.Maybe         (maybe)
+import           Data.Typeable      (Typeable)
+import           GHC.Generics       (Generic)
 
-import           LN.T                     (CountResponses, OrderBy (..),
-                                           OrderBy (..), Param (..),
-                                           ParamTag (..), SortOrderBy (..),
-                                           SortOrderBy (..))
-import           LN.UI.Router.Class.Param (Params)
+import           LN.T               (CountResponses, OrderBy (..), OrderBy (..),
+                                     Param (..), ParamTag (..),
+                                     SortOrderBy (..), SortOrderBy (..))
+import           LN.UI.Router.Param (Params)
 
 
 

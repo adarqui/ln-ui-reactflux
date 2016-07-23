@@ -46,9 +46,7 @@ import qualified LN.UI.App.Users as Users
 import qualified LN.UI.App.Portal                as Portal
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName)
-import           LN.UI.Router.Class.App
-import           LN.UI.Router.Class.CRUD
-import           LN.UI.Router.Class.Route
+import           LN.UI.Router
 import           LN.UI.State.PageInfo            (PageInfo, defaultPageInfo)
 
 

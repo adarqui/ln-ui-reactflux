@@ -21,9 +21,9 @@ import           LN.T.Count                 (CountResponse (..),
                                              CountResponses (..))
 import           LN.UI.Helpers.DataText     (tshow)
 import           LN.UI.Helpers.ReactFluxDOM
-import           LN.UI.Router.Class.CRUD
-import           LN.UI.Router.Class.Param   (updateParams_Offset_Limit)
-import           LN.UI.Router.Class.Route
+import           LN.UI.Router.CRUD
+import           LN.UI.Router.Param   (updateParams_Offset_Limit)
+import           LN.UI.Router.Route
 import           LN.UI.State.PageInfo       (PageInfo (..))
 
 

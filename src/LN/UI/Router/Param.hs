@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module LN.UI.Router.Class.Param (
+module LN.UI.Router.Param (
   Params (..),
   emptyParams,
   lookupParam,

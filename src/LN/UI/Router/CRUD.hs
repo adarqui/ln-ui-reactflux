@@ -2,7 +2,7 @@
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module LN.UI.Router.Class.CRUD (
+module LN.UI.Router.CRUD (
   CRUD (..),
   TyCRUD (..)
 ) where
@@ -21,8 +21,8 @@ import           Prelude                            (Bool (..), Eq, Show, pure,
 import           Text.ParserCombinators.Parsec.Prim (try)
 import           Web.Routes
 
-import           LN.UI.Router.Class.Link            (HasLink (..))
-import           LN.UI.Router.Class.Param          (emptyParams)
+import           LN.UI.Router.Link            (HasLink (..))
+import           LN.UI.Router.Param          (emptyParams)
 import           LN.UI.Types                        (Int, Number, String, tuple)
 
 

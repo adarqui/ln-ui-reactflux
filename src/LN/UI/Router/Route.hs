@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections     #-}
 
-module LN.UI.Router.Class.Route (
+module LN.UI.Router.Route (
   RouteWith (..),
   routeWith,
   routeWith',
@@ -39,13 +39,12 @@ import           Web.Routes
 import           Haskell.Api.Helpers.Shared (qp)
 import           LN.T
 import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
-import           LN.UI.Router.Class.CRUD
-import           LN.UI.Router.Class.Link
-import           LN.UI.Router.Class.OrderBy
-import           LN.UI.Router.Class.Param   (Params, buildParams, emptyParams,
+import           LN.UI.Router.CRUD
+import           LN.UI.Router.Link
+import           LN.UI.Router.OrderBy
+import           LN.UI.Router.Param   (Params, buildParams, emptyParams,
                                              fixParams, fromWebRoutesParams)
 import           LN.UI.Router.Util          (slash)
-import           LN.UI.State.Internal.Types (InternalState)
 import           LN.UI.Types                (Array, Int, String, Tuple, tuple)
 
 

@@ -13,8 +13,8 @@ import           React.Flux                 hiding (view)
 import qualified React.Flux                 as RF
 
 import           LN.UI.Helpers.ReactFluxDOM
-import           LN.UI.Router.Class.CRUD
-import           LN.UI.Router.Class.Route
+import           LN.UI.Router.CRUD
+import           LN.UI.Router.Route
 
 
 

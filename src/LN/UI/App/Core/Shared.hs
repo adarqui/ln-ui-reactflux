@@ -39,10 +39,7 @@ import qualified LN.UI.App.Organizations         as Organizations
 import qualified LN.UI.App.Portal                as Portal
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName)
-import           LN.UI.Router.Class.App
-import           LN.UI.Router.Class.CRUD
-import           LN.UI.Router.Class.Route
-import           LN.UI.State.PageInfo            (PageInfo, defaultPageInfo)
+import           LN.UI.Router
 
 
 

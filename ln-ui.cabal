@@ -36,27 +36,16 @@ library
                      , LN.UI.Helpers.HaskellApiHelpers
                      , LN.UI.Helpers.Map
                      , LN.UI.Helpers.ReactFluxDOM
-                     , LN.UI.Router.Types
+                     , LN.UI.Router
+                     , LN.UI.Router.CRUD
+                     , LN.UI.Router.Crumb
+                     , LN.UI.Router.Link
+                     , LN.UI.Router.OrderBy
+                     , LN.UI.Router.Param
+                     , LN.UI.Router.Route
                      , LN.UI.Router.Util
-                     , LN.UI.Router.Class.App
-                     , LN.UI.Router.Class.CRUD
-                     , LN.UI.Router.Class.Crumb
-                     , LN.UI.Router.Class.Link
-                     , LN.UI.Router.Class.OrderBy
-                     , LN.UI.Router.Class.Param
-                     , LN.UI.Router.Class.Route
-                     , LN.UI.State.Internal.Types
                      , LN.UI.State.Loading
                      , LN.UI.State.PageInfo
-                     , LN.UI.State.Organization
-                     , LN.UI.State.TeamMember
-                     , LN.UI.State.Team
-                     , LN.UI.State.Forum
-                     , LN.UI.State.Board
-                     , LN.UI.State.Thread
-                     , LN.UI.State.ThreadPost
-                     , LN.UI.State.Resource
-                     , LN.UI.State.Leuron
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , bytestring
@@ -88,8 +77,8 @@ test-suite ln-ui-test
   hs-source-dirs:      test
   main-is:             Spec.hs
   other-modules:       LN.UI.App.PageNumbersSpec
-                     , LN.UI.Router.Class.RouteSpec
-                     , LN.UI.Router.Class.CRUDSpec
+                     , LN.UI.Router.RouteSpec
+                     , LN.UI.Router.CRUDSpec
   build-depends:       base
                      , hspec
                      , text

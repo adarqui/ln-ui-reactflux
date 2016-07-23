@@ -6,7 +6,7 @@ module LN.UI.App.PageNumbersSpec (
 
 
 import           LN.UI.App.PageNumbers
-import           LN.UI.Router.Class.Route
+import           LN.UI.Router.Route
 import           LN.UI.State.PageInfo
 import           Test.Hspec
 

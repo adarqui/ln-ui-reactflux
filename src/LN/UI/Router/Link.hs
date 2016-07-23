@@ -1,10 +1,10 @@
-module LN.UI.Router.Class.Link (
+module LN.UI.Router.Link (
   HasLink (..),
 ) where
 
 
 
-import           LN.UI.Router.Class.Param (Params)
+import           LN.UI.Router.Param (Params)
 import           LN.UI.Types            (Tuple)
 
 

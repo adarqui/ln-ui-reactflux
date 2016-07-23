@@ -39,9 +39,9 @@ import qualified LN.UI.App.PageNumbers           as PageNumbers
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref)
-import           LN.UI.Router.Class.CRUD         (CRUD (..))
-import           LN.UI.Router.Class.Param        (Params)
-import           LN.UI.Router.Class.Route        (Route (..), RouteWith (..),
+import           LN.UI.Router.CRUD         (CRUD (..))
+import           LN.UI.Router.Param        (Params)
+import           LN.UI.Router.Route        (Route (..), RouteWith (..),
                                                   routeWith')
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,

@@ -24,9 +24,9 @@ import           LN.T.User                  (UserSanitizedResponse (..))
 import           LN.UI.Helpers.DataText     (tshow)
 import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
 import           LN.UI.Helpers.ReactFluxDOM (ahrefElement)
-import           LN.UI.Router.Class.CRUD    (CRUD (..))
-import           LN.UI.Router.Class.Route   (RouteWith (..))
-import           LN.UI.Router.Class.Route   (Route (..), routeWith')
+import           LN.UI.Router.CRUD    (CRUD (..))
+import           LN.UI.Router.Route   (RouteWith (..))
+import           LN.UI.Router.Route   (Route (..), routeWith')
 
 
 
