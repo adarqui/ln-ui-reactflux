@@ -14,6 +14,7 @@ module LN.UI.Router.Class.Param (
 
 
 
+import Data.Int (Int64)
 import           Data.Map    (Map)
 import qualified Data.Map    as Map
 import           Data.Maybe  (Maybe (..), catMaybes, maybe)
@@ -100,15 +101,15 @@ paramFromKV'' (k, v) =
 
 
 -- | Updates only the Offset param
-updateParams_Offset :: Int -> Params -> Params
+updateParams_Offset :: Int64 -> Params -> Params
 updateParams_Offset offset = Map.alter (\_ -> Just $ Offset offset) ParamTag_Offset
 
 
 
-updateParams_Limit :: Int -> Params -> Params
+updateParams_Limit :: Int64 -> Params -> Params
 updateParams_Limit limit = Map.alter (\_ -> Just $ Limit limit) ParamTag_Limit
 
 
 
-updateParams_Offset_Limit :: Int -> Int -> Params -> Params
+updateParams_Offset_Limit :: Int64 -> Int64 -> Params -> Params
 updateParams_Offset_Limit offset limit params = updateParams_Offset offset $ updateParams_Limit limit params

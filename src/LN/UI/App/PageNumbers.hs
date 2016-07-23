@@ -11,9 +11,12 @@ module LN.UI.App.PageNumbers (
 
 
 
+import           Data.Int                   (Int64)
 import           React.Flux                 hiding (view)
 import qualified React.Flux                 as RF
 
+import           LN.T.Count                 (CountResponse (..),
+                                             CountResponses (..))
 import           LN.UI.Helpers.DataText     (tshow)
 import           LN.UI.Helpers.ReactFluxDOM
 import           LN.UI.Router.Class.CRUD
@@ -24,10 +27,10 @@ import           LN.UI.State.PageInfo       (PageInfo (..))
 
 
 type Pages =
-  (Int   -- prev
-  ,[Int] -- pages
-  ,Int   -- next
-  ,Int   -- limit
+  (Int64   -- prev
+  ,[Int64] -- pages
+  ,Int64   -- next
+  ,Int64   -- limit
   )
 
 
@@ -54,7 +57,7 @@ view_ (page_info, route_with) =
 
 
 
-pageRange :: PageInfo -> [Int]
+pageRange :: PageInfo -> [Int64]
 pageRange PageInfo{..} = [1..totalPages]
 
 
@@ -69,3 +72,32 @@ buildPages page_info@PageInfo{..} (RouteWith route params) =
   where
   prev = let p = (currentPage - 1) in if p < 1 then 1 else p
   next = let p = (currentPage + 1) in if (p > totalPages) then totalPages else p
+
+
+
+runPageInfo :: CountResponses -> PageInfo -> PageInfo
+runPageInfo CountResponses{..} page_info =
+  case countResponses of
+    (CountResponse{..}:[]) ->
+      page_info {
+        totalResults = countResponseN,
+        totalPages   = (countResponseN `div` resultsPerPage page_info) + 1
+      }
+    _      -> page_info
+  -- {
+  --   count: count,
+  --   pageInfo: pi,
+  --   params: par
+  -- }
+  where
+  -- pi  =
+  --   page_info {
+  --     totalResults = count,
+  --     totalPages   = (count / page_info.resultsPerPage) + 1
+  --   }
+  -- par =
+  --   [ Limit page_info.resultsPerPage
+  --   , Offset ((page_info.currentPage - 1) * page_info.resultsPerPage)
+  --   , SortOrder page_info.sortOrder
+  --   , Order page_info.order
+  --   ]

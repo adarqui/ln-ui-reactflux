@@ -22,26 +22,27 @@ module LN.UI.State.PageInfo (
 
 
 
-import           Control.DeepSeq           (NFData)
-import           Data.List                 (head)
-import qualified Data.Map                  as Map (lookup)
-import           Data.Maybe                (maybe)
-import           Data.Typeable             (Typeable)
-import           GHC.Generics              (Generic)
+import           Control.DeepSeq          (NFData)
+import           Data.Int                 (Int64)
+import           Data.List                (head)
+import qualified Data.Map                 as Map (lookup)
+import           Data.Maybe               (maybe)
+import           Data.Typeable            (Typeable)
+import           GHC.Generics             (Generic)
 
-import           LN.T                      (CountResponses, OrderBy (..),
-                                            OrderBy (..), Param (..),
-                                            ParamTag (..), SortOrderBy (..),
-                                            SortOrderBy (..))
+import           LN.T                     (CountResponses, OrderBy (..),
+                                           OrderBy (..), Param (..),
+                                           ParamTag (..), SortOrderBy (..),
+                                           SortOrderBy (..))
 import           LN.UI.Router.Class.Param (Params)
 
 
 
 data PageInfo = PageInfo {
-  currentPage    :: !Int,
-  resultsPerPage :: !Int,
-  totalResults   :: !Int,
-  totalPages     :: !Int,
+  currentPage    :: !Int64,
+  resultsPerPage :: !Int64,
+  totalResults   :: !Int64,
+  totalPages     :: !Int64,
   sortOrder      :: !SortOrderBy,
   order          :: !OrderBy
 } deriving (Show, Generic, Typeable, NFData)
@@ -60,16 +61,16 @@ defaultPageInfo = PageInfo {
 
 
 
-defaultCurrentPage :: Int
+defaultCurrentPage :: Int64
 defaultCurrentPage = 1
 
-defaultResultsPerPage :: Int
+defaultResultsPerPage :: Int64
 defaultResultsPerPage = 20
 
-defaultTotalResults :: Int
+defaultTotalResults :: Int64
 defaultTotalResults = 0
 
-defaultTotalPages :: Int
+defaultTotalPages :: Int64
 defaultTotalPages = 1
 
 defaultSortOrder :: SortOrderBy
