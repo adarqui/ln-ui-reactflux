@@ -7,6 +7,7 @@ module LN.UI.App.PageNumbers (
   view,
   view_,
   pageRange,
+  buildPages,
   runPageInfo
 ) where
 
@@ -58,8 +59,13 @@ view_ (page_info, route_with) =
 
 
 
+-- | If only one page exists, we consider it empty.
+--
 pageRange :: PageInfo -> [Int64]
-pageRange PageInfo{..} = [1..totalPages]
+pageRange PageInfo{..} =
+  case [1..totalPages] of
+    [x] -> []
+    xs  -> xs
 
 
 

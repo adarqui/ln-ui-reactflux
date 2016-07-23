@@ -9,3 +9,6 @@ until:
 
 make tests:
 	stack test --fast
+
+ghci:
+	stack ghci ln-ui
