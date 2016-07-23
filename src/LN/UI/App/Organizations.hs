@@ -31,7 +31,9 @@ import           LN.Api                          (getOrganizationPacks,
                                                   getOrganizationsCount')
 import           LN.T.Organization               (OrganizationResponse (..))
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
+import           LN.T.Size                       (Size (..))
 import           LN.T.User                       (UserSanitizedResponse (..))
+import qualified LN.UI.App.Gravatar              as Gravatar
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
 import           LN.UI.App.Types                 (UsersMap)
@@ -119,4 +121,5 @@ view = defineControllerView "organizations" store $ \Store{..} users_map ->
             li_ $ p_ $ elemText $ organizationResponseDisplayName organizationPackResponseOrganization
             li_ $ ahref $ routeWith' $ Organizations (ShowS $ organizationResponseName organizationPackResponseOrganization)
             li_ $ p_ $ elemText $ userSanitizedResponseName organizationPackResponseUser
+            li_ $ Gravatar.viewUser_ XSmall organizationPackResponseUser
         ) _organizations
