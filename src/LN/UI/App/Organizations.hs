@@ -36,7 +36,6 @@ import           LN.T.User                       (UserSanitizedResponse (..))
 import qualified LN.UI.App.Gravatar              as Gravatar
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
-import           LN.UI.App.Types                 (UsersMap)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref)
@@ -103,14 +102,14 @@ defaultStore = Store {
 
 
 
-view_ :: UsersMap -> ReactElementM eventHandler ()
-view_ users_map =
-  RF.view view users_map mempty
+view_ :: ReactElementM eventHandler ()
+view_ =
+  RF.view view () mempty
 
 
 
-view :: ReactView UsersMap
-view = defineControllerView "organizations" store $ \Store{..} users_map ->
+view :: ReactView ()
+view = defineControllerView "organizations" store $ \Store{..} _ ->
   div_ $ do
     h1_ "Organizations"
     PageNumbers.view_ (_pageInfo, routeWith' $ Organizations Index)

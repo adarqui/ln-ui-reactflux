@@ -157,7 +157,7 @@ renderRouteView Store{..} = do
       RouteWith Home _                        -> Home.view_
       RouteWith About _                       -> About.view_
       RouteWith Portal _                      -> Portal.view_
-      RouteWith (Organizations Index) params  -> Organizations.view_ _users
+      RouteWith (Organizations Index) params  -> Organizations.view_
       RouteWith (Organizations crud) params   -> Organization.view_ (_users, crud)
       RouteWith (Users Index) params          -> Users.view_
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
