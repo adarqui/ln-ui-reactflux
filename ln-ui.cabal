@@ -21,6 +21,7 @@ library
                      , LN.UI.App.About
                      , LN.UI.App.Breadcrumbs
                      , LN.UI.App.Core
+                     , LN.UI.App.Delete
                      , LN.UI.App.Home
                      , LN.UI.App.Organizations
                      , LN.UI.App.Organization

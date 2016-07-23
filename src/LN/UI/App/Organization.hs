@@ -1,7 +1,7 @@
-{-# LANGUAGE DeriveAnyClass             #-}
-{-# LANGUAGE DeriveGeneric              #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE TypeFamilies               #-}
+{-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.App.Organization (
   Store,
@@ -15,11 +15,14 @@ module LN.UI.App.Organization (
 
 
 import           Control.DeepSeq         (NFData)
+import           Data.Text               (Text)
 import           Data.Typeable           (Typeable)
 import           GHC.Generics            (Generic)
-import           LN.UI.Router.Class.CRUD
 import           React.Flux              hiding (view)
 import qualified React.Flux              as RF
+
+import qualified LN.UI.App.Delete        as Delete
+import           LN.UI.Router.Class.CRUD
 
 
 
@@ -60,7 +63,22 @@ view_ crud =
 view :: ReactView CRUD
 view = defineControllerView "organization" store $ \st crud ->
   case crud of
-    ShowS org_sid   -> pure ()
-    New             -> pure ()
-    EditS org_sid   -> pure ()
-    DeleteS org_sid -> pure ()
+    ShowS org_sid   -> viewShowS org_sid
+    New             -> viewNew
+    EditS org_sid   -> viewEditS org_sid
+    DeleteS org_sid -> Delete.view_
+
+
+
+viewShowS :: Text -> ReactElementM ViewEventHandler ()
+viewShowS org_sid = p_ $ elemText "show"
+
+
+
+viewNew :: ReactElementM ViewEventHandler ()
+viewNew = p_ $ elemText "new"
+
+
+
+viewEditS :: Text -> ReactElementM ViewEventHandler ()
+viewEditS org_sid = p_ $ elemText "edit"
