@@ -23,6 +23,7 @@ library
                      , LN.UI.App.Core
                      , LN.UI.App.Core.Shared
                      , LN.UI.App.Delete
+                     , LN.UI.App.Gravatar
                      , LN.UI.App.Home
                      , LN.UI.App.Organizations
                      , LN.UI.App.Organization
@@ -30,6 +31,7 @@ library
                      , LN.UI.App.Portal
                      , LN.UI.App.Types
                      , LN.UI.Helpers.DataText
+                     , LN.UI.Helpers.GHCJS
                      , LN.UI.Helpers.HaskellApiHelpers
                      , LN.UI.Helpers.Map
                      , LN.UI.Helpers.ReactFluxDOM

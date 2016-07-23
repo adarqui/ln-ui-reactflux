@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP               #-}
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -39,6 +38,7 @@ import           Web.Routes
 
 import           Haskell.Api.Helpers.Shared (qp)
 import           LN.T
+import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
 import           LN.UI.Router.Class.CRUD
 import           LN.UI.Router.Class.Link
 import           LN.UI.Router.Class.OrderBy
@@ -47,11 +47,6 @@ import           LN.UI.Router.Class.Param   (Params, buildParams, emptyParams,
 import           LN.UI.Router.Util          (slash)
 import           LN.UI.State.Internal.Types (InternalState)
 import           LN.UI.Types                (Array, Int, String, Tuple, tuple)
-
-#ifdef __GHCJS__
-import qualified Data.JSString.Text         as JSString (textToJSString)
-import           React.Flux.Internal        (JSString)
-#endif
 
 
 
@@ -79,13 +74,8 @@ fromRouteWith (RouteWith route params) =
 
 
 
-#ifdef __GHCJS__
 fromRouteWithHash :: RouteWith -> JSString
-fromRouteWithHash = JSString.textToJSString . ("#" <>) <$> fromRouteWith
-#else
-fromRouteWithHash :: RouteWith -> String
-fromRouteWithHash = Text.unpack . ("#" <>) . fromRouteWith
-#endif
+fromRouteWithHash = textToJSString' . ("#" <>) <$> fromRouteWith
 
 
 

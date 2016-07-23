@@ -29,11 +29,12 @@ import qualified React.Flux                      as RF
 
 import           LN.Api                          (getOrganizationPacks,
                                                   getOrganizationsCount')
-import           LN.T.User                       (UserSanitizedResponse(..))
 import           LN.T.Organization               (OrganizationResponse (..))
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
+import           LN.T.User                       (UserSanitizedResponse (..))
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
+import           LN.UI.App.Types                 (UsersMap)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref)
@@ -45,7 +46,6 @@ import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   pageInfoFromParams,
                                                   paramsFromPageInfo)
-import LN.UI.App.Types (UsersMap)
 
 
 
