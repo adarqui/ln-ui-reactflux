@@ -29,6 +29,7 @@ library
                      , LN.UI.App.Organization
                      , LN.UI.App.PageNumbers
                      , LN.UI.App.Portal
+                     , LN.UI.App.Users
                      , LN.UI.App.Types
                      , LN.UI.Helpers.DataText
                      , LN.UI.Helpers.GHCJS
