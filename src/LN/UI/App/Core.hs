@@ -89,7 +89,7 @@ instance StoreData Store where
         RouteWith Home _                       -> pure ()
         RouteWith About _                      -> pure ()
         RouteWith Portal _                     -> pure ()
-        RouteWith (Organizations Index) params -> void $ forkIO $ executeAction $ SomeStoreAction Organizations.store $ Organizations.Init route_with
+        RouteWith (Organizations Index) params -> void $ forkIO $ executeAction $ SomeStoreAction Organizations.store $ Organizations.Init params
         RouteWith (Organizations crud) params  -> void $ forkIO $ executeAction $ SomeStoreAction Organization.store $ Organization.Init crud params
         RouteWith (Users Index) params         -> pure ()
         RouteWith _ _                          -> pure ()

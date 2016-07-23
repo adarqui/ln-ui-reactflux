@@ -37,6 +37,7 @@ import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref)
 import           LN.UI.Router.Class.CRUD         (CRUD (..))
+import           LN.UI.Router.Class.Param        (Params)
 import           LN.UI.Router.Class.Route        (Route (..), RouteWith (..),
                                                   routeWith')
 import           LN.UI.State.PageInfo            (PageInfo (..),
@@ -54,7 +55,7 @@ data Store = Store {
 
 
 data Action
-  = Init RouteWith
+  = Init Params
   | Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -67,10 +68,10 @@ instance StoreData Store where
 
     case action of
       Nop              -> pure st
-      Init route_with  -> actions_init route_with
+      Init params  -> actions_init params
 
     where
-    actions_init route_with@(RouteWith route params) = do
+    actions_init params = do
       let
         page_info   = pageInfoFromParams params
         params_list = paramsFromPageInfo page_info
