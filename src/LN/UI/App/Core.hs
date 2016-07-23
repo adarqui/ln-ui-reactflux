@@ -15,6 +15,7 @@ module LN.UI.App.Core (
 ) where
 
 
+
 import           Control.Concurrent              (forkIO)
 import           Control.DeepSeq                 (NFData)
 import           Control.Monad                   (void)
@@ -105,13 +106,13 @@ store = mkStore defaultStore
 
 
 
-view_ :: Store  -> ReactElementM eventHandler ()
-view_ st =
-  RF.view view st mempty
+view_ :: ReactElementM eventHandler ()
+view_ =
+  RF.view view () mempty
 
 
 
-view :: ReactView Store
+view :: ReactView ()
 view =
   defineControllerView "core" store $ \st _ ->
     defaultLayout st (renderRouteView st)

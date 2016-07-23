@@ -23,7 +23,7 @@ runReactMain = do
   reactRender
     "ln"
     Core.view
-    Core.defaultStore
+    ()
 
   executeAction $ SomeStoreAction Core.store Core.Init
 
