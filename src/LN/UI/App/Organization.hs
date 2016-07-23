@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.App.Organization (
@@ -14,26 +15,27 @@ module LN.UI.App.Organization (
 
 
 
-import           Control.DeepSeq         (NFData)
-import           Data.Text               (Text)
-import           Data.Typeable           (Typeable)
-import           GHC.Generics            (Generic)
-import           React.Flux              hiding (view)
-import qualified React.Flux              as RF
+import           Control.DeepSeq          (NFData)
+import           Data.Text                (Text)
+import           Data.Typeable            (Typeable)
+import           GHC.Generics             (Generic)
+import           React.Flux               hiding (view)
+import qualified React.Flux               as RF
 
-import qualified LN.UI.App.Delete        as Delete
-import LN.T.Organization (OrganizationRequest (..), OrganizationResponse(..))
-import LN.T.Pack.Organization (OrganizationPackResponse(..))
+import           LN.T.Organization        (OrganizationRequest (..),
+                                           OrganizationResponse (..))
+import           LN.T.Pack.Organization   (OrganizationPackResponse (..))
+import qualified LN.UI.App.Delete         as Delete
 import           LN.UI.Router.Class.CRUD
 import           LN.UI.Router.Class.Param
-import LN.UI.Router.Class.Route (RouteWith)
+import           LN.UI.Router.Class.Route (RouteWith)
 
 
 
 data Store = Store {
-  request    :: Maybe OrganizationRequest,
+  request      :: Maybe OrganizationRequest,
   organization :: Maybe OrganizationPackResponse,
-  currentTag :: Maybe Text
+  currentTag   :: Maybe Text
 } deriving (Show, Typeable, Generic, NFData)
 
 
@@ -54,10 +56,15 @@ instance StoreData Store where
       Nop -> pure st
     where
     action_init crud params = case crud of
-      ShowS org_sid   -> pure st
+      ShowS org_sid   -> sync st org_sid
       New             -> pure st
-      EditS org_sid   -> pure st
-      DeleteS org_sid -> pure st
+      EditS org_sid   -> sync st org_sid
+      DeleteS org_sid -> sync st org_sid
+
+
+
+sync :: Store -> Text -> IO Store
+sync st@Store{..} org_sid = pure st
 
 
 
