@@ -20,6 +20,9 @@ import           Control.Concurrent              (forkIO)
 import           Control.DeepSeq                 (NFData)
 import           Control.Monad                   (void)
 import           Control.Monad.IO.Class          (liftIO)
+import           Data.List                       ((\\))
+import           Data.Map                        (Map)
+import qualified Data.Map                        as Map
 import           Data.Monoid                     ((<>))
 import           Data.Rehtie                     (rehtie)
 import           Data.Text                       (Text)
@@ -29,7 +32,8 @@ import           React.Flux                      hiding (view)
 import qualified React.Flux                      as RF
 import           React.Flux.Router.WebRoutes     (initRouterRaw'ByteString)
 
-import           LN.Api                          (getMe')
+import           LN.Api                          (getMe', getUserSanitizedPacks_ByUsersIds')
+import           LN.T.Pack.Sanitized.User        (UserSanitizedPackResponse (..), UserSanitizedPackResponses (..))
 import           LN.T.User                       (UserResponse (..))
 import qualified LN.UI.App.About                 as About
 import qualified LN.UI.App.Breadcrumbs           as Breadcrumbs
@@ -48,34 +52,14 @@ import           LN.UI.State.PageInfo            (PageInfo, defaultPageInfo)
 
 
 
--- data Store = Store {
---   _route    :: RouteWith,
---   _me       :: Maybe UserResponse
--- } deriving (Typeable, Generic)
-
--- defaultStore :: Store
--- defaultStore = Store {
---   _route    = routeWith' Home,
---   _me       = Nothing
--- }
-
-
-
--- data Action
---   = Init
---   | SetRoute RouteWith
---   | Nop
---   deriving (Show, Typeable, Generic, NFData)
-
-
-
 instance StoreData Store where
   type StoreAction Store = Action
   transform action st@Store{..} = do
     case action of
-      Init           -> action_init
-      SetRoute route -> action_set_route route
-      _              -> pure st
+      Init            -> action_init
+      SetRoute route  -> action_set_route route
+      SyncUsers users -> action_sync_users users
+      _               -> pure st
     where
     action_init = do
       putStrLn "Init"
@@ -99,6 +83,15 @@ instance StoreData Store where
 
       pure $ st{ _route = route_with }
 
+    -- | We maintain a global Map of users for quick access
+    --
+    action_sync_users users = do
+      let users_difference = Map.keys _users \\ users
+      lr <- rd $ getUserSanitizedPacks_ByUsersIds' users_difference
+      rehtie lr (const $ pure st) $ \UserSanitizedPackResponses{..} -> do
+        pure $ st{
+          _users = Map.union _users (Map.fromList $ map (\pack -> (userSanitizedPackResponseUserId pack, pack)) userSanitizedPackResponses)
+        }
 
 
 store :: ReactStore Store
@@ -163,8 +156,8 @@ renderRouteView Store{..} = do
       RouteWith Home _                        -> Home.view_
       RouteWith About _                       -> About.view_
       RouteWith Portal _                      -> Portal.view_
-      RouteWith (Organizations Index) params  -> Organizations.view_
-      RouteWith (Organizations crud) params   -> Organization.view_ crud
+      RouteWith (Organizations Index) params  -> Organizations.view_ _users
+      RouteWith (Organizations crud) params   -> Organization.view_ (_users, crud)
       RouteWith (Users Index) params          -> p_ $ elemText "Users Index"
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
       RouteWith _ _                           -> p_ $ elemText "Unknown"

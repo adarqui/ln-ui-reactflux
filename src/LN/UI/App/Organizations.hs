@@ -44,6 +44,7 @@ import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   pageInfoFromParams,
                                                   paramsFromPageInfo)
+import LN.UI.App.Types (UsersMap)
 
 
 
@@ -99,14 +100,14 @@ defaultStore = Store {
 
 
 
-view_ :: ReactElementM eventHandler ()
-view_ =
-  RF.view view () mempty
+view_ :: UsersMap -> ReactElementM eventHandler ()
+view_ users_map =
+  RF.view view users_map mempty
 
 
 
-view :: ReactView ()
-view = defineControllerView "organizations" store $ \Store{..} _ ->
+view :: ReactView UsersMap
+view = defineControllerView "organizations" store $ \Store{..} users_map ->
   div_ $ do
     h1_ "Organizations"
     PageNumbers.view_ (_pageInfo, routeWith' $ Organizations Index)

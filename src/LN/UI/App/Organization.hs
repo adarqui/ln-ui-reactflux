@@ -30,6 +30,7 @@ import           LN.T.Organization               (OrganizationRequest (..),
                                                   OrganizationResponse (..))
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..))
 import qualified LN.UI.App.Delete                as Delete
+import           LN.UI.App.Types                 (UsersMap)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Router.Class.CRUD
 import           LN.UI.Router.Class.Param
@@ -95,14 +96,14 @@ defaultStore = Store {
 
 
 
-view_ :: CRUD -> ReactElementM eventHandler ()
-view_ crud =
-  RF.view view crud mempty
+view_ :: (UsersMap, CRUD) -> ReactElementM eventHandler ()
+view_ v =
+  RF.view view v mempty
 
 
 
-view :: ReactView CRUD
-view = defineControllerView "organization" store $ \st crud ->
+view :: ReactView (UsersMap, CRUD)
+view = defineControllerView "organization" store $ \st (users_map, crud) ->
   case crud of
     ShowS org_sid   -> viewShowS org_sid
     New             -> viewNew

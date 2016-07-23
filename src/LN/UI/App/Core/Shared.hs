@@ -11,10 +11,14 @@ module LN.UI.App.Core.Shared (
 ) where
 
 
+
 import           Control.Concurrent              (forkIO)
 import           Control.DeepSeq                 (NFData)
 import           Control.Monad                   (void)
 import           Control.Monad.IO.Class          (liftIO)
+import           Data.Int                        (Int64)
+import           Data.Map                        (Map)
+import qualified Data.Map                        as Map
 import           Data.Monoid                     ((<>))
 import           Data.Rehtie                     (rehtie)
 import           Data.Text                       (Text)
@@ -25,6 +29,7 @@ import qualified React.Flux                      as RF
 import           React.Flux.Router.WebRoutes     (initRouterRaw'ByteString)
 
 import           LN.Api                          (getMe')
+import           LN.T.Pack.Sanitized.User        (UserSanitizedPackResponse (..))
 import           LN.T.User                       (UserResponse (..))
 import qualified LN.UI.App.About                 as About
 import qualified LN.UI.App.Breadcrumbs           as Breadcrumbs
@@ -43,7 +48,8 @@ import           LN.UI.State.PageInfo            (PageInfo, defaultPageInfo)
 
 data Store = Store {
   _route :: RouteWith,
-  _me    :: Maybe UserResponse
+  _me    :: Maybe UserResponse,
+  _users :: Map Int64 UserSanitizedPackResponse
 } deriving (Typeable, Generic)
 
 
@@ -51,6 +57,7 @@ data Store = Store {
 data Action
   = Init
   | SetRoute RouteWith
+  | SyncUsers [Int64]
   | Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -59,5 +66,6 @@ data Action
 defaultStore :: Store
 defaultStore = Store {
   _route    = routeWith' Home,
-  _me       = Nothing
+  _me       = Nothing,
+  _users    = Map.empty
 }
