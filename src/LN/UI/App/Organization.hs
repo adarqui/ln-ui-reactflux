@@ -15,20 +15,25 @@ module LN.UI.App.Organization (
 
 
 
-import           Control.DeepSeq          (NFData)
-import           Data.Text                (Text)
-import           Data.Typeable            (Typeable)
-import           GHC.Generics             (Generic)
-import           React.Flux               hiding (view)
-import qualified React.Flux               as RF
+import           Control.DeepSeq                 (NFData)
+import           Control.Monad.Trans.Either      (runEitherT)
+import           Data.Rehtie                     (rehtie)
+import           Data.Text                       (Text)
+import           Data.Typeable                   (Typeable)
+import           GHC.Generics                    (Generic)
+import           Haskell.Helpers.Either          (mustPassT)
+import           React.Flux                      hiding (view)
+import qualified React.Flux                      as RF
 
-import           LN.T.Organization        (OrganizationRequest (..),
-                                           OrganizationResponse (..))
-import           LN.T.Pack.Organization   (OrganizationPackResponse (..))
-import qualified LN.UI.App.Delete         as Delete
+import           LN.Api.String                   (getOrganizationPack')
+import           LN.T.Organization               (OrganizationRequest (..),
+                                                  OrganizationResponse (..))
+import           LN.T.Pack.Organization          (OrganizationPackResponse (..))
+import qualified LN.UI.App.Delete                as Delete
+import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Router.Class.CRUD
 import           LN.UI.Router.Class.Param
-import           LN.UI.Router.Class.Route (RouteWith)
+import           LN.UI.Router.Class.Route        (RouteWith)
 
 
 
@@ -64,7 +69,15 @@ instance StoreData Store where
 
 
 sync :: Store -> Text -> IO Store
-sync st@Store{..} org_sid = pure st
+sync st@Store{..} org_sid = do
+  lr <- runEitherT $ do
+    organization <- mustPassT $ rd $ getOrganizationPack' org_sid
+    pure organization
+  rehtie lr (const $ pure st) $ \organization@OrganizationPackResponse{..} -> do
+    pure $ st{
+--      request = Just organizationResponseToOrganizationRequest organizationPackResponseOrganization
+      organization = Just organization
+    }
 
 
 
