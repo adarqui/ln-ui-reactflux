@@ -36,10 +36,10 @@ import qualified LN.UI.App.PageNumbers           as PageNumbers
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Router.Class.CRUD         (CRUD (..))
-import           LN.UI.Router.Class.Route        (Route (..), routeWith')
+import           LN.UI.Router.Class.Route        (Route (..), RouteWith(..), routeWith')
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
-                                                  paramsFromPageInfo)
+                                                  paramsFromPageInfo, pageInfoFromParams)
 
 
 
@@ -51,7 +51,7 @@ data Store = Store {
 
 
 data Action
-  = Init PageInfo
+  = Init RouteWith
   | Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -63,14 +63,17 @@ instance StoreData Store where
     putStrLn "Organizations"
 
     case action of
-      Nop            -> pure st
-      Init page_info -> actions_init page_info
+      Nop             -> pure st
+      Init route_with -> actions_init route_with
 
     where
-    actions_init page_info = do
+    actions_init route_with@(RouteWith route params) = do
+      let
+        page_info   = pageInfoFromParams params
+        params_list = paramsFromPageInfo page_info
       lr <- runEitherT $ do
         count         <- mustPassT $ rd $ getOrganizationsCount'
-        organizations <- mustPassT $ rd $ getOrganizationPacks $ paramsFromPageInfo page_info
+        organizations <- mustPassT $ rd $ getOrganizationPacks params_list
         pure (count, organizations)
       rehtie lr (const $ pure st) $ \(count, organization_packs) -> do
         let new_page_info = runPageInfo count page_info

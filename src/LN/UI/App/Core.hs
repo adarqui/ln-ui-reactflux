@@ -47,15 +47,13 @@ import           LN.UI.State.PageInfo            (PageInfo, defaultPageInfo)
 
 data Store = Store {
   _route    :: RouteWith,
-  _me       :: Maybe UserResponse,
-  _pageInfo :: PageInfo
+  _me       :: Maybe UserResponse
 } deriving (Typeable, Generic)
 
 defaultStore :: Store
 defaultStore = Store {
   _route    = routeWith' Home,
-  _me       = Nothing,
-  _pageInfo = defaultPageInfo
+  _me       = Nothing
 }
 
 
@@ -82,20 +80,20 @@ instance StoreData Store where
       rehtie lr (const $ pure st) $ \user_pack ->
         pure $ st{ _me = Just user_pack }
 
-    action_set_route route = do
+    action_set_route route_with@(RouteWith route params) = do
 
-      putStrLn $ show route
+      putStrLn $ show route_with
 
-      case route of
+      case route_with of
 
         RouteWith Home _                       -> pure ()
         RouteWith About _                      -> pure ()
         RouteWith Portal _                     -> pure ()
-        RouteWith (Organizations Index) params -> void $ forkIO $ executeAction $ SomeStoreAction Organizations.store $ Organizations.Init _pageInfo
+        RouteWith (Organizations Index) params -> void $ forkIO $ executeAction $ SomeStoreAction Organizations.store $ Organizations.Init route_with
         RouteWith (Users Index) params         -> pure ()
         RouteWith _ _                          -> pure ()
 
-      pure $ st{ _route = route }
+      pure $ st{ _route = route_with }
 
 
 
