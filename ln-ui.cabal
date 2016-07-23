@@ -82,7 +82,9 @@ test-suite ln-ui-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   main-is:             Spec.hs
-  other-modules:       LN.UI.Router.Class.RoutesSpec
+  other-modules:       LN.UI
+                     , LN.UI.App.PageNumbersSpec
+                     , LN.UI.Router.Class.RoutesSpec
                      , LN.UI.Router.Class.CRUDSpec
   build-depends:       base
                      , hspec
