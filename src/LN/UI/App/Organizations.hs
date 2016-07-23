@@ -29,6 +29,7 @@ import qualified React.Flux                      as RF
 
 import           LN.Api                          (getOrganizationPacks,
                                                   getOrganizationsCount')
+import           LN.T.User                       (UserSanitizedResponse(..))
 import           LN.T.Organization               (OrganizationResponse (..))
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
 import           LN.UI.App.PageNumbers           (runPageInfo)
@@ -113,5 +114,9 @@ view = defineControllerView "organizations" store $ \Store{..} users_map ->
     PageNumbers.view_ (_pageInfo, routeWith' $ Organizations Index)
     ul_ $ do
       mapM_ (\OrganizationPackResponse{..} -> do
-        li_ $ ahref $ routeWith' $ Organizations (ShowS $ organizationResponseName organizationPackResponseOrganization)
+        li_ $ do
+          ul_ $ do
+            li_ $ p_ $ elemText $ organizationResponseDisplayName organizationPackResponseOrganization
+            li_ $ ahref $ routeWith' $ Organizations (ShowS $ organizationResponseName organizationPackResponseOrganization)
+            li_ $ p_ $ elemText $ userSanitizedResponseName organizationPackResponseUser
         ) _organizations
