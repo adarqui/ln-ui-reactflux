@@ -22,16 +22,24 @@ import           React.Flux              hiding (view)
 import qualified React.Flux              as RF
 
 import qualified LN.UI.App.Delete        as Delete
+import LN.T.Organization (OrganizationRequest (..), OrganizationResponse(..))
+import LN.T.Pack.Organization (OrganizationPackResponse(..))
 import           LN.UI.Router.Class.CRUD
+import LN.UI.Router.Class.Route (RouteWith)
 
 
 
-data Store = Store
-  deriving (Show, Typeable, Generic, NFData)
+data Store = Store {
+  request    :: Maybe OrganizationRequest,
+  organization :: Maybe OrganizationPackResponse,
+  currentTag :: Maybe Text
+} deriving (Show, Typeable, Generic, NFData)
 
 
 
-data Action = Action
+data Action
+  = Init RouteWith
+  | Nop
   deriving (Show, Typeable, Generic, NFData)
 
 
@@ -40,7 +48,11 @@ instance StoreData Store where
   type StoreAction Store = Action
   transform action st = do
     putStrLn "Organization"
-    pure Store
+    case action of
+      Init route_with -> action_init route_with
+      Nop -> pure st
+    where
+    action_init route_with = pure st
 
 
 
@@ -50,7 +62,11 @@ store = mkStore defaultStore
 
 
 defaultStore :: Store
-defaultStore = Store
+defaultStore = Store {
+  request      = Nothing,
+  organization = Nothing,
+  currentTag   = Nothing
+}
 
 
 
