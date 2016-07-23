@@ -35,11 +35,14 @@ import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
+import           LN.UI.Helpers.ReactFluxDOM      (ahref)
 import           LN.UI.Router.Class.CRUD         (CRUD (..))
-import           LN.UI.Router.Class.Route        (Route (..), RouteWith(..), routeWith')
+import           LN.UI.Router.Class.Route        (Route (..), RouteWith (..),
+                                                  routeWith')
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
-                                                  paramsFromPageInfo, pageInfoFromParams)
+                                                  pageInfoFromParams,
+                                                  paramsFromPageInfo)
 
 
 
@@ -63,8 +66,8 @@ instance StoreData Store where
     putStrLn "Organizations"
 
     case action of
-      Nop             -> pure st
-      Init route_with -> actions_init route_with
+      Nop              -> pure st
+      Init route_with  -> actions_init route_with
 
     where
     actions_init route_with@(RouteWith route params) = do
@@ -101,7 +104,9 @@ view = defineControllerView "organizations" store $ \Store{..} _ ->
     h1_ "Organizations"
     PageNumbers.view_ (_pageInfo, routeWith' $ Organizations Index)
     ul_ $ do
-      mapM_ (\OrganizationPackResponse{..} -> li_ $ p_ $ elemShow (organizationResponseName organizationPackResponseOrganization)) _organizations
+      mapM_ (\OrganizationPackResponse{..} -> do
+        li_ $ ahref $ routeWith' $ Organizations (ShowS $ organizationResponseName organizationPackResponseOrganization)
+        ) _organizations
 
 
 
