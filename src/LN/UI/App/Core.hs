@@ -41,8 +41,8 @@ import           LN.UI.App.Core.Shared           (Action (..), Store (..),
                                                   defaultStore)
 import qualified LN.UI.App.Home                  as Home
 import qualified LN.UI.App.Organizations         as Organizations
-import qualified LN.UI.App.Users as Users
 import qualified LN.UI.App.Portal                as Portal
+import qualified LN.UI.App.Users                 as Users
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName)
 import           LN.UI.Router
