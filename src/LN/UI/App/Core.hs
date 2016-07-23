@@ -40,7 +40,6 @@ import qualified LN.UI.App.Breadcrumbs           as Breadcrumbs
 import           LN.UI.App.Core.Shared           (Action (..), Store (..),
                                                   defaultStore)
 import qualified LN.UI.App.Home                  as Home
-import qualified LN.UI.App.Organization          as Organization
 import qualified LN.UI.App.Organizations         as Organizations
 import qualified LN.UI.App.Users as Users
 import qualified LN.UI.App.Portal                as Portal
@@ -75,8 +74,7 @@ instance StoreData Store where
         RouteWith Home _                       -> pure ()
         RouteWith About _                      -> pure ()
         RouteWith Portal _                     -> pure ()
-        RouteWith (Organizations Index) params -> void $ forkIO $ executeAction $ SomeStoreAction Organizations.store $ Organizations.Init params
-        RouteWith (Organizations crud) params  -> void $ forkIO $ executeAction $ SomeStoreAction Organization.store $ Organization.Init crud params
+        RouteWith (Organizations crud) params  -> void $ forkIO $ executeAction $ SomeStoreAction Organizations.store $ Organizations.Init crud params
         RouteWith (Users Index) params         -> void $ forkIO $ executeAction $ SomeStoreAction Users.store $ Users.Init params
         RouteWith _ _                          -> pure ()
 
@@ -155,8 +153,7 @@ renderRouteView Store{..} = do
       RouteWith Home _                        -> Home.view_
       RouteWith About _                       -> About.view_
       RouteWith Portal _                      -> Portal.view_
-      RouteWith (Organizations Index) params  -> Organizations.view_
-      RouteWith (Organizations crud) params   -> Organization.view_ (_users, crud)
+      RouteWith (Organizations crud) params   -> Organizations.view_ crud
       RouteWith (Users Index) params          -> Users.view_
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
       RouteWith _ _                           -> p_ $ elemText "Unknown"

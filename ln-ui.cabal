@@ -26,7 +26,6 @@ library
                      , LN.UI.App.Gravatar
                      , LN.UI.App.Home
                      , LN.UI.App.Organizations
-                     , LN.UI.App.Organization
                      , LN.UI.App.PageNumbers
                      , LN.UI.App.Portal
                      , LN.UI.App.Users
