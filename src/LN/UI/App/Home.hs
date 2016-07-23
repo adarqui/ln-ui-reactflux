@@ -9,8 +9,8 @@ module LN.UI.App.Home (
   defaultStore,
   Action (..),
   store,
-  view,
-  view_
+  view_,
+  view
 ) where
 
 
@@ -51,12 +51,12 @@ defaultStore = Store
 
 
 
-view :: ReactView ()
-view = defineControllerView "home" store $ \st _ ->
-  div_ $ p_ $ elemText "Welcome to LN!"
-
-
-
 view_ :: ReactElementM eventHandler ()
 view_ =
   RF.view view () mempty
+
+
+
+view :: ReactView ()
+view = defineControllerView "home" store $ \st _ ->
+  div_ $ p_ $ elemText "Welcome to LN!"

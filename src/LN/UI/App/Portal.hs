@@ -3,8 +3,8 @@
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.App.Portal (
-  view,
-  view_
+  view_,
+  view
 ) where
 
 
@@ -18,6 +18,12 @@ import           LN.UI.Router.Class.Route
 
 
 
+view_ :: ReactElementM eventHandler ()
+view_ =
+  RF.view view () mempty
+
+
+
 view :: ReactView ()
 view = defineView "portal" $ \_ ->
   div_ $ p_ $ do
@@ -25,9 +31,3 @@ view = defineView "portal" $ \_ ->
     ol_ $ do
       li_ $ ahref $ routeWith' (Organizations Index)
       li_ $ ahref $ routeWith' (Users Index)
-
-
-
-view_ :: ReactElementM eventHandler ()
-view_ =
-  RF.view view () mempty

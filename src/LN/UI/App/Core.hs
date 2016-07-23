@@ -9,8 +9,8 @@ module LN.UI.App.Core (
   defaultStore,
   Action (..),
   store,
-  view,
   view_,
+  view,
   initRouter
 ) where
 
@@ -90,6 +90,7 @@ instance StoreData Store where
         RouteWith About _                      -> pure ()
         RouteWith Portal _                     -> pure ()
         RouteWith (Organizations Index) params -> void $ forkIO $ executeAction $ SomeStoreAction Organizations.store $ Organizations.Init route_with
+--        RouteWith (Organizations (ShowS _) params -> void $ forkIO $
         RouteWith (Users Index) params         -> pure ()
         RouteWith _ _                          -> pure ()
 
@@ -102,16 +103,16 @@ store = mkStore defaultStore
 
 
 
+view_ :: Store  -> ReactElementM eventHandler ()
+view_ st =
+  RF.view view st mempty
+
+
+
 view :: ReactView Store
 view =
   defineControllerView "core" store $ \st _ ->
     defaultLayout st (renderRouteView st)
-
-
-
-view_ :: Store  -> ReactElementM eventHandler ()
-view_ st =
-  RF.view view st mempty
 
 
 

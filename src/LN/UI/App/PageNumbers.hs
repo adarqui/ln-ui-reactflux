@@ -4,8 +4,8 @@
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.App.PageNumbers (
-  view,
   view_,
+  view,
   pageRange,
   buildPages,
   runPageInfo
@@ -37,6 +37,12 @@ type Pages =
 
 
 
+view_ :: (PageInfo, RouteWith) -> ReactElementM eventHandler ()
+view_ (page_info, route_with) =
+  RF.view view (page_info, route_with) mempty
+
+
+
 view :: ReactView (PageInfo, RouteWith)
 view = defineView "pageNumbers" $ \(page_info, route_with@(RouteWith route params)) -> do
   let
@@ -50,12 +56,6 @@ view = defineView "pageNumbers" $ \(page_info, route_with@(RouteWith route param
           li_ $ ahrefName "prev" (upd prev)
           mapM_ (\page_number -> li_ $ ahrefName (tshow page_number) (upd page_number)) pages
           li_ $ ahrefName "next" (upd next)
-
-
-
-view_ :: (PageInfo, RouteWith) -> ReactElementM eventHandler ()
-view_ (page_info, route_with) =
-  RF.view view (page_info, route_with) mempty
 
 
 

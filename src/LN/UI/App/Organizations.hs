@@ -9,8 +9,8 @@ module LN.UI.App.Organizations (
   defaultStore,
   Action (..),
   store,
-  view,
-  view_
+  view_,
+  view
 ) where
 
 
@@ -98,6 +98,12 @@ defaultStore = Store {
 
 
 
+view_ :: ReactElementM eventHandler ()
+view_ =
+  RF.view view () mempty
+
+
+
 view :: ReactView ()
 view = defineControllerView "organizations" store $ \Store{..} _ ->
   div_ $ do
@@ -107,9 +113,3 @@ view = defineControllerView "organizations" store $ \Store{..} _ ->
       mapM_ (\OrganizationPackResponse{..} -> do
         li_ $ ahref $ routeWith' $ Organizations (ShowS $ organizationResponseName organizationPackResponseOrganization)
         ) _organizations
-
-
-
-view_ :: ReactElementM eventHandler ()
-view_ =
-  RF.view view () mempty

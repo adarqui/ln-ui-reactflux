@@ -3,8 +3,8 @@
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.App.Breadcrumbs (
-  view,
-  view_
+  view_,
+  view
 ) where
 
 
@@ -18,6 +18,12 @@ import           LN.UI.Router.Class.Route
 
 
 
+view_ :: RouteWith -> ReactElementM eventHandler ()
+view_ route_with =
+  RF.view view route_with mempty
+
+
+
 view :: ReactView RouteWith
 view = defineView "breadcrumbs" $ \(RouteWith route params) ->
   case (crumb route) of
@@ -26,9 +32,3 @@ view = defineView "breadcrumbs" $ \(RouteWith route params) ->
       div_ $ p_ $ do
         ol_ $
           mapM_ (\breadcrumb -> li_ $ ahref $ routeWith' breadcrumb) xs
-
-
-
-view_ :: RouteWith -> ReactElementM eventHandler ()
-view_ route_with =
-  RF.view view route_with mempty
