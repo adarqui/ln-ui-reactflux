@@ -136,17 +136,20 @@ class HasLinkName a where
 
 instance HasLinkName Route where
   linkName route = case route of
-    Home                  -> "Home"
-    About                 -> "About"
-    Portal                -> "Portal"
+    Home                            -> "Home"
+    About                           -> "About"
+    Portal                          -> "Portal"
     Organizations Index             -> "Organizations"
     Organizations (ShowS org_sid)   -> org_sid
     Organizations (EditS org_sid)   -> org_sid
     Organizations (DeleteS org_sid) -> org_sid
-    (Users _)         -> "Users"
-    Login             -> "Login"
-    Logout            -> "Logout"
-    _                 -> "Unknown"
+    (Users Index)                   -> "Users"
+    Users (ShowS user_sid)          -> user_sid
+    Users (EditS user_sid)          -> user_sid
+    Users (DeleteS user_sid)        -> user_sid
+    Login                           -> "Login"
+    Logout                          -> "Logout"
+    _                               -> "Unknown"
 
 
 
