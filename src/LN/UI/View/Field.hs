@@ -8,7 +8,10 @@ module LN.UI.View.Field (
   optionalDescriptionField,
   mandatoryDescriptionField,
   mandatoryMembershipField,
-  mandatoryVisibilityField
+  mandatoryVisibilityField,
+  tagsField,
+  privateTagsField,
+  suggestedTagsField
 ) where
 
 
@@ -80,3 +83,39 @@ mandatoryVisibilityField value visibility_handler =
     [Public, Private]
     value
     visibility_handler
+
+
+
+tagsField
+  :: [Text]
+  -> Text
+  -> (Text -> ViewEventHandler) -- ^ set current tag
+  -> ViewEventHandler           -- ^ add current tag
+  -> (Int -> ViewEventHandler)  -- ^ delete tag
+  -> ViewEventHandler           -- ^ clear tags
+  -> ReactElementM ViewEventHandler ()
+tagsField = createTagsField "Tags"
+
+
+
+privateTagsField
+  :: [Text]
+  -> Text
+  -> (Text -> ViewEventHandler) -- ^ set current tag
+  -> ViewEventHandler           -- ^ add current tag
+  -> (Int -> ViewEventHandler)  -- ^ delete tag
+  -> ViewEventHandler           -- ^ clear tags
+  -> ReactElementM ViewEventHandler ()
+privateTagsField = createTagsField "Private Tags"
+
+
+
+suggestedTagsField
+  :: [Text]
+  -> Text
+  -> (Text -> ViewEventHandler) -- ^ set current tag
+  -> ViewEventHandler           -- ^ add current tag
+  -> (Int -> ViewEventHandler)  -- ^ delete tag
+  -> ViewEventHandler           -- ^ clear tags
+  -> ReactElementM ViewEventHandler ()
+suggestedTagsField = createTagsField "Suggested thread post tags - so people can easily tag posts"
