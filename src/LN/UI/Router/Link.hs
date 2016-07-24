@@ -5,7 +5,7 @@ module LN.UI.Router.Link (
 
 
 import           LN.UI.Router.Param (Params)
-import           LN.UI.Types            (Tuple)
+import           LN.UI.Types        (Tuple)
 
 
 
