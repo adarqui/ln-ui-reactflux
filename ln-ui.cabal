@@ -67,6 +67,7 @@ library
                      , haskell-api-helpers-shared
                      , haskell-api-helpers-ghcjs
                      , haskell-either-helpers
+                     , haskell-ebyam
                      , haskell-rehtie
   if impl(ghcjs)
      build-depends:    ghcjs-base

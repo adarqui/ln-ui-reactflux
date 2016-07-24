@@ -15,6 +15,7 @@ module LN.UI.App.Organizations (
 
 
 
+import Data.Ebyam (ebyam)
 import           Control.DeepSeq                 (NFData)
 import           Control.Monad.Trans.Either      (EitherT, runEitherT)
 import           Data.Int                        (Int64)
@@ -154,9 +155,9 @@ view :: ReactView CRUD
 view = defineControllerView "organizations" store $ \st@Store{..} crud ->
   case crud of
     Index           -> viewIndex st
-    ShowS org_sid   -> viewShowS org_sid
-    New             -> viewNew
-    EditS org_sid   -> viewEditS org_sid
+    ShowS org_sid   -> viewShowS _organization
+    New             -> viewNew _request
+    EditS org_sid   -> viewEditS _request _organization
     DeleteS org_sid -> Delete.view_
 
 
@@ -179,20 +180,25 @@ viewIndex Store{..} = do
 
 
 
-viewShowS :: Text -> ReactElementM ViewEventHandler ()
-viewShowS org_sid = p_ $ elemText "show"
+viewShowS :: Loader (Maybe OrganizationPackResponse) -> ReactElementM ViewEventHandler ()
+viewShowS l_organization_pack = p_ $ elemText "show"
 
 
 
-viewNew :: ReactElementM ViewEventHandler ()
-viewNew = p_ $ elemText "new"
+viewNew :: Maybe OrganizationRequest -> ReactElementM ViewEventHandler ()
+viewNew m_request =
+  ebyam m_request mempty $ \request -> viewMod TyCreate Nothing request
 
 
 
-viewEditS :: Text -> ReactElementM ViewEventHandler ()
-viewEditS org_sid = p_ $ elemText "edit"
+viewEditS :: Maybe OrganizationRequest -> Loader (Maybe OrganizationPackResponse) -> ReactElementM ViewEventHandler ()
+viewEditS m_request l_organization_pack =
+  Loading.loader1 l_organization_pack $ \m_organization_pack -> do
+    case (m_request, m_organization_pack) of
+      (Just request, Just OrganizationPackResponse{..}) -> viewMod TyUpdate (Just organizationPackResponseOrganizationId) request
+      (_, _) -> mempty
 
 
 
-viewMod :: TyCRUD -> Maybe Int64 -> Store -> ReactElementM ViewEventHandler ()
-viewMod tycrud m_organization_id st@Store{..} = mempty
+viewMod :: TyCRUD -> Maybe Int64 -> OrganizationRequest -> ReactElementM ViewEventHandler ()
+viewMod tycrud m_organization_id OrganizationRequest{..} = mempty
