@@ -36,17 +36,18 @@ import           LN.T.Organization               (OrganizationRequest (..),
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
 import           LN.T.Size                       (Size (..))
 import           LN.T.User                       (UserSanitizedResponse (..))
-import LN.UI.App.Loading (Loader(..))
-import qualified LN.UI.App.Loading as Loading
 import qualified LN.UI.App.Delete                as Delete
 import qualified LN.UI.App.Gravatar              as Gravatar
+import           LN.UI.App.Loading               (Loader (..))
+import qualified LN.UI.App.Loading               as Loading
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref)
-import           LN.UI.Router                    (CRUD (..), TyCRUD(..), Params, Route (..),
-                                                  RouteWith (..), routeWith')
+import           LN.UI.Router                    (CRUD (..), Params, Route (..),
+                                                  RouteWith (..), TyCRUD (..),
+                                                  routeWith')
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   pageInfoFromParams,
