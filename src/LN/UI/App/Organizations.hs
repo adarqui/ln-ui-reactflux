@@ -44,7 +44,7 @@ import           LN.UI.App.Loading               (Loader (..))
 import qualified LN.UI.App.Loading               as Loading
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
-import           LN.UI.Helpers.GHCJS             (textToJSString')
+import           LN.UI.Helpers.GHCJS             (targetValue, textToJSString')
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref)
@@ -71,7 +71,8 @@ data Store = Store {
 
 data Action
   = Load
-  | Init CRUD Params
+  | Init       CRUD Params
+  | SetRequest OrganizationRequest
   | Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -83,9 +84,10 @@ instance StoreData Store where
     putStrLn "Organizations"
 
     case action of
-      Nop              -> pure st
-      Load             -> action_load
-      Init crud params -> actions_init crud params
+      Nop                -> pure st
+      Load               -> action_load
+      Init crud params   -> action_init crud params
+      SetRequest request -> action_set_request request
 
     where
     action_load = do
@@ -94,7 +96,7 @@ instance StoreData Store where
         _organization  = Loading
       }
 
-    actions_init crud params = case crud of
+    action_init crud params = case crud of
       Index -> action_init_index params
       _     -> action_init_crud crud params
 
@@ -116,6 +118,11 @@ instance StoreData Store where
       New             -> pure st
       EditS org_sid   -> sync st org_sid
       DeleteS org_sid -> sync st org_sid
+
+    action_set_request request =
+      pure $ st{
+        _request = Just request
+      }
 
 
 
@@ -170,6 +177,7 @@ viewIndex Store{..} = do
   Loading.loader1 _organizations $ \organizations -> do
     div_ $ do
       h1_ "Organizations"
+      ahref $ routeWith' $ Organizations New
       PageNumbers.view_ (_pageInfo, routeWith' $ Organizations Index)
       ul_ $ do
         mapM_ (\OrganizationPackResponse{..} -> do
@@ -184,7 +192,8 @@ viewIndex Store{..} = do
 
 
 viewShowS :: Loader (Maybe OrganizationPackResponse) -> ReactElementM ViewEventHandler ()
-viewShowS l_organization_pack = p_ $ elemText "show"
+viewShowS l_organization_pack = do
+  p_ $ elemText "show"
 
 
 
@@ -204,10 +213,11 @@ viewEditS m_request l_organization_pack =
 
 
 viewMod :: TyCRUD -> Maybe Int64 -> OrganizationRequest -> ReactElementM ViewEventHandler ()
-viewMod tycrud m_organization_id OrganizationRequest{..} = do
+viewMod tycrud m_organization_id request@OrganizationRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Organization"
-    mandatoryNameField (textToJSString' organizationRequestDisplayName) (\_ -> dispatch Nop)
+    mandatoryNameField (textToJSString' organizationRequestDisplayName)
+      (\evt -> dispatch $ SetRequest $ request{organizationRequestDisplayName = targetValue evt})
 
   -- , optionalDescriptionField organization.description (cOrganizationMod <<< SetDescription) (cOrganizationMod RemoveDescription)
 

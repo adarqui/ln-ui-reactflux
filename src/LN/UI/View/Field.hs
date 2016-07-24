@@ -1,4 +1,4 @@
-{-# LANGUAGE PartialTypeSignatures #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module LN.UI.View.Field (
   mandatoryNameField
@@ -8,32 +8,41 @@ module LN.UI.View.Field (
 
 import           React.Flux          hiding (view)
 import qualified React.Flux          as RF
+import           React.Flux.Internal
 
 import           LN.UI.Helpers.GHCJS (JSString)
 
 
 
-mandatoryLabelField :: JSString -> JSString -> (Event -> handler) -> ReactElementM ViewEventHandler ()
+mandatoryLabelField :: JSString -> JSString -> (Event -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
 mandatoryLabelField label value handler =
   createLabelInput label label value $ onChange handler
 
 
 
-mandatoryNameField :: JSString -> (Event -> handler) -> ReactElementM ViewEventHandler ()
+mandatoryNameField :: JSString -> (Event -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
 mandatoryNameField = mandatoryLabelField "Name"
 
 
-mandatoryCompanyField :: JSString -> (Event -> handler) -> ReactElementM ViewEventHandler ()
+mandatoryCompanyField :: JSString -> (Event -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
 mandatoryCompanyField = mandatoryLabelField "Company"
 
 
-mandatoryLocationField :: JSString -> (Event -> handler) -> ReactElementM ViewEventHandler ()
+mandatoryLocationField :: JSString -> (Event -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
 mandatoryLocationField = mandatoryLabelField "Location"
 
 
 
-createLabelInput :: JSString -> JSString -> JSString -> PropertyOrHandler handler -> ReactElementM ViewEventHandler ()
-createLabelInput label placeholder value handler =  mempty
+createLabelInput :: JSString -> JSString -> JSString -> PropertyOrHandler ViewEventHandler -> ReactElementM ViewEventHandler ()
+createLabelInput label placeholder value handler =
+  cldiv_ "labeled-input" $ do
+    label_ [] $ elemJSString label
+    input_ [ "className"   $= "todo-fixme"
+           , "type"        $= "text"
+           , "value"       $= value
+           , "placeholder" $= placeholder
+           , handler
+           ]
   -- H.div
   --   [formGroupClasses]
   --   [
