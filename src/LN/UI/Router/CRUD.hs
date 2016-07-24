@@ -32,36 +32,16 @@ data CRUD
   = Index
   | ShowS Text
   | ShowI Int
---  | ShowN Number
   | ShowB Bool
   | New
   | EditS Text
   | EditI Int
---  | EditN Number
   | DeleteS Text
   | DeleteI Int
---  | DeleteN Number
   | DeleteZ
   deriving (Eq, Show, Generic, NFData)
 
 
-
-instance HasLink CRUD where
--- TODO FIXME:
--- well this could be fixed.. changed from "" in order to match CRUD Index routes
-  -- link Index          = tuple "" emptyParams
-  -- link New            = tuple "/new" emptyParams
-  -- link (Show s)       = tuple ("/" <> s) emptyParams
-  -- link (ShowI int)    = tuple ("/" <> show int) emptyParams
-  -- link (ShowN num)    = tuple ("/" <> show num) emptyParams
-  -- link (ShowB bool)   = tuple ("/" <> show bool) emptyParams
-  -- link (Edit s)       = tuple ("/_edit/" <> s) emptyParams
-  -- link (EditI int)    = tuple ("/_edit/" <> show int) emptyParams
-  -- link (EditN num)    = tuple ("/_edit/" <> show num) emptyParams
-  -- link (Delete s)     = tuple ("/_delete/" <> s) emptyParams
-  -- link (DeleteI int)  = tuple ("/_delete/" <> show int) emptyParams
-  -- link (DeleteN num)  = tuple ("/_delete/" <> show num) emptyParams
-  -- link DeleteZ        = tuple "/_delete" emptyParams
 
 instance PathInfo CRUD where
   toPathSegments crud =
@@ -95,9 +75,12 @@ instance PathInfo CRUD where
     -- TODO FIXME: Can't do Index <$ segment "" because it fails to pattern match. Though, pure Index works because it's terminal.
 
 
+
 bool2Text :: Bool -> Text
 bool2Text True  = "true"
 bool2Text False = "false"
+
+
 
 text2Bool :: Text -> Bool
 text2Bool "true" = True
@@ -113,19 +96,6 @@ instance PathInfo Bool where
   fromPathSegments =
         True <$ segment "true"
     <|> False <$ segment "false"
-
-
-
-  -- link (ShowN num)    = tuple ("/" <> show num) emptyParams
-  -- link (ShowB bool)   = tuple ("/" <> show bool) emptyParams
-  -- link (Edit s)       = tuple ("/_edit/" <> s) emptyParams
-  -- link (EditI int)    = tuple ("/_edit/" <> show int) emptyParams
-  -- link (EditN num)    = tuple ("/_edit/" <> show num) emptyParams
-  -- link (Delete s)     = tuple ("/_delete/" <> s) emptyParams
-  -- link (DeleteI int)  = tuple ("/_delete/" <> show int) emptyParams
-  -- link (DeleteN num)  = tuple ("/_delete/" <> show num) emptyParams
-  -- link DeleteZ        = tuple "/_delete" emptyParams
-
 
 
 
