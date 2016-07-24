@@ -15,12 +15,13 @@ module LN.UI.App.Organizations (
 
 
 
-import Data.Ebyam (ebyam)
 import           Control.DeepSeq                 (NFData)
 import           Control.Monad.Trans.Either      (EitherT, runEitherT)
+import           Data.Ebyam                      (ebyam)
 import           Data.Int                        (Int64)
 import           Data.Map                        (Map)
 import qualified Data.Map                        as Map
+import           Data.Monoid                     ((<>))
 import           Data.Rehtie                     (rehtie)
 import           Data.Text                       (Text)
 import           Data.Typeable                   (Typeable)
@@ -43,16 +44,18 @@ import           LN.UI.App.Loading               (Loader (..))
 import qualified LN.UI.App.Loading               as Loading
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
+import           LN.UI.Helpers.GHCJS             (textToJSString')
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref)
 import           LN.UI.Router                    (CRUD (..), Params, Route (..),
                                                   RouteWith (..), TyCRUD (..),
-                                                  routeWith')
+                                                  linkName, routeWith')
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   pageInfoFromParams,
                                                   paramsFromPageInfo)
+import           LN.UI.View.Field
 
 
 
@@ -201,4 +204,38 @@ viewEditS m_request l_organization_pack =
 
 
 viewMod :: TyCRUD -> Maybe Int64 -> OrganizationRequest -> ReactElementM ViewEventHandler ()
-viewMod tycrud m_organization_id OrganizationRequest{..} = mempty
+viewMod tycrud m_organization_id OrganizationRequest{..} = do
+  div_ $ do
+    h1_ $ elemText $ linkName tycrud <> " Organization"
+    mandatoryNameField (textToJSString' organizationRequestDisplayName) (\_ -> dispatch Nop)
+
+  -- , optionalDescriptionField organization.description (cOrganizationMod <<< SetDescription) (cOrganizationMod RemoveDescription)
+
+  -- , mandatoryCompanyField organization.company (cOrganizationMod <<< SetCompany)
+
+  -- , mandatoryLocationField organization.location (cOrganizationMod <<< SetLocation)
+
+  -- , mandatoryMembershipField organization.membership (cOrganizationMod <<< SetMembership)
+
+  -- , mandatoryVisibilityField organization.visibility (cOrganizationMod <<< SetVisibility)
+
+  -- -- , icon
+
+  -- , tagsField
+  --     organization.tags
+  --     (maybe "" id org_req_st.currentTag)
+  --     (cOrganizationMod <<< SetTag)
+  --     (cOrganizationMod AddTag)
+  --     (cOrganizationMod <<< DeleteTag)
+  --     (cOrganizationMod ClearTags)
+
+  -- , buttons_CreateEditCancel m_organization_id (cOrganizationMod Create) (cOrganizationMod <<< EditP) About
+
+  -- ]
+  -- where
+  -- organization        = unwrapOrganizationRequest organization_req
+
+
+
+dispatch :: Action -> [SomeStoreAction]
+dispatch a = [SomeStoreAction store a]
