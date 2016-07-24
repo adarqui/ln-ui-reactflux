@@ -216,15 +216,19 @@ viewMod :: TyCRUD -> Maybe Int64 -> OrganizationRequest -> ReactElementM ViewEve
 viewMod tycrud m_organization_id request@OrganizationRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Organization"
+
     mandatoryNameField organizationRequestDisplayName
       (\input -> dispatch $ SetRequest $ request{organizationRequestDisplayName = input})
 
-  -- , optionalDescriptionField organization.description (cOrganizationMod <<< SetDescription) (cOrganizationMod RemoveDescription)
+    optionalDescriptionField organizationRequestDescription
+      (\input -> dispatch $ SetRequest $ request{organizationRequestDescription = Just input})
+      (dispatch $ SetRequest $ request{organizationRequestDescription = Nothing})
 
     mandatoryCompanyField organizationRequestCompany
       (\input -> dispatch $ SetRequest $ request{organizationRequestCompany = input})
 
-  -- , mandatoryLocationField organization.location (cOrganizationMod <<< SetLocation)
+    mandatoryLocationField organizationRequestLocation
+      (\input -> dispatch $ SetRequest $ request{organizationRequestLocation = input})
 
   -- , mandatoryMembershipField organization.membership (cOrganizationMod <<< SetMembership)
 
