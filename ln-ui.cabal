@@ -25,6 +25,7 @@ library
                      , LN.UI.App.Delete
                      , LN.UI.App.Gravatar
                      , LN.UI.App.Home
+                     , LN.UI.App.Loading
                      , LN.UI.App.Organizations
                      , LN.UI.App.PageNumbers
                      , LN.UI.App.Portal
@@ -44,7 +45,6 @@ library
                      , LN.UI.Router.Param
                      , LN.UI.Router.Route
                      , LN.UI.Router.Util
-                     , LN.UI.State.Loading
                      , LN.UI.State.PageInfo
   build-depends:       base >= 4.7 && < 5
                      , aeson
