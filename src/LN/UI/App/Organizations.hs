@@ -45,7 +45,6 @@ import           LN.UI.App.Loading               (Loader (..))
 import qualified LN.UI.App.Loading               as Loading
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
-import           LN.UI.Helpers.GHCJS             (targetValue, textToJSString')
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref)
@@ -217,12 +216,13 @@ viewMod :: TyCRUD -> Maybe Int64 -> OrganizationRequest -> ReactElementM ViewEve
 viewMod tycrud m_organization_id request@OrganizationRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Organization"
-    mandatoryNameField (textToJSString' organizationRequestDisplayName)
-      (\evt -> dispatch $ SetRequest $ request{organizationRequestDisplayName = targetValue evt})
+    mandatoryNameField organizationRequestDisplayName
+      (\input -> dispatch $ SetRequest $ request{organizationRequestDisplayName = input})
 
   -- , optionalDescriptionField organization.description (cOrganizationMod <<< SetDescription) (cOrganizationMod RemoveDescription)
 
-  -- , mandatoryCompanyField organization.company (cOrganizationMod <<< SetCompany)
+    mandatoryCompanyField organizationRequestCompany
+      (\input -> dispatch $ SetRequest $ request{organizationRequestCompany = input})
 
   -- , mandatoryLocationField organization.location (cOrganizationMod <<< SetLocation)
 

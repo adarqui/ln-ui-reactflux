@@ -1,17 +1,19 @@
+{-# LANGUAGE CPP               #-}
+{-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE FlexibleContexts #-}
 
 module LN.UI.Helpers.ReactFluxDOM (
   ahref,
   ahrefName,
-  ahrefElement
+  ahrefElement,
+  targetValue
 ) where
 
 
 
-import           Data.Monoid              ((<>))
-import           Data.Text                (Text)
-import qualified Data.Text                as Text
+import           Data.Monoid        ((<>))
+import           Data.Text          (Text)
+import qualified Data.Text          as Text
 import           LN.UI.Router.Route
 import           React.Flux
 
@@ -31,3 +33,9 @@ ahrefName name route_with =
 -- ahrefElement :: RouteWith -> ReactElementM eventHandler () -> ReactElementM eventHandler ()
 ahrefElement route_with element =
   a_ ["href" $= fromRouteWithHash route_with] element
+
+
+
+-- TODO FIXME: Can't use FromJSVal because it's defined in React.Flux.PropertiesAndEvents but not exported
+-- -- targetValue :: FromJSVal val => Event -> val
+targetValue evt = target evt "value"

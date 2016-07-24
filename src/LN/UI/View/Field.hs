@@ -1,57 +1,49 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module LN.UI.View.Field (
-  mandatoryNameField
+  mandatoryLabelField,
+  mandatoryNameField,
+  mandatoryCompanyField,
+  mandatoryLocationField
 ) where
 
 
-
-import           React.Flux          hiding (view)
-import qualified React.Flux          as RF
+import           Data.Text                  (Text)
+import           React.Flux                 hiding (view)
+import qualified React.Flux                 as RF
 import           React.Flux.Internal
 
-import           LN.UI.Helpers.GHCJS (JSString)
+import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
+import           LN.UI.Helpers.ReactFluxDOM (targetValue)
 
 
 
-mandatoryLabelField :: JSString -> JSString -> (Event -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
+mandatoryLabelField :: Text -> Text -> (Text -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
 mandatoryLabelField label value handler =
-  createLabelInput label label value $ onChange handler
+  createLabelInput label label value $ onChange (handler . targetValue)
 
 
 
-mandatoryNameField :: JSString -> (Event -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
+mandatoryNameField :: Text -> (Text -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
 mandatoryNameField = mandatoryLabelField "Name"
 
 
-mandatoryCompanyField :: JSString -> (Event -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
+mandatoryCompanyField :: Text -> (Text -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
 mandatoryCompanyField = mandatoryLabelField "Company"
 
 
-mandatoryLocationField :: JSString -> (Event -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
+mandatoryLocationField :: Text -> (Text -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
 mandatoryLocationField = mandatoryLabelField "Location"
 
 
 
-createLabelInput :: JSString -> JSString -> JSString -> PropertyOrHandler ViewEventHandler -> ReactElementM ViewEventHandler ()
+createLabelInput :: Text -> Text -> Text -> PropertyOrHandler ViewEventHandler -> ReactElementM ViewEventHandler ()
 createLabelInput label placeholder value handler =
   cldiv_ "labeled-input" $ do
-    label_ [] $ elemJSString label
+    label_ [] $ elemText label
     input_ [ "className"   $= "todo-fixme"
            , "type"        $= "text"
-           , "value"       $= value
-           , "placeholder" $= placeholder
+           , "value"       $= textToJSString' value
+           , "placeholder" $= textToJSString' placeholder
            , handler
            ]
-  -- H.div
-  --   [formGroupClasses]
-  --   [
-  --     H.label_ [H.text label],
-  --     H.input [
-  --       formControlClasses,
-  --       P.inputType input_type,
-  --       P.placeholder placeholder,
-  --       P.value value,
-  --       E.onValueChange handler
-  --     ]
-  --   ]

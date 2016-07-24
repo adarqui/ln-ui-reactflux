@@ -3,8 +3,7 @@
 
 module LN.UI.Helpers.GHCJS (
   JSString,
-  textToJSString',
-  targetValue
+  textToJSString'
 ) where
 
 
@@ -28,9 +27,3 @@ textToJSString' = JSS.textToJSString
 textToJSString' :: Text -> String
 textToJSString' = Text.unpack
 #endif
-
-
-
--- TODO FIXME: Can't use FromJSVal because it's defined in React.Flux.PropertiesAndEvents but not exported
--- targetValue :: FromJSVal val => Event -> val
-targetValue evt = target evt "value"
