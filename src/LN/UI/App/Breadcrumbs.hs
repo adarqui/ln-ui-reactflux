@@ -27,7 +27,7 @@ view_ route_with =
 view :: ReactView RouteWith
 view = defineView "breadcrumbs" $ \(RouteWith route params) ->
   case (crumb route) of
-    [] -> pure ()
+    [] -> mempty
     xs -> do
       div_ $ p_ $ do
         ol_ $

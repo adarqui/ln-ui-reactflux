@@ -195,8 +195,4 @@ viewEditS org_sid = p_ $ elemText "edit"
 
 
 viewMod :: TyCRUD -> Maybe Int64 -> Store -> ReactElementM ViewEventHandler ()
-viewMod tycrud m_organization_id st@Store{..} = pure ()
-  -- case st.currentOrganizationRequest, st.currentOrganizationRequestSt, getLoading l_currentOrganization st.loading of
-  --   _, _, true                                    -> renderLoading
-  --   Just organization_req, Just org_req_st, false -> renderView_Organizations_Mod' crud m_organization_id organization_req org_req_st
-  --   _, _, false                                   -> H.div_ [H.p_ [H.text "Organizations_Mod: unexpected error."]]
+viewMod tycrud m_organization_id st@Store{..} = mempty

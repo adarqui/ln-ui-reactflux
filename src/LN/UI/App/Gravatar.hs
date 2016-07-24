@@ -41,7 +41,7 @@ view_ route_with size emailMD5 alt =
 view :: ReactView (RouteWith, Size, Text, Text)
 view = defineView "gravatar" $ \(route_with, size, emailMD5, alt) -> do
   let alt' = textToJSString' alt
-  ahrefElement route_with $ img_ ["src" $= (gravatarUrlFrom'JSS size emailMD5), "alt" $= alt'] (pure ())
+  ahrefElement route_with $ img_ ["src" $= (gravatarUrlFrom'JSS size emailMD5), "alt" $= alt'] mempty
 
 
 

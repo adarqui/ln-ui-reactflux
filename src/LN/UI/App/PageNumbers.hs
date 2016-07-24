@@ -49,7 +49,7 @@ view = defineView "pageNumbers" $ \(page_info, route_with@(RouteWith route param
     (prev, pages, next, limit) = buildPages page_info route_with
     upd off                    = RouteWith route (updateParams_Offset_Limit off limit params)
   case pages of
-    []     -> pure ()
+    []     -> mempty
     _      ->
       div_ $
         ul_ $ do
