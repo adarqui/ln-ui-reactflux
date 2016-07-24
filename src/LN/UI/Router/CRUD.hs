@@ -21,8 +21,9 @@ import           Prelude                            (Bool (..), Eq, Show, pure,
 import           Text.ParserCombinators.Parsec.Prim (try)
 import           Web.Routes
 
-import           LN.UI.Router.Link            (HasLink (..))
-import           LN.UI.Router.Param          (emptyParams)
+import           LN.UI.Router.Link                  (HasLink (..))
+import           LN.UI.Router.LinkName              (HasLinkName, linkName)
+import           LN.UI.Router.Param                 (emptyParams)
 import           LN.UI.Types                        (Int, Number, String, tuple)
 
 
@@ -130,15 +131,15 @@ instance PathInfo Bool where
 
 data TyCRUD
   = TyCreate
-  | TyEdit
+  | TyRead
+  | TyUpdate
   | TyDelete
-  | TyView
   deriving (Eq, Generic)
 
 
 
-instance Show TyCRUD where
-  show TyCreate = "Create"
-  show TyEdit   = "Edit"
-  show TyDelete = "Delete"
-  show TyView   = "View"
+instance HasLinkName TyCRUD where
+  linkName TyCreate = "Create"
+  linkName TyRead   = "View"
+  linkName TyUpdate = "Edit"
+  linkName TyDelete = "Delete"

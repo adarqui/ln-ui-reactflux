@@ -41,8 +41,9 @@ import           LN.T
 import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
 import           LN.UI.Router.CRUD
 import           LN.UI.Router.Link
+import           LN.UI.Router.LinkName      (HasLinkName, linkName)
 import           LN.UI.Router.OrderBy
-import           LN.UI.Router.Param   (Params, buildParams, emptyParams,
+import           LN.UI.Router.Param         (Params, buildParams, emptyParams,
                                              fixParams, fromWebRoutesParams)
 import           LN.UI.Router.Util          (slash)
 import           LN.UI.Types                (Array, Int, String, Tuple, tuple)
@@ -125,11 +126,6 @@ data Route
   | Logout
   | NotFound
   deriving (Eq, Show, Generic, NFData)
-
-
-
-class HasLinkName a where
-  linkName :: a -> Text
 
 
 

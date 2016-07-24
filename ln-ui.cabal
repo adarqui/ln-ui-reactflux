@@ -39,6 +39,7 @@ library
                      , LN.UI.Router.CRUD
                      , LN.UI.Router.Crumb
                      , LN.UI.Router.Link
+                     , LN.UI.Router.LinkName
                      , LN.UI.Router.OrderBy
                      , LN.UI.Router.Param
                      , LN.UI.Router.Route
