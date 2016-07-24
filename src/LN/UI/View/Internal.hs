@@ -1,3 +1,4 @@
+{-# LANGUAGE ExplicitForAll    #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module LN.UI.View.Internal (
@@ -17,7 +18,8 @@ import           React.Flux                 hiding (view)
 import qualified React.Flux                 as RF
 import           React.Flux.Internal
 
-import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
+import           LN.UI.Helpers.GHCJS        (JSString, textToJSString',
+                                             toJSString')
 import           LN.UI.Helpers.ReactFluxDOM (targetValue)
 
 
@@ -98,3 +100,31 @@ createLabelButtonTextArea label placeholder value button_name value_change_handl
               , "title" $= textToJSString' button_name
               , button_handler
               ] $ elemText button_name
+
+
+
+-- | Creates a radio menu
+--
+-- radioMenu "Leuron Type" "leuron-type" [NONE, FACT, CARD] SetLeuronType
+--
+createRadioMenu
+  :: forall a radio. (Show radio, Eq radio)
+  => Text
+  -> Text
+  -> [radio]
+  -> radio
+  -> PropertyOrHandler ViewEventHandler
+  -> ReactElementM ViewEventHandler ()
+
+createRadioMenu menu_label radio_name radios checked_value set_radio_handler =
+  p_ $ do
+    label_ $ elemText menu_label
+    mapM_ (\radio -> do
+      label_ [ classNames radioInlineClasses ] $ elemShow radio
+      input_ [ "type" $= "radio"
+             , "name" $= textToJSString' radio_name
+             , "value" $= ""
+             , "checked" $= toJSString' (checked_value == radio)
+             , set_radio_handler
+             ]
+      ) radios

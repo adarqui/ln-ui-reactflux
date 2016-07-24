@@ -3,7 +3,8 @@
 
 module LN.UI.Helpers.GHCJS (
   JSString,
-  textToJSString'
+  textToJSString',
+  toJSString'
 ) where
 
 
@@ -26,4 +27,14 @@ textToJSString' = JSS.textToJSString
 #else
 textToJSString' :: Text -> String
 textToJSString' = Text.unpack
+#endif
+
+
+
+#ifdef __GHCJS__
+toJSString' :: Show a => a -> JSString
+toJSString' = toJSString . show
+#else
+toJSString' :: Show a => a -> String
+toJSString' = show
 #endif
