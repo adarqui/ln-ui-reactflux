@@ -39,10 +39,9 @@ import           Web.Routes
 import           Haskell.Api.Helpers.Shared (qp)
 import           LN.T
 import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
-import           LN.UI.Router.CRUD
-import           LN.UI.Router.Link
+import           LN.UI.Router.CRUD          (CRUD (..))
+import           LN.UI.Router.Crumb         (HasCrumb, crumb)
 import           LN.UI.Router.LinkName      (HasLinkName, linkName)
-import           LN.UI.Router.OrderBy
 import           LN.UI.Router.Param         (Params, buildParams, emptyParams,
                                              fixParams, fromWebRoutesParams)
 import           LN.UI.Router.Util          (slash)
@@ -150,11 +149,6 @@ instance HasLinkName Route where
 
 instance HasLinkName RouteWith where
   linkName (RouteWith route params) = linkName route
-
-
-
-class HasCrumb a where
-  crumb :: a -> [Route]
 
 
 
