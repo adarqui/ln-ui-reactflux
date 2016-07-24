@@ -64,9 +64,10 @@ radioInlineClasses = [("radio-inline", True)]
 
 createLabelInput :: Text -> Text -> Text -> PropertyOrHandler ViewEventHandler -> ReactElementM ViewEventHandler ()
 createLabelInput label placeholder value handler =
-  cldiv_ "labeled-input" $ do
+  div_ [ classNames formGroupClasses
+       ] $ do
     label_ [] $ elemText label
-    input_ [ "className"   $= "todo-fixme"
+    input_ [ classNames formControlClasses
            , "type"        $= "text"
            , "placeholder" $= textToJSString' placeholder
            , "value"       $= textToJSString' value
