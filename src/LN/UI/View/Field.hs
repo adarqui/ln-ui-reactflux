@@ -18,11 +18,11 @@ import           React.Flux                 hiding (view)
 import qualified React.Flux                 as RF
 import           React.Flux.Internal
 
+import           LN.T.Membership            (Membership (..))
+import           LN.T.Visibility            (Visibility (..))
 import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
 import           LN.UI.Helpers.ReactFluxDOM (targetValue)
 import           LN.UI.View.Internal
-import LN.T.Membership (Membership(..))
-import LN.T.Visibility (Visibility(..))
 
 
 
@@ -66,13 +66,9 @@ mandatoryMembershipField value membership_handler =
   createRadioMenu
     "Membership"
     "membership"
-    [ Membership_InviteOnly
-    , Membership_RequestInvite
-    , Membership_Join
-    , Membership_Locked
-    ]
+    [Membership_InviteOnly, Membership_RequestInvite, Membership_Join, Membership_Locked]
     value
-    (onChange $ membership_handler . read . targetValue)
+    membership_handler
 
 
 
@@ -83,4 +79,4 @@ mandatoryVisibilityField value visibility_handler =
     "visibility"
     [Public, Private]
     value
-    (onChange $ visibility_handler . read . targetValue)
+    visibility_handler

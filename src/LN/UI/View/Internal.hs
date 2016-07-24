@@ -19,8 +19,7 @@ import           React.Flux                 hiding (view)
 import qualified React.Flux                 as RF
 import           React.Flux.Internal
 
-import           LN.UI.Helpers.GHCJS        (JSString, textToJSString',
-                                             toJSString')
+import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
 import           LN.UI.Helpers.ReactFluxDOM (targetValue)
 
 
@@ -114,7 +113,7 @@ createRadioMenu
   -> Text
   -> [radio]
   -> radio
-  -> PropertyOrHandler ViewEventHandler
+  -> (radio -> ViewEventHandler)
   -> ReactElementM ViewEventHandler ()
 
 createRadioMenu menu_label radio_name radios checked_value radio_handler =
@@ -122,10 +121,9 @@ createRadioMenu menu_label radio_name radios checked_value radio_handler =
     label_ $ elemText menu_label
     mapM_ (\radio -> do
       label_ [ classNames radioInlineClasses ] $ elemShow radio
-      input_ [ "type" $= "radio"
-             , "name" $= textToJSString' radio_name
-             , "value" $= ""
-             , "checked" $= toJSString' (checked_value == radio)
-             , radio_handler
+      input_ [ "type"    $= "radio"
+             , "name"    $= textToJSString' radio_name
+             , "checked" @= (checked_value == radio)
+             , onChange (\_ -> radio_handler radio)
              ]
       ) radios

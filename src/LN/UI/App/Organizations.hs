@@ -231,10 +231,10 @@ viewMod tycrud m_organization_id request@OrganizationRequest{..} = do
       (\input -> dispatch $ SetRequest $ request{organizationRequestLocation = input})
 
     mandatoryMembershipField organizationRequestMembership
-      (\input -> dispatch $ SetRequest request)
+      (\input -> dispatch $ SetRequest $ request{organizationRequestMembership = input})
 
     mandatoryVisibilityField organizationRequestVisibility
-      (\input -> dispatch $ SetRequest request)
+      (\input -> dispatch $ SetRequest $ request{organizationRequestVisibility = input})
 
   -- -- , icon
 
