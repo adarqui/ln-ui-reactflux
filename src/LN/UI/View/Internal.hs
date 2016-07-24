@@ -9,7 +9,8 @@ module LN.UI.View.Internal (
   formControlClasses,
   radioInlineClasses,
   createLabelInput,
-  createLabelButtonTextArea
+  createLabelButtonTextArea,
+  createRadioMenu
 ) where
 
 
@@ -116,7 +117,7 @@ createRadioMenu
   -> PropertyOrHandler ViewEventHandler
   -> ReactElementM ViewEventHandler ()
 
-createRadioMenu menu_label radio_name radios checked_value set_radio_handler =
+createRadioMenu menu_label radio_name radios checked_value radio_handler =
   p_ $ do
     label_ $ elemText menu_label
     mapM_ (\radio -> do
@@ -125,6 +126,6 @@ createRadioMenu menu_label radio_name radios checked_value set_radio_handler =
              , "name" $= textToJSString' radio_name
              , "value" $= ""
              , "checked" $= toJSString' (checked_value == radio)
-             , set_radio_handler
+             , radio_handler
              ]
       ) radios

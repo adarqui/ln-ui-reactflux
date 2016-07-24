@@ -230,9 +230,11 @@ viewMod tycrud m_organization_id request@OrganizationRequest{..} = do
     mandatoryLocationField organizationRequestLocation
       (\input -> dispatch $ SetRequest $ request{organizationRequestLocation = input})
 
-  -- , mandatoryMembershipField organization.membership (cOrganizationMod <<< SetMembership)
+    mandatoryMembershipField organizationRequestMembership
+      (\input -> dispatch $ SetRequest request)
 
-  -- , mandatoryVisibilityField organization.visibility (cOrganizationMod <<< SetVisibility)
+    mandatoryVisibilityField organizationRequestVisibility
+      (\input -> dispatch $ SetRequest request)
 
   -- -- , icon
 
