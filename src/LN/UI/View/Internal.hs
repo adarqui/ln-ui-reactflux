@@ -68,26 +68,32 @@ createLabelInput label placeholder value handler =
     label_ [] $ elemText label
     input_ [ "className"   $= "todo-fixme"
            , "type"        $= "text"
-           , "value"       $= textToJSString' value
            , "placeholder" $= textToJSString' placeholder
+           , "value"       $= textToJSString' value
            , handler
            ]
 
 
 
-createLabelButtonTextArea :: Text -> Text -> Text -> Text -> PropertyOrHandler ViewEventHandler -> PropertyOrHandler ViewEventHandler -> ReactElementM ViewEventHandler ()
+createLabelButtonTextArea
+  :: Text
+  -> Text
+  -> Text
+  -> Text
+  -> PropertyOrHandler ViewEventHandler
+  -> PropertyOrHandler ViewEventHandler
+  -> ReactElementM ViewEventHandler ()
+
 createLabelButtonTextArea label placeholder value button_name value_change_handler button_handler =
   cldiv_ "label-button-textarea input-group" $ do
     label_ [] $ elemText label
-    -- textarea_ [ classNames
-    --   H.textarea [formControlClasses, P.placeholder placeholder, P.value value, E.onValueChange value_change_cb],
-    --   H.span
-    --     [P.class_ (H.className "input-group-btn")]
-    --     [
-    --       H.button [
-    --         buttonInfoClasses,
-    --         P.title button_name,
-    --         E.onClick click_cb
-    --       ] [H.text button_name]
-    --     ]
-    -- ]
+    textarea_ [ classNames formControlClasses
+              , "placeholder" $= textToJSString' placeholder
+              , "value"       $= textToJSString' value
+              , value_change_handler
+              ] mempty
+    span_ [ "className" $= "input-group-btn" ] $ do
+    button_ [ classNames buttonInfoClasses
+            , "title" $= textToJSString' button_name
+            , button_handler
+            ] $ elemText button_name
