@@ -93,7 +93,7 @@ createLabelButtonTextArea label placeholder value button_name value_change_handl
               , value_change_handler
               ] mempty
     span_ [ "className" $= "input-group-btn" ] $ do
-    button_ [ classNames buttonInfoClasses
-            , "title" $= textToJSString' button_name
-            , button_handler
-            ] $ elemText button_name
+      button_ [ classNames buttonInfoClasses
+              , "title" $= textToJSString' button_name
+              , button_handler
+              ] $ elemText button_name
