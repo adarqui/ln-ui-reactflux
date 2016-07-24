@@ -1,4 +1,5 @@
 {-# LANGUAGE ExplicitForAll    #-}
+{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module LN.UI.View.Internal (
@@ -10,7 +11,8 @@ module LN.UI.View.Internal (
   radioInlineClasses,
   createLabelInput,
   createLabelButtonTextArea,
-  createRadioMenu
+  createRadioMenu,
+  createTagsField
 ) where
 
 
@@ -127,3 +129,46 @@ createRadioMenu menu_label radio_name radios checked_value radio_handler =
              , onChange (\_ -> radio_handler radio)
              ]
       ) radios
+
+
+
+-- | Generic "Tags" function
+-- label: Tags, Private Tags
+-- tags: Array of tag strings
+-- current_tag: current string which may be added as a tag
+-- set_tag: set st.current_tag, which is what we have been editing
+-- add_tag: add tag to st.tags
+-- delete_tag: delete tag by index
+-- clear_tags: remove all tags
+--
+createTagsField
+  :: Text
+  -> [Text]
+  -> Text
+  -> (Text -> ViewEventHandler) -- ^ set current tag
+  -> ViewEventHandler           -- ^ add current tag
+  -> (Int -> ViewEventHandler)  -- ^ delete tag
+  -> ViewEventHandler           -- ^ clear tags
+  -> ReactElementM ViewEventHandler ()
+
+createTagsField label tags current_tag set_tag_handler add_tag_handler delete_tag_handler clear_tags_handler = do
+  cldiv_ "input-group" $ do
+    label_ $ elemText label
+    input_ [ classNames formControlClasses
+           , "value" $= textToJSString' current_tag
+           , onChange (set_tag_handler . targetValue)
+           , onKeyUp (\_ KeyboardEvent{..} -> if keyCode == 13 then add_tag_handler else mempty)
+           ]
+    span_ [ "className" $= "input-group-btn"
+          , "title" $= "Add"
+          , onClick (\_ _ -> add_tag_handler)
+          ] $ elemText "Add"
+
+  div_ $ do
+    mapM_ (\(idx, tag) -> do
+      span_ [ "classNames" $= "label label-default" ] $ elemText tag
+      span_ [] $ do
+        button_ [ "classNames" $= "btn btn-default btn-xs"
+                , onClick (\_ _ -> delete_tag_handler idx)
+                ] $ span_ [ "classNames" $= "glyphicon glyphicon-remove" ] $ elemText " "
+      ) $ zip [1..] tags
