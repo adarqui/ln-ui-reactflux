@@ -15,6 +15,7 @@ import           React.Flux.Internal
 
 import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
 import           LN.UI.Helpers.ReactFluxDOM (targetValue)
+import           LN.UI.View.Internal
 
 
 
@@ -34,16 +35,3 @@ mandatoryCompanyField = mandatoryLabelField "Company"
 
 mandatoryLocationField :: Text -> (Text -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
 mandatoryLocationField = mandatoryLabelField "Location"
-
-
-
-createLabelInput :: Text -> Text -> Text -> PropertyOrHandler ViewEventHandler -> ReactElementM ViewEventHandler ()
-createLabelInput label placeholder value handler =
-  cldiv_ "labeled-input" $ do
-    label_ [] $ elemText label
-    input_ [ "className"   $= "todo-fixme"
-           , "type"        $= "text"
-           , "value"       $= textToJSString' value
-           , "placeholder" $= textToJSString' placeholder
-           , handler
-           ]
