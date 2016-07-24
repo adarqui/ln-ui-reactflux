@@ -134,6 +134,7 @@ instance HasLinkName Route where
     About                           -> "About"
     Portal                          -> "Portal"
     Organizations Index             -> "Organizations"
+    Organizations New               -> "New"
     Organizations (ShowS org_sid)   -> org_sid
     Organizations (EditS org_sid)   -> org_sid
     Organizations (DeleteS org_sid) -> org_sid

@@ -33,6 +33,7 @@ import qualified React.Flux                      as RF
 import           LN.Api                          (getOrganizationPacks,
                                                   getOrganizationsCount')
 import           LN.Api.String                   (getOrganizationPack')
+import           LN.Generate.Default             (defaultOrganizationRequest)
 import           LN.T.Organization               (OrganizationRequest (..),
                                                   OrganizationResponse (..))
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
@@ -115,7 +116,7 @@ instance StoreData Store where
 
     action_init_crud crud params = case crud of
       ShowS org_sid   -> sync st org_sid
-      New             -> pure st
+      New             -> pure $ st{ _request = Just defaultOrganizationRequest }
       EditS org_sid   -> sync st org_sid
       DeleteS org_sid -> sync st org_sid
 
