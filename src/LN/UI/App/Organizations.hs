@@ -15,7 +15,6 @@ module LN.UI.App.Organizations (
 
 
 
-import Control.Concurrent (threadDelay)
 import           Control.DeepSeq                 (NFData)
 import           Control.Monad.Trans.Either      (EitherT, runEitherT)
 import           Data.Int                        (Int64)
@@ -95,7 +94,6 @@ instance StoreData Store where
       _     -> action_init_crud crud params
 
     action_init_index params = do
-      threadDelay 1000000
       let
         page_info   = pageInfoFromParams params
         params_list = paramsFromPageInfo page_info
