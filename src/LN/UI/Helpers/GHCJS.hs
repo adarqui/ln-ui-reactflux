@@ -17,6 +17,7 @@ import           React.Flux.Internal (JSString)
 
 #ifdef __GHCJS__
 import qualified Data.JSString.Text  as JSS (textToJSString)
+import qualified GHCJS.Foreign       as Foreign (toJSString)
 #endif
 
 
@@ -33,7 +34,7 @@ textToJSString' = Text.unpack
 
 #ifdef __GHCJS__
 toJSString' :: Show a => a -> JSString
-toJSString' = toJSString . show
+toJSString' = Foreign.toJSString . show
 #else
 toJSString' :: Show a => a -> String
 toJSString' = show
