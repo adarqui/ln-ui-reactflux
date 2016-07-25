@@ -15,6 +15,7 @@ module LN.UI.App.Organizations (
 
 
 
+import           Control.Concurrent              (forkIO)
 import           Control.DeepSeq                 (NFData)
 import           Control.Monad.Trans.Either      (EitherT, runEitherT)
 import           Data.Ebyam                      (ebyam)
@@ -31,11 +32,14 @@ import           React.Flux                      hiding (view)
 import qualified React.Flux                      as RF
 
 import           LN.Api                          (getOrganizationPacks,
-                                                  getOrganizationsCount')
+                                                  getOrganizationsCount',
+                                                  postOrganization',
+                                                  putOrganization')
 import           LN.Api.String                   (getOrganizationPack')
 import           LN.Generate.Default             (defaultOrganizationRequest)
 import           LN.T.Convert                    (organizationResponseToOrganizationRequest)
 import           LN.T.Organization               (OrganizationRequest (..),
+                                                  OrganizationResponse (..),
                                                   OrganizationResponse (..))
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
 import           LN.T.Size                       (Size (..))
@@ -46,17 +50,20 @@ import           LN.UI.App.Loading               (Loader (..))
 import qualified LN.UI.App.Loading               as Loading
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
+import qualified LN.UI.App.Route                 as Route
 import           LN.UI.Helpers.DataList          (deleteNth)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref)
 import           LN.UI.Router                    (CRUD (..), Params, Route (..),
                                                   RouteWith (..), TyCRUD (..),
-                                                  linkName, routeWith')
+                                                  linkName, routeWith,
+                                                  routeWith')
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   pageInfoFromParams,
                                                   paramsFromPageInfo)
+import           LN.UI.View.Button               (createButtonsCreateEditCancel)
 import           LN.UI.View.Field
 
 
@@ -76,6 +83,8 @@ data Action
   | Init            CRUD Params
   | SetRequest      OrganizationRequest
   | SetRequestState (Maybe OrganizationRequest) (Maybe Text)
+  | Save
+  | Edit            Int64
   | Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -83,7 +92,7 @@ data Action
 
 instance StoreData Store where
   type StoreAction Store = Action
-  transform action st = do
+  transform action st@Store{..} = do
     putStrLn "Organizations"
 
     case action of
@@ -92,6 +101,8 @@ instance StoreData Store where
       Init crud params            -> action_init crud params
       SetRequest request          -> action_set_request request
       SetRequestState m_req m_tag -> action_set_request_state m_req m_tag
+      Save                        -> action_save
+      Edit edit_id                -> action_edit edit_id
 
     where
     action_load = do
@@ -129,6 +140,18 @@ instance StoreData Store where
       }
 
     action_set_request_state m_req m_tag = pure $ st{ _request = m_req, _requestTag = m_tag }
+
+    action_save = do
+      case _request of
+        Nothing                   -> pure st
+        Just organization_request -> do
+          lr <- rd $ postOrganization' organization_request
+          rehtie lr (const $ pure st) $ \organization_response@OrganizationResponse{..} -> do
+            forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
+            pure st
+
+    action_edit edit_id = do
+      pure st
 
 
 
@@ -252,11 +275,11 @@ viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
        (\idx -> dispatch $ SetRequest $ request{organizationRequestTags = deleteNth idx organizationRequestTags})
        (dispatch $ SetRequest $ request{organizationRequestTags = []})
 
-  -- , buttons_CreateEditCancel m_organization_id (cOrganizationMod Create) (cOrganizationMod <<< EditP) About
-
-  -- ]
-  -- where
-  -- organization        = unwrapOrganizationRequest organization_req
+    createButtonsCreateEditCancel
+      m_organization_id
+      (dispatch $ Save)
+      (\edit_id -> dispatch $ Edit edit_id)
+      (routeWith' Home)
 
 
 
