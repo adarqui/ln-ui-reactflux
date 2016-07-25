@@ -45,6 +45,7 @@ import           LN.UI.App.Loading               (Loader (..))
 import qualified LN.UI.App.Loading               as Loading
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
+import           LN.UI.Helpers.DataList          (deleteNth)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref)
@@ -71,8 +72,9 @@ data Store = Store {
 
 data Action
   = Load
-  | Init       CRUD Params
-  | SetRequest OrganizationRequest
+  | Init          CRUD Params
+  | SetRequest    OrganizationRequest
+  | SetRequestTag (Maybe Text)
   | Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -84,10 +86,11 @@ instance StoreData Store where
     putStrLn "Organizations"
 
     case action of
-      Nop                -> pure st
-      Load               -> action_load
-      Init crud params   -> action_init crud params
-      SetRequest request -> action_set_request request
+      Nop                 -> pure st
+      Load                -> action_load
+      Init crud params    -> action_init crud params
+      SetRequest request  -> action_set_request request
+      SetRequestTag m_tag -> action_set_request_tag m_tag
 
     where
     action_load = do
@@ -123,6 +126,8 @@ instance StoreData Store where
       pure $ st{
         _request = Just request
       }
+
+    action_set_request_tag m_tag = pure $ st{ _requestTag = m_tag }
 
 
 
@@ -166,8 +171,8 @@ view = defineControllerView "organizations" store $ \st@Store{..} crud ->
   case crud of
     Index           -> viewIndex st
     ShowS org_sid   -> viewShowS _organization
-    New             -> viewNew _request
-    EditS org_sid   -> viewEditS _request _organization
+    New             -> viewNew _requestTag _request
+    EditS org_sid   -> viewEditS _requestTag _request _organization
     DeleteS org_sid -> Delete.view_
 
 
@@ -197,23 +202,23 @@ viewShowS l_organization_pack = do
 
 
 
-viewNew :: Maybe OrganizationRequest -> ReactElementM ViewEventHandler ()
-viewNew m_request =
-  ebyam m_request mempty $ \request -> viewMod TyCreate Nothing request
+viewNew :: Maybe Text -> Maybe OrganizationRequest -> ReactElementM ViewEventHandler ()
+viewNew m_tag m_request =
+  ebyam m_request mempty $ \request -> viewMod TyCreate Nothing m_tag request
 
 
 
-viewEditS :: Maybe OrganizationRequest -> Loader (Maybe OrganizationPackResponse) -> ReactElementM ViewEventHandler ()
-viewEditS m_request l_organization_pack =
+viewEditS :: Maybe Text -> Maybe OrganizationRequest -> Loader (Maybe OrganizationPackResponse) -> ReactElementM ViewEventHandler ()
+viewEditS m_tag m_request l_organization_pack =
   Loading.loader1 l_organization_pack $ \m_organization_pack -> do
     case (m_request, m_organization_pack) of
-      (Just request, Just OrganizationPackResponse{..}) -> viewMod TyUpdate (Just organizationPackResponseOrganizationId) request
+      (Just request, Just OrganizationPackResponse{..}) -> viewMod TyUpdate (Just organizationPackResponseOrganizationId) m_tag request
       (_, _) -> mempty
 
 
 
-viewMod :: TyCRUD -> Maybe Int64 -> OrganizationRequest -> ReactElementM ViewEventHandler ()
-viewMod tycrud m_organization_id request@OrganizationRequest{..} = do
+viewMod :: TyCRUD -> Maybe Int64 -> Maybe Text -> OrganizationRequest -> ReactElementM ViewEventHandler ()
+viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Organization"
 
@@ -238,13 +243,13 @@ viewMod tycrud m_organization_id request@OrganizationRequest{..} = do
 
   -- -- , icon
 
-  -- , tagsField
-  --     organization.tags
-  --     (maybe "" id org_req_st.currentTag)
-  --     (cOrganizationMod <<< SetTag)
-  --     (cOrganizationMod AddTag)
-  --     (cOrganizationMod <<< DeleteTag)
-  --     (cOrganizationMod ClearTags)
+    tagsField
+       organizationRequestTags
+       (maybe ""  id m_tag)
+       (\input -> dispatch $ SetRequestTag $ Just input)
+       (dispatch $ SetRequest $ request{organizationRequestTags = maybe organizationRequestTags (\tag -> organizationRequestTags <> [tag]) m_tag})
+       (\idx -> dispatch $ SetRequest $ request{organizationRequestTags = deleteNth idx organizationRequestTags})
+       (dispatch $ SetRequest $ request{organizationRequestTags = []})
 
   -- , buttons_CreateEditCancel m_organization_id (cOrganizationMod Create) (cOrganizationMod <<< EditP) About
 

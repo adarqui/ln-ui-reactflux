@@ -31,6 +31,7 @@ library
                      , LN.UI.App.Portal
                      , LN.UI.App.Users
                      , LN.UI.App.Types
+                     , LN.UI.Helpers.DataList
                      , LN.UI.Helpers.DataText
                      , LN.UI.Helpers.GHCJS
                      , LN.UI.Helpers.HaskellApiHelpers
