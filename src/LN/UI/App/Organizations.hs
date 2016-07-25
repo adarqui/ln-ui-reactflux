@@ -73,7 +73,8 @@ data Store = Store {
   _organizations :: Loader (Map Int64 OrganizationPackResponse),
   _organization  :: Loader (Maybe OrganizationPackResponse),
   _request       :: Maybe OrganizationRequest,
-  _requestTag    :: Maybe Text
+  _requestTag    :: Maybe Text,
+  _requestEmail  :: Text
 }
 
 
@@ -81,6 +82,7 @@ data Store = Store {
 data Action
   = Load
   | Init            CRUD Params
+  | SetEmail        Text
   | SetRequest      OrganizationRequest
   | SetRequestState (Maybe OrganizationRequest) (Maybe Text)
   | Save
@@ -99,6 +101,7 @@ instance StoreData Store where
       Nop                         -> pure st
       Load                        -> action_load
       Init crud params            -> action_init crud params
+      SetEmail email              -> action_set_email email
       SetRequest request          -> action_set_request request
       SetRequestState m_req m_tag -> action_set_request_state m_req m_tag
       Save                        -> action_save
@@ -134,6 +137,11 @@ instance StoreData Store where
       EditS org_sid   -> sync st org_sid
       DeleteS org_sid -> sync st org_sid
 
+    action_set_email email =
+      pure $ st{
+        _requestEmail = email
+      }
+
     action_set_request request =
       pure $ st{
         _request = Just request
@@ -145,7 +153,7 @@ instance StoreData Store where
       case _request of
         Nothing                   -> pure st
         Just organization_request -> do
-          lr <- rd $ postOrganization' organization_request
+          lr <- rd $ postOrganization' $ organization_request { organizationRequestEmail = _requestEmail }
           rehtie lr (const $ pure st) $ \organization_response@OrganizationResponse{..} -> do
             forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
             pure st
@@ -179,7 +187,8 @@ defaultStore = Store {
   _organizations = Loaded Map.empty,
   _organization  = Loaded Nothing,
   _request       = Nothing,
-  _requestTag    = Nothing
+  _requestTag    = Nothing,
+  _requestEmail  = ""
 }
 
 

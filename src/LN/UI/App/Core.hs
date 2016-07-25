@@ -74,10 +74,14 @@ instance StoreData Store where
         RouteWith Home _                       -> pure ()
         RouteWith About _                      -> pure ()
         RouteWith Portal _                     -> pure ()
-        RouteWith (Organizations crud) params  ->
-          void $ mapM_ (forkIO . executeAction)
-            [ SomeStoreAction Organizations.store Organizations.Load
-            , SomeStoreAction Organizations.store $ Organizations.Init crud params]
+        RouteWith (Organizations crud) params  -> do
+          case (fmap userResponseEmail _me) of
+            Nothing    -> mempty
+            Just email -> do
+              void $ mapM_ (forkIO . executeAction)
+                [ SomeStoreAction Organizations.store $ Organizations.SetEmail email
+                , SomeStoreAction Organizations.store Organizations.Load
+                , SomeStoreAction Organizations.store $ Organizations.Init crud params]
         RouteWith (Users Index) params         -> void $ forkIO $ executeAction $ SomeStoreAction Users.store $ Users.Init params
         RouteWith _ _                          -> pure ()
 
