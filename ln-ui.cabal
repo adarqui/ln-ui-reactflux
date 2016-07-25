@@ -29,6 +29,7 @@ library
                      , LN.UI.App.Organizations
                      , LN.UI.App.PageNumbers
                      , LN.UI.App.Portal
+                     , LN.UI.App.Route
                      , LN.UI.App.Users
                      , LN.UI.App.Types
                      , LN.UI.Helpers.DataList
@@ -48,6 +49,7 @@ library
                      , LN.UI.Router.Util
                      , LN.UI.State.PageInfo
                      , LN.UI.View
+                     , LN.UI.View.Button
                      , LN.UI.View.Internal
                      , LN.UI.View.Field
   build-depends:       base >= 4.7 && < 5

@@ -18,6 +18,7 @@ import           Data.Map                 (Map)
 import qualified Data.Map                 as Map
 import           Data.Typeable            (Typeable)
 import           GHC.Generics             (Generic)
+import React.Flux
 
 import           LN.T.Pack.Sanitized.User (UserSanitizedPackResponse (..))
 import           LN.T.User                (UserResponse (..))

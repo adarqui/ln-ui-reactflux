@@ -12,7 +12,8 @@ module LN.UI.View.Internal (
   createLabelInput,
   createLabelButtonTextArea,
   createRadioMenu,
-  createTagsField
+  createTagsField,
+  createSimpleInfoButton
 ) where
 
 
@@ -173,3 +174,17 @@ createTagsField label tags current_tag set_tag_handler add_tag_handler delete_ta
                 , onClick (\_ _ -> delete_tag_handler idx)
                 ] $ span_ [ "classNames" $= "glyphicon glyphicon-remove" ] $ elemText "✖"
       ) $ toSeqList tags
+
+
+
+
+-- | creates a simple info button
+--
+-- simpleInfoButton "Create!" CreateResource
+--
+createSimpleInfoButton :: Text -> ViewEventHandler -> ReactElementM ViewEventHandler ()
+createSimpleInfoButton label click_handler = do
+  button_ [ classNames buttonInfoClasses
+          , onClick $ \_ _ -> click_handler
+          ] $ elemText label
+--  H.p_ [ H.button [buttonInfoClasses, E.onClick (E.input_ act) ] [ H.text label ] ]

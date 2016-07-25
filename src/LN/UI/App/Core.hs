@@ -7,8 +7,8 @@
 module LN.UI.App.Core (
   Store (..),
   defaultStore,
-  Action (..),
   store,
+  Action (..),
   view_,
   view,
   initRouter
@@ -94,6 +94,7 @@ instance StoreData Store where
         }
 
 
+
 store :: ReactStore Store
 store = mkStore defaultStore
 
@@ -160,3 +161,8 @@ renderRouteView Store{..} = do
       RouteWith (Users Index) params          -> Users.view_
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
       RouteWith _ _                           -> p_ $ elemText "Unknown"
+
+
+
+dispatch :: Action -> [SomeStoreAction]
+dispatch a = [SomeStoreAction store a]

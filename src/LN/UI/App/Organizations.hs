@@ -34,6 +34,7 @@ import           LN.Api                          (getOrganizationPacks,
                                                   getOrganizationsCount')
 import           LN.Api.String                   (getOrganizationPack')
 import           LN.Generate.Default             (defaultOrganizationRequest)
+import           LN.T.Convert                    (organizationResponseToOrganizationRequest)
 import           LN.T.Organization               (OrganizationRequest (..),
                                                   OrganizationResponse (..))
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
@@ -138,7 +139,7 @@ sync st@Store{..} org_sid = do
     pure organization
   rehtie lr (const $ pure st) $ \organization@OrganizationPackResponse{..} -> do
     pure $ st{
---      request = Just organizationResponseToOrganizationRequest organizationPackResponseOrganization
+      _request      = Just $ organizationResponseToOrganizationRequest organizationPackResponseOrganization,
       _organization = Loaded $ Just organization
     }
 
