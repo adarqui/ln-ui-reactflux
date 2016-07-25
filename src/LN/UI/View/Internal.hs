@@ -1,6 +1,6 @@
 {-# LANGUAGE ExplicitForAll    #-}
-{-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
 
 module LN.UI.View.Internal (
   buttonInfoClasses,
@@ -21,6 +21,7 @@ import           React.Flux                 hiding (view)
 import qualified React.Flux                 as RF
 import           React.Flux.Internal
 
+import           LN.UI.Helpers.DataList     (toSeqList)
 import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
 import           LN.UI.Helpers.ReactFluxDOM (targetValue)
 
@@ -170,5 +171,5 @@ createTagsField label tags current_tag set_tag_handler add_tag_handler delete_ta
       span_ [] $ do
         button_ [ "classNames" $= "btn btn-default btn-xs"
                 , onClick (\_ _ -> delete_tag_handler idx)
-                ] $ span_ [ "classNames" $= "glyphicon glyphicon-remove" ] $ elemText " "
-      ) $ zip [1..] tags
+                ] $ span_ [ "classNames" $= "glyphicon glyphicon-remove" ] $ elemText "✖"
+      ) $ toSeqList tags

@@ -72,9 +72,9 @@ data Store = Store {
 
 data Action
   = Load
-  | Init          CRUD Params
-  | SetRequest    OrganizationRequest
-  | SetRequestTag (Maybe Text)
+  | Init            CRUD Params
+  | SetRequest      OrganizationRequest
+  | SetRequestState (Maybe OrganizationRequest) (Maybe Text)
   | Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -86,11 +86,11 @@ instance StoreData Store where
     putStrLn "Organizations"
 
     case action of
-      Nop                 -> pure st
-      Load                -> action_load
-      Init crud params    -> action_init crud params
-      SetRequest request  -> action_set_request request
-      SetRequestTag m_tag -> action_set_request_tag m_tag
+      Nop                         -> pure st
+      Load                        -> action_load
+      Init crud params            -> action_init crud params
+      SetRequest request          -> action_set_request request
+      SetRequestState m_req m_tag -> action_set_request_state m_req m_tag
 
     where
     action_load = do
@@ -127,7 +127,7 @@ instance StoreData Store where
         _request = Just request
       }
 
-    action_set_request_tag m_tag = pure $ st{ _requestTag = m_tag }
+    action_set_request_state m_req m_tag = pure $ st{ _request = m_req, _requestTag = m_tag }
 
 
 
@@ -241,13 +241,13 @@ viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
     mandatoryVisibilityField organizationRequestVisibility
       (\input -> dispatch $ SetRequest $ request{organizationRequestVisibility = input})
 
-  -- -- , icon
+    -- icon
 
     tagsField
        organizationRequestTags
        (maybe ""  id m_tag)
-       (\input -> dispatch $ SetRequestTag $ Just input)
-       (dispatch $ SetRequest $ request{organizationRequestTags = maybe organizationRequestTags (\tag -> organizationRequestTags <> [tag]) m_tag})
+       (\input -> dispatch $ SetRequestState (Just request) (Just input))
+       (dispatch $ SetRequestState (Just $ request{organizationRequestTags = maybe organizationRequestTags (\tag -> organizationRequestTags <> [tag]) m_tag}) Nothing)
        (\idx -> dispatch $ SetRequest $ request{organizationRequestTags = deleteNth idx organizationRequestTags})
        (dispatch $ SetRequest $ request{organizationRequestTags = []})
 
