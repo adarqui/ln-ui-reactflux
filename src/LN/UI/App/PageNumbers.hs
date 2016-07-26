@@ -22,7 +22,7 @@ import qualified Web.Bootstrap3 as B
 import           LN.T.Count                 (CountResponse (..),
                                              CountResponses (..))
 import           LN.UI.Helpers.DataText     (tshow)
-import           LN.UI.Helpers.ReactFluxDOM (ahrefName, className_, classNames_)
+import           LN.UI.Helpers.ReactFluxDOM (ahrefName, classNames_)
 import           LN.UI.Router               (RouteWith (..),
                                              updateParams_Offset_Limit)
 import           LN.UI.State.PageInfo       (PageInfo (..))
@@ -66,13 +66,13 @@ view = defineView "pageNumbers" $ \(page_info, route_with@(RouteWith route param
 pageRange :: PageInfo -> [Int64]
 pageRange PageInfo{..} =
   case [1..totalPages] of
-    [x] -> []
+    [_] -> []
     xs  -> xs
 
 
 
 buildPages :: PageInfo -> RouteWith -> Pages
-buildPages page_info@PageInfo{..} (RouteWith route params) =
+buildPages page_info@PageInfo{..} _ =
   ( prev
   , pageRange page_info
   , next

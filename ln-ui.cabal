@@ -81,6 +81,7 @@ library
                      , haskell-rehtie
   if impl(ghcjs)
      build-depends:    ghcjs-base
+  ghc-options:         -Wall
   default-language:    Haskell2010
 
 test-suite ln-ui-test
