@@ -142,4 +142,3 @@ permissionsMatchHTML
   -> HTMLView_
 permissionsMatchHTML perm_to_match permissions is_match_handler isnt_match_handler =
   if perm_to_match `elem` permissions then is_match_handler else isnt_match_handler
-
