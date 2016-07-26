@@ -159,7 +159,13 @@ instance StoreData Store where
             pure st
 
     action_edit edit_id = do
-      pure st
+      case _request of
+        Nothing                   -> pure st
+        Just organization_request -> do
+          lr <- rd $ putOrganization' edit_id $ organization_request { organizationRequestEmail = _requestEmail }
+          rehtie lr (const $ pure st) $ \organization_response@OrganizationResponse{..} -> do
+            forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
+            pure st
 
 
 
