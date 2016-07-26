@@ -15,12 +15,12 @@ import           React.Flux                 hiding (view)
 import qualified React.Flux                 as RF
 
 import           LN.UI.Helpers.ReactFluxDOM
-import           LN.UI.Router.CRUD
-import           LN.UI.Router.Route
+import           LN.UI.Router
+import           LN.UI.Types                (HTMLEvent_)
 
 
 
-view_ :: ReactElementM eventHandler ()
+view_ :: HTMLEvent_
 view_ =
   RF.view view () mempty
 

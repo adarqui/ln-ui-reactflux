@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE Rank2Types        #-}
 {-# LANGUAGE RecordWildCards   #-}
 
 module LN.UI.App.Gravatar (
@@ -24,15 +25,15 @@ import           LN.T.User                  (UserSanitizedResponse (..))
 import           LN.UI.Helpers.DataText     (tshow)
 import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
 import           LN.UI.Helpers.ReactFluxDOM (ahrefElement)
-import           LN.UI.Router.CRUD    (CRUD (..))
-import           LN.UI.Router.Route   (RouteWith (..))
-import           LN.UI.Router.Route   (Route (..), routeWith')
+import           LN.UI.Router               (CRUD (..), Route (..),
+                                             RouteWith (..), routeWith')
+import           LN.UI.Types                (HTMLEvent_)
 
 
 
 -- | Renders a gravatar based on size, email md5, and alternate text
 --
-view_ :: RouteWith -> Size -> Text -> Text -> ReactElementM eventHandler ()
+view_ :: RouteWith -> Size -> Text -> Text -> HTMLEvent_
 view_ route_with size emailMD5 alt =
   RF.view view (route_with, size, emailMD5, alt) mempty
 
@@ -45,13 +46,13 @@ view = defineView "gravatar" $ \(route_with, size, emailMD5, alt) -> do
 
 
 
-viewUser_ :: Size -> UserSanitizedResponse -> ReactElementM eventHandler ()
+viewUser_ :: Size -> UserSanitizedResponse -> HTMLEvent_
 viewUser_ size UserSanitizedResponse{..} =
   RF.view view (routeWith' (Users (ShowS userSanitizedResponseName)), size, userSanitizedResponseEmailMD5, userSanitizedResponseName) mempty
 
 
 
-viewOrganization_ :: Size -> OrganizationResponse -> ReactElementM eventHandler ()
+viewOrganization_ :: Size -> OrganizationResponse -> HTMLEvent_
 viewOrganization_ size OrganizationResponse{..} =
   RF.view view (routeWith' (Organizations (ShowS organizationResponseName)), size, organizationResponseEmailMD5, organizationResponseName) mempty
 
