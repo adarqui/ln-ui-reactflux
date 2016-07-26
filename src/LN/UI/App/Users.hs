@@ -37,12 +37,14 @@ import qualified LN.UI.App.Gravatar              as Gravatar
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
 import           LN.UI.App.Types                 (UsersMap)
+import           LN.UI.Helpers.DataTime          (prettyUTCTimeMaybe)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
+import           LN.UI.Helpers.ReactFluxDOM      (ahrefName)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref)
-import           LN.UI.Router.CRUD         (CRUD (..))
-import           LN.UI.Router.Param        (Params)
-import           LN.UI.Router.Route        (Route (..), RouteWith (..),
+import           LN.UI.Router.CRUD               (CRUD (..))
+import           LN.UI.Router.Param              (Params)
+import           LN.UI.Router.Route              (Route (..), RouteWith (..),
                                                   routeWith')
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
@@ -111,15 +113,15 @@ view_ =
 
 view :: ReactView ()
 view = defineControllerView "users" store $ \Store{..} _ ->
-  div_ $ do
+  div_ [ "className" $= "container-fluid" ] $ do
     h1_ "Users"
     PageNumbers.view_ (_pageInfo, routeWith' $ Users Index)
-    ul_ $ do
+    ul_ [ "className" $= "list-unstyled" ] $ do
       mapM_ (\UserSanitizedPackResponse{..} -> do
+        let user = userSanitizedPackResponseUser
         li_ $ do
-          ul_ $ do
-            li_ $ p_ $ elemText $ userSanitizedResponseDisplayName userSanitizedPackResponseUser
-            li_ $ ahref $ routeWith' $ Users (ShowS $ userSanitizedResponseName userSanitizedPackResponseUser)
-            li_ $ p_ $ elemText $ userSanitizedResponseName userSanitizedPackResponseUser
-            li_ $ Gravatar.viewUser_ XSmall userSanitizedPackResponseUser
+          div_ [ "className" $= "row" ] $ do
+            div_ [ "className" $= "col-xs-1" ] $ p_ $ Gravatar.viewUser_ XSmall user
+            div_ [ "className" $= "col-xs-3" ] $ p_ $ ahrefName (userSanitizedResponseDisplayName user) (routeWith' $ Users (ShowS $ userSanitizedResponseName user))
+            div_ [ "className" $= "col-xs-2" ] $ p_ $ elemText $ prettyUTCTimeMaybe $ userSanitizedResponseCreatedAt user
         ) _users

@@ -227,12 +227,13 @@ viewIndex Store{..} = do
       PageNumbers.view_ (_pageInfo, routeWith' $ Organizations Index)
       ul_ [ "className" $= "list-unstyled" ] $ do
         mapM_ (\OrganizationPackResponse{..} -> do
+          let organization = organizationPackResponseOrganization
           li_ $ do
             div_ [ "className" $= "row" ] $ do
               div_ [ "className" $= "col-xs-1" ] $ p_ $ Gravatar.viewUser_ XSmall organizationPackResponseUser
-              div_ [ "className" $= "col-xs-3" ] $ p_ $ ahrefName (organizationResponseDisplayName organizationPackResponseOrganization) (routeWith' $ Organizations (ShowS $ organizationResponseName organizationPackResponseOrganization))
-              div_ [ "className" $= "col-xs-7" ] $ p_ $ elemText $ maybe "No Description." id (organizationResponseDescription organizationPackResponseOrganization)
-              div_ [ "className" $= "col-xs-1" ] $ p_ $ elemText $ prettyUTCTimeMaybe $ organizationResponseCreatedAt organizationPackResponseOrganization
+              div_ [ "className" $= "col-xs-3" ] $ p_ $ ahrefName (organizationResponseDisplayName organization) (routeWith' $ Organizations (ShowS $ organizationResponseName organization))
+              div_ [ "className" $= "col-xs-6" ] $ p_ $ elemText $ maybe "No Description." id (organizationResponseDescription organization)
+              div_ [ "className" $= "col-xs-2" ] $ p_ $ elemText $ prettyUTCTimeMaybe $ organizationResponseCreatedAt organization
           ) organizations
 
 
