@@ -110,7 +110,49 @@ module LN.UI.View.Button (
   glyphButtonLinkLg_Trash,
   glyphButtonLinkLg_Pencil,
   glyphButtonLinkLg_Ok,
-  glyphButtonLinkLg_Remove
+  glyphButtonLinkLg_Remove,
+
+   buttonGroup_Horizontal,
+   buttonGroup_Vertical,
+
+   buttonGroup_HorizontalSm1,
+   buttonGroup_VerticalSm1,
+
+   buttonGroup_Horizontal',
+   buttonGroup_Vertical',
+
+   button_newOrganization,
+   button_editOrganization,
+   button_deleteOrganization,
+   button_joinOrganization,
+   button_newForum,
+   button_editForum,
+   button_deleteForum,
+   button_newBoard,
+   button_editBoard,
+   button_deleteBoard,
+   button_newThread,
+   button_editThread,
+   button_deleteThread,
+   button_newThreadPost,
+   button_editThreadPost,
+   button_deleteThreadPost,
+   button_like,
+   button_neutral,
+   button_dislike,
+   button_starEmpty,
+   button_star,
+
+   linkBadge,
+
+   showBadge,
+
+   showTags,
+   showTagsSmall,
+
+   textButton,
+   textButtonSm,
+   textButtonLg
 ) where
 
 
