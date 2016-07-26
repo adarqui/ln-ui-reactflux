@@ -211,5 +211,6 @@ instance PathInfo Route where
     <|> Portal        <$ segment "portal"
     <|> Organizations <$ segment "organizations" <*> fromPathSegments
     <|> Users         <$ segment "users" <*> fromPathSegments
+    <|> Organizations <$> (ShowS <$> anySegment)
     <|> pure Home
     -- TODO FIXME: Can't do Home <$ segment "" because it fails to pattern match. Though, pure Index works because it's terminal.

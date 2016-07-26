@@ -45,6 +45,7 @@ spec = do
       fromPathInfo "/portal"                   `shouldBe` (Right Portal)
       fromPathInfo "/organizations"            `shouldBe` (Right $ Organizations Index)
       fromPathInfo "/organizations/new"        `shouldBe` (Right $ Organizations New)
+      fromPathInfo "/ln"                       `shouldBe` (Right $ Organizations (ShowS "ln"))
       fromPathInfo "/organizations/_edit/ln"   `shouldBe` (Right $ Organizations (EditS "ln"))
       fromPathInfo "/organizations/_delete/ln" `shouldBe` (Right $ Organizations (DeleteS "ln"))
 
