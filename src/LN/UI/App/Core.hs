@@ -44,9 +44,11 @@ import qualified LN.UI.App.Organizations         as Organizations
 import qualified LN.UI.App.Portal                as Portal
 import qualified LN.UI.App.Users                 as Users
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
-import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName, ahrefClasses)
+import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefClasses,
+                                                  ahrefName)
 import           LN.UI.Router
 import           LN.UI.State.PageInfo            (PageInfo, defaultPageInfo)
+import           LN.UI.Types                     (HTMLView_)
 
 
 
