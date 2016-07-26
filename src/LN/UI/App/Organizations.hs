@@ -52,9 +52,10 @@ import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
 import qualified LN.UI.App.Route                 as Route
 import           LN.UI.Helpers.DataList          (deleteNth)
+import           LN.UI.Helpers.DataText          (tshow)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
-import           LN.UI.Helpers.ReactFluxDOM      (ahref)
+import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName)
 import           LN.UI.Router                    (CRUD (..), Params, Route (..),
                                                   RouteWith (..), TyCRUD (..),
                                                   linkName, routeWith,
@@ -219,18 +220,18 @@ view = defineControllerView "organizations" store $ \st@Store{..} crud ->
 viewIndex :: Store -> ReactElementM ViewEventHandler ()
 viewIndex Store{..} = do
   Loading.loader1 _organizations $ \organizations -> do
-    div_ $ do
+    div_ [ "className" $= "container-fluid" ] $ do
       h1_ "Organizations"
       ahref $ routeWith' $ Organizations New
       PageNumbers.view_ (_pageInfo, routeWith' $ Organizations Index)
-      ul_ $ do
+      ul_ [ "className" $= "list-unstyled" ] $ do
         mapM_ (\OrganizationPackResponse{..} -> do
           li_ $ do
-            ul_ $ do
-              li_ $ p_ $ elemText $ organizationResponseDisplayName organizationPackResponseOrganization
-              li_ $ ahref $ routeWith' $ Organizations (ShowS $ organizationResponseName organizationPackResponseOrganization)
-              li_ $ p_ $ elemText $ userSanitizedResponseName organizationPackResponseUser
-              li_ $ Gravatar.viewUser_ XSmall organizationPackResponseUser
+            div_ [ "className" $= "row" ] $ do
+              div_ [ "className" $= "col-xs-1" ] $ p_ $ Gravatar.viewUser_ XSmall organizationPackResponseUser
+              div_ [ "className" $= "col-xs-3" ] $ p_ $ ahrefName (organizationResponseDisplayName organizationPackResponseOrganization) (routeWith' $ Organizations (ShowS $ organizationResponseName organizationPackResponseOrganization))
+              div_ [ "className" $= "col-xs-7" ] $ p_ $ elemText $ maybe "No Description." id (organizationResponseDescription organizationPackResponseOrganization)
+              div_ [ "className" $= "col-xs-1" ] $ p_ $ elemText $ tshow $ organizationResponseCreatedAt organizationPackResponseOrganization
           ) organizations
 
 
