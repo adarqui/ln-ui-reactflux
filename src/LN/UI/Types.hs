@@ -43,4 +43,4 @@ pattern Nil       = []
 -- type HTML' = HTML ()
 
 type HTMLView  = ReactElementM ViewEventHandler
-type HTMLView_ = HTMLView_
+type HTMLView_ = ReactElementM ViewEventHandler ()
