@@ -3,25 +3,6 @@
 module LN.UI.View.Button (
   createButtonsCreateEditCancel,
   glyphButton,
-  btn,
-  btnXs,
-  btnSm,
-  btnMd,
-  btnLg,
-  btnGroup,
-  btnGroupVertical,
-  colSm1,
-  glyphicon,
-  glyphiconArrowUp,
-  glyphiconArrowDown,
-  glyphiconPlus,
-  glyphiconMinus,
-  glyphiconStar,
-  glyphiconStarEmpty,
-  glyphiconTrash,
-  glyphiconPencil,
-  glyphiconOk,
-  glyphiconRemove ,
   glyphButton_ArrowUp,
   glyphButton_ArrowDown,
   glyphButton_Plus,
@@ -112,47 +93,47 @@ module LN.UI.View.Button (
   glyphButtonLinkLg_Ok,
   glyphButtonLinkLg_Remove,
 
-   buttonGroup_Horizontal,
-   buttonGroup_Vertical,
+  buttonGroup_Horizontal,
+  buttonGroup_Vertical,
 
-   buttonGroup_HorizontalSm1,
-   buttonGroup_VerticalSm1,
+  buttonGroup_HorizontalSm1,
+  buttonGroup_VerticalSm1,
 
-   buttonGroup_Horizontal',
-   buttonGroup_Vertical',
+  buttonGroup_Horizontal',
+  buttonGroup_Vertical',
 
-   button_newOrganization,
-   button_editOrganization,
-   button_deleteOrganization,
-   button_joinOrganization,
-   button_newForum,
-   button_editForum,
-   button_deleteForum,
-   button_newBoard,
-   button_editBoard,
-   button_deleteBoard,
-   button_newThread,
-   button_editThread,
-   button_deleteThread,
-   button_newThreadPost,
-   button_editThreadPost,
-   button_deleteThreadPost,
-   button_like,
-   button_neutral,
-   button_dislike,
-   button_starEmpty,
-   button_star,
+  button_newOrganization,
+  button_editOrganization,
+  button_deleteOrganization,
+  button_joinOrganization,
+  button_newForum,
+  button_editForum,
+  button_deleteForum,
+  button_newBoard,
+  button_editBoard,
+  button_deleteBoard,
+  button_newThread,
+  button_editThread,
+  button_deleteThread,
+  button_newThreadPost,
+  button_editThreadPost,
+  button_deleteThreadPost,
+  button_like,
+  button_neutral,
+  button_dislike,
+  button_starEmpty,
+  button_star,
 
-   linkBadge,
+  linkBadge,
 
-   showBadge,
+  showBadge,
 
-   showTags,
-   showTagsSmall,
+  showTags,
+  showTagsSmall,
 
-   textButton,
-   textButtonSm,
-   textButtonLg
+  textButton,
+  textButtonSm,
+  textButtonLg
 ) where
 
 
@@ -161,10 +142,11 @@ import           Data.Int                   (Int64)
 import           Data.Monoid                ((<>))
 import           Data.Text                  (Text)
 import           React.Flux
+import qualified Web.Bootstrap3 as B
 
 import qualified LN.UI.App.Route            as Route (Action (..), dispatch)
 import           LN.UI.Helpers.GHCJS        (JSString)
-import           LN.UI.Helpers.ReactFluxDOM (ahrefElement)
+import           LN.UI.Helpers.ReactFluxDOM (ahrefElement, classNames_)
 import           LN.UI.Router.Route         (RouteWith (..))
 import           LN.UI.Types                (HTMLView_)
 import           LN.UI.View.Internal
@@ -190,12 +172,12 @@ createButtonsCreateEditCancel m_edit_id save_handler edit_handler cancel_route_w
 
 
 
-glyphButton :: JSString -> JSString -> Maybe Text -> [SomeStoreAction] -> HTMLView_
+glyphButton :: Text -> Text -> Maybe Text -> [SomeStoreAction] -> HTMLView_
 glyphButton glyph sz m_text click_handler =
-  button_ [ "className" $= ("btn btn-default " <> sz)
+  button_ [ classNames_ [B.btn, B.btnDefault, sz]
           , onClick $ \_ _ -> click_handler
           ] $ do
-            span_ [ "className" $= ("glyphicon " <> glyph)] text
+            span_ [ classNames_ [B.glyphicon, glyph] ] text
   where
   text =
     case m_text of
@@ -204,56 +186,16 @@ glyphButton glyph sz m_text click_handler =
 
 
 
-btn, btnXs, btnSm, btnMd, btnLg :: JSString
-btn   = "btn"
-btnXs = "btn-xs"
-btnSm = "btn-sm"
-btnMd = "btn-md"
-btnLg = "btn-lg"
-
-
-
-btnGroup, btnGroupVertical :: JSString
-btnGroup = "btn-group"
-btnGroupVertical = "btn-group-vertical"
-
-
-
-colSm1 :: JSString
-colSm1 = "col-sm-1"
-
-
-
-badge :: JSString
-badge = "badge"
-
-
-
-glyphicon, glyphiconArrowUp, glyphiconArrowDown, glyphiconPlus, glyphiconMinus, glyphiconStar, glyphiconStarEmpty, glyphiconTrash, glyphiconPencil, glyphiconOk, glyphiconRemove :: JSString
-glyphicon           =  "glyphicon"
-glyphiconArrowUp    =  "glyphicon-arrow-up"
-glyphiconArrowDown  =  "glyphicon-arrow-down"
-glyphiconPlus       =  "glyphicon-plus"
-glyphiconMinus      =  "glyphicon-minus"
-glyphiconStar       =  "glyphicon-star"
-glyphiconStarEmpty  =  "glyphicon-star-empty"
-glyphiconTrash      =  "glyphicon-trash"
-glyphiconPencil     =  "glyphicon-pencil"
-glyphiconOk         =  "glyphicon-ok"
-glyphiconRemove     =  "glyphicon-remove"
-
-
-
-glyphButton_ArrowUp   = glyphButton glyphiconArrowUp
-glyphButton_ArrowDown = glyphButton glyphiconArrowDown
-glyphButton_Plus      = glyphButton glyphiconPlus
-glyphButton_Minus     = glyphButton glyphiconMinus
-glyphButton_Star      = glyphButton glyphiconStar
-glyphButton_StarEmpty = glyphButton glyphiconStarEmpty
-glyphButton_Trash     = glyphButton glyphiconTrash
-glyphButton_Pencil    = glyphButton glyphiconPencil
-glyphButton_Ok        = glyphButton glyphiconOk
-glyphButton_Remove    = glyphButton glyphiconRemove
+glyphButton_ArrowUp   = glyphButton B.glyphiconArrowUp
+glyphButton_ArrowDown = glyphButton B.glyphiconArrowDown
+glyphButton_Plus      = glyphButton B.glyphiconPlus
+glyphButton_Minus     = glyphButton B.glyphiconMinus
+glyphButton_Star      = glyphButton B.glyphiconStar
+glyphButton_StarEmpty = glyphButton B.glyphiconStarEmpty
+glyphButton_Trash     = glyphButton B.glyphiconTrash
+glyphButton_Pencil    = glyphButton B.glyphiconPencil
+glyphButton_Ok        = glyphButton B.glyphiconOk
+glyphButton_Remove    = glyphButton B.glyphiconRemove
 
 
 
@@ -270,48 +212,48 @@ glyphButtonDef_Remove    = glyphButtonSm_Remove
 
 
 
-glyphButtonSm_ArrowUp   = glyphButton_ArrowUp btnSm
-glyphButtonSm_ArrowDown = glyphButton_ArrowDown btnSm
-glyphButtonSm_Plus      = glyphButton_Plus btnSm
-glyphButtonSm_Minus     = glyphButton_Minus btnSm
-glyphButtonSm_Star      = glyphButton_Star btnSm
-glyphButtonSm_StarEmpty = glyphButton_StarEmpty btnSm
-glyphButtonSm_Trash     = glyphButton_Trash btnSm
-glyphButtonSm_Pencil    = glyphButton_Pencil btnSm
-glyphButtonSm_Ok        = glyphButton_Ok btnSm
-glyphButtonSm_Remove    = glyphButton_Remove btnSm
+glyphButtonSm_ArrowUp   = glyphButton_ArrowUp B.btnSm
+glyphButtonSm_ArrowDown = glyphButton_ArrowDown B.btnSm
+glyphButtonSm_Plus      = glyphButton_Plus B.btnSm
+glyphButtonSm_Minus     = glyphButton_Minus B.btnSm
+glyphButtonSm_Star      = glyphButton_Star B.btnSm
+glyphButtonSm_StarEmpty = glyphButton_StarEmpty B.btnSm
+glyphButtonSm_Trash     = glyphButton_Trash B.btnSm
+glyphButtonSm_Pencil    = glyphButton_Pencil B.btnSm
+glyphButtonSm_Ok        = glyphButton_Ok B.btnSm
+glyphButtonSm_Remove    = glyphButton_Remove B.btnSm
 
 
 
-glyphButtonLg_ArrowUp   = glyphButton_ArrowUp btnLg
-glyphButtonLg_ArrowDown = glyphButton_ArrowDown btnLg
-glyphButtonLg_Plus      = glyphButton_Plus btnLg
-glyphButtonLg_Minus     = glyphButton_Minus btnLg
-glyphButtonLg_Star      = glyphButton_Star btnLg
-glyphButtonLg_StarEmpty = glyphButton_StarEmpty btnLg
-glyphButtonLg_Trash     = glyphButton_Trash btnLg
-glyphButtonLg_Pencil    = glyphButton_Pencil btnLg
-glyphButtonLg_Ok        = glyphButton_Ok btnLg
-glyphButtonLg_Remove    = glyphButton_Remove btnLg
+glyphButtonLg_ArrowUp   = glyphButton_ArrowUp B.btnLg
+glyphButtonLg_ArrowDown = glyphButton_ArrowDown B.btnLg
+glyphButtonLg_Plus      = glyphButton_Plus B.btnLg
+glyphButtonLg_Minus     = glyphButton_Minus B.btnLg
+glyphButtonLg_Star      = glyphButton_Star B.btnLg
+glyphButtonLg_StarEmpty = glyphButton_StarEmpty B.btnLg
+glyphButtonLg_Trash     = glyphButton_Trash B.btnLg
+glyphButtonLg_Pencil    = glyphButton_Pencil B.btnLg
+glyphButtonLg_Ok        = glyphButton_Ok B.btnLg
+glyphButtonLg_Remove    = glyphButton_Remove B.btnLg
 
 
 
-glyphButtonLink :: JSString -> JSString -> Maybe Text -> RouteWith-> HTMLView_
+glyphButtonLink :: Text -> Text -> Maybe Text -> RouteWith-> HTMLView_
 glyphButtonLink glyph sz m_text route_with =
   glyphButton glyph sz m_text $ Route.dispatch $ Route.Goto route_with
 
 
 
-glyphButtonLink_ArrowUp   = glyphButtonLink glyphiconArrowUp
-glyphButtonLink_ArrowDown = glyphButtonLink glyphiconArrowDown
-glyphButtonLink_Plus      = glyphButtonLink glyphiconPlus
-glyphButtonLink_Minus     = glyphButtonLink glyphiconMinus
-glyphButtonLink_Star      = glyphButtonLink glyphiconStar
-glyphButtonLink_StarEmpty = glyphButtonLink glyphiconStarEmpty
-glyphButtonLink_Trash     = glyphButtonLink glyphiconTrash
-glyphButtonLink_Pencil    = glyphButtonLink glyphiconPencil
-glyphButtonLink_Ok        = glyphButtonLink glyphiconOk
-glyphButtonLink_Remove    = glyphButtonLink glyphiconRemove
+glyphButtonLink_ArrowUp   = glyphButtonLink B.glyphiconArrowUp
+glyphButtonLink_ArrowDown = glyphButtonLink B.glyphiconArrowDown
+glyphButtonLink_Plus      = glyphButtonLink B.glyphiconPlus
+glyphButtonLink_Minus     = glyphButtonLink B.glyphiconMinus
+glyphButtonLink_Star      = glyphButtonLink B.glyphiconStar
+glyphButtonLink_StarEmpty = glyphButtonLink B.glyphiconStarEmpty
+glyphButtonLink_Trash     = glyphButtonLink B.glyphiconTrash
+glyphButtonLink_Pencil    = glyphButtonLink B.glyphiconPencil
+glyphButtonLink_Ok        = glyphButtonLink B.glyphiconOk
+glyphButtonLink_Remove    = glyphButtonLink B.glyphiconRemove
 
 
 
@@ -328,29 +270,29 @@ glyphButtonLinkDef_Remove    = glyphButtonLinkSm_Remove
 
 
 
-glyphButtonLinkSm_ArrowUp   = glyphButtonLink_ArrowUp btnSm
-glyphButtonLinkSm_ArrowDown = glyphButtonLink_ArrowDown btnSm
-glyphButtonLinkSm_Plus      = glyphButtonLink_Plus btnSm
-glyphButtonLinkSm_Minus     = glyphButtonLink_Minus btnSm
-glyphButtonLinkSm_Star      = glyphButtonLink_Star btnSm
-glyphButtonLinkSm_StarEmpty = glyphButtonLink_StarEmpty btnSm
-glyphButtonLinkSm_Trash     = glyphButtonLink_Trash btnSm
-glyphButtonLinkSm_Pencil    = glyphButtonLink_Pencil btnSm
-glyphButtonLinkSm_Ok        = glyphButtonLink_Ok btnSm
-glyphButtonLinkSm_Remove    = glyphButtonLink_Remove btnSm
+glyphButtonLinkSm_ArrowUp   = glyphButtonLink_ArrowUp B.btnSm
+glyphButtonLinkSm_ArrowDown = glyphButtonLink_ArrowDown B.btnSm
+glyphButtonLinkSm_Plus      = glyphButtonLink_Plus B.btnSm
+glyphButtonLinkSm_Minus     = glyphButtonLink_Minus B.btnSm
+glyphButtonLinkSm_Star      = glyphButtonLink_Star B.btnSm
+glyphButtonLinkSm_StarEmpty = glyphButtonLink_StarEmpty B.btnSm
+glyphButtonLinkSm_Trash     = glyphButtonLink_Trash B.btnSm
+glyphButtonLinkSm_Pencil    = glyphButtonLink_Pencil B.btnSm
+glyphButtonLinkSm_Ok        = glyphButtonLink_Ok B.btnSm
+glyphButtonLinkSm_Remove    = glyphButtonLink_Remove B.btnSm
 
 
 
-glyphButtonLinkLg_ArrowUp   = glyphButtonLink_ArrowUp btnLg
-glyphButtonLinkLg_ArrowDown = glyphButtonLink_ArrowDown btnLg
-glyphButtonLinkLg_Plus      = glyphButtonLink_Plus btnLg
-glyphButtonLinkLg_Minus     = glyphButtonLink_Minus btnLg
-glyphButtonLinkLg_Star      = glyphButtonLink_Star btnLg
-glyphButtonLinkLg_StarEmpty = glyphButtonLink_StarEmpty btnLg
-glyphButtonLinkLg_Trash     = glyphButtonLink_Trash btnLg
-glyphButtonLinkLg_Pencil    = glyphButtonLink_Pencil btnLg
-glyphButtonLinkLg_Ok        = glyphButtonLink_Ok btnLg
-glyphButtonLinkLg_Remove    = glyphButtonLink_Remove btnLg
+glyphButtonLinkLg_ArrowUp   = glyphButtonLink_ArrowUp B.btnLg
+glyphButtonLinkLg_ArrowDown = glyphButtonLink_ArrowDown B.btnLg
+glyphButtonLinkLg_Plus      = glyphButtonLink_Plus B.btnLg
+glyphButtonLinkLg_Minus     = glyphButtonLink_Minus B.btnLg
+glyphButtonLinkLg_Star      = glyphButtonLink_Star B.btnLg
+glyphButtonLinkLg_StarEmpty = glyphButtonLink_StarEmpty B.btnLg
+glyphButtonLinkLg_Trash     = glyphButtonLink_Trash B.btnLg
+glyphButtonLinkLg_Pencil    = glyphButtonLink_Pencil B.btnLg
+glyphButtonLinkLg_Ok        = glyphButtonLink_Ok B.btnLg
+glyphButtonLinkLg_Remove    = glyphButtonLink_Remove B.btnLg
 
 
 
@@ -361,18 +303,18 @@ buttonGroup_Vertical xs   = div_ xs
 
 
 buttonGroup_HorizontalSm1, buttonGroup_VerticalSm1 :: HTMLView_ -> HTMLView_
-buttonGroup_HorizontalSm1 = buttonGroup_Horizontal' colSm1
-buttonGroup_VerticalSm1 = buttonGroup_Vertical' colSm1
+buttonGroup_HorizontalSm1 = buttonGroup_Horizontal' B.colSm1
+buttonGroup_VerticalSm1 = buttonGroup_Vertical' B.colSm1
 
 
 
 buttonGroup_Horizontal' :: JSString -> HTMLView_ -> HTMLView_
 buttonGroup_Horizontal' sz xs =
-  div_ [ "className" $= btnGroup ] xs
+  div_ [ "className" $= B.btnGroup ] xs
 
 buttonGroup_Vertical' :: JSString -> HTMLView_ -> HTMLView_
 buttonGroup_Vertical' sz xs =
-  div_ [ "className" $= btnGroupVertical ] xs
+  div_ [ "className" $= B.btnGroupVertical ] xs
 
 
 
@@ -428,17 +370,17 @@ showBadge :: Show a => Text -> a -> HTMLView_
 showBadge text badge_ =
   p_ $ do
     elemText text
-    span_ [ "className" $= badge ] $ elemShow badge_
+    span_ [ classNames_ [B.badge] ] $ elemShow badge_
 
 
 
-textButton :: JSString -> Text -> [SomeStoreAction] -> HTMLView_
+textButton :: Text -> Text -> [SomeStoreAction] -> HTMLView_
 textButton sz label handler =
-  button_ [ "className" $= ("btn btn-default " <> sz)
+  button_ [ classNames_ [B.btn, B.btnDefault, sz]
           , onClick $ \_ _ -> handler
           ] $ do
             span_ $ elemText label
 
 textButtonSm, textButtonLg :: Text -> [SomeStoreAction] -> HTMLView_
-textButtonSm = textButton btnSm
-textButtonLg = textButton btnLg
+textButtonSm = textButton B.btnSm
+textButtonLg = textButton B.btnLg

@@ -9,7 +9,8 @@ module LN.UI.Helpers.ReactFluxDOM (
   ahrefClasses,
   ahrefClassesName,
   ahrefElement,
-  targetValue
+  targetValue,
+  classNames_
 ) where
 
 
@@ -57,3 +58,8 @@ ahrefElement route_with element =
 -- TODO FIXME: Can't use FromJSVal because it's defined in React.Flux.PropertiesAndEvents but not exported
 -- -- targetValue :: FromJSVal val => Event -> val
 targetValue evt = target evt "value"
+
+
+
+classNames_ :: [Text] -> PropertyOrHandler handler
+classNames_ = classNames . flip zip (repeat True)

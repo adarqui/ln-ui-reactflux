@@ -47,6 +47,7 @@ packages:
 - '../haskell-ebyam'
 - '../haskell-ifte'
 - '../haskell-rehtie'
+- '../haskell-web-bootstrap'
 - '../react-flux-router'
 - '../ghcjs-router'
 - '../ghcjs-ajax/ghcjs-ajax'
