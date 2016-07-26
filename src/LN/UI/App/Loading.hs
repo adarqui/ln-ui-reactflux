@@ -1,5 +1,5 @@
+{-# LANGUAGE ExplicitForAll    #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ExplicitForAll #-}
 
 module LN.UI.App.Loading (
   Loader (..),
@@ -8,7 +8,9 @@ module LN.UI.App.Loading (
 
 
 
-import React.Flux hiding (view)
+import           React.Flux  hiding (view)
+
+import           LN.UI.Types (HTMLView_)
 
 
 
