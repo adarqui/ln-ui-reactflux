@@ -31,6 +31,7 @@ import           GHC.Generics                    (Generic)
 import           React.Flux                      hiding (view)
 import qualified React.Flux                      as RF
 import           React.Flux.Router.WebRoutes     (initRouterRaw'ByteString)
+import qualified Web.Bootstrap3 as B
 
 import           LN.Api                          (getMe', getUserSanitizedPacks_ByUsersIds')
 import           LN.T.Pack.Sanitized.User        (UserSanitizedPackResponse (..), UserSanitizedPackResponses (..))
@@ -45,7 +46,7 @@ import qualified LN.UI.App.Portal                as Portal
 import qualified LN.UI.App.Users                 as Users
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefClasses,
-                                                  ahrefName)
+                                                  ahrefName, className_, classNames_)
 import           LN.UI.Router
 import           LN.UI.State.PageInfo            (PageInfo, defaultPageInfo)
 import           LN.UI.Types                     (HTMLEvent_, HTMLView_)
@@ -144,11 +145,11 @@ defaultLayout st@Store{..} page =
 
 navBar :: Maybe UserResponse -> HTMLView_
 navBar m_user_pack =
-  div_ [ "className" $= "container-fluid" ] $ do
-    nav_ [ "className" $= "navbar-nav navbar-static-top" ] $ do
-      div_ [ "className" $= "container" ] $ do
-        ahrefClasses "navbar-brand" $ routeWith' Home
-        ul_ [ "className" $= "navbar-nav nav navtabs" ]$ do
+  cldiv_ B.containerFluid $ do
+    nav_ [classNames_ [B.navbarNav, B.navbarStaticTop]] $ do
+      cldiv_ B.container $ do
+        ahrefClasses B.navbarBrand $ routeWith' Home
+        ul_ [classNames_ [B.navbarNav, B.nav, B.navTabs]] $ do
           li_ $ ahref $ routeWith' About
           li_ $ ahref $ routeWith' Portal
           li_ $ do
