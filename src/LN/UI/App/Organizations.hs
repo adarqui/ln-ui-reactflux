@@ -220,7 +220,7 @@ view = defineControllerView "organizations" store $ \st@Store{..} crud ->
 
 
 
-viewIndex :: Store -> ReactElementM ViewEventHandler ()
+viewIndex :: Store -> HTMLView_
 viewIndex Store{..} = do
   Loading.loader1 _organizations $ \organizations -> do
     div_ [ "className" $= "container-fluid" ] $ do
@@ -240,7 +240,7 @@ viewIndex Store{..} = do
 
 
 
-viewShowS :: Loader (Maybe OrganizationPackResponse) -> ReactElementM ViewEventHandler ()
+viewShowS :: Loader (Maybe OrganizationPackResponse) -> HTMLView_
 viewShowS l_organization = do
   Loading.loader1 l_organization $ go
   where
@@ -311,13 +311,13 @@ viewShowS l_organization = do
 
 
 
-viewNew :: Maybe Text -> Maybe OrganizationRequest -> ReactElementM ViewEventHandler ()
+viewNew :: Maybe Text -> Maybe OrganizationRequest -> HTMLView_
 viewNew m_tag m_request =
   ebyam m_request mempty $ \request -> viewMod TyCreate Nothing m_tag request
 
 
 
-viewEditS :: Maybe Text -> Maybe OrganizationRequest -> Loader (Maybe OrganizationPackResponse) -> ReactElementM ViewEventHandler ()
+viewEditS :: Maybe Text -> Maybe OrganizationRequest -> Loader (Maybe OrganizationPackResponse) -> HTMLView_
 viewEditS m_tag m_request l_organization_pack =
   Loading.loader1 l_organization_pack $ \m_organization_pack -> do
     case (m_request, m_organization_pack) of
@@ -326,7 +326,7 @@ viewEditS m_tag m_request l_organization_pack =
 
 
 
-viewMod :: TyCRUD -> Maybe Int64 -> Maybe Text -> OrganizationRequest -> ReactElementM ViewEventHandler ()
+viewMod :: TyCRUD -> Maybe Int64 -> Maybe Text -> OrganizationRequest -> HTMLView_
 viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Organization"

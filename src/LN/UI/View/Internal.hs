@@ -70,7 +70,7 @@ radioInlineClasses = [("radio-inline", True)]
 -- Widgets
 --
 
-createLabelInput :: Text -> Text -> Text -> PropertyOrHandler ViewEventHandler -> ReactElementM ViewEventHandler ()
+createLabelInput :: Text -> Text -> Text -> PropertyOrHandler ViewEventHandler -> HTMLView_
 createLabelInput label placeholder value handler =
   div_ [ classNames formGroupClasses
        ] $ do
@@ -91,7 +91,7 @@ createLabelButtonTextArea
   -> Text
   -> PropertyOrHandler ViewEventHandler
   -> PropertyOrHandler ViewEventHandler
-  -> ReactElementM ViewEventHandler ()
+  -> HTMLView_
 
 createLabelButtonTextArea label placeholder value button_name value_change_handler button_handler =
   cldiv_ "label-button-textarea input-group" $ do
@@ -120,7 +120,7 @@ createRadioMenu
   -> [radio]
   -> radio
   -> (radio -> ViewEventHandler)
-  -> ReactElementM ViewEventHandler ()
+  -> HTMLView_
 
 createRadioMenu menu_label radio_name radios checked_value radio_handler =
   p_ $ do
@@ -153,7 +153,7 @@ createTagsField
   -> ViewEventHandler           -- ^ add current tag
   -> (Int -> ViewEventHandler)  -- ^ delete tag
   -> ViewEventHandler           -- ^ clear tags
-  -> ReactElementM ViewEventHandler ()
+  -> HTMLView_
 
 createTagsField label tags current_tag set_tag_handler add_tag_handler delete_tag_handler clear_tags_handler = do
   cldiv_ "input-group" $ do
@@ -184,7 +184,7 @@ createTagsField label tags current_tag set_tag_handler add_tag_handler delete_ta
 --
 -- simpleInfoButton "Create!" CreateResource
 --
-createSimpleInfoButton :: Text -> ViewEventHandler -> ReactElementM ViewEventHandler ()
+createSimpleInfoButton :: Text -> ViewEventHandler -> HTMLView_
 createSimpleInfoButton label click_handler = do
   button_ [ classNames buttonInfoClasses
           , onClick $ \_ _ -> click_handler
@@ -193,7 +193,7 @@ createSimpleInfoButton label click_handler = do
 
 
 
-showTags :: [Text] -> ReactElementM ViewEventHandler ()
+showTags :: [Text] -> HTMLView_
 showTags tags =
   mapM_ (\tag -> do
     span_ [ "className" $= "label label-default" ] $ do
@@ -203,7 +203,7 @@ showTags tags =
 
 
 
-showTagsSmall :: [Text] -> ReactElementM ViewEventHandler ()
+showTagsSmall :: [Text] -> HTMLView_
 showTagsSmall tags = do
   small_ $ do
     span_ $ showTags tags

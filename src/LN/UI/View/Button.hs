@@ -20,7 +20,7 @@ createButtonsCreateEditCancel
   -> ViewEventHandler -- ^ save handler
   -> (Int64 -> ViewEventHandler) -- ^ edit handler
   -> RouteWith -- ^ cancel route
-  -> ReactElementM ViewEventHandler ()
+  -> HTMLView_
 
 createButtonsCreateEditCancel m_edit_id save_handler edit_handler cancel_route_with =
   div_ $ do

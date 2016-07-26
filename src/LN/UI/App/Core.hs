@@ -131,7 +131,7 @@ initRouter =
 
 
 
-defaultLayout :: Store -> ReactElementM ViewEventHandler () -> ReactElementM ViewEventHandler ()
+defaultLayout :: Store -> HTMLView_ -> HTMLView_
 defaultLayout st@Store{..} page =
   div_ $ do
     navBar _me
@@ -140,7 +140,7 @@ defaultLayout st@Store{..} page =
 
 
 
-navBar :: Maybe UserResponse -> ReactElementM ViewEventHandler ()
+navBar :: Maybe UserResponse -> HTMLView_
 navBar m_user_pack =
   div_ [ "className" $= "container-fluid" ] $ do
     nav_ [ "className" $= "navbar-nav navbar-static-top" ] $ do
@@ -156,7 +156,7 @@ navBar m_user_pack =
 
 
 
-renderRouteView :: Store -> ReactElementM ViewEventHandler ()
+renderRouteView :: Store -> HTMLView_
 renderRouteView Store{..} = do
   div_ $ do
     case _route of

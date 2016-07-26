@@ -19,7 +19,7 @@ data Loader a
 
 
 
-loader1 :: forall v. Loader v -> (v -> ReactElementM ViewEventHandler ()) -> ReactElementM ViewEventHandler ()
+loader1 :: forall v. Loader v -> (v -> HTMLView_) -> HTMLView_
 loader1 loading_v loaded =
   case loading_v of
     Loaded v -> loaded v

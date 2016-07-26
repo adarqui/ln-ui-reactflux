@@ -28,9 +28,9 @@ isMemberOfOrganization OrganizationPackResponse{..} = Team_Members `elem` organi
 --
 isMemberOfOrganizationHTML
   :: OrganizationPackResponse
-  -> ReactElementM ViewEventHandler ()
-  -> ReactElementM ViewEventHandler ()
-  -> ReactElementM ViewEventHandler ()
+  -> HTMLView_
+  -> HTMLView_
+  -> HTMLView_
 
 isMemberOfOrganizationHTML pack is_member_handler isnt_member_handler =
   if isMemberOfOrganization pack
@@ -43,8 +43,8 @@ isMemberOfOrganizationHTML pack is_member_handler isnt_member_handler =
 --
 isMemberOfOrganizationHTML'
   :: OrganizationPackResponse
-  -> ReactElementM ViewEventHandler ()
-  -> ReactElementM ViewEventHandler ()
+  -> HTMLView_
+  -> HTMLView_
 
 isMemberOfOrganizationHTML' pack is_member_handler =
   if isMemberOfOrganization pack

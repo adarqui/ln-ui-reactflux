@@ -29,26 +29,26 @@ import           LN.UI.View.Internal
 
 
 
-mandatoryLabelField :: Text -> Text -> (Text -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
+mandatoryLabelField :: Text -> Text -> (Text -> ViewEventHandler) -> HTMLView_
 mandatoryLabelField label value handler =
   createLabelInput label label value $ onChange (handler . targetValue)
 
 
 
-mandatoryNameField :: Text -> (Text -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
+mandatoryNameField :: Text -> (Text -> ViewEventHandler) -> HTMLView_
 mandatoryNameField = mandatoryLabelField "Name"
 
 
-mandatoryCompanyField :: Text -> (Text -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
+mandatoryCompanyField :: Text -> (Text -> ViewEventHandler) -> HTMLView_
 mandatoryCompanyField = mandatoryLabelField "Company"
 
 
-mandatoryLocationField :: Text -> (Text -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
+mandatoryLocationField :: Text -> (Text -> ViewEventHandler) -> HTMLView_
 mandatoryLocationField = mandatoryLabelField "Location"
 
 
 
-optionalDescriptionField :: Maybe Text -> (Text -> ViewEventHandler) -> ViewEventHandler -> ReactElementM ViewEventHandler ()
+optionalDescriptionField :: Maybe Text -> (Text -> ViewEventHandler) -> ViewEventHandler -> HTMLView_
 optionalDescriptionField m_value set_description_handler remove_description_handler =
   createLabelButtonTextArea "Description" "Description" (maybe "" id m_value) "✖"
     (onChange (set_description_handler . targetValue))
@@ -56,7 +56,7 @@ optionalDescriptionField m_value set_description_handler remove_description_hand
 
 
 
-mandatoryDescriptionField :: Text -> (Text -> ViewEventHandler) -> ViewEventHandler -> ReactElementM ViewEventHandler ()
+mandatoryDescriptionField :: Text -> (Text -> ViewEventHandler) -> ViewEventHandler -> HTMLView_
 mandatoryDescriptionField value set_description_handler remove_description_handler =
   createLabelButtonTextArea "Description" "Description" value "✖"
     (onChange (set_description_handler . targetValue))
@@ -64,7 +64,7 @@ mandatoryDescriptionField value set_description_handler remove_description_handl
 
 
 
-mandatoryMembershipField :: Membership -> (Membership -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
+mandatoryMembershipField :: Membership -> (Membership -> ViewEventHandler) -> HTMLView_
 mandatoryMembershipField value membership_handler =
   createRadioMenu
     "Membership"
@@ -75,7 +75,7 @@ mandatoryMembershipField value membership_handler =
 
 
 
-mandatoryVisibilityField :: Visibility -> (Visibility -> ViewEventHandler) -> ReactElementM ViewEventHandler ()
+mandatoryVisibilityField :: Visibility -> (Visibility -> ViewEventHandler) -> HTMLView_
 mandatoryVisibilityField value visibility_handler =
   createRadioMenu
     "Visibility"
@@ -93,7 +93,7 @@ tagsField
   -> ViewEventHandler           -- ^ add current tag
   -> (Int -> ViewEventHandler)  -- ^ delete tag
   -> ViewEventHandler           -- ^ clear tags
-  -> ReactElementM ViewEventHandler ()
+  -> HTMLView_
 tagsField = createTagsField "Tags"
 
 
@@ -105,7 +105,7 @@ privateTagsField
   -> ViewEventHandler           -- ^ add current tag
   -> (Int -> ViewEventHandler)  -- ^ delete tag
   -> ViewEventHandler           -- ^ clear tags
-  -> ReactElementM ViewEventHandler ()
+  -> HTMLView_
 privateTagsField = createTagsField "Private Tags"
 
 
@@ -117,5 +117,5 @@ suggestedTagsField
   -> ViewEventHandler           -- ^ add current tag
   -> (Int -> ViewEventHandler)  -- ^ delete tag
   -> ViewEventHandler           -- ^ clear tags
-  -> ReactElementM ViewEventHandler ()
+  -> HTMLView_
 suggestedTagsField = createTagsField "Suggested thread post tags - so people can easily tag posts"
