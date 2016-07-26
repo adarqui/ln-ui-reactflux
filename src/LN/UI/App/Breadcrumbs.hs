@@ -30,5 +30,5 @@ view = defineView "breadcrumbs" $ \(RouteWith route params) ->
     [] -> mempty
     xs -> do
       div_ $ p_ $ do
-        ol_ $
+        ol_ [ "className" $= "breadcrumb" ] $
           mapM_ (\breadcrumb -> li_ $ ahref $ routeWith' breadcrumb) xs
