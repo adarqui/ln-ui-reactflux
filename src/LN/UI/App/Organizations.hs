@@ -66,6 +66,7 @@ import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   pageInfoFromParams,
                                                   paramsFromPageInfo)
+import           LN.UI.Types                     (HTMLView_)
 import           LN.UI.View.Button               (createButtonsCreateEditCancel)
 import           LN.UI.View.Field
 import           LN.UI.View.Internal             (showTagsSmall)

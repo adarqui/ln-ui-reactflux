@@ -25,6 +25,7 @@ import           LN.T.Membership            (Membership (..))
 import           LN.T.Visibility            (Visibility (..))
 import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
 import           LN.UI.Helpers.ReactFluxDOM (targetValue)
+import           LN.UI.Types                (HTMLView_)
 import           LN.UI.View.Internal
 
 
