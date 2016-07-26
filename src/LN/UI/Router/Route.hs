@@ -105,7 +105,7 @@ data Route
   | OrganizationsTeams String CRUD
   | OrganizationsTeamsMembers String String CRUD
   | OrganizationsMembersOnly String
-  | OrganizationsMembership String CRUD
+  | OrganizationsMembership Text CRUD
   | Users CRUD
   | UsersProfile String
   | UsersSettings String

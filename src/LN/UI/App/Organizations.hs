@@ -69,7 +69,7 @@ import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   paramsFromPageInfo)
 import           LN.UI.Types                     (HTMLView_)
 import           LN.UI.Types                     (HTMLEvent_)
-import           LN.UI.View.Button               (createButtonsCreateEditCancel)
+import           LN.UI.View.Button
 import           LN.UI.View.Field
 import           LN.UI.View.Internal             (showTagsSmall)
 
@@ -261,8 +261,7 @@ viewShowS l_organization = do
         isMemberOfOrganizationHTML
          organization
          mempty
-         mempty
---         (button_joinOrganization $ OrganizationsMembership organization.name Index emptyParams),
+         (button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
 
         -- ACCESS: Organization
         -- * Update: can edit organization settings
@@ -272,10 +271,8 @@ viewShowS l_organization = do
           organizationPackResponsePermissions
           permCreateEmpty
           permReadEmpty
-          mempty
---          (\_ -> button_editOrganization $ Organizations (Edit organization.name) emptyParams)
-          mempty
---          (\_ -> button_deleteOrganization $ Organizations (Delete organization.name) emptyParams)
+          (button_editOrganization $ routeWith' $ Organizations (EditS organizationResponseName))
+          (button_deleteOrganization $ routeWith' $ Organizations (DeleteS organizationResponseName))
           permExecuteEmpty
 
     cldiv_ "page-header" $ do
