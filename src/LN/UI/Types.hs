@@ -1,4 +1,6 @@
 {-# LANGUAGE PatternSynonyms #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE ExplicitForAll #-}
 
 module LN.UI.Types (
   Array,
@@ -12,13 +14,15 @@ module LN.UI.Types (
   pattern Cons,
   pattern Nil,
   HTMLView,
-  HTMLView_
+  HTMLView_,
+  HTMLEvent,
+  HTMLEvent_
 ) where
 
 
 
 import           Prelude
-import React.Flux
+import           React.Flux
 
 
 
@@ -44,3 +48,8 @@ pattern Nil       = []
 
 type HTMLView  = ReactElementM ViewEventHandler
 type HTMLView_ = ReactElementM ViewEventHandler ()
+
+
+
+type HTMLEvent = forall eventHandler. ReactElementM eventHandler
+type HTMLEvent_ = forall eventHandler. ReactElementM eventHandler ()

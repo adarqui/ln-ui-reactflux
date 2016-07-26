@@ -14,9 +14,11 @@ module LN.UI.App.About (
 import           React.Flux      hiding (view)
 import qualified React.Flux      as RF
 
+import LN.UI.Types (HTMLEvent_)
 
 
-view_ :: ReactElementM eventHandler ()
+
+view_ :: HTMLEvent_
 view_ =
   RF.view view () mempty
 
