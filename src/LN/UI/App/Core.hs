@@ -44,7 +44,7 @@ import qualified LN.UI.App.Organizations         as Organizations
 import qualified LN.UI.App.Portal                as Portal
 import qualified LN.UI.App.Users                 as Users
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
-import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName)
+import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName, ahrefClasses)
 import           LN.UI.Router
 import           LN.UI.State.PageInfo            (PageInfo, defaultPageInfo)
 
@@ -142,15 +142,17 @@ defaultLayout st@Store{..} page =
 
 navBar :: Maybe UserResponse -> ReactElementM ViewEventHandler ()
 navBar m_user_pack =
-  div_ $ do
-    ul_ $ do
-      li_ $ ahref $ routeWith' Home
-      li_ $ ahref $ routeWith' About
-      li_ $ ahref $ routeWith' Portal
-      li_ $ do
-        case m_user_pack of
-          Nothing               -> ahref $ routeWith' Login
-          Just UserResponse{..} -> ahrefName ("Logout: " <> userResponseName) $ routeWith' Logout
+  div_ [ "className" $= "container-fluid" ] $ do
+    nav_ [ "className" $= "navbar-nav navbar-static-top" ] $ do
+      div_ [ "className" $= "container" ] $ do
+        ahrefClasses "navbar-brand" $ routeWith' Home
+        ul_ [ "className" $= "navbar-nav nav navtabs" ]$ do
+          li_ $ ahref $ routeWith' About
+          li_ $ ahref $ routeWith' Portal
+          li_ $ do
+            case m_user_pack of
+              Nothing               -> ahref $ routeWith' Login
+              Just UserResponse{..} -> ahrefName ("Logout: " <> userResponseName) $ routeWith' Logout
 
 
 
