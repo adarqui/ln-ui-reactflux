@@ -22,7 +22,7 @@ import           LN.T.Count                 (CountResponse (..),
 import           LN.UI.Helpers.DataText     (tshow)
 import           LN.UI.Helpers.ReactFluxDOM
 import           LN.UI.Router.CRUD
-import           LN.UI.Router.Param   (updateParams_Offset_Limit)
+import           LN.UI.Router.Param         (updateParams_Offset_Limit)
 import           LN.UI.Router.Route
 import           LN.UI.State.PageInfo       (PageInfo (..))
 
@@ -47,7 +47,7 @@ view :: ReactView (PageInfo, RouteWith)
 view = defineView "pageNumbers" $ \(page_info, route_with@(RouteWith route params)) -> do
   let
     (prev, pages, next, limit) = buildPages page_info route_with
-    upd off                    = RouteWith route (updateParams_Offset_Limit off limit params)
+    upd off                    = RouteWith route (updateParams_Offset_Limit (off*limit) limit params)
   case pages of
     []     -> mempty
     _      ->
@@ -88,24 +88,6 @@ runPageInfo CountResponses{..} page_info =
     (CountResponse{..}:[]) ->
       page_info {
         totalResults = countResponseN,
-        totalPages   = (countResponseN `div` resultsPerPage page_info) + 1
+        totalPages   = (countResponseN `div` resultsPerPage page_info)
       }
     _      -> page_info
-  -- {
-  --   count: count,
-  --   pageInfo: pi,
-  --   params: par
-  -- }
-  where
-  -- pi  =
-  --   page_info {
-  --     totalResults = count,
-  --     totalPages   = (count / page_info.resultsPerPage) + 1
-  --   }
-  -- par =
-  --   [ Limit page_info.resultsPerPage
-  --   , Offset ((page_info.currentPage - 1) * page_info.resultsPerPage)
-  --   , SortOrder page_info.sortOrder
-  --   , Order page_info.order
-  --   ]
-  --
