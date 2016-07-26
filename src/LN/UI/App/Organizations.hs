@@ -53,6 +53,7 @@ import qualified LN.UI.App.PageNumbers           as PageNumbers
 import qualified LN.UI.App.Route                 as Route
 import           LN.UI.Helpers.DataList          (deleteNth)
 import           LN.UI.Helpers.DataText          (tshow)
+import           LN.UI.Helpers.DataTime          (prettyUTCTimeMaybe)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName)
@@ -231,7 +232,7 @@ viewIndex Store{..} = do
               div_ [ "className" $= "col-xs-1" ] $ p_ $ Gravatar.viewUser_ XSmall organizationPackResponseUser
               div_ [ "className" $= "col-xs-3" ] $ p_ $ ahrefName (organizationResponseDisplayName organizationPackResponseOrganization) (routeWith' $ Organizations (ShowS $ organizationResponseName organizationPackResponseOrganization))
               div_ [ "className" $= "col-xs-7" ] $ p_ $ elemText $ maybe "No Description." id (organizationResponseDescription organizationPackResponseOrganization)
-              div_ [ "className" $= "col-xs-1" ] $ p_ $ elemText $ tshow $ organizationResponseCreatedAt organizationPackResponseOrganization
+              div_ [ "className" $= "col-xs-1" ] $ p_ $ elemText $ prettyUTCTimeMaybe $ organizationResponseCreatedAt organizationPackResponseOrganization
           ) organizations
 
 

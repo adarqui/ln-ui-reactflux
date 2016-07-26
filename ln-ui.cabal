@@ -34,6 +34,7 @@ library
                      , LN.UI.App.Types
                      , LN.UI.Helpers.DataList
                      , LN.UI.Helpers.DataText
+                     , LN.UI.Helpers.DataTime
                      , LN.UI.Helpers.GHCJS
                      , LN.UI.Helpers.HaskellApiHelpers
                      , LN.UI.Helpers.Map
@@ -64,6 +65,7 @@ library
                      , react-flux == 1.1.1
                      , react-flux-router
                      , text
+                     , time
                      , transformers
                      , web-routes
                      , ln-sanitize
