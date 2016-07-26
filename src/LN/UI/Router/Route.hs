@@ -98,24 +98,24 @@ data Route
   | Errors
   | Portal
   | Organizations CRUD
-  | OrganizationsForums String CRUD
-  | OrganizationsForumsBoards String String CRUD
-  | OrganizationsForumsBoardsThreads String String String CRUD
-  | OrganizationsForumsBoardsThreadsPosts String String String String CRUD
-  | OrganizationsTeams String CRUD
-  | OrganizationsTeamsMembers String String CRUD
-  | OrganizationsMembersOnly String
+  | OrganizationsForums Text CRUD
+  | OrganizationsForumsBoards Text Text CRUD
+  | OrganizationsForumsBoardsThreads Text Text Text CRUD
+  | OrganizationsForumsBoardsThreadsPosts Text Text Text Text CRUD
+  | OrganizationsTeams Text CRUD
+  | OrganizationsTeamsMembers Text Text CRUD
+  | OrganizationsMembersOnly Text
   | OrganizationsMembership Text CRUD
   | Users CRUD
-  | UsersProfile String
-  | UsersSettings String
-  | UsersPMs String
-  | UsersThreads String
-  | UsersThreadPosts String
-  | UsersWorkouts String
-  | UsersResources String
-  | UsersLeurons String
-  | UsersLikes String
+  | UsersProfile Text
+  | UsersSettings Text
+  | UsersPMs Text
+  | UsersThreads Text
+  | UsersThreadPosts Text
+  | UsersWorkouts Text
+  | UsersResources Text
+  | UsersLeurons Text
+  | UsersLikes Text
   | Resources CRUD
   | ResourcesLeurons Int CRUD
   | ResourcesSiftLeurons Int
