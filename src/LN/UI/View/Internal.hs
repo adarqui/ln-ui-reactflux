@@ -27,6 +27,7 @@ import           React.Flux.Internal
 import           LN.UI.Helpers.DataList     (toSeqList)
 import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
 import           LN.UI.Helpers.ReactFluxDOM (targetValue)
+import           LN.UI.Types                (HTMLView_)
 
 
 

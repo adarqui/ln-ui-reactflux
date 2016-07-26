@@ -11,6 +11,7 @@ import           React.Flux
 
 import qualified LN.UI.App.Route     as Route (Action (..), dispatch)
 import           LN.UI.Router.Route  (RouteWith (..))
+import           LN.UI.Types         (HTMLView_)
 import           LN.UI.View.Internal
 
 
