@@ -42,6 +42,7 @@ import           LN.UI.App.Core.Shared           (Action (..), Store (..),
                                                   defaultStore)
 import qualified LN.UI.App.Home                  as Home
 import qualified LN.UI.App.Organizations         as Organizations
+import qualified LN.UI.App.Forums as Forums
 import qualified LN.UI.App.Portal                as Portal
 import qualified LN.UI.App.Users                 as Users
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
@@ -85,6 +86,10 @@ instance StoreData Store where
                 [ SomeStoreAction Organizations.store $ Organizations.SetEmail email
                 , SomeStoreAction Organizations.store Organizations.Load
                 , SomeStoreAction Organizations.store $ Organizations.Init crud params]
+        RouteWith (OrganizationsForums org_sid crud) params  -> do
+          void $ mapM_ (forkIO . executeAction)
+            [ SomeStoreAction Forums.store Forums.Load
+            , SomeStoreAction Forums.store $ Forums.Init org_sid crud params]
         RouteWith (Users Index) params         -> void $ forkIO $ executeAction $ SomeStoreAction Users.store $ Users.Init params
         RouteWith _ _                          -> pure ()
 
