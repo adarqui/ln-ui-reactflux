@@ -10,7 +10,8 @@ module LN.UI.Helpers.ReactFluxDOM (
   ahrefClassesName,
   ahrefElement,
   targetValue,
-  classNames_
+  classNames_,
+  className_
 ) where
 
 
@@ -63,3 +64,8 @@ targetValue evt = target evt "value"
 
 classNames_ :: [Text] -> PropertyOrHandler handler
 classNames_ = classNames . flip zip (repeat True)
+
+
+
+className_ :: JSString -> PropertyOrHandler handler
+className_ = ($=) "classNames"
