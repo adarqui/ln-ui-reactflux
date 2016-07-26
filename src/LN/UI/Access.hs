@@ -5,7 +5,18 @@ module LN.UI.Access (
   isMemberOfOrganizationHTML,
   isMemberOfOrganizationHTML',
   permissionsHTML,
-  permissionsHTML'
+  permissionsHTML',
+  permCreateEmpty,
+  permReadEmpty,
+  permUpdateEmpty,
+  permDeleteEmpty,
+  permExecuteEmpty,
+  permissionsMatchCreateHTML,
+  permissionsMatchReadHTML,
+  permissionsMatchUpdateHTML,
+  permissionsMatchDeleteHTML,
+  permissionsMatchExecuteHTML,
+  permissionsMatchHTML
 ) where
 
 
@@ -86,3 +97,49 @@ permissionsHTML'
   -> HTMLView_
 permissionsHTML' perms create_cb read_cb update_cb delete_cb execute_cb =
   permissionsHTML perms create_cb mempty read_cb mempty update_cb mempty delete_cb mempty execute_cb mempty
+
+
+
+permCreateEmpty, permReadEmpty, permUpdateEmpty, permDeleteEmpty, permExecuteEmpty :: HTMLView_
+permCreateEmpty  = mempty
+permReadEmpty    = mempty
+permUpdateEmpty  = mempty
+permDeleteEmpty  = mempty
+permExecuteEmpty = mempty
+
+
+
+permissionsMatchCreateHTML :: Permissions -> HTMLView_ -> HTMLView_ -> HTMLView_
+permissionsMatchCreateHTML = permissionsMatchHTML Perm_Create
+
+
+
+permissionsMatchReadHTML :: Permissions -> HTMLView_ -> HTMLView_ -> HTMLView_
+permissionsMatchReadHTML = permissionsMatchHTML Perm_Read
+
+
+
+permissionsMatchUpdateHTML :: Permissions -> HTMLView_ -> HTMLView_ -> HTMLView_
+permissionsMatchUpdateHTML = permissionsMatchHTML Perm_Update
+
+
+
+permissionsMatchDeleteHTML :: Permissions -> HTMLView_ -> HTMLView_ -> HTMLView_
+permissionsMatchDeleteHTML = permissionsMatchHTML Perm_Delete
+
+
+
+permissionsMatchExecuteHTML :: Permissions -> HTMLView_ -> HTMLView_ -> HTMLView_
+permissionsMatchExecuteHTML = permissionsMatchHTML Perm_Execute
+
+
+
+permissionsMatchHTML
+  :: Permission
+  -> Permissions
+  -> HTMLView_
+  -> HTMLView_
+  -> HTMLView_
+permissionsMatchHTML perm_to_match permissions is_match_handler isnt_match_handler =
+  if perm_to_match `elem` permissions then is_match_handler else isnt_match_handler
+

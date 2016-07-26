@@ -45,7 +45,7 @@ import           LN.T.Organization               (OrganizationRequest (..),
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
 import           LN.T.Size                       (Size (..))
 import           LN.T.User                       (UserSanitizedResponse (..))
-import           LN.UI.Access                    (isMemberOfOrganizationHTML)
+import           LN.UI.Access
 import qualified LN.UI.App.Delete                as Delete
 import qualified LN.UI.App.Gravatar              as Gravatar
 import           LN.UI.App.Loading               (Loader (..))
@@ -268,13 +268,15 @@ viewShowS l_organization = do
         -- * Update: can edit organization settings
         -- * Delete: can delete organization
         --
-        -- permissionsHTML'
-        --   org_pack'.permissions
-        --   permCreateEmpty
-        --   permReadEmpty
-        --   (\_ -> button_editOrganization $ Organizations (Edit organization.name) emptyParams)
-        --   (\_ -> button_deleteOrganization $ Organizations (Delete organization.name) emptyParams)
-        --   permExecuteEmpty
+        permissionsHTML'
+          organizationPackResponsePermissions
+          permCreateEmpty
+          permReadEmpty
+          mempty
+--          (\_ -> button_editOrganization $ Organizations (Edit organization.name) emptyParams)
+          mempty
+--          (\_ -> button_deleteOrganization $ Organizations (Delete organization.name) emptyParams)
+          permExecuteEmpty
 
     cldiv_ "page-header" $ do
       p_ $ h4_ $ do
