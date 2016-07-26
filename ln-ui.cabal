@@ -24,6 +24,7 @@ library
                      , LN.UI.App.Core
                      , LN.UI.App.Core.Shared
                      , LN.UI.App.Delete
+                     , LN.UI.App.Forums
                      , LN.UI.App.Gravatar
                      , LN.UI.App.Home
                      , LN.UI.App.Loading

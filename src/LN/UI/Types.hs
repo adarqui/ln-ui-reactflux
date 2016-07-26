@@ -16,11 +16,17 @@ module LN.UI.Types (
   HTMLView,
   HTMLView_,
   HTMLEvent,
-  HTMLEvent_
+  HTMLEvent_,
+  OrganizationName,
+  ForumName,
+  BoardName,
+  ThreadName,
+  ThreadPostName
 ) where
 
 
 
+import Data.Text (Text)
 import           Prelude
 import           React.Flux
 
@@ -53,3 +59,11 @@ type HTMLView_ = ReactElementM ViewEventHandler ()
 
 type HTMLEvent = forall eventHandler. ReactElementM eventHandler
 type HTMLEvent_ = forall eventHandler. ReactElementM eventHandler ()
+
+
+
+type OrganizationName = Text
+type ForumName        = Text
+type BoardName        = Text
+type ThreadName       = Text
+type ThreadPostName   = Text

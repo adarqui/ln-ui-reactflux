@@ -104,7 +104,6 @@ data Action
 instance StoreData Store where
   type StoreAction Store = Action
   transform action st@Store{..} = do
-    putStrLn "Organizations"
 
     case action of
       Nop                         -> pure st
