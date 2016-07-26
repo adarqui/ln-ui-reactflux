@@ -8,114 +8,124 @@ module LN.UI.View.Button (
   btnSm,
   btnMd,
   btnLg,
-btnGroup,
-btnGroupVertical,
-colSm1,
-glyphicon, glyphiconArrowUp, glyphiconArrowDown, glyphiconPlus, glyphiconMinus, glyphiconStar, glyphiconStarEmpty, glyphiconTrash, glyphiconPencil, glyphiconOk, glyphiconRemove ,
- glyphButton_ArrowUp,
- glyphButton_ArrowDown,
- glyphButton_Plus,
- glyphButton_Minus,
- glyphButton_Star,
- glyphButton_StarEmpty,
- glyphButton_Trash,
- glyphButton_Pencil,
- glyphButton_Ok,
- glyphButton_Remove,
+  btnGroup,
+  btnGroupVertical,
+  colSm1,
+  glyphicon,
+  glyphiconArrowUp,
+  glyphiconArrowDown,
+  glyphiconPlus,
+  glyphiconMinus,
+  glyphiconStar,
+  glyphiconStarEmpty,
+  glyphiconTrash,
+  glyphiconPencil,
+  glyphiconOk,
+  glyphiconRemove ,
+  glyphButton_ArrowUp,
+  glyphButton_ArrowDown,
+  glyphButton_Plus,
+  glyphButton_Minus,
+  glyphButton_Star,
+  glyphButton_StarEmpty,
+  glyphButton_Trash,
+  glyphButton_Pencil,
+  glyphButton_Ok,
+  glyphButton_Remove,
 
- glyphButtonDef_ArrowUp,
- glyphButtonDef_ArrowDown,
- glyphButtonDef_Plus,
- glyphButtonDef_Minus,
- glyphButtonDef_Star,
- glyphButtonDef_StarEmpty,
- glyphButtonDef_Trash,
- glyphButtonDef_Pencil,
- glyphButtonDef_Ok,
- glyphButtonDef_Remove,
+  glyphButtonDef_ArrowUp,
+  glyphButtonDef_ArrowDown,
+  glyphButtonDef_Plus,
+  glyphButtonDef_Minus,
+  glyphButtonDef_Star,
+  glyphButtonDef_StarEmpty,
+  glyphButtonDef_Trash,
+  glyphButtonDef_Pencil,
+  glyphButtonDef_Ok,
+  glyphButtonDef_Remove,
 
- glyphButtonSm_ArrowUp,
- glyphButtonSm_ArrowDown,
- glyphButtonSm_Plus,
- glyphButtonSm_Minus,
- glyphButtonSm_Star,
- glyphButtonSm_StarEmpty,
- glyphButtonSm_Trash,
- glyphButtonSm_Pencil,
- glyphButtonSm_Ok,
- glyphButtonSm_Remove,
+  glyphButtonSm_ArrowUp,
+  glyphButtonSm_ArrowDown,
+  glyphButtonSm_Plus,
+  glyphButtonSm_Minus,
+  glyphButtonSm_Star,
+  glyphButtonSm_StarEmpty,
+  glyphButtonSm_Trash,
+  glyphButtonSm_Pencil,
+  glyphButtonSm_Ok,
+  glyphButtonSm_Remove,
 
- glyphButtonLg_ArrowUp,
- glyphButtonLg_ArrowDown,
- glyphButtonLg_Plus,
- glyphButtonLg_Minus,
- glyphButtonLg_Star,
- glyphButtonLg_StarEmpty,
- glyphButtonLg_Trash,
- glyphButtonLg_Pencil,
- glyphButtonLg_Ok,
- glyphButtonLg_Remove,
+  glyphButtonLg_ArrowUp,
+  glyphButtonLg_ArrowDown,
+  glyphButtonLg_Plus,
+  glyphButtonLg_Minus,
+  glyphButtonLg_Star,
+  glyphButtonLg_StarEmpty,
+  glyphButtonLg_Trash,
+  glyphButtonLg_Pencil,
+  glyphButtonLg_Ok,
+  glyphButtonLg_Remove,
 
- glyphButtonLink,
+  glyphButtonLink,
 
- glyphButtonLink_ArrowUp,
- glyphButtonLink_ArrowDown,
- glyphButtonLink_Plus,
- glyphButtonLink_Minus,
- glyphButtonLink_Star,
- glyphButtonLink_StarEmpty,
- glyphButtonLink_Trash,
- glyphButtonLink_Pencil,
- glyphButtonLink_Ok,
- glyphButtonLink_Remove,
+  glyphButtonLink_ArrowUp,
+  glyphButtonLink_ArrowDown,
+  glyphButtonLink_Plus,
+  glyphButtonLink_Minus,
+  glyphButtonLink_Star,
+  glyphButtonLink_StarEmpty,
+  glyphButtonLink_Trash,
+  glyphButtonLink_Pencil,
+  glyphButtonLink_Ok,
+  glyphButtonLink_Remove,
 
- glyphButtonLinkDef_ArrowUp,
- glyphButtonLinkDef_ArrowDown,
- glyphButtonLinkDef_Plus,
- glyphButtonLinkDef_Minus,
- glyphButtonLinkDef_Star,
- glyphButtonLinkDef_StarEmpty,
- glyphButtonLinkDef_Trash,
- glyphButtonLinkDef_Pencil,
- glyphButtonLinkDef_Ok,
- glyphButtonLinkDef_Remove,
+  glyphButtonLinkDef_ArrowUp,
+  glyphButtonLinkDef_ArrowDown,
+  glyphButtonLinkDef_Plus,
+  glyphButtonLinkDef_Minus,
+  glyphButtonLinkDef_Star,
+  glyphButtonLinkDef_StarEmpty,
+  glyphButtonLinkDef_Trash,
+  glyphButtonLinkDef_Pencil,
+  glyphButtonLinkDef_Ok,
+  glyphButtonLinkDef_Remove,
 
- glyphButtonLinkSm_ArrowUp,
- glyphButtonLinkSm_ArrowDown,
- glyphButtonLinkSm_Plus,
- glyphButtonLinkSm_Minus,
- glyphButtonLinkSm_Star,
- glyphButtonLinkSm_StarEmpty,
- glyphButtonLinkSm_Trash,
- glyphButtonLinkSm_Pencil,
- glyphButtonLinkSm_Ok,
- glyphButtonLinkSm_Remove,
+  glyphButtonLinkSm_ArrowUp,
+  glyphButtonLinkSm_ArrowDown,
+  glyphButtonLinkSm_Plus,
+  glyphButtonLinkSm_Minus,
+  glyphButtonLinkSm_Star,
+  glyphButtonLinkSm_StarEmpty,
+  glyphButtonLinkSm_Trash,
+  glyphButtonLinkSm_Pencil,
+  glyphButtonLinkSm_Ok,
+  glyphButtonLinkSm_Remove,
 
- glyphButtonLinkLg_ArrowUp,
- glyphButtonLinkLg_ArrowDown,
- glyphButtonLinkLg_Plus,
- glyphButtonLinkLg_Minus,
- glyphButtonLinkLg_Star,
- glyphButtonLinkLg_StarEmpty,
- glyphButtonLinkLg_Trash,
- glyphButtonLinkLg_Pencil,
- glyphButtonLinkLg_Ok,
- glyphButtonLinkLg_Remove
+  glyphButtonLinkLg_ArrowUp,
+  glyphButtonLinkLg_ArrowDown,
+  glyphButtonLinkLg_Plus,
+  glyphButtonLinkLg_Minus,
+  glyphButtonLinkLg_Star,
+  glyphButtonLinkLg_StarEmpty,
+  glyphButtonLinkLg_Trash,
+  glyphButtonLinkLg_Pencil,
+  glyphButtonLinkLg_Ok,
+  glyphButtonLinkLg_Remove
 ) where
 
 
 
-import Data.Monoid ((<>))
-import           Data.Int            (Int64)
-import Data.Text (Text)
+import           Data.Int                   (Int64)
+import           Data.Monoid                ((<>))
+import           Data.Text                  (Text)
 import           React.Flux
 
-import qualified LN.UI.App.Route     as Route (Action (..), dispatch)
-import           LN.UI.Router.Route  (RouteWith (..))
-import           LN.UI.Types         (HTMLView_)
+import qualified LN.UI.App.Route            as Route (Action (..), dispatch)
+import           LN.UI.Helpers.GHCJS        (JSString)
+import           LN.UI.Helpers.ReactFluxDOM (ahrefElement)
+import           LN.UI.Router.Route         (RouteWith (..))
+import           LN.UI.Types                (HTMLView_)
 import           LN.UI.View.Internal
-import LN.UI.Helpers.ReactFluxDOM (ahrefElement)
-import LN.UI.Helpers.GHCJS (JSString)
 
 
 
@@ -169,6 +179,11 @@ btnGroupVertical = "btn-group-vertical"
 
 colSm1 :: JSString
 colSm1 = "col-sm-1"
+
+
+
+badge :: JSString
+badge = "badge"
 
 
 
@@ -350,12 +365,12 @@ button_editThreadPost'   = glyphButtonLinkDef_Pencil (Just "edit thread post")
 button_deleteThreadPost  = glyphButtonLinkDef_Trash Nothing
 button_deleteThreadPost' = glyphButtonLinkDef_Trash (Just "delete thread post")
 
-button_like classes handler    = glyphButtonDef_ArrowUp Nothing classes handler
-button_neutral classes handler = glyphButtonDef_Minus Nothing classes handler
-button_dislike classes handler = glyphButtonDef_ArrowDown Nothing classes handler
+button_like  handler    = glyphButtonDef_ArrowUp Nothing  handler
+button_neutral  handler = glyphButtonDef_Minus Nothing  handler
+button_dislike  handler = glyphButtonDef_ArrowDown Nothing  handler
 
-button_starEmpty classes handler = glyphButtonDef_StarEmpty Nothing classes handler
-button_star classes handler      = glyphButtonDef_Star Nothing classes handler
+button_starEmpty  handler = glyphButtonDef_StarEmpty Nothing  handler
+button_star  handler      = glyphButtonDef_Star Nothing  handler
 
 
 
@@ -363,15 +378,15 @@ linkBadge :: Text -> JSString -> RouteWith -> HTMLView_
 linkBadge text badge route_with =
   ahrefElement route_with $ do
     elemText text
-    span_ [ "className" $= badge ] $ elemText badge
+    span_ [ "className" $= badge ] $ elemText text
 
 
 
-showBadge :: Text -> JSString -> HTMLView_
-showBadge text badge =
+showBadge :: Show a => Text -> a -> HTMLView_
+showBadge text badge_ =
   p_ $ do
     elemText text
-    span_ [ "className" $= badge ] $ elemText $ show badge
+    span_ [ "className" $= badge ] $ elemShow badge_
 
 
 
