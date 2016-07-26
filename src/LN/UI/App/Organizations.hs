@@ -44,6 +44,7 @@ import           LN.T.Organization               (OrganizationRequest (..),
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
 import           LN.T.Size                       (Size (..))
 import           LN.T.User                       (UserSanitizedResponse (..))
+import           LN.UI.Access                    (isOrganizationMemberHTML)
 import qualified LN.UI.App.Delete                as Delete
 import qualified LN.UI.App.Gravatar              as Gravatar
 import           LN.UI.App.Loading               (Loader (..))
@@ -59,15 +60,15 @@ import           LN.UI.Helpers.Map               (idmapFrom)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName)
 import           LN.UI.Router                    (CRUD (..), Params, Route (..),
                                                   RouteWith (..), TyCRUD (..),
-                                                  linkName, routeWith,
-                                                  routeWith', emptyParams)
+                                                  emptyParams, linkName,
+                                                  routeWith, routeWith')
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   pageInfoFromParams,
                                                   paramsFromPageInfo)
 import           LN.UI.View.Button               (createButtonsCreateEditCancel)
 import           LN.UI.View.Field
-import LN.UI.View.Internal (showTagsSmall)
+import           LN.UI.View.Internal             (showTagsSmall)
 
 
 
@@ -254,10 +255,11 @@ viewShowS l_organization = do
         -- ACCESS: Organization
         -- * Member: if not a member, this is a shortcut to join an organization
         ---
-        -- orgMemberHTML
-        --   org_pack
-        --   unitDiv
-        --   (\_ -> button_joinOrganization $ OrganizationsMembership organization.name Index emptyParams),
+        isOrganizationMemberHTML
+         organization
+         mempty
+         mempty
+--         (button_joinOrganization $ OrganizationsMembership organization.name Index emptyParams),
 
         -- ACCESS: Organization
         -- * Update: can edit organization settings

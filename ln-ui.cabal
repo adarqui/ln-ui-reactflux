@@ -18,6 +18,7 @@ library
   exposed-modules:     LN.UI
                      , LN.UI.Main
                      , LN.UI.Types
+                     , LN.UI.Access
                      , LN.UI.App.About
                      , LN.UI.App.Breadcrumbs
                      , LN.UI.App.Core

@@ -10,12 +10,15 @@ module LN.UI.Types (
   Int,
   pattern Tuple,
   pattern Cons,
-  pattern Nil
+  pattern Nil,
+  HTMLView,
+  HTMLView_
 ) where
 
 
 
 import           Prelude
+import React.Flux
 
 
 
@@ -33,3 +36,11 @@ tuple = (,)
 pattern Tuple a b = (a, b)
 pattern Cons a a' = (:) a a'
 pattern Nil       = []
+
+
+
+-- type HTML = ReactElementM EventHandler
+-- type HTML' = HTML ()
+
+type HTMLView  = ReactElementM ViewEventHandler
+type HTMLView_ = ReactElementM ViewEventHandler ()
