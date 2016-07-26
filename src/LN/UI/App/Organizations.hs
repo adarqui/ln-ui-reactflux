@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE Rank2Types        #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeFamilies      #-}
 
@@ -67,6 +68,7 @@ import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   pageInfoFromParams,
                                                   paramsFromPageInfo)
 import           LN.UI.Types                     (HTMLView_)
+import           LN.UI.Types                     (HTMLEvent_)
 import           LN.UI.View.Button               (createButtonsCreateEditCancel)
 import           LN.UI.View.Field
 import           LN.UI.View.Internal             (showTagsSmall)
@@ -204,7 +206,7 @@ defaultStore = Store {
 
 
 
-view_ :: CRUD -> ReactElementM eventHandler ()
+view_ :: CRUD -> HTMLEvent_
 view_ crud =
   RF.view view crud mempty
 

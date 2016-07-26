@@ -21,6 +21,8 @@ import           GHC.Generics    (Generic)
 import           React.Flux      hiding (view)
 import qualified React.Flux      as RF
 
+import           LN.UI.Types     (HTMLEvent_)
+
 
 
 data Store = Store
@@ -51,7 +53,7 @@ defaultStore = Store
 
 
 
-view_ :: ReactElementM eventHandler ()
+view_ :: HTMLEvent_
 view_ =
   RF.view view () mempty
 

@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE Rank2Types        #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeFamilies      #-}
 
@@ -20,11 +21,11 @@ import qualified React.Flux                 as RF
 import           LN.T.Count                 (CountResponse (..),
                                              CountResponses (..))
 import           LN.UI.Helpers.DataText     (tshow)
-import           LN.UI.Helpers.ReactFluxDOM
-import           LN.UI.Router.CRUD
-import           LN.UI.Router.Param         (updateParams_Offset_Limit)
-import           LN.UI.Router.Route
+import           LN.UI.Helpers.ReactFluxDOM (ahrefName)
+import           LN.UI.Router               (RouteWith (..),
+                                             updateParams_Offset_Limit)
 import           LN.UI.State.PageInfo       (PageInfo (..))
+import           LN.UI.Types                (HTMLEvent_)
 
 
 
@@ -37,7 +38,7 @@ type Pages =
 
 
 
-view_ :: (PageInfo, RouteWith) -> ReactElementM eventHandler ()
+view_ :: (PageInfo, RouteWith) -> HTMLEvent_
 view_ (page_info, route_with) =
   RF.view view (page_info, route_with) mempty
 
