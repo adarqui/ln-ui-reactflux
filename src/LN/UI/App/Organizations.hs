@@ -44,7 +44,7 @@ import           LN.T.Organization               (OrganizationRequest (..),
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
 import           LN.T.Size                       (Size (..))
 import           LN.T.User                       (UserSanitizedResponse (..))
-import           LN.UI.Access                    (isOrganizationMemberHTML)
+import           LN.UI.Access                    (isMemberOfOrganizationHTML)
 import qualified LN.UI.App.Delete                as Delete
 import qualified LN.UI.App.Gravatar              as Gravatar
 import           LN.UI.App.Loading               (Loader (..))
@@ -255,7 +255,7 @@ viewShowS l_organization = do
         -- ACCESS: Organization
         -- * Member: if not a member, this is a shortcut to join an organization
         ---
-        isOrganizationMemberHTML
+        isMemberOfOrganizationHTML
          organization
          mempty
          mempty

@@ -1,9 +1,9 @@
 {-# LANGUAGE RecordWildCards #-}
 
 module LN.UI.Access (
-  isOrganizationMember,
-  isOrganizationMemberHTML,
-  isOrganizationMemberHTML',
+  isMemberOfOrganization,
+  isMemberOfOrganizationHTML,
+  isMemberOfOrganizationHTML',
   permissionsHTML,
   permissionsHTML'
 ) where
@@ -19,21 +19,21 @@ import           LN.UI.Types
 
 -- | Check whether a user is a member of Team_Members
 --
-isOrganizationMember :: OrganizationPackResponse -> Bool
-isOrganizationMember OrganizationPackResponse{..} = Team_Members `elem` organizationPackResponseTeams
+isMemberOfOrganization :: OrganizationPackResponse -> Bool
+isMemberOfOrganization OrganizationPackResponse{..} = Team_Members `elem` organizationPackResponseTeams
 
 
 
 -- | Supports handlers for if a user is/isnt a member
 --
-isOrganizationMemberHTML
+isMemberOfOrganizationHTML
   :: OrganizationPackResponse
   -> ReactElementM ViewEventHandler ()
   -> ReactElementM ViewEventHandler ()
   -> ReactElementM ViewEventHandler ()
 
-isOrganizationMemberHTML pack is_member_handler isnt_member_handler =
-  if isOrganizationMember pack
+isMemberOfOrganizationHTML pack is_member_handler isnt_member_handler =
+  if isMemberOfOrganization pack
     then is_member_handler
     else isnt_member_handler
 
@@ -41,13 +41,13 @@ isOrganizationMemberHTML pack is_member_handler isnt_member_handler =
 
 -- | Supports a handler if a user is a member
 --
-isOrganizationMemberHTML'
+isMemberOfOrganizationHTML'
   :: OrganizationPackResponse
   -> ReactElementM ViewEventHandler ()
   -> ReactElementM ViewEventHandler ()
 
-isOrganizationMemberHTML' pack is_member_handler =
-  if isOrganizationMember pack
+isMemberOfOrganizationHTML' pack is_member_handler =
+  if isMemberOfOrganization pack
     then is_member_handler
     else mempty
 
