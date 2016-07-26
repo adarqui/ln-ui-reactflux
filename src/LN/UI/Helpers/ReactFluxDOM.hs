@@ -1,6 +1,7 @@
 {-# LANGUAGE CPP               #-}
 {-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE Rank2Types        #-}
 
 module LN.UI.Helpers.ReactFluxDOM (
   ahref,
@@ -19,33 +20,35 @@ import qualified Data.Text           as Text
 import           React.Flux
 
 import           LN.UI.Helpers.GHCJS (JSString)
-import           LN.UI.Router.Route
+import           LN.UI.Router.Route  (Route (..), RouteWith (..),
+                                      fromRouteWithHash, linkName)
+import           LN.UI.Types         (HTMLEvent_)
 
 
 
-ahref :: RouteWith -> ReactElementM eventHandler ()
+ahref :: RouteWith -> HTMLEvent_
 ahref route_with = ahrefName (linkName route_with) route_with
 
 
 
-ahrefName :: Text -> RouteWith -> ReactElementM eventHandler ()
+ahrefName :: Text -> RouteWith -> HTMLEvent_
 ahrefName name route_with =
   a_ ["href" $= fromRouteWithHash route_with] $ elemText name
 
 
 
-ahrefClasses :: JSString -> RouteWith -> ReactElementM eventHandler ()
+ahrefClasses :: JSString -> RouteWith -> HTMLEvent_
 ahrefClasses classes route_with = ahrefClassesName classes (linkName route_with) route_with
 
 
 
-ahrefClassesName :: JSString -> Text -> RouteWith -> ReactElementM eventHandler ()
+ahrefClassesName :: JSString -> Text -> RouteWith -> HTMLEvent_
 ahrefClassesName classes name route_with =
   a_ ["className" $= classes, "href" $= fromRouteWithHash route_with] $ elemText name
 
 
 
--- ahrefElement :: RouteWith -> ReactElementM eventHandler () -> ReactElementM eventHandler ()
+-- ahrefElement :: RouteWith -> HTMLEvent_ -> HTMLEvent_
 ahrefElement route_with element =
   a_ ["href" $= fromRouteWithHash route_with] element
 
