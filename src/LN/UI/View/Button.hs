@@ -8,6 +8,9 @@ module LN.UI.View.Button (
   btnSm,
   btnMd,
   btnLg,
+btnGroup,
+btnGroupVertical,
+colSm1,
 glyphicon, glyphiconArrowUp, glyphiconArrowDown, glyphiconPlus, glyphiconMinus, glyphiconStar, glyphiconStarEmpty, glyphiconTrash, glyphiconPencil, glyphiconOk, glyphiconRemove ,
  glyphButton_ArrowUp,
  glyphButton_ArrowDown,
@@ -111,6 +114,7 @@ import qualified LN.UI.App.Route     as Route (Action (..), dispatch)
 import           LN.UI.Router.Route  (RouteWith (..))
 import           LN.UI.Types         (HTMLView_)
 import           LN.UI.View.Internal
+import LN.UI.Helpers.ReactFluxDOM (ahrefElement)
 import LN.UI.Helpers.GHCJS (JSString)
 
 
@@ -154,6 +158,17 @@ btnXs = "btn-xs"
 btnSm = "btn-sm"
 btnMd = "btn-md"
 btnLg = "btn-lg"
+
+
+
+btnGroup, btnGroupVertical :: JSString
+btnGroup = "btn-group"
+btnGroupVertical = "btn-group-vertical"
+
+
+
+colSm1 :: JSString
+colSm1 = "col-sm-1"
 
 
 
@@ -219,3 +234,154 @@ glyphButtonLg_Star      = glyphButton_Star btnLg
 glyphButtonLg_StarEmpty = glyphButton_StarEmpty btnLg
 glyphButtonLg_Trash     = glyphButton_Trash btnLg
 glyphButtonLg_Pencil    = glyphButton_Pencil btnLg
+glyphButtonLg_Ok        = glyphButton_Ok btnLg
+glyphButtonLg_Remove    = glyphButton_Remove btnLg
+
+
+
+glyphButtonLink :: JSString -> JSString -> Maybe Text -> RouteWith-> HTMLView_
+glyphButtonLink glyph sz m_text route_with =
+  glyphButton glyph sz m_text $ Route.dispatch $ Route.Goto route_with
+
+
+
+glyphButtonLink_ArrowUp   = glyphButtonLink glyphiconArrowUp
+glyphButtonLink_ArrowDown = glyphButtonLink glyphiconArrowDown
+glyphButtonLink_Plus      = glyphButtonLink glyphiconPlus
+glyphButtonLink_Minus     = glyphButtonLink glyphiconMinus
+glyphButtonLink_Star      = glyphButtonLink glyphiconStar
+glyphButtonLink_StarEmpty = glyphButtonLink glyphiconStarEmpty
+glyphButtonLink_Trash     = glyphButtonLink glyphiconTrash
+glyphButtonLink_Pencil    = glyphButtonLink glyphiconPencil
+glyphButtonLink_Ok        = glyphButtonLink glyphiconOk
+glyphButtonLink_Remove    = glyphButtonLink glyphiconRemove
+
+
+
+glyphButtonLinkDef_ArrowUp   = glyphButtonLinkSm_ArrowUp
+glyphButtonLinkDef_ArrowDown = glyphButtonLinkSm_ArrowDown
+glyphButtonLinkDef_Plus      = glyphButtonLinkSm_Plus
+glyphButtonLinkDef_Minus     = glyphButtonLinkSm_Minus
+glyphButtonLinkDef_Star      = glyphButtonLinkSm_Star
+glyphButtonLinkDef_StarEmpty = glyphButtonLinkSm_StarEmpty
+glyphButtonLinkDef_Trash     = glyphButtonLinkSm_Trash
+glyphButtonLinkDef_Pencil    = glyphButtonLinkSm_Pencil
+glyphButtonLinkDef_Ok        = glyphButtonLinkSm_Ok
+glyphButtonLinkDef_Remove    = glyphButtonLinkSm_Remove
+
+
+
+glyphButtonLinkSm_ArrowUp   = glyphButtonLink_ArrowUp btnSm
+glyphButtonLinkSm_ArrowDown = glyphButtonLink_ArrowDown btnSm
+glyphButtonLinkSm_Plus      = glyphButtonLink_Plus btnSm
+glyphButtonLinkSm_Minus     = glyphButtonLink_Minus btnSm
+glyphButtonLinkSm_Star      = glyphButtonLink_Star btnSm
+glyphButtonLinkSm_StarEmpty = glyphButtonLink_StarEmpty btnSm
+glyphButtonLinkSm_Trash     = glyphButtonLink_Trash btnSm
+glyphButtonLinkSm_Pencil    = glyphButtonLink_Pencil btnSm
+glyphButtonLinkSm_Ok        = glyphButtonLink_Ok btnSm
+glyphButtonLinkSm_Remove    = glyphButtonLink_Remove btnSm
+
+
+
+glyphButtonLinkLg_ArrowUp   = glyphButtonLink_ArrowUp btnLg
+glyphButtonLinkLg_ArrowDown = glyphButtonLink_ArrowDown btnLg
+glyphButtonLinkLg_Plus      = glyphButtonLink_Plus btnLg
+glyphButtonLinkLg_Minus     = glyphButtonLink_Minus btnLg
+glyphButtonLinkLg_Star      = glyphButtonLink_Star btnLg
+glyphButtonLinkLg_StarEmpty = glyphButtonLink_StarEmpty btnLg
+glyphButtonLinkLg_Trash     = glyphButtonLink_Trash btnLg
+glyphButtonLinkLg_Pencil    = glyphButtonLink_Pencil btnLg
+glyphButtonLinkLg_Ok        = glyphButtonLink_Ok btnLg
+glyphButtonLinkLg_Remove    = glyphButtonLink_Remove btnLg
+
+
+
+buttonGroup_Horizontal, buttonGroup_Vertical :: HTMLView_ -> HTMLView_
+buttonGroup_Horizontal xs = div_ xs
+buttonGroup_Vertical xs   = div_ xs
+
+
+
+buttonGroup_HorizontalSm1, buttonGroup_VerticalSm1 :: HTMLView_ -> HTMLView_
+buttonGroup_HorizontalSm1 = buttonGroup_Horizontal' colSm1
+buttonGroup_VerticalSm1 = buttonGroup_Vertical' colSm1
+
+
+
+buttonGroup_Horizontal' :: JSString -> HTMLView_ -> HTMLView_
+buttonGroup_Horizontal' sz xs =
+  div_ [ "className" $= btnGroup ] xs
+
+buttonGroup_Vertical' :: JSString -> HTMLView_ -> HTMLView_
+buttonGroup_Vertical' sz xs =
+  div_ [ "className" $= btnGroupVertical ] xs
+
+
+
+button_newOrganization     = glyphButtonLinkDef_Plus (Just " new-organization")
+button_editOrganization    = glyphButtonLinkDef_Pencil Nothing
+button_editOrganization'   = glyphButtonLinkDef_Pencil (Just "edit organization")
+button_deleteOrganization  = glyphButtonLinkDef_Trash Nothing
+button_deleteOrganization' = glyphButtonLinkDef_Trash (Just "delete organization")
+button_joinOrganization    = glyphButtonLinkDef_Ok (Just " join-organization")
+
+button_newForum     = glyphButtonLinkDef_Plus (Just " new-forum")
+button_editForum    = glyphButtonLinkDef_Pencil Nothing
+button_editForum'   = glyphButtonLinkDef_Pencil (Just "edit forum")
+button_deleteForum  = glyphButtonLinkDef_Trash Nothing
+button_deleteForum' = glyphButtonLinkDef_Trash (Just "delete forum")
+
+button_newBoard     = glyphButtonLinkDef_Plus (Just " new-board")
+button_editBoard    = glyphButtonLinkDef_Pencil Nothing
+button_editBoard'   = glyphButtonLinkDef_Pencil (Just "edit board")
+button_deleteBoard  = glyphButtonLinkDef_Trash Nothing
+button_deleteBoard' = glyphButtonLinkDef_Trash (Just "delete board")
+
+button_newThread     = glyphButtonLinkDef_Plus (Just " new-thread")
+button_editThread    = glyphButtonLinkDef_Pencil Nothing
+button_editThread'   = glyphButtonLinkDef_Pencil (Just "edit thread")
+button_deleteThread  = glyphButtonLinkDef_Trash Nothing
+button_deleteThread' = glyphButtonLinkDef_Trash (Just "delete thread")
+
+button_newThreadPost     = glyphButtonLinkDef_Plus (Just " new-thread-post")
+button_editThreadPost    = glyphButtonLinkDef_Pencil Nothing
+button_editThreadPost'   = glyphButtonLinkDef_Pencil (Just "edit thread post")
+button_deleteThreadPost  = glyphButtonLinkDef_Trash Nothing
+button_deleteThreadPost' = glyphButtonLinkDef_Trash (Just "delete thread post")
+
+button_like classes handler    = glyphButtonDef_ArrowUp Nothing classes handler
+button_neutral classes handler = glyphButtonDef_Minus Nothing classes handler
+button_dislike classes handler = glyphButtonDef_ArrowDown Nothing classes handler
+
+button_starEmpty classes handler = glyphButtonDef_StarEmpty Nothing classes handler
+button_star classes handler      = glyphButtonDef_Star Nothing classes handler
+
+
+
+linkBadge :: Text -> JSString -> RouteWith -> HTMLView_
+linkBadge text badge route_with =
+  ahrefElement route_with $ do
+    elemText text
+    span_ [ "className" $= badge ] $ elemText badge
+
+
+
+showBadge :: Text -> JSString -> HTMLView_
+showBadge text badge =
+  p_ $ do
+    elemText text
+    span_ [ "className" $= badge ] $ elemText $ show badge
+
+
+
+textButton :: JSString -> Text -> [SomeStoreAction] -> HTMLView_
+textButton sz label handler =
+  button_ [ "className" $= ("btn btn-default " <> sz)
+          , onClick $ \_ _ -> handler
+          ] $ do
+            span_ $ elemText label
+
+textButtonSm, textButtonLg :: Text -> [SomeStoreAction] -> HTMLView_
+textButtonSm = textButton btnSm
+textButtonLg = textButton btnLg
