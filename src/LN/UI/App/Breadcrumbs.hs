@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE Rank2Types        #-}
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.App.Breadcrumbs (
@@ -13,12 +14,12 @@ import           React.Flux                 hiding (view)
 import qualified React.Flux                 as RF
 
 import           LN.UI.Helpers.ReactFluxDOM
-import           LN.UI.Router.CRUD
-import           LN.UI.Router.Route
+import           LN.UI.Router
+import           LN.UI.Types                (HTMLEvent_)
 
 
 
-view_ :: RouteWith -> ReactElementM eventHandler ()
+view_ :: RouteWith -> HTMLEvent_
 view_ route_with =
   RF.view view route_with mempty
 

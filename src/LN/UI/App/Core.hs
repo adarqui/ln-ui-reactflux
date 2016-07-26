@@ -48,7 +48,7 @@ import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefClasses,
                                                   ahrefName)
 import           LN.UI.Router
 import           LN.UI.State.PageInfo            (PageInfo, defaultPageInfo)
-import           LN.UI.Types                     (HTMLView_)
+import           LN.UI.Types                     (HTMLEvent_, HTMLView_)
 
 
 
@@ -106,7 +106,7 @@ store = mkStore defaultStore
 
 
 
-view_ :: ReactElementM eventHandler ()
+view_ :: HTMLEvent_
 view_ =
   RF.view view () mempty
 
