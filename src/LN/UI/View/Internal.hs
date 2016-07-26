@@ -13,7 +13,9 @@ module LN.UI.View.Internal (
   createLabelButtonTextArea,
   createRadioMenu,
   createTagsField,
-  createSimpleInfoButton
+  createSimpleInfoButton,
+  showTags,
+  showTagsSmall
 ) where
 
 
@@ -188,3 +190,20 @@ createSimpleInfoButton label click_handler = do
           , onClick $ \_ _ -> click_handler
           ] $ elemText label
 --  H.p_ [ H.button [buttonInfoClasses, E.onClick (E.input_ act) ] [ H.text label ] ]
+
+
+
+showTags :: [Text] -> ReactElementM ViewEventHandler ()
+showTags tags =
+  mapM_ (\tag -> do
+    span_ [ "className" $= "label label-default" ] $ do
+      elemText tag
+    elemText " "
+  ) tags
+
+
+
+showTagsSmall :: [Text] -> ReactElementM ViewEventHandler ()
+showTagsSmall tags = do
+  small_ $ do
+    span_ $ showTags tags

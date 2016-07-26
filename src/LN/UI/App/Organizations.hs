@@ -60,13 +60,14 @@ import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName)
 import           LN.UI.Router                    (CRUD (..), Params, Route (..),
                                                   RouteWith (..), TyCRUD (..),
                                                   linkName, routeWith,
-                                                  routeWith')
+                                                  routeWith', emptyParams)
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   pageInfoFromParams,
                                                   paramsFromPageInfo)
 import           LN.UI.View.Button               (createButtonsCreateEditCancel)
 import           LN.UI.View.Field
+import LN.UI.View.Internal (showTagsSmall)
 
 
 
@@ -239,8 +240,72 @@ viewIndex Store{..} = do
 
 
 viewShowS :: Loader (Maybe OrganizationPackResponse) -> ReactElementM ViewEventHandler ()
-viewShowS l_organization_pack = do
-  p_ $ elemText "show"
+viewShowS l_organization = do
+  Loading.loader1 l_organization $ go
+  where
+  go Nothing = mempty
+  go (Just organization@OrganizationPackResponse{..}) = do
+    let OrganizationResponse{..} = organizationPackResponseOrganization
+    cldiv_ "container-fluid" $ do
+      cldiv_ "page-header" $ do
+        h1_ [ "className" $= "text-center" ] $ elemText $ organizationResponseDisplayName
+        p_ [ "className" $= "text-center" ] $ elemText $ maybe "" id organizationResponseDescription
+
+        -- ACCESS: Organization
+        -- * Member: if not a member, this is a shortcut to join an organization
+        ---
+        -- orgMemberHTML
+        --   org_pack
+        --   unitDiv
+        --   (\_ -> button_joinOrganization $ OrganizationsMembership organization.name Index emptyParams),
+
+        -- ACCESS: Organization
+        -- * Update: can edit organization settings
+        -- * Delete: can delete organization
+        --
+        -- permissionsHTML'
+        --   org_pack'.permissions
+        --   permCreateEmpty
+        --   permReadEmpty
+        --   (\_ -> button_editOrganization $ Organizations (Edit organization.name) emptyParams)
+        --   (\_ -> button_deleteOrganization $ Organizations (Delete organization.name) emptyParams)
+        --   permExecuteEmpty
+
+    cldiv_ "page-header" $ do
+      p_ $ h4_ $ do
+        elemText "Name:"
+        small_ $ elemText (" " <> organizationResponseName)
+
+      ebyam organizationResponseDescription mempty $ \desc -> do
+        p_ $ do
+          h4_ $ do
+            elemText "Description"
+            small_ $ elemText desc
+
+      p_ $ h4_ $ do
+        elemText "Company"
+        small_ $ elemText $ " " <> organizationResponseCompany
+
+      p_ $ h4_ $ do
+        elemText "Location"
+        small_ $ elemText $ " " <> organizationResponseLocation
+
+      p_ $ h4_ $ do
+        elemText "Location"
+        small_ $ elemText $ " " <> tshow organizationResponseMembership
+
+      p_ $ h4_ $ do
+        elemText "Location"
+        small_ $ elemText $ " " <> tshow organizationResponseVisibility
+
+      p_ $ h4_ $ do
+        elemText "Tags: "
+        showTagsSmall organizationResponseTags
+
+    -- renderView_Forums_Index' org_pack forum_packs,
+    -- p_ $ ahref (OrganizationMembership organizationResponseName Index emptyParams)
+    -- p_ $ ahref (OrganizationTeams organizationResponseName Index emptyParams)
+
 
 
 
