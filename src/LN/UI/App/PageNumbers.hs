@@ -51,8 +51,8 @@ view = defineView "pageNumbers" $ \(page_info, route_with@(RouteWith route param
   case pages of
     []     -> mempty
     _      ->
-      div_ $
-        ul_ $ do
+      div_ $ do
+        ul_ [ "className" $= "pagination pagination-sm" ] $ do
           li_ $ ahrefName "prev" (upd prev)
           mapM_ (\page_number -> li_ $ ahrefName (tshow page_number) (upd page_number)) pages
           li_ $ ahrefName "next" (upd next)
