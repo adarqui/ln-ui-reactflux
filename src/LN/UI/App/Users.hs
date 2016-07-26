@@ -31,8 +31,8 @@ import           LN.Api                          (getUserSanitizedPacks,
                                                   getUsersCount')
 import           LN.T.Pack.Sanitized.User        (UserSanitizedPackResponse (..), UserSanitizedPackResponses (..))
 import           LN.T.Size                       (Size (..))
-import           LN.T.User                       (UserResponse (..))
-import           LN.T.User                       (UserSanitizedResponse (..))
+import           LN.T.User                       (UserResponse (..),
+                                                  UserSanitizedResponse (..))
 import qualified LN.UI.App.Gravatar              as Gravatar
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
@@ -40,16 +40,14 @@ import           LN.UI.App.Types                 (UsersMap)
 import           LN.UI.Helpers.DataTime          (prettyUTCTimeMaybe)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
-import           LN.UI.Helpers.ReactFluxDOM      (ahrefName)
-import           LN.UI.Helpers.ReactFluxDOM      (ahref)
-import           LN.UI.Router.CRUD               (CRUD (..))
-import           LN.UI.Router.Param              (Params)
-import           LN.UI.Router.Route              (Route (..), RouteWith (..),
-                                                  routeWith')
+import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName)
+import           LN.UI.Router                    (CRUD (..), Params, Route (..),
+                                                  RouteWith (..), routeWith')
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   pageInfoFromParams,
                                                   paramsFromPageInfo)
+import           LN.UI.Types                     (HTMLEvent_)
 
 
 
@@ -105,7 +103,7 @@ defaultStore = Store {
 
 
 
-view_ :: ReactElementM eventHandler ()
+view_ :: HTMLEvent_
 view_ =
   RF.view view () mempty
 
