@@ -11,6 +11,7 @@ module LN.UI.Router.CRUD (
 
 import           Control.Applicative
 import           Control.DeepSeq                    (NFData)
+import           Data.Int                           (Int64)
 import qualified Data.Map                           as M
 import           Data.Monoid                        ((<>))
 import           Data.Text                          (Text)
@@ -21,6 +22,7 @@ import           Prelude                            (Bool (..), Eq, Show, pure,
 import           Text.ParserCombinators.Parsec.Prim (try)
 import           Web.Routes
 
+import           LN.UI.Helpers.WebRoutes
 import           LN.UI.Router.Link                  (HasLink (..))
 import           LN.UI.Router.LinkName              (HasLinkName, linkName)
 import           LN.UI.Router.Param                 (emptyParams)
@@ -31,13 +33,13 @@ import           LN.UI.Types                        (Int, Number, String, tuple)
 data CRUD
   = Index
   | ShowS Text
-  | ShowI Int
+  | ShowI Int64
   | ShowB Bool
   | New
   | EditS Text
-  | EditI Int
+  | EditI Int64
   | DeleteS Text
-  | DeleteI Int
+  | DeleteI Int64
   | DeleteZ
   deriving (Eq, Show, Generic, NFData)
 

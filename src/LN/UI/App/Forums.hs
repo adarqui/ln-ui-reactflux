@@ -37,6 +37,7 @@ import           React.Flux                      hiding (view)
 import qualified React.Flux                      as RF
 import qualified Web.Bootstrap3                  as B
 
+import LN.UI.Sort
 import           LN.Api
 import qualified LN.Api.String                   as ApiS
 import           LN.Generate.Default             (defaultForumRequest)
@@ -51,8 +52,8 @@ import LN.T.Param
 import           LN.T.Pack.Board
 import           LN.T.Pack.Forum
 import           LN.T.Pack.Organization
-import           LN.T.Size                       (Size (..))
-import           LN.T.User                       (UserSanitizedResponse (..))
+import           LN.T.Size
+import           LN.T.User
 import           LN.UI.Access
 import qualified LN.UI.App.Delete                as Delete
 import qualified LN.UI.App.Gravatar              as Gravatar
@@ -468,19 +469,19 @@ viewRecentPosts_ organization@OrganizationPackResponse{..} forum@ForumPackRespon
     ul_ [className_ B.listUnstyled] $ do
       mapM_ (\pack@ThreadPostPackResponse{..} -> do
         let
-          post@ThreadPostResponse{..} = threadPostResponse threadPostPackResponse
-          m_board = threadPostResponseWithBoard threadPostPackResponse
-          m_thread = threadPostResponseWithThread threadPostPackResponse
+          post@ThreadPostResponse{..} = threadPostPackResponseThreadPost
+          m_board = threadPostPackResponseWithBoard
+          m_thread = threadPostPackResponseWithThread
           board_name = maybe "unknown" boardResponseName m_board
           thread_name = maybe "unknown" threadResponseName m_thread
-          user@UserSanitizedResponse = userSanitizedResponse threadPostPackResponse
-        li_ $
-          p_ $
-            ahref $ routeWith' (OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName threadResponseName (ShowI threadPostResponseId))
+          user@UserSanitizedResponse{..} = threadPostPackResponseUser
+        li_ $ do
+          p_ $ do
+            ahref $ routeWith' (OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName board_name thread_name (ShowI threadPostResponseId))
             elemText " by "
-            ahref $ routeWith' (Users (ShowS userResponseName))
+            ahref $ routeWith' (Users (ShowS userSanitizedResponseName))
             elemText " at "
-            elemText $ show threadPostResponseCreatedAt
+            elemText $ tshow threadPostResponseCreatedAt
         ) $ sortThreadPostPacks SortOrderBy_Dsc posts_map
   where
   ForumResponse{..} = forumPackResponseForum

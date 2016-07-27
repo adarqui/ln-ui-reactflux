@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveAnyClass #-}
+
 module LN.UI.Helpers.WebRoutes (
   str1
 ) where

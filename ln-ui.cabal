@@ -19,6 +19,7 @@ library
                      , LN.UI.Main
                      , LN.UI.Types
                      , LN.UI.Access
+                     , LN.UI.Sort
                      , LN.UI.App.About
                      , LN.UI.App.Breadcrumbs
                      , LN.UI.App.Core
@@ -36,6 +37,7 @@ library
                      , LN.UI.App.Route
                      , LN.UI.App.Users
                      , LN.UI.App.Types
+                     , LN.UI.Helpers.DataInt
                      , LN.UI.Helpers.DataList
                      , LN.UI.Helpers.DataText
                      , LN.UI.Helpers.DataTime
@@ -72,7 +74,7 @@ library
                      , text
                      , time
                      , transformers
-                     , web-routes
+                     , web-routes == 99.99
                      , ln-sanitize
                      , ln-validate
                      , ln-api-ghcjs
