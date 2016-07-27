@@ -30,30 +30,29 @@ import qualified Data.Map                        as Map
 import           Data.Monoid                     ((<>))
 import           Data.Rehtie                     (rehtie)
 import           Data.Text                       (Text)
+import           Data.Tuple.Select
 import           Data.Typeable                   (Typeable)
 import           GHC.Generics                    (Generic)
 import           Haskell.Helpers.Either          (mustPassT)
 import           React.Flux                      hiding (view)
 import qualified React.Flux                      as RF
 import qualified Web.Bootstrap3                  as B
-import Data.Tuple.Select
 
-import LN.UI.Sort
 import           LN.Api
 import qualified LN.Api.String                   as ApiS
 import           LN.Generate.Default             (defaultForumRequest)
-import LN.T.Board
-import LN.T.Thread
-import LN.T.ThreadPost
-import LN.T.Pack.ThreadPost
+import           LN.T.Board
 import           LN.T.Convert                    (forumResponseToForumRequest)
 import           LN.T.Forum
 import           LN.T.Organization
-import LN.T.Param
 import           LN.T.Pack.Board
 import           LN.T.Pack.Forum
 import           LN.T.Pack.Organization
+import           LN.T.Pack.ThreadPost
+import           LN.T.Param
 import           LN.T.Size
+import           LN.T.Thread
+import           LN.T.ThreadPost
 import           LN.T.User
 import           LN.UI.Access
 import qualified LN.UI.App.Delete                as Delete
@@ -77,6 +76,7 @@ import           LN.UI.Router                    (CRUD (..), Params, Route (..),
                                                   RouteWith (..), TyCRUD (..),
                                                   emptyParams, linkName,
                                                   routeWith, routeWith')
+import           LN.UI.Sort
 import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   pageInfoFromParams,

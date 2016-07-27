@@ -21,6 +21,7 @@ library
                      , LN.UI.Access
                      , LN.UI.Sort
                      , LN.UI.App.About
+                     , LN.UI.App.Boards
                      , LN.UI.App.Breadcrumbs
                      , LN.UI.App.Core
                      , LN.UI.App.Core.Shared
