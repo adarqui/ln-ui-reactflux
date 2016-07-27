@@ -18,6 +18,7 @@ module LN.UI.App.Forums (
 
 
 
+import Control.Monad (void)
 import           Control.Concurrent              (forkIO)
 import           Control.DeepSeq                 (NFData)
 import           Control.Monad.Trans.Either      (EitherT, runEitherT)
@@ -57,6 +58,7 @@ import           LN.UI.App.Loading               (Loader (..))
 import qualified LN.UI.App.Loading               as Loading
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
+import qualified LN.UI.App.NotFound as NotFound (view_)
 import qualified LN.UI.App.Route                 as Route
 import           LN.UI.Helpers.DataList          (deleteNth)
 import           LN.UI.Helpers.DataText          (tshow)
@@ -148,6 +150,8 @@ instance StoreData Store where
       New               -> pure $ st{ _m_request = Just defaultForumRequest }
       EditS forum_sid   -> sync st org_sid forum_sid
       DeleteS forum_sid -> sync st org_sid forum_sid
+      _                 -> pure st
+
 
     action_set_m_request request =
       pure $ st{
@@ -162,7 +166,7 @@ instance StoreData Store where
         (Just foru_m_request, Loaded (Just OrganizationPackResponse{..})) -> do
           lr <- rd $ postForum_ByOrganizationId' organizationPackResponseOrganizationId foru_m_request
           rehtie lr (const $ pure st) $ \forum_response@ForumResponse{..} -> do
-            forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForums org_sid (ShowS forumResponseName)) []
+            void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForums org_sid (ShowS forumResponseName)) []
             pure st
         _            -> pure st
 
@@ -173,7 +177,7 @@ instance StoreData Store where
         Just foru_m_request -> do
           lr <- rd $ putForum' edit_id $ foru_m_request
           rehtie lr (const $ pure st) $ \forum_response@ForumResponse{..} -> do
-            forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForums org_sid (ShowS forumResponseName)) []
+            void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForums org_sid (ShowS forumResponseName)) []
             pure st
 
 
@@ -306,8 +310,47 @@ viewEditS organization_id forum_id m_tag _m_request _lm_organization_pack =
 
 viewMod :: TyCRUD -> OrganizationId -> Maybe ForumId -> Maybe Text -> ForumRequest -> HTMLView_
 viewMod tycrud organization_id m_forum_id m_tag request@ForumRequest{..} = do
-  mempty
+  div_ $ do
+    h1_ $ elemText $ linkName tycrud <> " Forum"
 
+    mandatoryNameField forumRequestDisplayName
+      (\input -> dispatch $ SetRequest $ request{forumRequestDisplayName = input})
+
+    optionalDescriptionField forumRequestDescription
+      (\input -> dispatch $ SetRequest $ request{forumRequestDescription = Just input})
+      (dispatch $ SetRequest $ request{forumRequestDescription = Nothing})
+
+    mandatoryIntegerField "Threads per Board" forumRequestThreadsPerBoard 20 10 50 10
+      (\input -> dispatch $ SetRequest $ request{forumRequestThreadsPerBoard = input})
+
+    mandatoryIntegerField "Posts per Thread" forumRequestThreadPostsPerThread 20 10 50 10
+      (\input -> dispatch $ SetRequest $ request{forumRequestThreadPostsPerThread = input})
+
+    mandatoryIntegerField "Recent threads (limit)" forumRequestRecentThreadsLimit 10 0 20 1
+      (\input -> dispatch $ SetRequest $ request{forumRequestRecentThreadsLimit = input})
+
+    mandatoryIntegerField "Recent posts (limit)" forumRequestRecentPostsLimit 10 0 20 1
+      (\input -> dispatch $ SetRequest $ request{forumRequestRecentPostsLimit = input})
+
+    mandatoryIntegerField "Messages of the week (limit)" forumRequestMotwLimit 10 0 20 1
+      (\input -> dispatch $ SetRequest $ request{forumRequestMotwLimit = input})
+
+    mandatoryVisibilityField forumRequestVisibility
+      (\input -> dispatch $ SetRequest $ request{forumRequestVisibility = input})
+
+    tagsField
+      forumRequestTags
+      (maybe "" id m_tag)
+      (\input -> dispatch $ SetRequestState (Just request) (Just input))
+      (dispatch $ SetRequestState (Just $ request{forumRequestTags = maybe forumRequestTags (\tag -> forumRequestTags <> [tag]) m_tag}) Nothing)
+      (\idx -> dispatch $ SetRequest $ request{forumRequestTags = deleteNth idx forumRequestTags})
+      (dispatch $ SetRequest $ request{forumRequestTags = []})
+
+    createButtonsCreateEditCancel
+      m_forum_id
+      (dispatch Save)
+      (dispatch . Edit)
+      (routeWith' Home)
 
 
 dispatch :: Action -> [SomeStoreAction]

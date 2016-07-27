@@ -375,7 +375,7 @@ viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
 
     createButtonsCreateEditCancel
       m_organization_id
-      (dispatch $ Save)
+      (dispatch Save)
       (\edit_id -> dispatch $ Edit edit_id)
       (routeWith' Home)
 
