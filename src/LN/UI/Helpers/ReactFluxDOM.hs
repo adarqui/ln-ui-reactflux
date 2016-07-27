@@ -39,14 +39,14 @@ ahrefName name route_with =
 
 
 
-ahrefClasses :: JSString -> RouteWith -> HTMLEvent_
+ahrefClasses :: [Text] -> RouteWith -> HTMLEvent_
 ahrefClasses classes route_with = ahrefClassesName classes (linkName route_with) route_with
 
 
 
-ahrefClassesName :: JSString -> Text -> RouteWith -> HTMLEvent_
+ahrefClassesName :: [Text] -> Text -> RouteWith -> HTMLEvent_
 ahrefClassesName classes name route_with =
-  a_ ["className" $= classes, "href" $= fromRouteWithHash route_with] $ elemText name
+  a_ [classNames_ classes, "href" $= fromRouteWithHash route_with] $ elemText name
 
 
 

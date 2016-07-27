@@ -153,7 +153,7 @@ navBar m_user_pack =
   cldiv_ B.containerFluid $ do
     nav_ [classNames_ [B.navbarNav, B.navbarStaticTop]] $ do
       cldiv_ B.container $ do
-        ahrefClasses B.navbarBrand $ routeWith' Home
+        ahrefClasses [B.navbarBrand] $ routeWith' Home
         ul_ [classNames_ [B.navbarNav, B.nav, B.navTabs]] $ do
           li_ $ ahref $ routeWith' About
           li_ $ ahref $ routeWith' Portal

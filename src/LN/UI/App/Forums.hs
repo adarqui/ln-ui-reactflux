@@ -61,7 +61,7 @@ import           LN.UI.Helpers.DataText          (tshow)
 import           LN.UI.Helpers.DataTime          (prettyUTCTimeMaybe)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
-import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName, className_,
+import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName, className_, ahrefClasses,
                                                   classNames_)
 import           LN.UI.Router                    (CRUD (..), Params, Route (..),
                                                   RouteWith (..), TyCRUD (..),
@@ -228,7 +228,7 @@ viewIndex Store{..} = do
 
 
 viewIndex' :: OrganizationPackResponse -> Map Int64 ForumPackResponse -> HTMLView_
-viewIndex' org_pack@OrganizationPackResponse{..} forum_packs = do
+viewIndex' org_pack@OrganizationPackResponse{..} forums_map = do
   h1_ [className_ B.textCenter] $ elemText "Forums"
 
   -- ACCESS: Organization
@@ -239,6 +239,18 @@ viewIndex' org_pack@OrganizationPackResponse{..} forum_packs = do
     (button_newForum $ routeWith' $ OrganizationsForums organizationResponseName New)
     mempty
 
+  cldiv_ B.listUnstyled $
+    mapM_ (\ForumPackResponse{..} -> do
+      let
+        ForumResponse{..}     = forumPackResponseForum
+        ForumStatResponse{..} = forumPackResponseStat
+      li_ $ do
+        cldiv_ B.row $ do
+          cldiv_ B.colXs1 $ p_ $ elemText "icon"
+        cldiv_ B.colXs6 $ do
+          cldiv_ B.listGroup $ do
+            ahrefClasses [B.listGroupItem] $ routeWith' $ OrganizationsForums organizationResponseName (ShowS forumResponseName)
+    ) $ Map.elems forums_map
 
   where
   org@OrganizationResponse{..} = organizationPackResponseOrganization
