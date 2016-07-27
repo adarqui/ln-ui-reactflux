@@ -79,7 +79,7 @@ import           LN.UI.View.Internal             (showTagsSmall)
 
 data Store = Store {
   _pageInfo         :: PageInfo,
-  _lm_organizations :: Loader (Map Int64 OrganizationPackResponse),
+  _l_organizations :: Loader (Map Int64 OrganizationPackResponse),
   _lm_organization  :: Loader (Maybe OrganizationPackResponse),
   _m_request        :: Maybe OrganizationRequest,
   _m_requestTag     :: Maybe Text,
@@ -118,7 +118,7 @@ instance StoreData Store where
     where
     action_load = do
       pure $ st{
-        _lm_organizations = Loading,
+        _l_organizations = Loading,
         _lm_organization  = Loading
       }
 
@@ -136,7 +136,7 @@ instance StoreData Store where
         pure (count, organizations)
       rehtie lr (const $ pure st) $ \(count, organization_packs) -> do
         let new_page_info = runPageInfo count page_info
-        pure $ st{ _lm_organizations = Loaded $ idmapFrom organizationPackResponseOrganizationId (organizationPackResponses organization_packs)
+        pure $ st{ _l_organizations = Loaded $ idmapFrom organizationPackResponseOrganizationId (organizationPackResponses organization_packs)
                  , _pageInfo = new_page_info }
 
     action_init_crud crud params = case crud of
@@ -198,7 +198,7 @@ store = mkStore defaultStore
 defaultStore :: Store
 defaultStore = Store {
   _pageInfo      = defaultPageInfo,
-  _lm_organizations = Loaded Map.empty,
+  _l_organizations = Loaded Map.empty,
   _lm_organization  = Loaded Nothing,
   _m_request       = Nothing,
   _m_requestTag    = Nothing,
@@ -226,7 +226,7 @@ view = defineControllerView "organizations" store $ \st@Store{..} crud ->
 
 viewIndex :: Store -> HTMLView_
 viewIndex Store{..} = do
-  Loading.loader1 _lm_organizations $ \organizations -> do
+  Loading.loader1 _l_organizations $ \organizations -> do
     cldiv_ B.containerFluid $ do
       h1_ "Organizations"
       ahref $ routeWith' $ Organizations New
