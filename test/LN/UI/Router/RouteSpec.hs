@@ -37,8 +37,8 @@ spec = do
       toPathInfo (Organizations (EditS "ln"))   `shouldBe` "/organizations/_edit/ln"
       toPathInfo (Organizations (DeleteS "ln")) `shouldBe` "/organizations/_delete/ln"
 
-      toPathInfo (OrganizationsForums "ln" Index)               `shouldBe` "/ln/forums"
-      toPathInfo (OrganizationsForums "ln" (ShowS "community")) `shouldBe` "/ln/forums/community"
+      toPathInfo (OrganizationsForums "ln" Index)               `shouldBe` "/ln/f"
+      toPathInfo (OrganizationsForums "ln" (ShowS "community")) `shouldBe` "/ln/f/community"
 
     it "fromPathInfo should work" $ do
       fromPathInfo "/"                         `shouldBe` (Right Home)
@@ -51,8 +51,8 @@ spec = do
       fromPathInfo "/ln"                       `shouldBe` (Right $ Organizations (ShowS "ln"))
       fromPathInfo "/organizations/_edit/ln"   `shouldBe` (Right $ Organizations (EditS "ln"))
       fromPathInfo "/organizations/_delete/ln" `shouldBe` (Right $ Organizations (DeleteS "ln"))
-      fromPathInfo "/ln/forums"                `shouldBe` (Right $ OrganizationsForums "ln" Index)
-      fromPathInfo "/ln/forums/community"      `shouldBe` (Right $ OrganizationsForums "ln" (ShowS "community"))
+      fromPathInfo "/ln/f"                     `shouldBe` (Right $ OrganizationsForums "ln" Index)
+      fromPathInfo "/ln/f/community"           `shouldBe` (Right $ OrganizationsForums "ln" (ShowS "community"))
 
 
   describe "route with tests" $ do

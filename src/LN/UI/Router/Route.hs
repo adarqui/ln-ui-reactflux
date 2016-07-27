@@ -207,8 +207,8 @@ instance PathInfo Route where
     Organizations Index      -> pure "organizations"
     Organizations (ShowS s)  -> pure s
     Organizations crud       -> (pure $ "organizations") <> toPathSegments crud
-    OrganizationsForums org_sid Index -> (pure org_sid) <> pure "forums"
-    OrganizationsForums org_sid crud -> (pure org_sid) <> pure "forums" <> toPathSegments crud
+    OrganizationsForums org_sid Index -> (pure org_sid) <> pure "f"
+    OrganizationsForums org_sid crud -> (pure org_sid) <> pure "f" <> toPathSegments crud
     Users Index              -> pure "users"
     Users crud               -> (pure $ "users") <> toPathSegments crud
     _                        -> pure ""
@@ -219,7 +219,7 @@ instance PathInfo Route where
     <|> Errors        <$ segment "errors"
     <|> Portal        <$ segment "portal"
     <|> Organizations <$ segment "organizations" <*> fromPathSegments
-    <|> try (OrganizationsForums <$> anySegment <*> (segment "forums" *> fromPathSegments))
+    <|> try (OrganizationsForums <$> anySegment <*> (segment "f" *> fromPathSegments))
     <|> Users         <$ segment "users" <*> fromPathSegments
     <|> Organizations <$> (ShowS <$> anySegment)
     <|> pure Home
