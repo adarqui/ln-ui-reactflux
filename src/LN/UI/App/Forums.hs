@@ -4,6 +4,7 @@
 {-# LANGUAGE Rank2Types        #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeFamilies      #-}
+{-# LANGUAGE LambdaCase #-}
 
 module LN.UI.App.Forums (
   Store,
@@ -36,19 +37,15 @@ import           React.Flux                      hiding (view)
 import qualified React.Flux                      as RF
 import qualified Web.Bootstrap3                  as B
 
-import           LN.Api                          (getForumPack', getForumPacks_ByOrganizationId',
-                                                  postForum_ByOrganizationId',
-                                                  putForum')
-import           LN.Api.String                   (getOrganizationPack')
-import qualified LN.Api.String                   as ApiS (getForumPack_ByOrganizationId',
-                                                          getOrganization',
-                                                          getOrganizationPack')
+import           LN.Api
+import qualified LN.Api.String                   as ApiS
 import           LN.Generate.Default             (defaultForumRequest)
 import           LN.T.Convert                    (forumResponseToForumRequest)
 import           LN.T.Forum
 import           LN.T.Organization
 import           LN.T.Pack.Forum
 import           LN.T.Pack.Organization
+import LN.T.Pack.Board
 import           LN.T.Size                       (Size (..))
 import           LN.T.User                       (UserSanitizedResponse (..))
 import           LN.UI.Access
@@ -85,9 +82,10 @@ import           LN.UI.View.Internal             (showTagsSmall)
 
 
 data Store = Store {
-  __lm_forums     :: Loader (Map Int64 ForumPackResponse),
+  __lm_forums     :: Loader (Map ForumId ForumPackResponse),
   _lm_organization :: Loader (Maybe OrganizationPackResponse),
   _lm_forum        :: Loader (Maybe ForumPackResponse),
+  _l_boards        :: Loader (Map BoardId BoardPackResponse),
   _m_request       :: Maybe ForumRequest,
   _m_requestTag    :: Maybe Text
 }
@@ -185,7 +183,7 @@ instance StoreData Store where
 sync :: Store -> Text -> Text -> IO Store
 sync st@Store{..} org_sid forum_sid = do
   lr <- runEitherT $ do
-    organization@OrganizationPackResponse{..} <- mustPassT $ rd $ getOrganizationPack' org_sid
+    organization@OrganizationPackResponse{..} <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
     forum        <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
     pure (organization, forum)
   rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, forum@ForumPackResponse{..}) -> do
@@ -205,10 +203,11 @@ store = mkStore defaultStore
 defaultStore :: Store
 defaultStore = Store {
   _lm_organization  = Loaded Nothing,
-  __lm_forums        = Loaded Map.empty,
+  __lm_forums       = Loaded Map.empty,
   _lm_forum         = Loaded Nothing,
-  _m_request       = Nothing,
-  _m_requestTag    = Nothing
+  _l_boards         = Loaded Map.empty,
+  _m_request        = Nothing,
+  _m_requestTag     = Nothing
 }
 
 
@@ -221,7 +220,13 @@ view_ org_sid crud =
 
 view :: ReactView (OrganizationName,CRUD)
 view = defineControllerView "organizations" store $ \st@Store{..} (org_sid,crud) ->
-  mempty
+  case crud of
+    Index     -> viewIndex st
+    ShowS _   -> viewShowS _lm_organization _lm_forum _l_boards
+    New       -> viewNew 0 _m_requestTag _m_request
+    EditS _   -> viewEditS 0 0 _m_requestTag _m_request
+    DeleteS _ -> Delete.view_
+    _         -> NotFound.view_
 
 
 
@@ -286,8 +291,13 @@ viewIndex_ org_pack@OrganizationPackResponse{..} forums_map = do
 
 
 
-viewShowS :: Loader (Maybe OrganizationPackResponse) -> Loader (Maybe ForumPackResponse) -> HTMLView_
-viewShowS _lm_organization _lm_forum = do
+viewShowS
+  :: Loader (Maybe OrganizationPackResponse)
+  -> Loader (Maybe ForumPackResponse)
+  -> Loader (Map BoardId BoardPackResponse)
+  -> HTMLView_
+
+viewShowS _lm_organization _lm_forum l_boards = do
   Loading.loader2 _lm_organization _lm_forum $ go
   where
   go Nothing Nothing = mempty
@@ -302,9 +312,9 @@ viewNew organization_id m_tag m_request =
 
 
 
-viewEditS :: OrganizationId -> ForumId -> Maybe Text -> Maybe ForumRequest -> Loader (Maybe ForumPackResponse) -> HTMLView_
-viewEditS organization_id forum_id m_tag _m_request _lm_organization_pack =
-  mempty
+viewEditS :: OrganizationId -> ForumId -> Maybe Text -> Maybe ForumRequest -> HTMLView_
+viewEditS organization_id forum_id m_tag m_request =
+  ebyam m_request mempty $ \request -> viewMod TyUpdate organization_id (Just forum_id) m_tag request
 
 
 
