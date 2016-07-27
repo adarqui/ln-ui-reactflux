@@ -139,10 +139,10 @@ instance StoreData Store where
         }
 
     action_init_crud org_sid crud params = case crud of
-      ShowS forum_sid   -> sync st org_sid forum_sid
-      New               -> syncOrg st org_sid *> (pure $ st{ _m_request = Just defaultForumRequest })
-      EditS forum_sid   -> sync st org_sid forum_sid
-      DeleteS forum_sid -> sync st org_sid forum_sid
+      ShowS forum_sid   -> sync st org_sid (Just forum_sid)
+      New               -> sync st org_sid Nothing >>= \st_ -> (pure $ st_{ _m_request = Just defaultForumRequest })
+      EditS forum_sid   -> sync st org_sid (Just forum_sid)
+      DeleteS forum_sid -> sync st org_sid (Just forum_sid)
       _                 -> pure st
 
 
@@ -175,34 +175,21 @@ instance StoreData Store where
 
 
 
--- TODO FIXME
--- should just be sync, with Nothing
---
-syncOrg :: Store -> Text -> IO Store
-syncOrg st@Store{..} org_sid = do
+sync :: Store -> OrganizationName -> Maybe ForumName -> IO Store
+sync st@Store{..} org_sid m_forum_sid = do
   lr <- runEitherT $ do
     organization@OrganizationPackResponse{..} <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
-    pure organization
-  rehtie lr (const $ pure st) $ \organization@OrganizationPackResponse{..} -> do
+    x <- ebyam m_forum_sid (pure Nothing) $ \forum_sid -> do
+      forum@ForumPackResponse{..} <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
+      boards <- mustPassT $ rd $ getBoardPacks_ByForumId' forumPackResponseForumId
+      pure $ Just (forum, boards)
+    pure (organization, x)
+  rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, x) -> do
     pure $ st{
-      _lm_organization = Loaded $ Just organization
-    }
-
-
-
-sync :: Store -> Text -> Text -> IO Store
-sync st@Store{..} org_sid forum_sid = do
-  lr <- runEitherT $ do
-    organization@OrganizationPackResponse{..} <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
-    forum@ForumPackResponse{..}        <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
-    boards <- mustPassT $ rd $ getBoardPacks_ByForumId' forumPackResponseForumId
-    pure (organization, forum, boards)
-  rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, forum@ForumPackResponse{..}, boards@BoardPackResponses{..}) -> do
-    pure $ st{
-      _m_request      = Just $ forumResponseToForumRequest forumPackResponseForum
+      _m_request       = maybe _m_request (Just . forumResponseToForumRequest . forumPackResponseForum) $ fmap fst x
     , _lm_organization = Loaded $ Just organization
-    , _lm_forum        = Loaded $ Just forum
-    , _l_boards        = Loaded $ idmapFrom boardPackResponseBoardId boardPackResponses
+    , _lm_forum        = maybe _lm_forum (Loaded . Just) $ fmap fst x
+    , _l_boards        = maybe _l_boards (Loaded . idmapFrom boardPackResponseBoardId . boardPackResponses) $ fmap snd x
     }
 
 
@@ -338,8 +325,8 @@ viewShowS lm_organization lm_forum l_boards = do
 
 
 viewNew :: Loader (Maybe OrganizationPackResponse) -> Maybe Text -> Maybe ForumRequest -> HTMLView_
-viewNew l_organization m_tag m_request =
-  Loading.loader1_ l_organization $ \OrganizationPackResponse{..} ->
+viewNew lm_organization m_tag m_request = do
+  Loading.loader1_ lm_organization $ \OrganizationPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewNew_ organizationPackResponseOrganizationId m_tag request
 
 
