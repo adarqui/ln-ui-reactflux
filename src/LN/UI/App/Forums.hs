@@ -98,7 +98,7 @@ data Action
   | SetRequest      ForumRequest
   | SetRequestState (Maybe ForumRequest) (Maybe Text)
   | Save
-  | Edit            Int64
+  | Edit
   | Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -115,7 +115,7 @@ instance StoreData Store where
       SetRequest request          -> action_set_m_request request
       SetRequestState m_req m_tag -> action_set_m_request_state m_req m_tag
       Save                        -> action_save
-      Edit edit_id                -> action_edit edit_id
+      Edit                        -> action_edit
 
     where
     action_load = do
@@ -159,24 +159,24 @@ instance StoreData Store where
     action_set_m_request_state m_req m_tag = pure $ st{ _m_request = m_req, _m_requestTag = m_tag }
 
     action_save = do
-      let org_sid = "FIXME"
       case (_m_request, _lm_organization) of
-        (Just foru_m_request, Loaded (Just OrganizationPackResponse{..})) -> do
-          lr <- rd $ postForum_ByOrganizationId' organizationPackResponseOrganizationId foru_m_request
+        (Just forum_request, Loaded (Just OrganizationPackResponse{..})) -> do
+          let org_sid = organizationResponseName organizationPackResponseOrganization
+          lr <- rd $ postForum_ByOrganizationId' organizationPackResponseOrganizationId forum_request
           rehtie lr (const $ pure st) $ \forum_response@ForumResponse{..} -> do
             void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForums org_sid (ShowS forumResponseName)) []
             pure st
         _            -> pure st
 
-    action_edit edit_id = do
-      let org_sid = "FIXME"
-      case _m_request of
-        Nothing            -> pure st
-        Just foru_m_request -> do
-          lr <- rd $ putForum' edit_id $ foru_m_request
+    action_edit = do
+      case (_m_request, _lm_organization, _lm_forum) of
+        (Just forum_request, Loaded (Just OrganizationPackResponse{..}), Loaded (Just ForumPackResponse{..})) -> do
+          let org_sid =organizationResponseName organizationPackResponseOrganization
+          lr <- rd $ putForum' forumPackResponseForumId $ forum_request
           rehtie lr (const $ pure st) $ \forum_response@ForumResponse{..} -> do
             void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForums org_sid (ShowS forumResponseName)) []
             pure st
+        _           -> pure st
 
 
 
@@ -297,11 +297,8 @@ viewShowS
   -> Loader (Map BoardId BoardPackResponse)
   -> HTMLView_
 
-viewShowS _lm_organization _lm_forum l_boards = do
-  Loading.loader2 _lm_organization _lm_forum $ go
-  where
-  go Nothing Nothing = mempty
-  go (Just organization@OrganizationPackResponse{..}) (Just forum@ForumPackResponse{..}) = do
+viewShowS lm_organization lm_forum l_boards = do
+  Loading.loader2_ lm_organization lm_forum $ \organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} -> do
     mempty
 
 
@@ -372,7 +369,7 @@ viewMod tycrud organization_id m_forum_id m_tag request@ForumRequest{..} = do
     createButtonsCreateEditCancel
       m_forum_id
       (dispatch Save)
-      (dispatch . Edit)
+      (const $ dispatch Edit)
       (routeWith' Home)
 
 
