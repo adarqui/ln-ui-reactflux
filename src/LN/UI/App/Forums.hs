@@ -1,10 +1,10 @@
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Rank2Types        #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeFamilies      #-}
-{-# LANGUAGE LambdaCase #-}
 
 module LN.UI.App.Forums (
   Store,
@@ -19,9 +19,9 @@ module LN.UI.App.Forums (
 
 
 
-import Control.Monad (void)
 import           Control.Concurrent              (forkIO)
 import           Control.DeepSeq                 (NFData)
+import           Control.Monad                   (void)
 import           Control.Monad.Trans.Either      (EitherT, runEitherT)
 import           Data.Ebyam                      (ebyam)
 import           Data.Int                        (Int64)
@@ -43,9 +43,9 @@ import           LN.Generate.Default             (defaultForumRequest)
 import           LN.T.Convert                    (forumResponseToForumRequest)
 import           LN.T.Forum
 import           LN.T.Organization
+import           LN.T.Pack.Board
 import           LN.T.Pack.Forum
 import           LN.T.Pack.Organization
-import LN.T.Pack.Board
 import           LN.T.Size                       (Size (..))
 import           LN.T.User                       (UserSanitizedResponse (..))
 import           LN.UI.Access
@@ -53,9 +53,9 @@ import qualified LN.UI.App.Delete                as Delete
 import qualified LN.UI.App.Gravatar              as Gravatar
 import           LN.UI.App.Loading               (Loader (..))
 import qualified LN.UI.App.Loading               as Loading
+import qualified LN.UI.App.NotFound              as NotFound (view_)
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
-import qualified LN.UI.App.NotFound as NotFound (view_)
 import qualified LN.UI.App.Route                 as Route
 import           LN.UI.Helpers.DataList          (deleteNth)
 import           LN.UI.Helpers.DataText          (tshow)
@@ -82,7 +82,7 @@ import           LN.UI.View.Internal             (showTagsSmall)
 
 
 data Store = Store {
-  _lm_forums      :: Loader (Map ForumId ForumPackResponse),
+  _lm_forums       :: Loader (Map ForumId ForumPackResponse),
   _lm_organization :: Loader (Maybe OrganizationPackResponse),
   _lm_forum        :: Loader (Maybe ForumPackResponse),
   _l_boards        :: Loader (Map BoardId BoardPackResponse),
@@ -118,13 +118,7 @@ instance StoreData Store where
       Edit                        -> action_edit
 
     where
-    action_load = do
-      pure $ st{
-        _lm_forums       = Loading,
-        _lm_organization = Loading,
-        _lm_forum        = Loading,
-        _l_boards        = Loading
-      }
+    action_load = pure $ loaded st
 
     action_init org_sid crud params = case crud of
       Index -> action_init_index org_sid params
@@ -138,7 +132,7 @@ instance StoreData Store where
         organization@OrganizationPackResponse{..}  <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
         forums        <- mustPassT $ rd $ getForumPacks_ByOrganizationId' organizationPackResponseOrganizationId
         pure (organization, forums)
-      rehtie lr (const $ pure st) $ \(organization, forums) -> do
+      rehtie lr (const $ pure $ notLoaded st) $ \(organization, forums) -> do
         pure $ st{
           _lm_organization = Loaded $ Just organization
         , _lm_forums       = Loaded $ idmapFrom forumPackResponseForumId (forumPackResponses forums)
@@ -146,7 +140,7 @@ instance StoreData Store where
 
     action_init_crud org_sid crud params = case crud of
       ShowS forum_sid   -> sync st org_sid forum_sid
-      New               -> pure $ st{ _m_request = Just defaultForumRequest }
+      New               -> syncOrg st org_sid *> (pure $ st{ _m_request = Just defaultForumRequest })
       EditS forum_sid   -> sync st org_sid forum_sid
       DeleteS forum_sid -> sync st org_sid forum_sid
       _                 -> pure st
@@ -181,6 +175,21 @@ instance StoreData Store where
 
 
 
+-- TODO FIXME
+-- should just be sync, with Nothing
+--
+syncOrg :: Store -> Text -> IO Store
+syncOrg st@Store{..} org_sid = do
+  lr <- runEitherT $ do
+    organization@OrganizationPackResponse{..} <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
+    pure organization
+  rehtie lr (const $ pure st) $ \organization@OrganizationPackResponse{..} -> do
+    pure $ st{
+      _lm_organization = Loaded $ Just organization
+    }
+
+
+
 sync :: Store -> Text -> Text -> IO Store
 sync st@Store{..} org_sid forum_sid = do
   lr <- runEitherT $ do
@@ -212,6 +221,28 @@ defaultStore = Store {
   _m_request        = Nothing,
   _m_requestTag     = Nothing
 }
+
+
+
+loaded :: Store -> Store
+loaded st =
+  st{
+    _lm_forums       = Loading,
+    _lm_organization = Loading,
+    _lm_forum        = Loading,
+    _l_boards        = Loading
+  }
+
+
+
+notLoaded :: Store -> Store
+notLoaded st =
+  st{
+    _lm_forums       = CantLoad
+  , _lm_organization = CantLoad
+  , _lm_forum        = CantLoad
+  , _l_boards        = CantLoad
+  }
 
 
 
