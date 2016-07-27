@@ -57,6 +57,8 @@ import qualified LN.UI.App.Loading               as Loading
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
 import qualified LN.UI.App.Route                 as Route
+import qualified LN.UI.App.NotFound as NotFound (view_)
+import qualified LN.UI.App.Forums as Forums (viewIndex_)
 import           LN.UI.Helpers.DataList          (deleteNth)
 import           LN.UI.Helpers.DataText          (tshow)
 import           LN.UI.Helpers.DataTime          (prettyUTCTimeMaybe)
@@ -224,10 +226,11 @@ view :: ReactView CRUD
 view = defineControllerView "organizations" store $ \st@Store{..} crud ->
   case crud of
     Index           -> viewIndex st
-    ShowS org_sid   -> viewShowS _lm_organization
+    ShowS org_sid   -> viewShowS _lm_organization _l_forums
     New             -> viewNew _m_requestTag _m_request
     EditS org_sid   -> viewEditS _m_requestTag _m_request _lm_organization
     DeleteS org_sid -> Delete.view_
+    _               -> NotFound.view_
 
 
 
@@ -251,12 +254,11 @@ viewIndex Store{..} = do
 
 
 
-viewShowS :: Loader (Maybe OrganizationPackResponse) -> HTMLView_
-viewShowS l_organization = do
-  Loading.loader1 l_organization $ go
+viewShowS :: Loader (Maybe OrganizationPackResponse) -> Loader (Map Int64 ForumPackResponse) -> HTMLView_
+viewShowS lm_organization l_forums = do
+  Loading.loader2 lm_organization l_forums $ go
   where
-  go Nothing = mempty
-  go (Just organization@OrganizationPackResponse{..}) = do
+  go (Just organization_pack@OrganizationPackResponse{..}) forums_map = do
     let OrganizationResponse{..} = organizationPackResponseOrganization
     cldiv_ B.containerFluid $ do
       cldiv_ B.pageHeader $ do
@@ -267,7 +269,7 @@ viewShowS l_organization = do
         -- * Member: if not a member, this is a shortcut to join an organization
         ---
         isMemberOfOrganizationHTML
-         organization
+         organization_pack
          mempty
          (button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
 
@@ -314,9 +316,11 @@ viewShowS l_organization = do
         elemText "Tags: "
         showTagsSmall organizationResponseTags
 
+    Forums.viewIndex_ organization_pack forums_map
     -- renderView_Forums_Index' org_pack forum_packs,
     -- p_ $ ahref (OrganizationMembership organizationResponseName Index emptyParams)
     -- p_ $ ahref (OrganizationTeams organizationResponseName Index emptyParams)
+  go _ _ = mempty
 
 
 
