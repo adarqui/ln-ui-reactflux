@@ -54,6 +54,7 @@ import qualified LN.UI.App.Gravatar              as Gravatar
 import           LN.UI.App.Loading               (Loader (..))
 import qualified LN.UI.App.Loading               as Loading
 import qualified LN.UI.App.NotFound              as NotFound (view_)
+import qualified LN.UI.App.Oops                  as Oops (view_)
 import           LN.UI.App.PageNumbers           (runPageInfo)
 import qualified LN.UI.App.PageNumbers           as PageNumbers
 import qualified LN.UI.App.Route                 as Route
@@ -319,8 +320,21 @@ viewShowS
   -> HTMLView_
 
 viewShowS lm_organization lm_forum l_boards = do
-  Loading.loader2_ lm_organization lm_forum $ \organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} -> do
-    mempty
+  Loading.loader3 lm_organization lm_forum l_boards $ \m_organization m_forum boards -> do
+    case (m_organization, m_forum) of
+      (Just organization, Just forum) -> viewShowS_ organization forum boards
+      _ -> Oops.view_
+
+
+
+viewShowS_
+  :: OrganizationPackResponse
+  -> ForumPackResponse
+  -> Map BoardId BoardPackResponse
+  -> HTMLView_
+
+viewShowS_ organization forum boards = do
+  p_ $ elemText "show"
 
 
 

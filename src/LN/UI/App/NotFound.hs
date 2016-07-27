@@ -25,7 +25,7 @@ view_ =
 
 
 view :: ReactView ()
-view = defineView "not-foundt" $ \_ ->
+view = defineView "not-found" $ \_ ->
   notFoundImg
 
 

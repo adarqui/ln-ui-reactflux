@@ -29,6 +29,7 @@ library
                      , LN.UI.App.Home
                      , LN.UI.App.Loading
                      , LN.UI.App.NotFound
+                     , LN.UI.App.Oops
                      , LN.UI.App.Organizations
                      , LN.UI.App.PageNumbers
                      , LN.UI.App.Portal
