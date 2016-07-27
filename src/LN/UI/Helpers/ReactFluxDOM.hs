@@ -68,4 +68,4 @@ classNames_ = classNames . flip zip (repeat True)
 
 
 className_ :: JSString -> PropertyOrHandler handler
-className_ = ($=) "classNames"
+className_ = ($=) "className"
