@@ -11,7 +11,9 @@ module LN.UI.App.Forums (
   Action (..),
   store,
   view_,
-  view
+  view,
+  viewIndex,
+  viewIndex_
 ) where
 
 
@@ -225,12 +227,12 @@ viewIndex Store{..} = do
   Loading.loader2 _lm_organization _l_lm_forums $ \m_organization forums -> do
     case m_organization of
       Nothing           -> mempty
-      Just organization -> viewIndex' organization forums
+      Just organization -> viewIndex_ organization forums
 
 
 
-viewIndex' :: OrganizationPackResponse -> Map Int64 ForumPackResponse -> HTMLView_
-viewIndex' org_pack@OrganizationPackResponse{..} forums_map = do
+viewIndex_ :: OrganizationPackResponse -> Map Int64 ForumPackResponse -> HTMLView_
+viewIndex_ org_pack@OrganizationPackResponse{..} forums_map = do
   h1_ [className_ B.textCenter] $ elemText "Forums"
 
   -- ACCESS: Organization
