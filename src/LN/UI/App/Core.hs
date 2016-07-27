@@ -43,6 +43,7 @@ import           LN.UI.App.Core.Shared           (Action (..), Store (..),
 import qualified LN.UI.App.Home                  as Home
 import qualified LN.UI.App.Organizations         as Organizations
 import qualified LN.UI.App.Forums as Forums
+import qualified LN.UI.App.Boards as Boards
 import qualified LN.UI.App.Portal                as Portal
 import qualified LN.UI.App.Users                 as Users
 import qualified LN.UI.App.NotFound as NotFound (view_)
@@ -91,6 +92,10 @@ instance StoreData Store where
           void $ mapM_ (forkIO . executeAction)
             [ SomeStoreAction Forums.store Forums.Load
             , SomeStoreAction Forums.store $ Forums.Init org_sid crud params]
+        RouteWith (OrganizationsForumsBoards org_sid forum_sid crud) params  -> do
+          void $ mapM_ (forkIO . executeAction)
+            [ SomeStoreAction Boards.store Boards.Load
+            , SomeStoreAction Boards.store $ Boards.Init org_sid forum_sid crud params]
         RouteWith (Users Index) params         -> void $ forkIO $ executeAction $ SomeStoreAction Users.store $ Users.Init params
         RouteWith _ _                          -> pure ()
 
@@ -174,6 +179,7 @@ renderRouteView Store{..} = do
       RouteWith Portal _                      -> Portal.view_
       RouteWith (Organizations crud) params   -> Organizations.view_ crud
       RouteWith (OrganizationsForums org_sid crud) params -> Forums.view_ org_sid crud
+      RouteWith (OrganizationsForumsBoards org_sid forum_sid crud) params -> Boards.view_ org_sid forum_sid crud
       RouteWith (Users Index) params          -> Users.view_
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
       RouteWith _ _                           -> NotFound.view_
