@@ -93,6 +93,7 @@ data Store = Store {
   _lm_organization :: Loader (Maybe OrganizationPackResponse),
   _lm_forum        :: Loader (Maybe ForumPackResponse),
   _l_boards        :: Loader (Map BoardId BoardPackResponse),
+  _l_recentPosts   :: Loader (Map ThreadPostId ThreadPostPackResponse),
   _m_request       :: Maybe ForumRequest,
   _m_requestTag    :: Maybe Text
 }
@@ -125,7 +126,7 @@ instance StoreData Store where
       Edit                        -> action_edit
 
     where
-    action_load = pure $ loaded st
+    action_load = pure $ loading st
 
     action_init org_sid crud params = case crud of
       Index -> action_init_index org_sid params
@@ -139,7 +140,7 @@ instance StoreData Store where
         organization@OrganizationPackResponse{..}  <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
         forums        <- mustPassT $ rd $ getForumPacks_ByOrganizationId' organizationPackResponseOrganizationId
         pure (organization, forums)
-      rehtie lr (const $ pure $ notLoaded st) $ \(organization, forums) -> do
+      rehtie lr (const $ pure $ cantLoad st) $ \(organization, forums) -> do
         pure $ st{
           _lm_organization = Loaded $ Just organization
         , _lm_forums       = Loaded $ idmapFrom forumPackResponseForumId (forumPackResponses forums)
@@ -212,30 +213,33 @@ defaultStore = Store {
   _lm_forums        = Loaded Map.empty,
   _lm_forum         = Loaded Nothing,
   _l_boards         = Loaded Map.empty,
+  _l_recentPosts    = Loaded Map.empty,
   _m_request        = Nothing,
   _m_requestTag     = Nothing
 }
 
 
 
-loaded :: Store -> Store
-loaded st =
+loading :: Store -> Store
+loading st =
   st{
-    _lm_forums       = Loading,
-    _lm_organization = Loading,
-    _lm_forum        = Loading,
-    _l_boards        = Loading
+    _lm_forums       = Loading
+  , _lm_organization = Loading
+  , _lm_forum        = Loading
+  , _l_boards        = Loading
+  , _l_recentPosts   = Loading
   }
 
 
 
-notLoaded :: Store -> Store
-notLoaded st =
+cantLoad :: Store -> Store
+cantLoad st =
   st{
     _lm_forums       = CantLoad
   , _lm_organization = CantLoad
   , _lm_forum        = CantLoad
   , _l_boards        = CantLoad
+  , _l_recentPosts   = CantLoad
   }
 
 
@@ -333,7 +337,7 @@ viewShowS lm_organization lm_forum l_boards = do
           organization
           forum
           mempty
-          mempty
+          (viewRecentPosts_ organization forum Map.empty)
           (viewMessagesOfTheWeek_ organization forum)
       _ -> Oops.view_
 
