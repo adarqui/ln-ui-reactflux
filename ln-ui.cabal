@@ -74,6 +74,7 @@ library
                      , text
                      , time
                      , transformers
+                     , tuple
                      , web-routes == 99.99
                      , ln-sanitize
                      , ln-validate

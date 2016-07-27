@@ -26,7 +26,8 @@ module LN.UI.Types (
   ForumId,
   BoardId,
   ThreadId,
-  ThreadPostId
+  ThreadPostId,
+  limitInt
 ) where
 
 
@@ -35,6 +36,8 @@ import           Data.Int   (Int64)
 import           Data.Text  (Text)
 import           Prelude
 import           React.Flux
+
+import           LN.T.Param
 
 
 
@@ -81,3 +84,8 @@ type ForumId        = Int64
 type BoardId        = Int64
 type ThreadId       = Int64
 type ThreadPostId   = Int64
+
+
+
+limitInt :: Int -> Param
+limitInt = Limit . fromIntegral

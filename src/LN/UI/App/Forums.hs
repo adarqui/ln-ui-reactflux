@@ -36,6 +36,7 @@ import           Haskell.Helpers.Either          (mustPassT)
 import           React.Flux                      hiding (view)
 import qualified React.Flux                      as RF
 import qualified Web.Bootstrap3                  as B
+import Data.Tuple.Select
 
 import LN.UI.Sort
 import           LN.Api
@@ -188,16 +189,20 @@ sync st@Store{..} org_sid m_forum_sid = do
   lr <- runEitherT $ do
     organization@OrganizationPackResponse{..} <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
     x <- ebyam m_forum_sid (pure Nothing) $ \forum_sid -> do
-      forum@ForumPackResponse{..} <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
+      forum  <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
+      let ForumPackResponse{..} = forum
+      let ForumResponse{..} = forumPackResponseForum
       boards <- mustPassT $ rd $ getBoardPacks_ByForumId' forumPackResponseForumId
-      pure $ Just (forum, boards)
+      recent <- mustPassT $ rd $ getThreadPostPacks_ByForumId [limitInt forumResponseRecentPostsLimit, WithBoard True, WithThread True, SortOrder SortOrderBy_Dsc, Order OrderBy_CreatedAt] forumResponseId
+      pure $ Just (forum, boards, recent)
     pure (organization, x)
   rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, x) -> do
     pure $ st{
-      _m_request       = maybe _m_request (Just . forumResponseToForumRequest . forumPackResponseForum) $ fmap fst x
+      _m_request       = maybe _m_request (Just . forumResponseToForumRequest . forumPackResponseForum) $ fmap sel1 x
     , _lm_organization = Loaded $ Just organization
-    , _lm_forum        = maybe _lm_forum (Loaded . Just) $ fmap fst x
-    , _l_boards        = maybe _l_boards (Loaded . idmapFrom boardPackResponseBoardId . boardPackResponses) $ fmap snd x
+    , _lm_forum        = maybe _lm_forum (Loaded . Just) $ fmap sel1 x
+    , _l_boards        = maybe _l_boards (Loaded . idmapFrom boardPackResponseBoardId . boardPackResponses) $ fmap sel2 x
+    , _l_recentPosts   = maybe _l_recentPosts (Loaded . idmapFrom threadPostPackResponseThreadPostId . threadPostPackResponses) $ fmap sel3 x
     }
 
 
