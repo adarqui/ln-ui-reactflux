@@ -40,9 +40,14 @@ import qualified Web.Bootstrap3                  as B
 import           LN.Api
 import qualified LN.Api.String                   as ApiS
 import           LN.Generate.Default             (defaultForumRequest)
+import LN.T.Board
+import LN.T.Thread
+import LN.T.ThreadPost
+import LN.T.Pack.ThreadPost
 import           LN.T.Convert                    (forumResponseToForumRequest)
 import           LN.T.Forum
 import           LN.T.Organization
+import LN.T.Param
 import           LN.T.Pack.Board
 import           LN.T.Pack.Forum
 import           LN.T.Pack.Organization
@@ -322,7 +327,13 @@ viewShowS
 viewShowS lm_organization lm_forum l_boards = do
   Loading.loader3 lm_organization lm_forum l_boards $ \m_organization m_forum boards -> do
     case (m_organization, m_forum) of
-      (Just organization, Just forum) -> viewShowS_ organization forum boards
+      (Just organization, Just forum) ->
+        viewShowS_
+          organization
+          forum
+          mempty
+          mempty
+          (viewMessagesOfTheWeek_ organization forum)
       _ -> Oops.view_
 
 
@@ -330,11 +341,38 @@ viewShowS lm_organization lm_forum l_boards = do
 viewShowS_
   :: OrganizationPackResponse
   -> ForumPackResponse
-  -> Map BoardId BoardPackResponse
+  -> HTMLView_ -- ^ plumbing boards
+  -> HTMLView_ -- ^ plumbing recent posts
+  -> HTMLView_ -- ^ plumbing messages of the week
   -> HTMLView_
 
-viewShowS_ organization forum boards = do
-  p_ $ elemText "show"
+viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} plumbing_boards plumbing_recent_posts plumbing_messages_of_the_week = do
+  cldiv_ B.containerFluid $ do
+    cldiv_ B.pageHeader $ do
+      p_ [className_ B.lead] $ elemText $ maybe "No description." id forumResponseDescription
+
+      -- ACCESS: Forum
+      -- * Create: can create boards within a forum
+      -- * Update: can edit forum settings
+      -- * Delete: can delete the forum
+      --
+      buttonGroup_HorizontalSm1 $ do
+        permissionsHTML'
+          forumPackResponsePermissions
+          (button_newBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName New)
+          permReadEmpty
+          (button_editForum $ routeWith' $ OrganizationsForums organizationResponseName (EditS forumResponseName))
+          (button_deleteForum $ routeWith' $ OrganizationsForums organizationResponseName (DeleteS forumResponseName))
+          permExecuteEmpty
+
+      div_ plumbing_boards
+      div_ plumbing_recent_posts
+      div_ plumbing_messages_of_the_week
+
+  where
+  OrganizationResponse{..} = organizationPackResponseOrganization
+  ForumResponse{..} = forumPackResponseForum
+
 
 
 
@@ -406,6 +444,48 @@ viewMod tycrud organization_id m_forum_id m_tag request@ForumRequest{..} = do
       (dispatch Save)
       (const $ dispatch Edit)
       (routeWith' Home)
+
+
+
+--
+-- Re: ADARQ's Journal by adarqui (Progress Journals & Experimental Routines) Today at 06:00:30 pm
+--
+viewMessagesOfTheWeek_ :: OrganizationPackResponse -> ForumPackResponse -> HTMLView_
+viewMessagesOfTheWeek_ organization forum = do
+  cldiv_ B.containerFluid $ do
+    cldiv_ B.pageHeader $ do
+      h4_ $ elemText "Messages of the week"
+
+
+
+--
+-- Re: ADARQ's Journal by adarqui (Progress Journals & Experimental Routines) Today at 06:00:30 pm
+--
+viewRecentPosts_ :: OrganizationPackResponse -> ForumPackResponse -> Map ThreadPostId ThreadPostPackResponse -> HTMLView_
+viewRecentPosts_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} posts_map = do
+  cldiv_ B.containerFluid $ do
+    cldiv_ B.pageHeader $ h4_ $ elemText "Recent posts"
+    ul_ [className_ B.listUnstyled] $ do
+      mapM_ (\pack@ThreadPostPackResponse{..} -> do
+        let
+          post@ThreadPostResponse{..} = threadPostResponse threadPostPackResponse
+          m_board = threadPostResponseWithBoard threadPostPackResponse
+          m_thread = threadPostResponseWithThread threadPostPackResponse
+          board_name = maybe "unknown" boardResponseName m_board
+          thread_name = maybe "unknown" threadResponseName m_thread
+          user@UserSanitizedResponse = userSanitizedResponse threadPostPackResponse
+        li_ $
+          p_ $
+            ahref $ routeWith' (OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName threadResponseName (ShowI threadPostResponseId))
+            elemText " by "
+            ahref $ routeWith' (Users (ShowS userResponseName))
+            elemText " at "
+            elemText $ show threadPostResponseCreatedAt
+        ) $ sortThreadPostPacks SortOrderBy_Dsc posts_map
+  where
+  ForumResponse{..} = forumPackResponseForum
+  OrganizationResponse{..} = organizationPackResponseOrganization
+
 
 
 dispatch :: Action -> [SomeStoreAction]
