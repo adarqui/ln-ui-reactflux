@@ -78,12 +78,12 @@ import           LN.UI.View.Internal             (showTagsSmall)
 
 
 data Store = Store {
-  _pageInfo      :: PageInfo,
-  _organizations :: Loader (Map Int64 OrganizationPackResponse),
-  _organization  :: Loader (Maybe OrganizationPackResponse),
-  _request       :: Maybe OrganizationRequest,
-  _requestTag    :: Maybe Text,
-  _requestEmail  :: Text
+  _pageInfo          :: PageInfo,
+  _lm_organizations :: Loader (Map Int64 OrganizationPackResponse),
+  _lm_organization  :: Loader (Maybe OrganizationPackResponse),
+  _m_request         :: Maybe OrganizationRequest,
+  _m_requestTag      :: Maybe Text,
+  _requestEmail      :: Text
 }
 
 
@@ -118,8 +118,8 @@ instance StoreData Store where
     where
     action_load = do
       pure $ st{
-        _organizations = Loading,
-        _organization  = Loading
+        _lm_organizations = Loading,
+        _lm_organization  = Loading
       }
 
     action_init crud params = case crud of
@@ -136,12 +136,12 @@ instance StoreData Store where
         pure (count, organizations)
       rehtie lr (const $ pure st) $ \(count, organization_packs) -> do
         let new_page_info = runPageInfo count page_info
-        pure $ st{ _organizations = Loaded $ idmapFrom organizationPackResponseOrganizationId (organizationPackResponses organization_packs)
+        pure $ st{ _lm_organizations = Loaded $ idmapFrom organizationPackResponseOrganizationId (organizationPackResponses organization_packs)
                  , _pageInfo = new_page_info }
 
     action_init_crud crud params = case crud of
       ShowS org_sid   -> sync st org_sid
-      New             -> pure $ st{ _request = Just defaultOrganizationRequest }
+      New             -> pure $ st{ _m_request = Just defaultOrganizationRequest }
       EditS org_sid   -> sync st org_sid
       DeleteS org_sid -> sync st org_sid
 
@@ -152,13 +152,13 @@ instance StoreData Store where
 
     action_set_request request =
       pure $ st{
-        _request = Just request
+        _m_request = Just request
       }
 
-    action_set_request_state m_req m_tag = pure $ st{ _request = m_req, _requestTag = m_tag }
+    action_set_request_state m_req m_tag = pure $ st{ _m_request = m_req, _m_requestTag = m_tag }
 
     action_save = do
-      case _request of
+      case _m_request of
         Nothing                   -> pure st
         Just organization_request -> do
           lr <- rd $ postOrganization' $ organization_request { organizationRequestEmail = _requestEmail }
@@ -167,7 +167,7 @@ instance StoreData Store where
             pure st
 
     action_edit edit_id = do
-      case _request of
+      case _m_request of
         Nothing                   -> pure st
         Just organization_request -> do
           lr <- rd $ putOrganization' edit_id $ organization_request { organizationRequestEmail = _requestEmail }
@@ -184,8 +184,8 @@ sync st@Store{..} org_sid = do
     pure organization
   rehtie lr (const $ pure st) $ \organization@OrganizationPackResponse{..} -> do
     pure $ st{
-      _request      = Just $ organizationResponseToOrganizationRequest organizationPackResponseOrganization,
-      _organization = Loaded $ Just organization
+      _m_request        = Just $ organizationResponseToOrganizationRequest organizationPackResponseOrganization,
+      _lm_organization = Loaded $ Just organization
     }
 
 
@@ -198,10 +198,10 @@ store = mkStore defaultStore
 defaultStore :: Store
 defaultStore = Store {
   _pageInfo      = defaultPageInfo,
-  _organizations = Loaded Map.empty,
-  _organization  = Loaded Nothing,
-  _request       = Nothing,
-  _requestTag    = Nothing,
+  _lm_organizations = Loaded Map.empty,
+  _lm_organization  = Loaded Nothing,
+  _m_request       = Nothing,
+  _m_requestTag    = Nothing,
   _requestEmail  = ""
 }
 
@@ -217,16 +217,16 @@ view :: ReactView CRUD
 view = defineControllerView "organizations" store $ \st@Store{..} crud ->
   case crud of
     Index           -> viewIndex st
-    ShowS org_sid   -> viewShowS _organization
-    New             -> viewNew _requestTag _request
-    EditS org_sid   -> viewEditS _requestTag _request _organization
+    ShowS org_sid   -> viewShowS _lm_organization
+    New             -> viewNew _m_requestTag _m_request
+    EditS org_sid   -> viewEditS _m_requestTag _m_request _lm_organization
     DeleteS org_sid -> Delete.view_
 
 
 
 viewIndex :: Store -> HTMLView_
 viewIndex Store{..} = do
-  Loading.loader1 _organizations $ \organizations -> do
+  Loading.loader1 _lm_organizations $ \organizations -> do
     cldiv_ B.containerFluid $ do
       h1_ "Organizations"
       ahref $ routeWith' $ Organizations New
