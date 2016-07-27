@@ -223,8 +223,8 @@ view = defineControllerView "organizations" store $ \st@Store{..} (org_sid,crud)
   case crud of
     Index     -> viewIndex st
     ShowS _   -> viewShowS _lm_organization _lm_forum _l_boards
-    New       -> viewNew 0 _m_requestTag _m_request
-    EditS _   -> viewEditS 0 0 _m_requestTag _m_request
+    New       -> viewNew _lm_organization _m_requestTag _m_request
+    EditS _   -> viewEditS  _lm_forum _m_requestTag _m_request
     DeleteS _ -> Delete.view_
     _         -> NotFound.view_
 
@@ -306,14 +306,27 @@ viewShowS _lm_organization _lm_forum l_boards = do
 
 
 
-viewNew :: OrganizationId -> Maybe Text -> Maybe ForumRequest -> HTMLView_
-viewNew organization_id m_tag m_request =
-  ebyam m_request mempty $ \request -> viewMod TyCreate organization_id Nothing m_tag request
+viewNew :: Loader (Maybe OrganizationPackResponse) -> Maybe Text -> Maybe ForumRequest -> HTMLView_
+viewNew l_organization m_tag m_request =
+  Loading.loader1_ l_organization $ \OrganizationPackResponse{..} ->
+    ebyam m_request mempty $ \request -> viewNew_ organizationPackResponseOrganizationId m_tag request
 
 
 
-viewEditS :: OrganizationId -> ForumId -> Maybe Text -> Maybe ForumRequest -> HTMLView_
-viewEditS organization_id forum_id m_tag m_request =
+viewNew_ :: OrganizationId -> Maybe Text -> ForumRequest -> HTMLView_
+viewNew_ organization_id m_tag request = viewMod TyCreate organization_id Nothing m_tag request
+
+
+
+viewEditS :: Loader (Maybe ForumPackResponse) -> Maybe Text -> Maybe ForumRequest -> HTMLView_
+viewEditS lm_forum m_tag m_request =
+  Loading.loader1_ lm_forum $ \ForumPackResponse{..} ->
+    ebyam m_request mempty $ \request -> viewMod TyUpdate (forumResponseOrgId forumPackResponseForum) (Just forumPackResponseForumId) m_tag request
+
+
+
+viewEditS_ :: OrganizationId -> ForumId -> Maybe Text -> Maybe ForumRequest -> HTMLView_
+viewEditS_ organization_id forum_id m_tag m_request =
   ebyam m_request mempty $ \request -> viewMod TyUpdate organization_id (Just forum_id) m_tag request
 
 
