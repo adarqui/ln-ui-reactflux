@@ -45,6 +45,7 @@ import qualified LN.UI.App.Organizations         as Organizations
 import qualified LN.UI.App.Forums as Forums
 import qualified LN.UI.App.Portal                as Portal
 import qualified LN.UI.App.Users                 as Users
+import qualified LN.UI.App.NotFound as NotFound (view_)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefClasses,
                                                   ahrefName, className_, classNames_)
@@ -172,9 +173,10 @@ renderRouteView Store{..} = do
       RouteWith About _                       -> About.view_
       RouteWith Portal _                      -> Portal.view_
       RouteWith (Organizations crud) params   -> Organizations.view_ crud
+      RouteWith (OrganizationsForums org_sid crud) params -> Forums.view_ org_sid crud
       RouteWith (Users Index) params          -> Users.view_
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
-      RouteWith _ _                           -> p_ $ elemText "Unknown"
+      RouteWith _ _                           -> NotFound.view_
 
 
 

@@ -213,14 +213,14 @@ defaultStore = Store {
 
 
 
-view_ :: CRUD -> HTMLEvent_
-view_ crud =
-  RF.view view crud mempty
+view_ :: OrganizationName -> CRUD -> HTMLEvent_
+view_ org_sid crud =
+  RF.view view (org_sid,crud) mempty
 
 
 
-view :: ReactView CRUD
-view = defineControllerView "organizations" store $ \st@Store{..} crud ->
+view :: ReactView (OrganizationName,CRUD)
+view = defineControllerView "organizations" store $ \st@Store{..} (org_sid,crud) ->
   mempty
 
 
