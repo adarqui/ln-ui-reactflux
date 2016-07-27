@@ -42,6 +42,7 @@ library
                      , LN.UI.Helpers.HaskellApiHelpers
                      , LN.UI.Helpers.Map
                      , LN.UI.Helpers.ReactFluxDOM
+                     , LN.UI.Helpers.WebRoutes
                      , LN.UI.Router
                      , LN.UI.Router.CRUD
                      , LN.UI.Router.Crumb

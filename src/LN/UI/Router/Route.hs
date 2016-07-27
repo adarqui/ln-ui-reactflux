@@ -20,7 +20,8 @@ module LN.UI.Router.Route (
 
 
 
-import           Control.Applicative        ((<$), (<$>), (<*>), (<|>))
+import           Control.Applicative        ((*>), (<$), (<$>), (<*), (<*>),
+                                             (<|>))
 import           Control.DeepSeq            (NFData)
 import           Data.ByteString.Char8      (ByteString)
 import qualified Data.ByteString.Char8      as BSC
@@ -34,6 +35,7 @@ import qualified Data.Text                  as Text (concat, unpack)
 import           Data.Tuple                 (fst)
 import           Prelude                    (Eq, Show, fmap, map, pure, show,
                                              ($), (.), (==))
+import           Text.Parsec.Prim           (try)
 import           Web.Routes
 
 import           Haskell.Api.Helpers.Shared (qp)
@@ -138,6 +140,11 @@ instance HasLinkName Route where
     Organizations (ShowS org_sid)   -> org_sid
     Organizations (EditS org_sid)   -> org_sid
     Organizations (DeleteS org_sid) -> org_sid
+    OrganizationsForums _ Index               -> "Forums"
+    OrganizationsForums _ New                 -> "New"
+    OrganizationsForums _ (ShowS forum_sid)   -> forum_sid
+    OrganizationsForums _ (EditS forum_sid)   -> forum_sid
+    OrganizationsForums _ (DeleteS forum_sid) -> forum_sid
     (Users Index)                   -> "Users"
     Users (ShowS user_sid)          -> user_sid
     Users (EditS user_sid)          -> user_sid
@@ -200,6 +207,8 @@ instance PathInfo Route where
     Organizations Index      -> pure "organizations"
     Organizations (ShowS s)  -> pure s
     Organizations crud       -> (pure $ "organizations") <> toPathSegments crud
+    OrganizationsForums org_sid Index -> (pure org_sid) <> pure "forums"
+    OrganizationsForums org_sid crud -> (pure org_sid) <> pure "forums" <> toPathSegments crud
     Users Index              -> pure "users"
     Users crud               -> (pure $ "users") <> toPathSegments crud
     _                        -> pure ""
@@ -210,6 +219,7 @@ instance PathInfo Route where
     <|> Errors        <$ segment "errors"
     <|> Portal        <$ segment "portal"
     <|> Organizations <$ segment "organizations" <*> fromPathSegments
+    <|> try (OrganizationsForums <$> anySegment <*> (segment "forums" *> fromPathSegments))
     <|> Users         <$ segment "users" <*> fromPathSegments
     <|> Organizations <$> (ShowS <$> anySegment)
     <|> pure Home
