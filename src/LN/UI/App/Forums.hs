@@ -82,7 +82,7 @@ import           LN.UI.View.Internal             (showTagsSmall)
 
 
 data Store = Store {
-  __lm_forums     :: Loader (Map ForumId ForumPackResponse),
+  _lm_forums      :: Loader (Map ForumId ForumPackResponse),
   _lm_organization :: Loader (Maybe OrganizationPackResponse),
   _lm_forum        :: Loader (Maybe ForumPackResponse),
   _l_boards        :: Loader (Map BoardId BoardPackResponse),
@@ -120,9 +120,10 @@ instance StoreData Store where
     where
     action_load = do
       pure $ st{
-        __lm_forums       = Loading,
+        _lm_forums       = Loading,
         _lm_organization = Loading,
-        _lm_forum        = Loading
+        _lm_forum        = Loading,
+        _l_boards        = Loading
       }
 
     action_init org_sid crud params = case crud of
@@ -140,7 +141,7 @@ instance StoreData Store where
       rehtie lr (const $ pure st) $ \(organization, forums) -> do
         pure $ st{
           _lm_organization = Loaded $ Just organization
-        , __lm_forums       = Loaded $ idmapFrom forumPackResponseForumId (forumPackResponses forums)
+        , _lm_forums       = Loaded $ idmapFrom forumPackResponseForumId (forumPackResponses forums)
         }
 
     action_init_crud org_sid crud params = case crud of
@@ -184,13 +185,15 @@ sync :: Store -> Text -> Text -> IO Store
 sync st@Store{..} org_sid forum_sid = do
   lr <- runEitherT $ do
     organization@OrganizationPackResponse{..} <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
-    forum        <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
-    pure (organization, forum)
-  rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, forum@ForumPackResponse{..}) -> do
+    forum@ForumPackResponse{..}        <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
+    boards <- mustPassT $ rd $ getBoardPacks_ByForumId' forumPackResponseForumId
+    pure (organization, forum, boards)
+  rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, forum@ForumPackResponse{..}, boards@BoardPackResponses{..}) -> do
     pure $ st{
       _m_request      = Just $ forumResponseToForumRequest forumPackResponseForum
     , _lm_organization = Loaded $ Just organization
     , _lm_forum        = Loaded $ Just forum
+    , _l_boards        = Loaded $ idmapFrom boardPackResponseBoardId boardPackResponses
     }
 
 
@@ -203,7 +206,7 @@ store = mkStore defaultStore
 defaultStore :: Store
 defaultStore = Store {
   _lm_organization  = Loaded Nothing,
-  __lm_forums       = Loaded Map.empty,
+  _lm_forums        = Loaded Map.empty,
   _lm_forum         = Loaded Nothing,
   _l_boards         = Loaded Map.empty,
   _m_request        = Nothing,
@@ -232,7 +235,7 @@ view = defineControllerView "organizations" store $ \st@Store{..} (org_sid,crud)
 
 viewIndex :: Store -> HTMLView_
 viewIndex Store{..} = do
-  Loading.loader2 _lm_organization __lm_forums $ \m_organization forums -> do
+  Loading.loader2 _lm_organization _lm_forums $ \m_organization forums -> do
     case m_organization of
       Nothing           -> mempty
       Just organization -> viewIndex_ organization forums
