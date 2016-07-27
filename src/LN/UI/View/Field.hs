@@ -11,7 +11,8 @@ module LN.UI.View.Field (
   mandatoryVisibilityField,
   tagsField,
   privateTagsField,
-  suggestedTagsField
+  suggestedTagsField,
+  mandatoryIntegerField
 ) where
 
 
@@ -20,11 +21,12 @@ import           Data.Text                  (Text)
 import           React.Flux                 hiding (view)
 import qualified React.Flux                 as RF
 import           React.Flux.Internal
+import qualified Web.Bootstrap3 as B
 
 import           LN.T.Membership            (Membership (..))
 import           LN.T.Visibility            (Visibility (..))
 import           LN.UI.Helpers.GHCJS        (JSString, textToJSString')
-import           LN.UI.Helpers.ReactFluxDOM (targetValue)
+import           LN.UI.Helpers.ReactFluxDOM (targetValue, className_, classNames_)
 import           LN.UI.Types                (HTMLView_)
 import           LN.UI.View.Internal
 
@@ -120,3 +122,33 @@ suggestedTagsField
   -> ViewEventHandler           -- ^ clear tags
   -> HTMLView_
 suggestedTagsField = createTagsField "Suggested thread post tags - so people can easily tag posts"
+
+
+
+mandatoryIntegerField
+  :: Text -- ^ label
+  -> Int  -- ^ value
+  -> Int  -- ^ default value
+  -> Int  -- ^ minimum value
+  -> Int  -- ^ maximum value
+  -> Int  -- ^ step count
+  -> (Int -> ViewEventHandler) -- ^ set value handler
+  -> HTMLView_
+
+mandatoryIntegerField label value default_value min max step set_value_handler = do
+  div_ $ do
+    cldiv_ B.inputGroup $ do
+      label_ $ elemText label
+      input_ [ classNames_ formControlClasses
+             , "value" @= value
+             , "type"  $= "number"
+             , "min"   @= min
+             , "max"   @= max
+             , "step"  @= step
+             , onChange (set_value_handler . read . targetValue)
+             ]
+      span_ [className_ B.inputGroupBtn] $ do
+        button_ [ classNames_ buttonInfoClasses
+                , "title" $= "Default"
+                , onClick $ \_ _ -> set_value_handler default_value
+                ] $ elemText "Default"
