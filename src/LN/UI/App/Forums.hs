@@ -184,11 +184,17 @@ instance StoreData Store where
 
 
 
+-- | Pull in the latest organization, forum, boards, and recent thread posts
+--
 sync :: Store -> OrganizationName -> Maybe ForumName -> IO Store
 sync st@Store{..} org_sid m_forum_sid = do
   lr <- runEitherT $ do
+    -- Always pull in organization
+    --
     organization@OrganizationPackResponse{..} <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
     x <- ebyam m_forum_sid (pure Nothing) $ \forum_sid -> do
+      -- ForumName exists, so pull in forum, boards, and recent posts
+      --
       forum  <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
       let ForumPackResponse{..} = forum
       let ForumResponse{..} = forumPackResponseForum
@@ -259,7 +265,7 @@ view :: ReactView (OrganizationName,CRUD)
 view = defineControllerView "organizations" store $ \st@Store{..} (org_sid,crud) ->
   case crud of
     Index     -> viewIndex st
-    ShowS _   -> viewShowS _lm_organization _lm_forum _l_boards
+    ShowS _   -> viewShowS _lm_organization _lm_forum _l_boards _l_recentPosts
     New       -> viewNew _lm_organization _m_requestTag _m_request
     EditS _   -> viewEditS  _lm_forum _m_requestTag _m_request
     DeleteS _ -> Delete.view_
@@ -332,17 +338,18 @@ viewShowS
   :: Loader (Maybe OrganizationPackResponse)
   -> Loader (Maybe ForumPackResponse)
   -> Loader (Map BoardId BoardPackResponse)
+  -> Loader (Map ThreadPostId ThreadPostPackResponse)
   -> HTMLView_
 
-viewShowS lm_organization lm_forum l_boards = do
-  Loading.loader3 lm_organization lm_forum l_boards $ \m_organization m_forum boards -> do
+viewShowS lm_organization lm_forum l_boards l_recent_posts = do
+  Loading.loader4 lm_organization lm_forum l_boards l_recent_posts $ \m_organization m_forum boards recent_posts -> do
     case (m_organization, m_forum) of
       (Just organization, Just forum) ->
         viewShowS_
           organization
           forum
           mempty
-          (viewRecentPosts_ organization forum Map.empty)
+          (viewRecentPosts_ organization forum recent_posts)
           (viewMessagesOfTheWeek_ organization forum)
       _ -> Oops.view_
 

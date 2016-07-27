@@ -9,6 +9,7 @@ module LN.UI.App.Loading (
   loader2_,
   loader3,
   loader3_,
+  loader4,
   loadingImg
 ) where
 
@@ -85,6 +86,17 @@ loader3_ loading_v1 loading_v2 loading_v3 loaded =
     (_, _, Loading)                   -> loadingImg
     _                                 -> unexpectedError
 
+
+
+loader4 :: forall v1 v2 v3 v4. Loader v1 -> Loader v2 -> Loader v3 -> Loader v4 -> (v1 -> v2 -> v3 -> v4 -> HTMLView_) -> HTMLView_
+loader4 loading_v1 loading_v2 loading_v3 loading_v4 loaded =
+  case (loading_v1, loading_v2, loading_v3, loading_v4) of
+    (Loaded v1, Loaded v2, Loaded v3, Loaded v4) -> loaded v1 v2 v3 v4
+    (Loading, _, _, _)                   -> loadingImg
+    (_, Loading, _, _)                   -> loadingImg
+    (_, _, Loading, _)                   -> loadingImg
+    (_, _, _, Loading)                   -> loadingImg
+    _                                    -> unexpectedError
 
 
 loadingImg :: HTMLView_
