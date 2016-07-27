@@ -220,8 +220,29 @@ view = defineControllerView "organizations" store $ \st@Store{..} crud ->
 
 viewIndex :: Store -> HTMLView_
 viewIndex Store{..} = do
-  Loading.loader2 _lm_organization _l_lm_forums $ \organization forums -> do
+  Loading.loader2 _lm_organization _l_lm_forums $ \m_organization forums -> do
+    case m_organization of
+      Nothing           -> mempty
+      Just organization -> viewIndex' organization forums
+
+
+
+viewIndex' :: OrganizationPackResponse -> Map Int64 ForumPackResponse -> HTMLView_
+viewIndex' org_pack@OrganizationPackResponse{..} forum_packs = do
+  h1_ [className_ B.textCenter] $ elemText "Forums"
+
+  -- ACCESS: Organization
+  -- * Create: can create forums
+  --
+  permissionsMatchCreateHTML
+    organizationPackResponsePermissions
+    (button_newForum $ routeWith' $ OrganizationsForums organizationResponseName New)
     mempty
+
+
+  where
+  org@OrganizationResponse{..} = organizationPackResponseOrganization
+
 
 
 
