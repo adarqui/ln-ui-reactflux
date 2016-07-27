@@ -21,12 +21,18 @@ module LN.UI.Types (
   ForumName,
   BoardName,
   ThreadName,
-  ThreadPostName
+  ThreadPostName,
+  OrganizationId,
+  ForumId,
+  BoardId,
+  ThreadId,
+  ThreadPostId
 ) where
 
 
 
-import Data.Text (Text)
+import           Data.Int   (Int64)
+import           Data.Text  (Text)
 import           Prelude
 import           React.Flux
 
@@ -67,3 +73,11 @@ type ForumName        = Text
 type BoardName        = Text
 type ThreadName       = Text
 type ThreadPostName   = Text
+
+
+
+type OrganizationId = Int64
+type ForumId        = Int64
+type BoardId        = Int64
+type ThreadId       = Int64
+type ThreadPostId   = Int64

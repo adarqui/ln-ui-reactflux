@@ -74,8 +74,7 @@ import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   pageInfoFromParams,
                                                   paramsFromPageInfo)
-import           LN.UI.Types                     (HTMLEvent_, HTMLView_,
-                                                  OrganizationName)
+import           LN.UI.Types
 import           LN.UI.View.Button
 import           LN.UI.View.Button               (showBadge)
 import           LN.UI.View.Field
@@ -84,7 +83,7 @@ import           LN.UI.View.Internal             (showTagsSmall)
 
 
 data Store = Store {
-  _l_lm_forums     :: Loader (Map Int64 ForumPackResponse),
+  __lm_forums     :: Loader (Map Int64 ForumPackResponse),
   _lm_organization :: Loader (Maybe OrganizationPackResponse),
   _lm_forum        :: Loader (Maybe ForumPackResponse),
   _m_request       :: Maybe ForumRequest,
@@ -121,7 +120,7 @@ instance StoreData Store where
     where
     action_load = do
       pure $ st{
-        _l_lm_forums       = Loading,
+        __lm_forums       = Loading,
         _lm_organization = Loading,
         _lm_forum        = Loading
       }
@@ -141,7 +140,7 @@ instance StoreData Store where
       rehtie lr (const $ pure st) $ \(organization, forums) -> do
         pure $ st{
           _lm_organization = Loaded $ Just organization
-        , _l_lm_forums       = Loaded $ idmapFrom forumPackResponseForumId (forumPackResponses forums)
+        , __lm_forums       = Loaded $ idmapFrom forumPackResponseForumId (forumPackResponses forums)
         }
 
     action_init_crud org_sid crud params = case crud of
@@ -160,8 +159,8 @@ instance StoreData Store where
     action_save = do
       let org_sid = "FIXME"
       case (_m_request, _lm_organization) of
-        (Just forum_m_request, Loaded (Just OrganizationPackResponse{..})) -> do
-          lr <- rd $ postForum_ByOrganizationId' organizationPackResponseOrganizationId forum_m_request
+        (Just foru_m_request, Loaded (Just OrganizationPackResponse{..})) -> do
+          lr <- rd $ postForum_ByOrganizationId' organizationPackResponseOrganizationId foru_m_request
           rehtie lr (const $ pure st) $ \forum_response@ForumResponse{..} -> do
             forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForums org_sid (ShowS forumResponseName)) []
             pure st
@@ -171,8 +170,8 @@ instance StoreData Store where
       let org_sid = "FIXME"
       case _m_request of
         Nothing            -> pure st
-        Just forum_m_request -> do
-          lr <- rd $ putForum' edit_id $ forum_m_request
+        Just foru_m_request -> do
+          lr <- rd $ putForum' edit_id $ foru_m_request
           rehtie lr (const $ pure st) $ \forum_response@ForumResponse{..} -> do
             forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForums org_sid (ShowS forumResponseName)) []
             pure st
@@ -202,7 +201,7 @@ store = mkStore defaultStore
 defaultStore :: Store
 defaultStore = Store {
   _lm_organization  = Loaded Nothing,
-  _l_lm_forums        = Loaded Map.empty,
+  __lm_forums        = Loaded Map.empty,
   _lm_forum         = Loaded Nothing,
   _m_request       = Nothing,
   _m_requestTag    = Nothing
@@ -224,7 +223,7 @@ view = defineControllerView "organizations" store $ \st@Store{..} crud ->
 
 viewIndex :: Store -> HTMLView_
 viewIndex Store{..} = do
-  Loading.loader2 _lm_organization _l_lm_forums $ \m_organization forums -> do
+  Loading.loader2 _lm_organization __lm_forums $ \m_organization forums -> do
     case m_organization of
       Nothing           -> mempty
       Just organization -> viewIndex_ organization forums
@@ -284,8 +283,8 @@ viewIndex_ org_pack@OrganizationPackResponse{..} forums_map = do
 
 
 viewShowS :: Loader (Maybe OrganizationPackResponse) -> Loader (Maybe ForumPackResponse) -> HTMLView_
-viewShowS l_lm_organization l_lm_forum = do
-  Loading.loader2 l_lm_organization l_lm_forum $ go
+viewShowS _lm_organization _lm_forum = do
+  Loading.loader2 _lm_organization _lm_forum $ go
   where
   go Nothing Nothing = mempty
   go (Just organization@OrganizationPackResponse{..}) (Just forum@ForumPackResponse{..}) = do
@@ -293,21 +292,20 @@ viewShowS l_lm_organization l_lm_forum = do
 
 
 
+viewNew :: OrganizationId -> Maybe Text -> Maybe ForumRequest -> HTMLView_
+viewNew organization_id m_tag m_request =
+  ebyam m_request mempty $ \request -> viewMod TyCreate organization_id Nothing m_tag request
 
-viewNew :: Maybe Text -> Maybe OrganizationRequest -> HTMLView_
-viewNew m_tag m_m_request =
+
+
+viewEditS :: OrganizationId -> ForumId -> Maybe Text -> Maybe ForumRequest -> Loader (Maybe ForumPackResponse) -> HTMLView_
+viewEditS organization_id forum_id m_tag _m_request _lm_organization_pack =
   mempty
 
 
 
-viewEditS :: Maybe Text -> Maybe OrganizationRequest -> Loader (Maybe OrganizationPackResponse) -> HTMLView_
-viewEditS m_tag m_m_request l_lm_organization_pack =
-  mempty
-
-
-
-viewMod :: TyCRUD -> Maybe Int64 -> Maybe Text -> OrganizationRequest -> HTMLView_
-viewMod tycrud m_lm_organization_id m_tag request@OrganizationRequest{..} = do
+viewMod :: TyCRUD -> OrganizationId -> Maybe ForumId -> Maybe Text -> ForumRequest -> HTMLView_
+viewMod tycrud organization_id m_forum_id m_tag request@ForumRequest{..} = do
   mempty
 
 

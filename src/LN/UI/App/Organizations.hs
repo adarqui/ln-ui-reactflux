@@ -21,7 +21,6 @@ import           Control.Concurrent              (forkIO)
 import           Control.DeepSeq                 (NFData)
 import           Control.Monad.Trans.Either      (EitherT, runEitherT)
 import           Data.Ebyam                      (ebyam)
-import           Data.Int                        (Int64)
 import           Data.Map                        (Map)
 import qualified Data.Map                        as Map
 import           Data.Monoid                     ((<>))
@@ -75,8 +74,7 @@ import           LN.UI.State.PageInfo            (PageInfo (..),
                                                   defaultPageInfo,
                                                   pageInfoFromParams,
                                                   paramsFromPageInfo)
-import           LN.UI.Types                     (HTMLView_)
-import           LN.UI.Types                     (HTMLEvent_)
+import           LN.UI.Types
 import           LN.UI.View.Button
 import           LN.UI.View.Field
 import           LN.UI.View.Internal             (showTagsSmall)
@@ -85,9 +83,9 @@ import           LN.UI.View.Internal             (showTagsSmall)
 
 data Store = Store {
   _pageInfo        :: PageInfo,
-  _l_organizations :: Loader (Map Int64 OrganizationPackResponse),
+  _l_organizations :: Loader (Map OrganizationId OrganizationPackResponse),
   _lm_organization :: Loader (Maybe OrganizationPackResponse),
-  _l_forums        :: Loader (Map Int64 ForumPackResponse),
+  _l_forums        :: Loader (Map OrganizationId ForumPackResponse),
   _m_request       :: Maybe OrganizationRequest,
   _m_requestTag    :: Maybe Text,
   _requestEmail    :: Text
@@ -102,7 +100,7 @@ data Action
   | SetRequest      OrganizationRequest
   | SetRequestState (Maybe OrganizationRequest) (Maybe Text)
   | Save
-  | Edit            Int64
+  | Edit            OrganizationId
   | Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -255,7 +253,7 @@ viewIndex Store{..} = do
 
 
 
-viewShowS :: Loader (Maybe OrganizationPackResponse) -> Loader (Map Int64 ForumPackResponse) -> HTMLView_
+viewShowS :: Loader (Maybe OrganizationPackResponse) -> Loader (Map OrganizationId ForumPackResponse) -> HTMLView_
 viewShowS lm_organization l_forums = do
   Loading.loader2 lm_organization l_forums $ go
   where
@@ -341,7 +339,7 @@ viewEditS m_tag m_request l_organization_pack =
 
 
 
-viewMod :: TyCRUD -> Maybe Int64 -> Maybe Text -> OrganizationRequest -> HTMLView_
+viewMod :: TyCRUD -> Maybe OrganizationId -> Maybe Text -> OrganizationRequest -> HTMLView_
 viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Organization"
