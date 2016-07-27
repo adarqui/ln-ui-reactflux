@@ -33,7 +33,8 @@ import           React.Flux                      hiding (view)
 import qualified React.Flux                      as RF
 import qualified Web.Bootstrap3                  as B
 
-import           LN.Api                          (getOrganizationPacks,
+import           LN.Api                          (getForumPacks_ByOrganizationId',
+                                                  getOrganizationPacks,
                                                   getOrganizationsCount',
                                                   postOrganization',
                                                   putOrganization')
@@ -43,6 +44,8 @@ import           LN.T.Convert                    (organizationResponseToOrganiza
 import           LN.T.Organization               (OrganizationRequest (..),
                                                   OrganizationResponse (..),
                                                   OrganizationResponse (..))
+import           LN.T.Pack.Forum                 (ForumPackResponse (..),
+                                                  ForumPackResponses (..))
 import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
 import           LN.T.Size                       (Size (..))
 import           LN.T.User                       (UserSanitizedResponse (..))
@@ -78,12 +81,13 @@ import           LN.UI.View.Internal             (showTagsSmall)
 
 
 data Store = Store {
-  _pageInfo         :: PageInfo,
+  _pageInfo        :: PageInfo,
   _l_organizations :: Loader (Map Int64 OrganizationPackResponse),
-  _lm_organization  :: Loader (Maybe OrganizationPackResponse),
-  _m_request        :: Maybe OrganizationRequest,
-  _m_requestTag     :: Maybe Text,
-  _requestEmail     :: Text
+  _lm_organization :: Loader (Maybe OrganizationPackResponse),
+  _l_forums        :: Loader (Map Int64 ForumPackResponse),
+  _m_request       :: Maybe OrganizationRequest,
+  _m_requestTag    :: Maybe Text,
+  _requestEmail    :: Text
 }
 
 
@@ -181,11 +185,13 @@ sync :: Store -> Text -> IO Store
 sync st@Store{..} org_sid = do
   lr <- runEitherT $ do
     organization <- mustPassT $ rd $ getOrganizationPack' org_sid
-    pure organization
-  rehtie lr (const $ pure st) $ \organization@OrganizationPackResponse{..} -> do
+    forums       <- mustPassT $ rd $ getForumPacks_ByOrganizationId' (organizationPackResponseOrganizationId organization)
+    pure (organization, forums)
+  rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, forums@ForumPackResponses{..}) -> do
     pure $ st{
-      _m_request        = Just $ organizationResponseToOrganizationRequest organizationPackResponseOrganization,
-      _lm_organization = Loaded $ Just organization
+      _m_request       = Just $ organizationResponseToOrganizationRequest organizationPackResponseOrganization,
+      _lm_organization = Loaded $ Just organization,
+      _l_forums        = Loaded $ idmapFrom forumPackResponseForumId forumPackResponses
     }
 
 
@@ -197,12 +203,13 @@ store = mkStore defaultStore
 
 defaultStore :: Store
 defaultStore = Store {
-  _pageInfo      = defaultPageInfo,
+  _pageInfo        = defaultPageInfo,
   _l_organizations = Loaded Map.empty,
-  _lm_organization  = Loaded Nothing,
+  _lm_organization = Loaded Nothing,
+  _l_forums        = Loaded Map.empty,
   _m_request       = Nothing,
   _m_requestTag    = Nothing,
-  _requestEmail  = ""
+  _requestEmail    = ""
 }
 
 
