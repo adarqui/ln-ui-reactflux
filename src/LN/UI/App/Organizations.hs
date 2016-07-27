@@ -78,12 +78,12 @@ import           LN.UI.View.Internal             (showTagsSmall)
 
 
 data Store = Store {
-  _pageInfo          :: PageInfo,
+  _pageInfo         :: PageInfo,
   _lm_organizations :: Loader (Map Int64 OrganizationPackResponse),
   _lm_organization  :: Loader (Maybe OrganizationPackResponse),
-  _m_request         :: Maybe OrganizationRequest,
-  _m_requestTag      :: Maybe Text,
-  _requestEmail      :: Text
+  _m_request        :: Maybe OrganizationRequest,
+  _m_requestTag     :: Maybe Text,
+  _requestEmail     :: Text
 }
 
 
