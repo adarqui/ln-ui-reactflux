@@ -28,6 +28,7 @@ library
                      , LN.UI.App.Gravatar
                      , LN.UI.App.Home
                      , LN.UI.App.Loading
+                     , LN.UI.App.NotFound
                      , LN.UI.App.Organizations
                      , LN.UI.App.PageNumbers
                      , LN.UI.App.Portal

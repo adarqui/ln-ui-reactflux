@@ -4,7 +4,7 @@
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE TypeFamilies               #-}
 
-module LN.UI.App.About (
+module LN.UI.App.NotFound (
   view_,
   view
 ) where
@@ -25,5 +25,10 @@ view_ =
 
 
 view :: ReactView ()
-view = defineView "about" $ \_ ->
-  div_ $ p_ $ elemText "LN is a full stack haskell system which powers adarq.org"
+view = defineView "not-foundt" $ \_ ->
+  notFoundImg
+
+
+
+notFoundImg :: HTMLEvent_
+notFoundImg = img_ ["src" $= "/static/img/404.png", "alt" $= "404 page not found"] mempty

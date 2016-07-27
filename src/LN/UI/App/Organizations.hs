@@ -16,6 +16,7 @@ module LN.UI.App.Organizations (
 
 
 
+import Control.Monad (void)
 import           Control.Concurrent              (forkIO)
 import           Control.DeepSeq                 (NFData)
 import           Control.Monad.Trans.Either      (EitherT, runEitherT)
@@ -178,7 +179,7 @@ instance StoreData Store where
         Just organization_request -> do
           lr <- rd $ putOrganization' edit_id $ organization_request { organizationRequestEmail = _requestEmail }
           rehtie lr (const $ pure st) $ \organization_response@OrganizationResponse{..} -> do
-            forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
+            void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
             pure st
 
 
@@ -320,7 +321,7 @@ viewShowS lm_organization l_forums = do
     -- renderView_Forums_Index' org_pack forum_packs,
     -- p_ $ ahref (OrganizationMembership organizationResponseName Index emptyParams)
     -- p_ $ ahref (OrganizationTeams organizationResponseName Index emptyParams)
-  go _ _ = mempty
+  go _ _ = NotFound.view_
 
 
 
