@@ -61,8 +61,9 @@ import           LN.UI.Helpers.DataText          (tshow)
 import           LN.UI.Helpers.DataTime          (prettyUTCTimeMaybe)
 import           LN.UI.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Helpers.Map               (idmapFrom)
-import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefName, className_, ahrefClasses,
-                                                  classNames_)
+import           LN.UI.Helpers.ReactFluxDOM      (ahref, ahrefClasses,
+                                                  ahrefClassesName, ahrefName,
+                                                  className_, classNames_)
 import           LN.UI.Router                    (CRUD (..), Params, Route (..),
                                                   RouteWith (..), TyCRUD (..),
                                                   emptyParams, linkName,
@@ -74,6 +75,7 @@ import           LN.UI.State.PageInfo            (PageInfo (..),
 import           LN.UI.Types                     (HTMLEvent_, HTMLView_,
                                                   OrganizationName)
 import           LN.UI.View.Button
+import           LN.UI.View.Button               (showBadge)
 import           LN.UI.View.Field
 import           LN.UI.View.Internal             (showTagsSmall)
 
@@ -249,7 +251,28 @@ viewIndex' org_pack@OrganizationPackResponse{..} forums_map = do
           cldiv_ B.colXs1 $ p_ $ elemText "icon"
         cldiv_ B.colXs6 $ do
           cldiv_ B.listGroup $ do
-            ahrefClasses [B.listGroupItem] $ routeWith' $ OrganizationsForums organizationResponseName (ShowS forumResponseName)
+            ahrefClassesName [B.listGroupItem] forumResponseDisplayName $ routeWith' $ OrganizationsForums organizationResponseName (ShowS forumResponseName)
+            p_ $ elemText $ maybe "No description." id forumResponseDescription
+            showTagsSmall forumResponseTags
+        cldiv_ B.colXs2 $ do
+          showBadge "boards "  forumStatResponseBoards
+          showBadge "threads " forumStatResponseThreads
+          showBadge "posts "   forumStatResponseThreadPosts
+          showBadge "views "   forumStatResponseViews
+        cldiv_ B.colXs2 $ p_ $ elemText "created-at"
+        cldiv_ B.colXs1 $ do
+
+          -- ACCESS: Forum
+          -- * Update: can edit forum settings
+          -- * Delete: can delete a forum
+          --
+          permissionsHTML'
+            forumPackResponsePermissions
+            permCreateEmpty
+            permReadEmpty
+            (button_editForum $ routeWith' $ OrganizationsForums organizationResponseName (EditS forumResponseName))
+            (button_deleteForum $ routeWith' $ OrganizationsForums organizationResponseName (DeleteS forumResponseName))
+            permExecuteEmpty
     ) $ Map.elems forums_map
 
   where
