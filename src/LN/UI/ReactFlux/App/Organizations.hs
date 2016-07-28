@@ -149,6 +149,7 @@ instance StoreData Store where
       New             -> pure $ st{ _m_request = Just defaultOrganizationRequest }
       EditS org_sid   -> sync st org_sid
       DeleteS org_sid -> sync st org_sid
+      _               -> pure st
 
     action_set_email email =
       pure $ st{
@@ -168,7 +169,7 @@ instance StoreData Store where
         Just organization_request -> do
           lr <- rd $ postOrganization' $ organization_request { organizationRequestEmail = _requestEmail }
           rehtie lr (const $ pure st) $ \organization_response@OrganizationResponse{..} -> do
-            forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
+            void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
             pure st
 
     action_edit edit_id = do
