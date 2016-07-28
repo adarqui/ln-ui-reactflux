@@ -52,6 +52,8 @@ import           LN.UI.Core.Helpers.DataText          (tshow)
 import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
 import           LN.UI.Core.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Core.Helpers.Map               (idmapFrom)
+import           LN.UI.Core.Loader                    (Loader (..))
+import qualified LN.UI.Core.Loader                    as Loader
 import           LN.UI.Core.PageInfo                  (PageInfo (..),
                                                        defaultPageInfo,
                                                        pageInfoFromParams,
@@ -66,8 +68,6 @@ import           LN.UI.ReactFlux.Access
 import qualified LN.UI.ReactFlux.App.Delete           as Delete
 import qualified LN.UI.ReactFlux.App.Forums           as Forums (viewIndex_)
 import qualified LN.UI.ReactFlux.App.Gravatar         as Gravatar
-import           LN.UI.ReactFlux.App.Loading          (Loader (..))
-import qualified LN.UI.ReactFlux.App.Loading          as Loading
 import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
@@ -235,7 +235,7 @@ view = defineControllerView "organizations" store $ \st@Store{..} crud ->
 
 viewIndex :: Store -> HTMLView_
 viewIndex Store{..} = do
-  Loading.loader1 _l_organizations $ \organizations -> do
+  Loader.loader1 _l_organizations $ \organizations -> do
     cldiv_ B.containerFluid $ do
       h1_ "Organizations"
       ahref $ routeWith' $ Organizations New
@@ -255,7 +255,7 @@ viewIndex Store{..} = do
 
 viewShowS :: Loader (Maybe OrganizationPackResponse) -> Loader (Map OrganizationId ForumPackResponse) -> HTMLView_
 viewShowS lm_organization l_forums = do
-  Loading.loader2 lm_organization l_forums $ go
+  Loader.loader2 lm_organization l_forums $ go
   where
   go (Just organization_pack@OrganizationPackResponse{..}) forums_map = do
     let OrganizationResponse{..} = organizationPackResponseOrganization
@@ -332,7 +332,7 @@ viewNew m_tag m_request =
 
 viewEditS :: Maybe Text -> Maybe OrganizationRequest -> Loader (Maybe OrganizationPackResponse) -> HTMLView_
 viewEditS m_tag m_request l_organization_pack =
-  Loading.loader1 l_organization_pack $ \m_organization_pack -> do
+  Loader.loader1 l_organization_pack $ \m_organization_pack -> do
     case (m_request, m_organization_pack) of
       (Just request, Just OrganizationPackResponse{..}) -> viewMod TyUpdate (Just organizationPackResponseOrganizationId) m_tag request
       (_, _) -> mempty

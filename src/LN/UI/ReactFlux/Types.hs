@@ -1,6 +1,7 @@
 {-# LANGUAGE ExplicitForAll  #-}
 {-# LANGUAGE PatternSynonyms #-}
 {-# LANGUAGE RankNTypes      #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 module LN.UI.ReactFlux.Types (
   module A,
