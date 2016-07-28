@@ -10,12 +10,12 @@ module LN.UI.ReactFlux.App.Breadcrumbs (
 
 
 
-import           React.Flux                 hiding (view)
-import qualified React.Flux                 as RF
-import qualified Web.Bootstrap3             as B
+import           React.Flux                           hiding (view)
+import qualified React.Flux                           as RF
+import qualified Web.Bootstrap3                       as B
 
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, className_)
 import           LN.UI.Core.Router
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, className_)
 import           LN.UI.ReactFlux.Types                (HTMLEvent_)
 
 
