@@ -20,22 +20,25 @@ import           LN.T.ThreadPost
 
 
 
--- sortThreadPostPacks :: SortOrder ->
-sortThreadPostPacks SortOrderBy_Dsc = List.reverse . sortMapBy (_sortThreadPostPack threadPostResponseCreatedAt)
-sortThreadPostPacks _               = sortMapBy (_sortThreadPostPack threadPostResponseCreatedAt)
+sortThreadPostPacks :: SortOrderBy -> Map k ThreadPostPackResponse -> [ThreadPostPackResponse]
+sortThreadPostPacks SortOrderBy_Dsc = List.reverse . sortMapBy (sortThreadPostPack threadPostResponseCreatedAt)
+sortThreadPostPacks _               = sortMapBy (sortThreadPostPack threadPostResponseCreatedAt)
 
 
 
-_sortThreadPostPack by pack = by $ threadPostPackResponseThreadPost pack
+sortThreadPostPack :: (ThreadPostResponse -> a) -> ThreadPostPackResponse -> a
+sortThreadPostPack by pack = by $ threadPostPackResponseThreadPost pack
 
 
 
-sortThreadPacks SortOrderBy_Dsc = List.reverse . sortMapBy (_sortThreadPack threadResponseActivityAt)
-sortThreadPacks _               = sortMapBy (_sortThreadPack threadResponseActivityAt)
+sortThreadPacks :: SortOrderBy -> Map k ThreadPackResponse -> [ThreadPackResponse]
+sortThreadPacks SortOrderBy_Dsc = List.reverse . sortMapBy (sortThreadPack threadResponseActivityAt)
+sortThreadPacks _               = sortMapBy (sortThreadPack threadResponseActivityAt)
 
 
 
-_sortThreadPack by pack = by $ threadPackResponseThread pack
+sortThreadPack :: (ThreadResponse -> a) -> ThreadPackResponse -> a
+sortThreadPack by pack = by $ threadPackResponseThread pack
 
 
 
