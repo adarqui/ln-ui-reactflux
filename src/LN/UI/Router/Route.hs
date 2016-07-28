@@ -209,6 +209,12 @@ instance PathInfo Route where
     Organizations crud       -> (pure $ "organizations") <> toPathSegments crud
     OrganizationsForums org_sid Index -> (pure org_sid) <> pure "f"
     OrganizationsForums org_sid crud -> (pure org_sid) <> pure "f" <> toPathSegments crud
+    OrganizationsForumsBoards org_sid forum_sid Index -> (pure org_sid) <> pure "f" <> pure forum_sid
+    OrganizationsForumsBoards org_sid forum_sid crud -> (pure org_sid) <> pure "f" <> pure forum_sid <> toPathSegments crud
+    OrganizationsForumsBoardsThreads org_sid forum_sid board_sid Index -> (pure org_sid) <> pure "f" <> pure forum_sid <> pure board_sid
+    OrganizationsForumsBoardsThreads org_sid forum_sid board_sid crud -> (pure org_sid) <> pure "f" <> pure forum_sid <> pure board_sid <> toPathSegments crud
+    OrganizationsForumsBoardsThreadsPosts org_sid forum_sid board_sid thread_sid Index -> (pure org_sid) <> pure "f" <> pure forum_sid <> pure board_sid <> pure thread_sid
+    OrganizationsForumsBoardsThreadsPosts org_sid forum_sid board_sid thread_sid crud -> (pure org_sid) <> pure "f" <> pure forum_sid <> pure board_sid <> pure thread_sid <> toPathSegments crud
     Users Index              -> pure "users"
     Users crud               -> (pure $ "users") <> toPathSegments crud
     _                        -> pure ""
@@ -218,9 +224,12 @@ instance PathInfo Route where
     <|> Me            <$ segment "me"
     <|> Errors        <$ segment "errors"
     <|> Portal        <$ segment "portal"
-    <|> Organizations <$ segment "organizations" <*> fromPathSegments
-    <|> try (OrganizationsForums <$> anySegment <*> (segment "f" *> fromPathSegments))
     <|> Users         <$ segment "users" <*> fromPathSegments
+    <|> try (OrganizationsForumsBoardsThreadsPosts <$> anySegment <*> (segment "f" *> fromPathSegments)) <*> fromPathSegments <*> fromPathSegments <*> fromPathSegments
+    <|> try (OrganizationsForumsBoardsThreads <$> anySegment <*> (segment "f" *> fromPathSegments)) <*> fromPathSegments <*> fromPathSegments
+    <|> try (OrganizationsForumsBoards <$> anySegment <*> (segment "f" *> fromPathSegments)) <*> fromPathSegments
+    <|> try (OrganizationsForums <$> anySegment <*> (segment "f" *> fromPathSegments))
+    <|> Organizations <$ segment "organizations" <*> fromPathSegments
     <|> Organizations <$> (ShowS <$> anySegment)
     <|> pure Home
     -- TODO FIXME: Can't do Home <$ segment "" because it fails to pattern match. Though, pure Index works because it's terminal.
