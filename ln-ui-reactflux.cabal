@@ -1,6 +1,6 @@
 name:                ln-ui-reactflux
 version:             0.1.0.0
-synopsis:            LN UI using React Flux
+synopsis:            LN.UI.ReactFlux using React Flux
 description:         Please see README.md
 homepage:            https://github.com/adarqui/ln-ui-reactflux#readme
 license:             BSD3
@@ -15,33 +15,33 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     LN.UI
-                     , LN.UI.Main
-                     , LN.UI.Access
-                     , LN.UI.Sort
-                     , LN.UI.App.About
-                     , LN.UI.App.Boards
-                     , LN.UI.App.Breadcrumbs
-                     , LN.UI.App.Core
-                     , LN.UI.App.Core.Shared
-                     , LN.UI.App.Delete
-                     , LN.UI.App.Forums
-                     , LN.UI.App.Gravatar
-                     , LN.UI.App.Home
-                     , LN.UI.App.Loading
-                     , LN.UI.App.NotFound
-                     , LN.UI.App.Oops
-                     , LN.UI.App.Organizations
-                     , LN.UI.App.PageNumbers
-                     , LN.UI.App.Portal
-                     , LN.UI.App.Route
-                     , LN.UI.App.Users
-                     , LN.UI.App.Types
-                     , LN.UI.Helpers.ReactFluxDOM
-                     , LN.UI.View
-                     , LN.UI.View.Button
-                     , LN.UI.View.Internal
-                     , LN.UI.View.Field
+  exposed-modules:     LN.UI.ReactFlux
+                     , LN.UI.ReactFlux.Main
+                     , LN.UI.ReactFlux.Access
+                     , LN.UI.ReactFlux.Sort
+                     , LN.UI.ReactFlux.App.About
+                     , LN.UI.ReactFlux.App.Boards
+                     , LN.UI.ReactFlux.App.Breadcrumbs
+                     , LN.UI.ReactFlux.App.Core
+                     , LN.UI.ReactFlux.App.Core.Shared
+                     , LN.UI.ReactFlux.App.Delete
+                     , LN.UI.ReactFlux.App.Forums
+                     , LN.UI.ReactFlux.App.Gravatar
+                     , LN.UI.ReactFlux.App.Home
+                     , LN.UI.ReactFlux.App.Loading
+                     , LN.UI.ReactFlux.App.NotFound
+                     , LN.UI.ReactFlux.App.Oops
+                     , LN.UI.ReactFlux.App.Organizations
+                     , LN.UI.ReactFlux.App.PageNumbers
+                     , LN.UI.ReactFlux.App.Portal
+                     , LN.UI.ReactFlux.App.Route
+                     , LN.UI.ReactFlux.App.Users
+                     , LN.UI.ReactFlux.App.Types
+                     , LN.UI.ReactFlux.Helpers.ReactFluxDOM
+                     , LN.UI.ReactFlux.View
+                     , LN.UI.ReactFlux.View.Button
+                     , LN.UI.ReactFlux.View.Internal
+                     , LN.UI.ReactFlux.View.Field
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , bytestring
