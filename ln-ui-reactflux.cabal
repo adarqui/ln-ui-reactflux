@@ -18,7 +18,6 @@ library
   exposed-modules:     LN.UI.ReactFlux
                      , LN.UI.ReactFlux.Main
                      , LN.UI.ReactFlux.Access
-                     , LN.UI.ReactFlux.Sort
                      , LN.UI.ReactFlux.App.About
                      , LN.UI.ReactFlux.App.Boards
                      , LN.UI.ReactFlux.App.Breadcrumbs
