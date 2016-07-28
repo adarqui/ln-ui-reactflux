@@ -37,12 +37,13 @@ resolver: lts-6.6
 # will not be run. This is useful for tweaking upstream packages.
 packages:
 - '.'
+- '../ln-ui-core'
 - '../ln-sanitize'
 - '../ln-validate'
-- '../ln-api-ghcjs'
+- '../ln-api'
 - '../haskell-ln-types'
 - '../haskell-api-helpers-shared'
-- '../haskell-api-helpers-ghcjs'
+- '../haskell-api-helpers'
 - '../haskell-either-helpers'
 - '../haskell-ebyam'
 - '../haskell-ifte'

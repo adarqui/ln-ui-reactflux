@@ -11,4 +11,4 @@ make tests:
 	stack test --fast
 
 ghci:
-	stack ghci ln-ui
+	stack ghci ln-ui-reactflux
