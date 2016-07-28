@@ -16,68 +16,68 @@ module LN.UI.ReactFlux.App.Organizations (
 
 
 
-import Control.Monad (void)
-import           Control.Concurrent              (forkIO)
-import           Control.DeepSeq                 (NFData)
-import           Control.Monad.Trans.Either      (EitherT, runEitherT)
-import           Data.Ebyam                      (ebyam)
-import           Data.Map                        (Map)
-import qualified Data.Map                        as Map
-import           Data.Monoid                     ((<>))
-import           Data.Rehtie                     (rehtie)
-import           Data.Text                       (Text)
-import           Data.Typeable                   (Typeable)
-import           GHC.Generics                    (Generic)
-import           Haskell.Helpers.Either          (mustPassT)
-import           React.Flux                      hiding (view)
-import qualified React.Flux                      as RF
-import qualified Web.Bootstrap3                  as B
+import           Control.Concurrent                   (forkIO)
+import           Control.DeepSeq                      (NFData)
+import           Control.Monad                        (void)
+import           Control.Monad.Trans.Either           (EitherT, runEitherT)
+import           Data.Ebyam                           (ebyam)
+import           Data.Map                             (Map)
+import qualified Data.Map                             as Map
+import           Data.Monoid                          ((<>))
+import           Data.Rehtie                          (rehtie)
+import           Data.Text                            (Text)
+import           Data.Typeable                        (Typeable)
+import           GHC.Generics                         (Generic)
+import           Haskell.Helpers.Either               (mustPassT)
+import           React.Flux                           hiding (view)
+import qualified React.Flux                           as RF
+import qualified Web.Bootstrap3                       as B
 
-import           LN.Api                          (getForumPacks_ByOrganizationId',
-                                                  getOrganizationPacks,
-                                                  getOrganizationsCount',
-                                                  postOrganization',
-                                                  putOrganization')
-import           LN.Api.String                   (getOrganizationPack')
-import           LN.Generate.Default             (defaultOrganizationRequest)
-import           LN.T.Convert                    (organizationResponseToOrganizationRequest)
-import           LN.T.Organization               (OrganizationRequest (..),
-                                                  OrganizationResponse (..),
-                                                  OrganizationResponse (..))
-import           LN.T.Pack.Forum                 (ForumPackResponse (..),
-                                                  ForumPackResponses (..))
-import           LN.T.Pack.Organization          (OrganizationPackResponse (..), OrganizationPackResponses (..))
-import           LN.T.Size                       (Size (..))
-import           LN.T.User                       (UserSanitizedResponse (..))
-import           LN.UI.ReactFlux.Access
-import qualified LN.UI.ReactFlux.App.Delete                as Delete
-import qualified LN.UI.ReactFlux.App.Gravatar              as Gravatar
-import           LN.UI.ReactFlux.App.Loading               (Loader (..))
-import qualified LN.UI.ReactFlux.App.Loading               as Loading
-import           LN.UI.ReactFlux.App.PageNumbers           (runPageInfo)
-import qualified LN.UI.ReactFlux.App.PageNumbers           as PageNumbers
-import qualified LN.UI.ReactFlux.App.Route                 as Route
-import qualified LN.UI.ReactFlux.App.NotFound as NotFound (view_)
-import qualified LN.UI.ReactFlux.App.Forums as Forums (viewIndex_)
+import           LN.Api                               (getForumPacks_ByOrganizationId',
+                                                       getOrganizationPacks,
+                                                       getOrganizationsCount',
+                                                       postOrganization',
+                                                       putOrganization')
+import           LN.Api.String                        (getOrganizationPack')
+import           LN.Generate.Default                  (defaultOrganizationRequest)
+import           LN.T.Convert                         (organizationResponseToOrganizationRequest)
+import           LN.T.Organization                    (OrganizationRequest (..), OrganizationResponse (..), OrganizationResponse (..))
+import           LN.T.Pack.Forum                      (ForumPackResponse (..),
+                                                       ForumPackResponses (..))
+import           LN.T.Pack.Organization               (OrganizationPackResponse (..), OrganizationPackResponses (..))
+import           LN.T.Size                            (Size (..))
+import           LN.T.User                            (UserSanitizedResponse (..))
 import           LN.UI.Core.Helpers.DataList          (deleteNth)
 import           LN.UI.Core.Helpers.DataText          (tshow)
 import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
 import           LN.UI.Core.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Core.Helpers.Map               (idmapFrom)
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM      (ahref, ahrefName, className_,
-                                                  classNames_)
-import           LN.UI.Core.Router                    (CRUD (..), Params, Route (..),
-                                                  RouteWith (..), TyCRUD (..),
-                                                  emptyParams, linkName,
-                                                  routeWith, routeWith')
-import           LN.UI.Core.PageInfo            (PageInfo (..),
-                                                  defaultPageInfo,
-                                                  pageInfoFromParams,
-                                                  paramsFromPageInfo)
+import           LN.UI.Core.PageInfo                  (PageInfo (..),
+                                                       defaultPageInfo,
+                                                       pageInfoFromParams,
+                                                       paramsFromPageInfo)
+import           LN.UI.Core.Router                    (CRUD (..), Params,
+                                                       Route (..),
+                                                       RouteWith (..),
+                                                       TyCRUD (..), emptyParams,
+                                                       linkName, routeWith,
+                                                       routeWith')
+import           LN.UI.ReactFlux.Access
+import qualified LN.UI.ReactFlux.App.Delete           as Delete
+import qualified LN.UI.ReactFlux.App.Forums           as Forums (viewIndex_)
+import qualified LN.UI.ReactFlux.App.Gravatar         as Gravatar
+import           LN.UI.ReactFlux.App.Loading          (Loader (..))
+import qualified LN.UI.ReactFlux.App.Loading          as Loading
+import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
+import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
+import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
+import qualified LN.UI.ReactFlux.App.Route            as Route
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefName,
+                                                       className_, classNames_)
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
 import           LN.UI.ReactFlux.View.Field
-import           LN.UI.ReactFlux.View.Internal             (showTagsSmall)
+import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
 
 
 
