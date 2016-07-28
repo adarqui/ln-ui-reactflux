@@ -74,8 +74,8 @@ import           LN.UI.Core.Sort
 import           LN.UI.ReactFlux.Access
 import qualified LN.UI.ReactFlux.App.Delete           as Delete
 import qualified LN.UI.ReactFlux.App.Gravatar         as Gravatar
-import           LN.UI.ReactFlux.App.Loading          (Loader (..))
-import qualified LN.UI.ReactFlux.App.Loading          as Loading
+import           LN.UI.ReactFlux.App.Loader          (Loader (..))
+import qualified LN.UI.ReactFlux.App.Loader          as Loading
 import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Oops             as Oops (view_)
 import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)

@@ -27,7 +27,7 @@ library
                      , LN.UI.ReactFlux.App.Forums
                      , LN.UI.ReactFlux.App.Gravatar
                      , LN.UI.ReactFlux.App.Home
-                     , LN.UI.ReactFlux.App.Loading
+                     , LN.UI.ReactFlux.App.Loader
                      , LN.UI.ReactFlux.App.NotFound
                      , LN.UI.ReactFlux.App.Oops
                      , LN.UI.ReactFlux.App.Organizations

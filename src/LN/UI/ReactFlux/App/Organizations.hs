@@ -52,8 +52,6 @@ import           LN.UI.Core.Helpers.DataText          (tshow)
 import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
 import           LN.UI.Core.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Core.Helpers.Map               (idmapFrom)
-import           LN.UI.Core.Loader                    (Loader (..))
-import qualified LN.UI.Core.Loader                    as Loader
 import           LN.UI.Core.PageInfo                  (PageInfo (..),
                                                        defaultPageInfo,
                                                        pageInfoFromParams,
@@ -68,6 +66,8 @@ import           LN.UI.ReactFlux.Access
 import qualified LN.UI.ReactFlux.App.Delete           as Delete
 import qualified LN.UI.ReactFlux.App.Forums           as Forums (viewIndex_)
 import qualified LN.UI.ReactFlux.App.Gravatar         as Gravatar
+import           LN.UI.ReactFlux.App.Loader           (Loader (..))
+import qualified LN.UI.ReactFlux.App.Loader           as Loader
 import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers

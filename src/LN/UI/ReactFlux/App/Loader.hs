@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS -fno-warn-orphans  #-}
 
-module LN.UI.ReactFlux.App.Loading (
+module LN.UI.ReactFlux.App.Loader (
    module A
  , loadingImg
  , unexpectedError
