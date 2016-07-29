@@ -3,6 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeFamilies      #-}
+{-# OPTIONS -fno-warn-orphans  #-}
 
 module LN.UI.ReactFlux.App.Core (
   Store (..),
@@ -16,43 +17,48 @@ module LN.UI.ReactFlux.App.Core (
 
 
 
-import           Control.Concurrent              (forkIO)
-import           Control.DeepSeq                 (NFData)
-import           Control.Monad                   (void)
-import           Control.Monad.IO.Class          (liftIO)
-import           Data.List                       ((\\))
-import           Data.Map                        (Map)
-import qualified Data.Map                        as Map
-import           Data.Monoid                     ((<>))
-import           Data.Rehtie                     (rehtie)
-import           Data.Text                       (Text)
-import           Data.Typeable                   (Typeable)
-import           GHC.Generics                    (Generic)
-import           React.Flux                      hiding (view)
-import qualified React.Flux                      as RF
-import           React.Flux.Router.WebRoutes     (initRouterRaw'ByteString)
-import qualified Web.Bootstrap3 as B
+import           Control.Concurrent                   (forkIO)
+import           Control.DeepSeq                      (NFData)
+import           Control.Monad                        (void)
+import           Control.Monad.IO.Class               (liftIO)
+import           Data.List                            ((\\))
+import           Data.Map                             (Map)
+import qualified Data.Map                             as Map
+import           Data.Monoid                          ((<>))
+import           Data.Rehtie                          (rehtie)
+import           Data.Text                            (Text)
+import           Data.Typeable                        (Typeable)
+import           GHC.Generics                         (Generic)
+import           React.Flux                           hiding (view)
+import qualified React.Flux                           as RF
+import           React.Flux.Router.WebRoutes          (initRouterRaw'ByteString)
+import qualified Web.Bootstrap3                       as B
 
-import           LN.Api                          (getMe', getUserSanitizedPacks_ByUsersIds')
-import           LN.T.Pack.Sanitized.User        (UserSanitizedPackResponse (..), UserSanitizedPackResponses (..))
-import           LN.T.User                       (UserResponse (..))
-import qualified LN.UI.ReactFlux.App.About                 as About
-import qualified LN.UI.ReactFlux.App.Breadcrumbs           as Breadcrumbs
-import           LN.UI.ReactFlux.App.Core.Shared           (Action (..), Store (..),
-                                                  defaultStore)
-import qualified LN.UI.ReactFlux.App.Home                  as Home
-import qualified LN.UI.ReactFlux.App.Organizations         as Organizations
-import qualified LN.UI.ReactFlux.App.Forums as Forums
-import qualified LN.UI.ReactFlux.App.Boards as Boards
-import qualified LN.UI.ReactFlux.App.Portal                as Portal
-import qualified LN.UI.ReactFlux.App.Users                 as Users
-import qualified LN.UI.ReactFlux.App.NotFound as NotFound (view_)
+import           LN.Api                               (getMe', getUserSanitizedPacks_ByUsersIds')
+import           LN.T.Pack.Sanitized.User             (UserSanitizedPackResponse (..), UserSanitizedPackResponses (..))
+import           LN.T.User                            (UserResponse (..))
+import           LN.UI.Core.App                       (runCore)
+import           LN.UI.Core.Control                   (CoreResult (..))
 import           LN.UI.Core.Helpers.HaskellApiHelpers (rd)
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM      (ahref, ahrefClasses,
-                                                  ahrefName, className_, classNames_)
+import qualified LN.UI.Core.Loader                    as Loader (loader1)
+import           LN.UI.Core.PageInfo                  (PageInfo,
+                                                       defaultPageInfo)
 import           LN.UI.Core.Router
-import           LN.UI.Core.PageInfo            (PageInfo, defaultPageInfo)
-import           LN.UI.ReactFlux.Types                     (HTMLEvent_, HTMLView_)
+import           LN.UI.Core.State                     (Action (..), Store (..),
+                                                       defaultStore)
+import qualified LN.UI.ReactFlux.App.About            as About
+import qualified LN.UI.ReactFlux.App.Boards           as Boards
+import qualified LN.UI.ReactFlux.App.Breadcrumbs      as Breadcrumbs
+import qualified LN.UI.ReactFlux.App.Forums           as Forums
+import qualified LN.UI.ReactFlux.App.Home             as Home
+import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
+import qualified LN.UI.ReactFlux.App.Organizations    as Organizations
+import qualified LN.UI.ReactFlux.App.Portal           as Portal
+import qualified LN.UI.ReactFlux.App.Users            as Users
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
+                                                       ahrefName, className_,
+                                                       classNames_)
+import           LN.UI.ReactFlux.Types                (HTMLEvent_, HTMLView_)
 
 
 
@@ -60,56 +66,28 @@ instance StoreData Store where
   type StoreAction Store = Action
   transform action st@Store{..} = do
     case action of
-      Init            -> action_init
-      SetRoute route  -> action_set_route route
-      SyncUsers users -> action_sync_users users
-      _               -> pure st
+      Init             -> act_init
+      Route route_with -> act_route route_with
+      SetState st'     -> pure st'
+      _                -> pure st
+
     where
-    action_init = do
-      putStrLn "Init"
-      lr <- rd getMe'
-      rehtie lr (const $ pure st) $ \user_pack ->
-        pure $ st{ _me = Just user_pack }
 
-    action_set_route route_with@(RouteWith route params) = do
+    basedOn result_ st_ act_ = case result_ of
+      Final  -> pure st_
+      Refeed -> do
+        void $ forkIO $ do
+          (result', st') <- runCore st_ Refeed act_
+          executeAction $ SomeStoreAction store (SetState st')
+        pure st_
 
-      putStrLn $ show route_with
+    act_init = do
+      (result, st') <- runCore st Final Init
+      basedOn result st' Init
 
-      case route_with of
-
-        RouteWith Home _                       -> pure ()
-        RouteWith About _                      -> pure ()
-        RouteWith Portal _                     -> pure ()
-        RouteWith (Organizations crud) params  -> do
-          case (fmap userResponseEmail _me) of
-            Nothing    -> mempty
-            Just email -> do
-              void $ mapM_ (forkIO . executeAction)
-                [ SomeStoreAction Organizations.store $ Organizations.SetEmail email
-                , SomeStoreAction Organizations.store Organizations.Load
-                , SomeStoreAction Organizations.store $ Organizations.Init crud params]
-        RouteWith (OrganizationsForums org_sid crud) params  -> do
-          void $ mapM_ (forkIO . executeAction)
-            [ SomeStoreAction Forums.store Forums.Load
-            , SomeStoreAction Forums.store $ Forums.Init org_sid crud params]
-        RouteWith (OrganizationsForumsBoards org_sid forum_sid crud) params  -> do
-          void $ mapM_ (forkIO . executeAction)
-            [ SomeStoreAction Boards.store Boards.Load
-            , SomeStoreAction Boards.store $ Boards.Init org_sid forum_sid crud params]
-        RouteWith (Users Index) params         -> void $ forkIO $ executeAction $ SomeStoreAction Users.store $ Users.Init params
-        RouteWith _ _                          -> pure ()
-
-      pure $ st{ _route = route_with }
-
-    -- | We maintain a global Map of users for quick access
-    --
-    action_sync_users users = do
-      let users_difference = Map.keys _users \\ users
-      lr <- rd $ getUserSanitizedPacks_ByUsersIds' users_difference
-      rehtie lr (const $ pure st) $ \UserSanitizedPackResponses{..} -> do
-        pure $ st{
-          _users = Map.union _users (Map.fromList $ map (\pack -> (userSanitizedPackResponseUserId pack, pack)) userSanitizedPackResponses)
-        }
+    act_route route_with = do
+      (result, st') <- runCore st Final (Route route_with)
+      basedOn result st' (Route route_with)
 
 
 
@@ -141,16 +119,17 @@ initRouter =
     where
       routeAlterStore action =
         -- Update Store with our new route
-        liftIO $ alterStore store $ SetRoute action
+        liftIO $ alterStore store $ Route action
 
 
 
 defaultLayout :: Store -> HTMLView_ -> HTMLView_
 defaultLayout st@Store{..} page =
   div_ $ do
-    navBar _me
-    Breadcrumbs.view_ _route
-    div_ page
+    Loader.loader1 _l_m_me $ \m_me -> do
+      navBar m_me
+      Breadcrumbs.view_ _route
+      div_ page
 
 
 
