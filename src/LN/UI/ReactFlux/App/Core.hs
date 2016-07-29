@@ -66,46 +66,40 @@ instance StoreData Store where
   type StoreAction Store = Action
   transform action st@Store{..} = do
     case action of
-      Init             -> act_init
+      Init            -> act_init
       Route route_with -> act_route route_with
-      SetState st'     -> pure st'
+      ApplyState f     -> pure $ f st
       _                -> pure st
 
     where
 
     basedOn result_ st_ act_ = case result_ of
-      Final  -> pure st_
-      Refeed -> do
+      ApplyFinal f -> executeAction $ SomeStoreAction store (ApplyState f)
+      Apply f      -> executeAction $ SomeStoreAction store (ApplyState f)
+      Refeed       -> do
         void $ forkIO $ do
           (result', st') <- runCore st_ Refeed act_
-          executeAction $ SomeStoreAction store (SetState st')
-        pure st_
+          case result' of
+            Apply f      -> executeAction $ SomeStoreAction store (ApplyState f)
+            ApplyFinal f -> executeAction $ SomeStoreAction store (ApplyState f)
+            Refeed       -> print "basedOn: error: refeed"
+            _            -> print "basedOn: error"
+      _                  -> print "basedOn: error"
 
     act_init = do
-      (result, st') <- runCore st Final Init
-      basedOn result st' Init
+      (result', st') <- runCore st Final Init
+      void $ basedOn result' st' Init
+      pure st'
 
     act_route route_with = do
-      (result, st') <- runCore st Final (Route route_with)
-      basedOn result st' (Route route_with)
+      (result', st') <- runCore st Final (Route route_with)
+      void $ basedOn result' st' (Route route_with)
+      pure st'
 
 
 
 store :: ReactStore Store
 store = mkStore defaultStore
-
-
-
-view_ :: HTMLEvent_
-view_ =
-  RF.view view () mempty
-
-
-
-view :: ReactView ()
-view =
-  defineControllerView "core" store $ \st _ ->
-    defaultLayout st (renderRouteView st)
 
 
 
@@ -120,6 +114,19 @@ initRouter =
       routeAlterStore action =
         -- Update Store with our new route
         liftIO $ alterStore store $ Route action
+
+
+
+view_ :: HTMLEvent_
+view_ =
+  RF.view view () mempty
+
+
+
+view :: ReactView ()
+view =
+  defineControllerView "core" store $ \st _ ->
+    defaultLayout st (renderRouteView st)
 
 
 
@@ -156,6 +163,7 @@ renderRouteView Store{..} = do
       RouteWith Home _                        -> Home.view_
       RouteWith About _                       -> About.view_
       RouteWith Portal _                      -> Portal.view_
+      RouteWith (Organizations Index) _       -> Organizations.viewIndex_ _pageInfo _l_organizations
       RouteWith (Organizations crud) params   -> Organizations.view_ crud
       RouteWith (OrganizationsForums org_sid crud) params -> Forums.view_ org_sid crud
       RouteWith (OrganizationsForumsBoards org_sid forum_sid crud) params -> Boards.view_ org_sid forum_sid crud

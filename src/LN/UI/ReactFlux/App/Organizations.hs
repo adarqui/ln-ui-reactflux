@@ -11,7 +11,10 @@ module LN.UI.ReactFlux.App.Organizations (
   Action (..),
   store,
   view_,
-  view
+  view,
+  viewIndex,
+  viewIndex_,
+  viewIndex__
 ) where
 
 
@@ -235,22 +238,32 @@ view = defineControllerView "organizations" store $ \st@Store{..} crud ->
 
 
 viewIndex :: Store -> HTMLView_
-viewIndex Store{..} = do
-  Loader.loader1 _l_organizations $ \organizations -> do
-    cldiv_ B.containerFluid $ do
-      h1_ "Organizations"
-      ahref $ routeWith' $ Organizations New
-      PageNumbers.view_ (_pageInfo, routeWith' $ Organizations Index)
-      ul_ [className_ B.listUnstyled] $ do
-        mapM_ (\OrganizationPackResponse{..} -> do
-          let OrganizationResponse{..} = organizationPackResponseOrganization
-          li_ $ do
-            cldiv_ B.row $ do
-              cldiv_ B.colXs1 $ p_ $ Gravatar.viewUser_ XSmall organizationPackResponseUser
-              cldiv_ B.colXs3 $ p_ $ ahrefName organizationResponseDisplayName (routeWith' $ Organizations (ShowS organizationResponseName))
-              cldiv_ B.colXs6 $ p_ $ elemText $ maybe "No Description." id organizationResponseDescription
-              cldiv_ B.colXs2 $ p_ $ elemText $ prettyUTCTimeMaybe organizationResponseCreatedAt
-          ) organizations
+viewIndex Store{..} = viewIndex_ _pageInfo _l_organizations
+
+
+
+viewIndex_ :: PageInfo -> Loader (Map OrganizationId OrganizationPackResponse) -> HTMLView_
+viewIndex_ page_info l_organizations = do
+  Loader.loader1 l_organizations (viewIndex__ page_info)
+
+
+
+viewIndex__ :: PageInfo -> Map OrganizationId OrganizationPackResponse -> HTMLView_
+viewIndex__ page_info organizations = do
+  cldiv_ B.containerFluid $ do
+    h1_ "Organizations"
+    ahref $ routeWith' $ Organizations New
+    PageNumbers.view_ (page_info, routeWith' $ Organizations Index)
+    ul_ [className_ B.listUnstyled] $ do
+      mapM_ (\OrganizationPackResponse{..} -> do
+        let OrganizationResponse{..} = organizationPackResponseOrganization
+        li_ $ do
+          cldiv_ B.row $ do
+            cldiv_ B.colXs1 $ p_ $ Gravatar.viewUser_ XSmall organizationPackResponseUser
+            cldiv_ B.colXs3 $ p_ $ ahrefName organizationResponseDisplayName (routeWith' $ Organizations (ShowS organizationResponseName))
+            cldiv_ B.colXs6 $ p_ $ elemText $ maybe "No Description." id organizationResponseDescription
+            cldiv_ B.colXs2 $ p_ $ elemText $ prettyUTCTimeMaybe organizationResponseCreatedAt
+        ) organizations
 
 
 
