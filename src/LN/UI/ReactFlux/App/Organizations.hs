@@ -85,25 +85,14 @@ import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
 
 
 data Store = Store {
-  _pageInfo        :: PageInfo,
-  _l_organizations :: Loader (Map OrganizationId OrganizationPackResponse),
-  _lm_organization :: Loader (Maybe OrganizationPackResponse),
-  _l_forums        :: Loader (Map OrganizationId ForumPackResponse),
-  _m_request       :: Maybe OrganizationRequest,
-  _m_requestTag    :: Maybe Text,
-  _requestEmail    :: Text
+  _m_requestTag    :: Maybe Text
 }
 
 
 
 data Action
-  = Load
-  | Init            CRUD Params
-  | SetEmail        Text
-  | SetRequest      OrganizationRequest
-  | SetRequestState (Maybe OrganizationRequest) (Maybe Text)
-  | Save
-  | Edit            OrganizationId
+  = Save
+  | Edit
   | Nop
   deriving (Show, Typeable, Generic, NFData)
 
@@ -114,90 +103,46 @@ instance StoreData Store where
   transform action st@Store{..} = do
 
     case action of
-      Nop                         -> pure st
-      Load                        -> action_load
-      Init crud params            -> action_init crud params
-      SetEmail email              -> action_set_email email
-      SetRequest request          -> action_set_request request
-      SetRequestState m_req m_tag -> action_set_request_state m_req m_tag
-      Save                        -> action_save
-      Edit edit_id                -> action_edit edit_id
+      Nop  -> pure st
+      Save -> action_save
+      Edit -> action_edit
 
     where
-    action_load = do
-      pure $ st{
-        _l_organizations = Loading,
-        _lm_organization  = Loading
-      }
 
-    action_init crud params = case crud of
-      Index -> action_init_index params
-      _     -> action_init_crud crud params
+    action_save = pure st
 
-    action_init_index params = do
-      let
-        page_info   = pageInfoFromParams params
-        params_list = paramsFromPageInfo page_info
-      lr <- runEitherT $ do
-        count         <- mustPassT $ rd $ getOrganizationsCount'
-        organizations <- mustPassT $ rd $ getOrganizationPacks params_list
-        pure (count, organizations)
-      rehtie lr (const $ pure st) $ \(count, organization_packs) -> do
-        let new_page_info = runPageInfo count page_info
-        pure $ st{ _l_organizations = Loaded $ idmapFrom organizationPackResponseOrganizationId (organizationPackResponses organization_packs)
-                 , _pageInfo = new_page_info }
+    action_edit = pure st
 
-    action_init_crud crud params = case crud of
-      ShowS org_sid   -> sync st org_sid
-      New             -> pure $ st{ _m_request = Just defaultOrganizationRequest }
-      EditS org_sid   -> sync st org_sid
-      DeleteS org_sid -> sync st org_sid
-      _               -> pure st
+    -- action_set_request request =
+    --   pure $ st{
+    --     _m_request = Just request
+    --   }
 
-    action_set_email email =
-      pure $ st{
-        _requestEmail = email
-      }
+    -- action_set_request_state m_req m_tag = pure $ st{ _m_request = m_req, _m_requestTag = m_tag }
 
-    action_set_request request =
-      pure $ st{
-        _m_request = Just request
-      }
+    -- action_save = do
+    --   case _m_request of
+    --     Nothing                   -> pure st
+    --     Just organization_request -> do
+    --       lr <- rd $ postOrganization' $ organization_request { organizationRequestEmail = _requestEmail }
+    --       rehtie lr (const $ pure st) $ \organization_response@OrganizationResponse{..} -> do
+    --         void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
+    --         pure st
 
-    action_set_request_state m_req m_tag = pure $ st{ _m_request = m_req, _m_requestTag = m_tag }
-
-    action_save = do
-      case _m_request of
-        Nothing                   -> pure st
-        Just organization_request -> do
-          lr <- rd $ postOrganization' $ organization_request { organizationRequestEmail = _requestEmail }
-          rehtie lr (const $ pure st) $ \organization_response@OrganizationResponse{..} -> do
-            void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
-            pure st
-
-    action_edit edit_id = do
-      case _m_request of
-        Nothing                   -> pure st
-        Just organization_request -> do
-          lr <- rd $ putOrganization' edit_id $ organization_request { organizationRequestEmail = _requestEmail }
-          rehtie lr (const $ pure st) $ \organization_response@OrganizationResponse{..} -> do
-            void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
-            pure st
+    -- action_edit edit_id = do
+    --   case _m_request of
+    --     Nothing                   -> pure st
+    --     Just organization_request -> do
+    --       lr <- rd $ putOrganization' edit_id $ organization_request { organizationRequestEmail = _requestEmail }
+    --       rehtie lr (const $ pure st) $ \organization_response@OrganizationResponse{..} -> do
+    --         void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
+    --         pure st
 
 
 
 sync :: Store -> Text -> IO Store
 sync st@Store{..} org_sid = do
-  lr <- runEitherT $ do
-    organization <- mustPassT $ rd $ getOrganizationPack' org_sid
-    forums       <- mustPassT $ rd $ getForumPacks_ByOrganizationId' (organizationPackResponseOrganizationId organization)
-    pure (organization, forums)
-  rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, forums@ForumPackResponses{..}) -> do
-    pure $ st{
-      _m_request       = Just $ organizationResponseToOrganizationRequest organizationPackResponseOrganization,
-      _lm_organization = Loaded $ Just organization,
-      _l_forums        = Loaded $ idmapFrom forumPackResponseForumId forumPackResponses
-    }
+  pure st
 
 
 
@@ -208,13 +153,7 @@ store = mkStore defaultStore
 
 defaultStore :: Store
 defaultStore = Store {
-  _pageInfo        = defaultPageInfo,
-  _l_organizations = Loaded Map.empty,
-  _lm_organization = Loaded Nothing,
-  _l_forums        = Loaded Map.empty,
-  _m_request       = Nothing,
-  _m_requestTag    = Nothing,
-  _requestEmail    = ""
+  _m_requestTag    = Nothing
 }
 
 
@@ -229,16 +168,16 @@ view :: ReactView CRUD
 view = defineControllerView "organizations" store $ \st@Store{..} crud ->
   case crud of
     Index           -> viewIndex st
-    ShowS org_sid   -> viewShowS _lm_organization _l_forums
-    New             -> viewNew _m_requestTag _m_request
-    EditS org_sid   -> viewEditS _m_requestTag _m_request _lm_organization
-    DeleteS org_sid -> Delete.view_
-    _               -> NotFound.view_
+    -- ShowS org_sid   -> viewShowS _lm_organization _l_forums
+    -- New             -> viewNew _m_requestTag _m_request
+    -- EditS org_sid   -> viewEditS _m_requestTag _m_request _lm_organization
+    -- DeleteS org_sid -> Delete.view_
+    -- _               -> NotFound.view_
 
 
 
 viewIndex :: Store -> HTMLView_
-viewIndex Store{..} = viewIndex_ _pageInfo _l_organizations
+viewIndex Store{..} = mempty
 
 
 
@@ -355,43 +294,44 @@ viewEditS m_tag m_request l_organization_pack =
 
 viewMod :: TyCRUD -> Maybe OrganizationId -> Maybe Text -> OrganizationRequest -> HTMLView_
 viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
-  div_ $ do
-    h1_ $ elemText $ linkName tycrud <> " Organization"
+  mempty
+  -- div_ $ do
+  --   h1_ $ elemText $ linkName tycrud <> " Organization"
 
-    mandatoryNameField organizationRequestDisplayName
-      (\input -> dispatch $ SetRequest $ request{organizationRequestDisplayName = input})
+  --   mandatoryNameField organizationRequestDisplayName
+  --     (\input -> dispatch $ SetRequest $ request{organizationRequestDisplayName = input})
 
-    optionalDescriptionField organizationRequestDescription
-      (\input -> dispatch $ SetRequest $ request{organizationRequestDescription = Just input})
-      (dispatch $ SetRequest $ request{organizationRequestDescription = Nothing})
+  --   optionalDescriptionField organizationRequestDescription
+  --     (\input -> dispatch $ SetRequest $ request{organizationRequestDescription = Just input})
+  --     (dispatch $ SetRequest $ request{organizationRequestDescription = Nothing})
 
-    mandatoryCompanyField organizationRequestCompany
-      (\input -> dispatch $ SetRequest $ request{organizationRequestCompany = input})
+  --   mandatoryCompanyField organizationRequestCompany
+  --     (\input -> dispatch $ SetRequest $ request{organizationRequestCompany = input})
 
-    mandatoryLocationField organizationRequestLocation
-      (\input -> dispatch $ SetRequest $ request{organizationRequestLocation = input})
+  --   mandatoryLocationField organizationRequestLocation
+  --     (\input -> dispatch $ SetRequest $ request{organizationRequestLocation = input})
 
-    mandatoryMembershipField organizationRequestMembership
-      (\input -> dispatch $ SetRequest $ request{organizationRequestMembership = input})
+  --   mandatoryMembershipField organizationRequestMembership
+  --     (\input -> dispatch $ SetRequest $ request{organizationRequestMembership = input})
 
-    mandatoryVisibilityField organizationRequestVisibility
-      (\input -> dispatch $ SetRequest $ request{organizationRequestVisibility = input})
+  --   mandatoryVisibilityField organizationRequestVisibility
+  --     (\input -> dispatch $ SetRequest $ request{organizationRequestVisibility = input})
 
-    -- icon
+  --   -- icon
 
-    tagsField
-       organizationRequestTags
-       (maybe ""  id m_tag)
-       (\input -> dispatch $ SetRequestState (Just request) (Just input))
-       (dispatch $ SetRequestState (Just $ request{organizationRequestTags = maybe organizationRequestTags (\tag -> organizationRequestTags <> [tag]) m_tag}) Nothing)
-       (\idx -> dispatch $ SetRequest $ request{organizationRequestTags = deleteNth idx organizationRequestTags})
-       (dispatch $ SetRequest $ request{organizationRequestTags = []})
+  --   tagsField
+  --      organizationRequestTags
+  --      (maybe ""  id m_tag)
+  --      (\input -> dispatch $ SetRequestState (Just request) (Just input))
+  --      (dispatch $ SetRequestState (Just $ request{organizationRequestTags = maybe organizationRequestTags (\tag -> organizationRequestTags <> [tag]) m_tag}) Nothing)
+  --      (\idx -> dispatch $ SetRequest $ request{organizationRequestTags = deleteNth idx organizationRequestTags})
+  --      (dispatch $ SetRequest $ request{organizationRequestTags = []})
 
-    createButtonsCreateEditCancel
-      m_organization_id
-      (dispatch Save)
-      (\edit_id -> dispatch $ Edit edit_id)
-      (routeWith' Home)
+  --   createButtonsCreateEditCancel
+  --     m_organization_id
+  --     (dispatch Save)
+  --     (\edit_id -> dispatch $ Edit edit_id)
+  --     (routeWith' Home)
 
 
 
