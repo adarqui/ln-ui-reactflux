@@ -25,11 +25,10 @@ ref = unsafePerformIO (newEmptyMVar >>= newIORef)
 
 
 
-dispatcher :: IO DispatchV
+dispatcher :: IO ()
 dispatcher = do
   mv <- readIORef ref
   void $ forkIO $ runDispatcher mv
-  pure mv
 
 
 

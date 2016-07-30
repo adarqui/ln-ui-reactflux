@@ -66,36 +66,34 @@ import           LN.UI.ReactFlux.Types                (HTMLEvent_, HTMLView_)
 instance StoreData Store where
   type StoreAction Store = Action
   transform action st@Store{..} = do
-    case action of
-      Init            -> act_init
-      Route route_with -> act_route route_with
-      ApplyState f     -> pure $ f st
-      _                -> pure st
+    (result', st') <- runCore st Start action
+    void $ forkIO $ basedOn result' st' action
+    pure st'
+
+    -- case action of
+      -- Init             -> act_init
+      -- Route route_with -> act_route route_with
+      -- ApplyState f     -> pure $ f st
+      -- MachNext         -> pure st
+      -- _                -> pure st
 
     where
 
     basedOn result_ st_ act_ = case result_ of
-      ApplyFinal f -> executeAction $ SomeStoreAction store (ApplyState f)
-      Apply f      -> executeAction $ SomeStoreAction store (ApplyState f)
-      Refeed       -> do
-        void $ forkIO $ do
-          (result', st') <- runCore st_ Refeed act_
-          case result' of
-            Apply f      -> executeAction $ SomeStoreAction store (ApplyState f)
-            ApplyFinal f -> executeAction $ SomeStoreAction store (ApplyState f)
-            Refeed       -> print "basedOn: error: refeed"
-            _            -> print "basedOn: error"
-      _                  -> print "basedOn: error"
+      Start -> pure ()
+      Next -> Dispatcher.dispatch $ SomeStoreAction store (MachNext act_)
+      Done -> pure ()
 
-    act_init = do
-      (result', st') <- runCore st Final Init
-      void $ basedOn result' st' Init
-      pure st'
+    -- act_init = do
+    --   (result', st') <- runCore st Start Init
+    --   void $ basedOn result' st' Init
+    --   pure st'
 
-    act_route route_with = do
-      (result', st') <- runCore st Final (Route route_with)
-      void $ basedOn result' st' (Route route_with)
-      pure st'
+    -- act_route route_with = do
+    --   pure st
+    --   -- (result', st') <- runCore st Final (Route route_with)
+    --   -- void $ basedOn result' st' (Route route_with)
+    --   -- pure st'
 
 
 
