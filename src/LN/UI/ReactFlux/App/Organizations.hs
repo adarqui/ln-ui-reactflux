@@ -232,13 +232,24 @@ viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
 
     -- -- icon
 
-    -- tagsField
-    --    organizationRequestTags
-    --    (maybe ""  id m_tag)
-    --    (\input -> dispatch $ SetRequestState (Just request) (Just input))
-    --    (dispatch $ SetRequestState (Just $ request{organizationRequestTags = maybe organizationRequestTags (\tag -> organizationRequestTags <> [tag]) m_tag}) Nothing)
-    --    (\idx -> dispatch $ SetRequest $ request{organizationRequestTags = deleteNth idx organizationRequestTags})
-    --    (dispatch $ SetRequest $ request{organizationRequestTags = []})
+    tagsField
+       organizationRequestTags
+       (maybe ""  id m_tag)
+       (\input -> dispatch $! ApplyState (\st->
+         st{
+           _m_organizationRequest = Just $! request
+         -- , (Just input))
+         }))
+       (dispatch $! ApplyState (\st->
+         st{
+           _m_organizationRequest = Just $!
+            request{organizationRequestTags = maybe organizationRequestTags (\tag -> organizationRequestTags <> [tag]) m_tag}
+         }))
+       (\idx -> dispatch $! ApplyState (\st->
+         st{
+           _m_organizationRequest = Just $! request{organizationRequestTags = deleteNth idx organizationRequestTags}
+         }))
+       (dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestTags = []}}))
 
     -- createButtonsCreateEditCancel
     --   m_organization_id
