@@ -256,11 +256,11 @@ viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
        -- Clear tags
        (dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestTags = []}}))
 
-    -- createButtonsCreateEditCancel
-    --   m_organization_id
-    --   (dispatch Save)
-    --   (\edit_id -> dispatch $ Edit edit_id)
-    --   (routeWith' Home)
+    createButtonsCreateEditCancel
+      m_organization_id
+      (dispatch Save)
+      (const $ dispatch Save)
+      (routeWith' Home)
 
 
 
