@@ -1,4 +1,4 @@
-module LN.UI.ReactFlux.Dispatch (
+module LN.UI.ReactFlux.Dispatcher (
     dispatcher
   , dispatch
 ) where
@@ -8,9 +8,9 @@ module LN.UI.ReactFlux.Dispatch (
 import           Control.Concurrent
 import           Control.Concurrent.MVar
 import           Control.Monad
+import           Data.IORef
 import           React.Flux
-import Data.IORef
-import System.IO.Unsafe
+import           System.IO.Unsafe
 
 
 

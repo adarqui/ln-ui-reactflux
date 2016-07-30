@@ -53,7 +53,7 @@ import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Organizations    as Organizations
 import qualified LN.UI.ReactFlux.App.Portal           as Portal
 import qualified LN.UI.ReactFlux.App.Users            as Users
-import qualified LN.UI.ReactFlux.Dispatch             as Dispatcher
+import qualified LN.UI.ReactFlux.Dispatcher           as Dispatcher
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
                                                        ahrefName, className_,
                                                        classNames_)
@@ -127,7 +127,6 @@ renderRouteView Store{..} = do
       RouteWith (Organizations (ShowS _)) _   -> Organizations.viewShowS _l_m_organization _l_forums
       RouteWith (Organizations (EditS _)) _   -> Organizations.viewEditS _m_organizationRequestTag _m_organizationRequest _l_m_organization
 --      RouteWith (Organizations (DeleteS _)) _ -> Organizations.viewDeleteS
---      RouteWith (Organizations crud) params   -> Organizations.view_ crud
       RouteWith (OrganizationsForums org_sid crud) params -> Forums.view_ org_sid crud
       RouteWith (OrganizationsForumsBoards org_sid forum_sid crud) params -> Boards.view_ org_sid forum_sid crud
       RouteWith (Users Index) params          -> Users.viewIndex_ _pageInfo _l_users

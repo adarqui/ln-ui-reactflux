@@ -9,8 +9,8 @@ module LN.UI.ReactFlux.Main (
 
 import           React.Flux
 
-import qualified LN.UI.ReactFlux.App.Core as Core
-import LN.UI.ReactFlux.Dispatch
+import qualified LN.UI.ReactFlux.App.Core   as Core
+import           LN.UI.ReactFlux.Dispatcher
 
 
 
@@ -29,7 +29,6 @@ runReactMain = do
     Core.view
     ()
 
---  executeAction $ SomeStoreAction Core.store Core.Init
   dispatch $ SomeStoreAction Core.store Core.Init
 
   Core.initRouter

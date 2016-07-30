@@ -80,7 +80,6 @@ import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Oops             as Oops (view_)
 import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
-import qualified LN.UI.ReactFlux.App.Route            as Route
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
                                                        ahrefClassesName,
                                                        ahrefName, className_,
@@ -121,107 +120,109 @@ instance StoreData Store where
   type StoreAction Store = Action
   transform action st@Store{..} = do
 
-    case action of
-      Nop                                -> pure st
-      Load                               -> action_load
-      Init org_sid forum_sid crud params -> action_init org_sid forum_sid crud params
-      SetRequest request                 -> action_set_m_request request
-      SetRequestState m_req m_tag        -> action_set_m_request_state m_req m_tag
-      Save                               -> action_save
-      Edit                               -> action_edit
+    pure st
 
-    where
-    action_load = pure $ loading st
+    -- case action of
+    --   Nop                                -> pure st
+    --   Load                               -> action_load
+    --   Init org_sid forum_sid crud params -> action_init org_sid forum_sid crud params
+    --   SetRequest request                 -> action_set_m_request request
+    --   SetRequestState m_req m_tag        -> action_set_m_request_state m_req m_tag
+    --   Save                               -> action_save
+    --   Edit                               -> action_edit
 
-    action_init org_sid forum_sid crud params = case crud of
-      Index -> action_init_index org_sid forum_sid params
-      _     -> action_init_crud org_sid forum_sid crud params
+    -- where
+    -- action_load = pure $ loading st
 
-    action_init_index org_sid forum_sid params = do
-      let
-        page_info   = pageInfoFromParams params
-        params_list = paramsFromPageInfo page_info
-      lr <- runEitherT $ do
-        organization  <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
-        let OrganizationPackResponse{..} = organization
-        forum         <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
-        let ForumPackResponse{..} = forum
-        boards        <- mustPassT $ rd $ getBoardPacks_ByForumId' forumPackResponseForumId
-        pure (organization, forum, boards)
-      rehtie lr (const $ pure $ cantLoad st) $ \(organization, forum, boards) -> do
-        pure $ st{
-          _lm_organization = Loaded $ Just organization
-        , _lm_forum        = Loaded $ Just forum
-        , _l_boards        = Loaded $ idmapFrom boardPackResponseBoardId (boardPackResponses boards)
-        }
+    -- action_init org_sid forum_sid crud params = case crud of
+    --   Index -> action_init_index org_sid forum_sid params
+    --   _     -> action_init_crud org_sid forum_sid crud params
 
-    action_init_crud org_sid forum_sid crud params = case crud of
-      ShowS board_sid   -> sync st org_sid forum_sid (Just board_sid)
-      New               -> sync st org_sid forum_sid Nothing >>= \st_ -> (pure $ st_{ _m_request = Just defaultBoardRequest })
-      EditS board_sid   -> sync st org_sid forum_sid (Just board_sid)
-      DeleteS board_sid -> sync st org_sid forum_sid (Just board_sid)
-      _                 -> pure st
+    -- action_init_index org_sid forum_sid params = do
+    --   let
+    --     page_info   = pageInfoFromParams params
+    --     params_list = paramsFromPageInfo page_info
+    --   lr <- runEitherT $ do
+    --     organization  <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
+    --     let OrganizationPackResponse{..} = organization
+    --     forum         <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
+    --     let ForumPackResponse{..} = forum
+    --     boards        <- mustPassT $ rd $ getBoardPacks_ByForumId' forumPackResponseForumId
+    --     pure (organization, forum, boards)
+    --   rehtie lr (const $ pure $ cantLoad st) $ \(organization, forum, boards) -> do
+    --     pure $ st{
+    --       _lm_organization = Loaded $ Just organization
+    --     , _lm_forum        = Loaded $ Just forum
+    --     , _l_boards        = Loaded $ idmapFrom boardPackResponseBoardId (boardPackResponses boards)
+    --     }
 
-
-    action_set_m_request request =
-      pure $ st{
-        _m_request = Just request
-      }
-
-    action_set_m_request_state m_req m_tag = pure $ st{ _m_request = m_req, _m_requestTag = m_tag }
-
-    action_save = do
-      case (_m_request, _lm_organization, _lm_forum) of
-        (Just board_request, Loaded (Just OrganizationPackResponse{..}), Loaded (Just ForumPackResponse{..})) -> do
-          let org_sid = organizationResponseName organizationPackResponseOrganization
-          let forum_sid = forumResponseName forumPackResponseForum
-          lr <- rd $ postBoard_ByForumId' forumPackResponseForumId board_request
-          rehtie lr (const $ pure st) $ \board_response@BoardResponse{..} -> do
-            void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForumsBoards org_sid forum_sid (ShowS boardResponseName)) []
-            pure st
-        _            -> pure st
-
-    action_edit = do
-      case (_m_request, _lm_organization, _lm_forum, _lm_board) of
-        (Just board_request, Loaded (Just OrganizationPackResponse{..}), Loaded (Just ForumPackResponse{..}), Loaded (Just BoardPackResponse{..})) -> do
-          let org_sid    = organizationResponseName organizationPackResponseOrganization
-          let forum_sid  = forumResponseName forumPackResponseForum
-          let board_sid  = boardResponseName boardPackResponseBoard
-          lr <- rd $ putBoard' boardPackResponseBoardId board_request
-          rehtie lr (const $ pure st) $ \board_response@BoardResponse{..} -> do
-            void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForumsBoards org_sid forum_sid (ShowS board_sid)) []
-            pure st
-        _           -> pure st
+    -- action_init_crud org_sid forum_sid crud params = case crud of
+    --   ShowS board_sid   -> sync st org_sid forum_sid (Just board_sid)
+    --   New               -> sync st org_sid forum_sid Nothing >>= \st_ -> (pure $ st_{ _m_request = Just defaultBoardRequest })
+    --   EditS board_sid   -> sync st org_sid forum_sid (Just board_sid)
+    --   DeleteS board_sid -> sync st org_sid forum_sid (Just board_sid)
+    --   _                 -> pure st
 
 
+    -- action_set_m_request request =
+    --   pure $ st{
+    --     _m_request = Just request
+    --   }
 
--- | Pull in the latest organization, forum, boards, and recent thread posts
---
-sync :: Store -> OrganizationName -> ForumName -> Maybe BoardName -> IO Store
-sync st@Store{..} org_sid forum_sid m_board_sid = do
-  lr <- runEitherT $ do
-    -- Always pull in organization
-    --
-    organization <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
-    let OrganizationPackResponse{..} = organization
-    forum        <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
-    let ForumPackResponse{..} = forum
-    let ForumResponse{..} = forumPackResponseForum
-    x <- ebyam m_board_sid (pure Nothing) $ \board_sid -> do
-      -- BoardName exists, so pull in board and threads
-      --
-      board <- mustPassT $ rd $ ApiS.getBoardPack_ByForumId' board_sid forumResponseId
-      threads <- mustPassT $ rd $ getThreadPacks_ByForumId [limitInt forumResponseRecentPostsLimit, WithBoard True, WithThread True, SortOrder SortOrderBy_Dsc, Order OrderBy_CreatedAt] forumResponseId
-      pure $ Just (board, threads)
-    pure (organization, forum, x)
-  rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, forum@ForumPackResponse{..}, x) -> do
-    pure $ st{
-      _m_request       = maybe _m_request (Just . boardResponseToBoardRequest . boardPackResponseBoard) $ fmap sel1 x
-    , _lm_organization = Loaded $ Just organization
-    , _lm_forum        = Loaded $ Just forum
-    , _lm_board        = maybe _lm_board (Loaded . Just) $ fmap sel1 x
-    , _l_threads       = maybe _l_threads (Loaded . idmapFrom threadPackResponseThreadId . threadPackResponses) $ fmap sel2 x
-    }
+    -- action_set_m_request_state m_req m_tag = pure $ st{ _m_request = m_req, _m_requestTag = m_tag }
+
+    -- action_save = do
+    --   case (_m_request, _lm_organization, _lm_forum) of
+    --     (Just board_request, Loaded (Just OrganizationPackResponse{..}), Loaded (Just ForumPackResponse{..})) -> do
+    --       let org_sid = organizationResponseName organizationPackResponseOrganization
+    --       let forum_sid = forumResponseName forumPackResponseForum
+    --       lr <- rd $ postBoard_ByForumId' forumPackResponseForumId board_request
+    --       rehtie lr (const $ pure st) $ \board_response@BoardResponse{..} -> do
+    --         void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForumsBoards org_sid forum_sid (ShowS boardResponseName)) []
+    --         pure st
+    --     _            -> pure st
+
+    -- action_edit = do
+    --   case (_m_request, _lm_organization, _lm_forum, _lm_board) of
+    --     (Just board_request, Loaded (Just OrganizationPackResponse{..}), Loaded (Just ForumPackResponse{..}), Loaded (Just BoardPackResponse{..})) -> do
+    --       let org_sid    = organizationResponseName organizationPackResponseOrganization
+    --       let forum_sid  = forumResponseName forumPackResponseForum
+    --       let board_sid  = boardResponseName boardPackResponseBoard
+    --       lr <- rd $ putBoard' boardPackResponseBoardId board_request
+    --       rehtie lr (const $ pure st) $ \board_response@BoardResponse{..} -> do
+    --         void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForumsBoards org_sid forum_sid (ShowS board_sid)) []
+    --         pure st
+    --     _           -> pure st
+
+
+
+-- -- | Pull in the latest organization, forum, boards, and recent thread posts
+-- --
+-- sync :: Store -> OrganizationName -> ForumName -> Maybe BoardName -> IO Store
+-- sync st@Store{..} org_sid forum_sid m_board_sid = do
+  -- lr <- runEitherT $ do
+    -- -- Always pull in organization
+    -- --
+    -- organization <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
+    -- let OrganizationPackResponse{..} = organization
+    -- forum        <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
+    -- let ForumPackResponse{..} = forum
+    -- let ForumResponse{..} = forumPackResponseForum
+    -- x <- ebyam m_board_sid (pure Nothing) $ \board_sid -> do
+    --   -- BoardName exists, so pull in board and threads
+    --   --
+    --   board <- mustPassT $ rd $ ApiS.getBoardPack_ByForumId' board_sid forumResponseId
+    --   threads <- mustPassT $ rd $ getThreadPacks_ByForumId [limitInt forumResponseRecentPostsLimit, WithBoard True, WithThread True, SortOrder SortOrderBy_Dsc, Order OrderBy_CreatedAt] forumResponseId
+    --   pure $ Just (board, threads)
+    -- pure (organization, forum, x)
+  -- rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, forum@ForumPackResponse{..}, x) -> do
+    -- pure $ st{
+    --   _m_request       = maybe _m_request (Just . boardResponseToBoardRequest . boardPackResponseBoard) $ fmap sel1 x
+    -- , _lm_organization = Loaded $ Just organization
+    -- , _lm_forum        = Loaded $ Just forum
+    -- , _lm_board        = maybe _lm_board (Loaded . Just) $ fmap sel1 x
+    -- , _l_threads       = maybe _l_threads (Loaded . idmapFrom threadPackResponseThreadId . threadPackResponses) $ fmap sel2 x
+    -- }
 
 
 

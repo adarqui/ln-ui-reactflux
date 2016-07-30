@@ -15,26 +15,26 @@ module LN.UI.ReactFlux.App.Core.Shared (
 
 
 
-import           Control.Concurrent        (forkIO)
-import           Control.DeepSeq           (NFData)
-import           Control.Monad             (void)
-import           Data.Int                  (Int64)
-import           Data.Map                  (Map)
-import qualified Data.Map                  as Map
-import qualified Data.Text                 as Text
-import           Data.Typeable             (Typeable)
-import           GHC.Generics              (Generic)
-import           GHCJS.Router.Base         (setLocationHash)
+import           Control.Concurrent         (forkIO)
+import           Control.DeepSeq            (NFData)
+import           Control.Monad              (void)
+import           Data.Int                   (Int64)
+import           Data.Map                   (Map)
+import qualified Data.Map                   as Map
+import qualified Data.Text                  as Text
+import           Data.Typeable              (Typeable)
+import           GHC.Generics               (Generic)
+import           GHCJS.Router.Base          (setLocationHash)
 import           React.Flux
 
-import           LN.T.Pack.Sanitized.User  (UserSanitizedPackResponse (..))
-import           LN.T.User                 (UserResponse (..))
+import           LN.T.Pack.Sanitized.User   (UserSanitizedPackResponse (..))
+import           LN.T.User                  (UserResponse (..))
 import           LN.UI.Core.App
 import           LN.UI.Core.Control
-import           LN.UI.Core.Router         (Route (..), RouteWith,
-                                            fromRouteWith, routeWith')
+import           LN.UI.Core.Router          (Route (..), RouteWith,
+                                             fromRouteWith, routeWith')
 import           LN.UI.Core.State.Internal
-import qualified LN.UI.ReactFlux.Dispatch  as Dispatcher
+import qualified LN.UI.ReactFlux.Dispatcher as Dispatcher
 
 
 

@@ -138,16 +138,17 @@ module LN.UI.ReactFlux.View.Button (
 
 
 
-import           Data.Int                   (Int64)
-import           Data.Monoid                ((<>))
-import           Data.Text                  (Text)
+import           Data.Int                             (Int64)
+import           Data.Monoid                          ((<>))
+import           Data.Text                            (Text)
 import           React.Flux
-import qualified Web.Bootstrap3 as B
+import qualified Web.Bootstrap3                       as B
 
-import qualified LN.UI.ReactFlux.App.Route            as Route (Action (..), dispatch)
-import           LN.UI.Core.Helpers.GHCJS        (JSString)
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahrefElement, classNames_)
-import           LN.UI.Core.Router.Route         (RouteWith (..))
+import           LN.UI.Core.Helpers.GHCJS             (JSString)
+import           LN.UI.Core.Router.Route              (RouteWith (..))
+import           LN.UI.ReactFlux.App.Core.Shared      (Action (..), dispatch)
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahrefElement,
+                                                       classNames_)
 import           LN.UI.ReactFlux.Types                (HTMLView_)
 import           LN.UI.ReactFlux.View.Internal
 
@@ -163,7 +164,7 @@ createButtonsCreateEditCancel
 createButtonsCreateEditCancel m_edit_id save_handler edit_handler cancel_route_with =
   div_ $ do
     save_or_edit
-    createSimpleInfoButton "Cancel" (Route.dispatch $ Route.Goto cancel_route_with)
+    createSimpleInfoButton "Cancel" (dispatch $ Goto cancel_route_with)
   where
   save_or_edit =
     case m_edit_id of
@@ -240,7 +241,7 @@ glyphButtonLg_Remove    = glyphButton_Remove B.btnLg
 
 glyphButtonLink :: Text -> Text -> Maybe Text -> RouteWith-> HTMLView_
 glyphButtonLink glyph sz m_text route_with =
-  glyphButton glyph sz m_text $ Route.dispatch $ Route.Goto route_with
+  glyphButton glyph sz m_text $ dispatch $ Goto route_with
 
 
 

@@ -76,7 +76,6 @@ import qualified LN.UI.ReactFlux.App.Loader           as Loader
 import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
-import qualified LN.UI.ReactFlux.App.Route            as Route
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefName,
                                                        className_, classNames_)
 import LN.UI.ReactFlux.App.Core.Shared
