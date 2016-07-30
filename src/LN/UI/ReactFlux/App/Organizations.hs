@@ -215,7 +215,7 @@ viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
       (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestDisplayName = input}}))
 
     optionalDescriptionField organizationRequestDescription
-      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestDescription = Just input}}))
+      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestDescription = Just $! input}}))
       (dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestDescription = Nothing }}))
 
     mandatoryCompanyField organizationRequestCompany
