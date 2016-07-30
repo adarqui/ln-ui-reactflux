@@ -7,45 +7,52 @@
 module LN.UI.ReactFlux.App.Core.Shared (
   Store (..),
   Action (..),
-  defaultStore
+  store,
+  defaultStore,
+  dispatch
 ) where
 
 
 
-import           Control.DeepSeq          (NFData)
-import           Data.Int                 (Int64)
-import           Data.Map                 (Map)
-import qualified Data.Map                 as Map
-import           Data.Typeable            (Typeable)
-import           GHC.Generics             (Generic)
-import React.Flux
+import           Control.Concurrent        (forkIO)
+import           Control.DeepSeq           (NFData)
+import           Control.Monad             (void)
+import           Data.Int                  (Int64)
+import           Data.Map                  (Map)
+import qualified Data.Map                  as Map
+import           Data.Typeable             (Typeable)
+import           GHC.Generics              (Generic)
+import           React.Flux
 
-import           LN.T.Pack.Sanitized.User (UserSanitizedPackResponse (..))
-import           LN.T.User                (UserResponse (..))
-import           LN.UI.Core.Router             (Route (..), RouteWith, routeWith')
-
-
-
-data Store = Store {
-  _route :: RouteWith,
-  _me    :: Maybe UserResponse,
-  _users :: Map Int64 UserSanitizedPackResponse
-} deriving (Typeable, Generic)
+import           LN.T.Pack.Sanitized.User  (UserSanitizedPackResponse (..))
+import           LN.T.User                 (UserResponse (..))
+import           LN.UI.Core.App
+import           LN.UI.Core.Control
+import           LN.UI.Core.Router         (Route (..), RouteWith, routeWith')
+import           LN.UI.Core.State.Internal
+import qualified LN.UI.ReactFlux.Dispatch  as Dispatcher
 
 
 
-data Action
-  = Init
-  | SetRoute RouteWith
-  | SyncUsers [Int64]
-  | Nop
-  deriving (Show, Typeable, Generic, NFData)
+instance StoreData Store where
+  type StoreAction Store = Action
+  transform action st@Store{..} = do
+    (result', st') <- runCore st Start action
+    void $ forkIO $ basedOn result' st' action
+    pure st'
+
+    where
+    basedOn result_ st_ act_ = case result_ of
+      Start -> pure ()
+      Next -> Dispatcher.dispatch $ SomeStoreAction store (MachNext act_)
+      Done -> pure ()
 
 
 
-defaultStore :: Store
-defaultStore = Store {
-  _route    = routeWith' Home,
-  _me       = Nothing,
-  _users    = Map.empty
-}
+store :: ReactStore Store
+store = mkStore defaultStore
+
+
+
+dispatch :: Action -> [SomeStoreAction]
+dispatch a = [SomeStoreAction store a]

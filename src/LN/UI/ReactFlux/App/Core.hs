@@ -6,10 +6,7 @@
 {-# OPTIONS -fno-warn-orphans  #-}
 
 module LN.UI.ReactFlux.App.Core (
-  Store (..),
-  defaultStore,
-  store,
-  Action (..),
+  module A,
   view_,
   view,
   initRouter
@@ -34,7 +31,6 @@ import qualified React.Flux                           as RF
 import           React.Flux.Router.WebRoutes          (initRouterRaw'ByteString)
 import qualified Web.Bootstrap3                       as B
 
-import qualified LN.UI.ReactFlux.Dispatch as Dispatcher
 import           LN.Api                               (getMe', getUserSanitizedPacks_ByUsersIds')
 import           LN.T.Pack.Sanitized.User             (UserSanitizedPackResponse (..), UserSanitizedPackResponses (..))
 import           LN.T.User                            (UserResponse (..))
@@ -50,55 +46,18 @@ import           LN.UI.Core.State                     (Action (..), Store (..),
 import qualified LN.UI.ReactFlux.App.About            as About
 import qualified LN.UI.ReactFlux.App.Boards           as Boards
 import qualified LN.UI.ReactFlux.App.Breadcrumbs      as Breadcrumbs
+import           LN.UI.ReactFlux.App.Core.Shared      as A
 import qualified LN.UI.ReactFlux.App.Forums           as Forums
 import qualified LN.UI.ReactFlux.App.Home             as Home
 import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Organizations    as Organizations
 import qualified LN.UI.ReactFlux.App.Portal           as Portal
 import qualified LN.UI.ReactFlux.App.Users            as Users
+import qualified LN.UI.ReactFlux.Dispatch             as Dispatcher
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
                                                        ahrefName, className_,
                                                        classNames_)
 import           LN.UI.ReactFlux.Types                (HTMLEvent_, HTMLView_)
-
-
-
-instance StoreData Store where
-  type StoreAction Store = Action
-  transform action st@Store{..} = do
-    (result', st') <- runCore st Start action
-    void $ forkIO $ basedOn result' st' action
-    pure st'
-
-    -- case action of
-      -- Init             -> act_init
-      -- Route route_with -> act_route route_with
-      -- ApplyState f     -> pure $ f st
-      -- MachNext         -> pure st
-      -- _                -> pure st
-
-    where
-
-    basedOn result_ st_ act_ = case result_ of
-      Start -> pure ()
-      Next -> Dispatcher.dispatch $ SomeStoreAction store (MachNext act_)
-      Done -> pure ()
-
-    -- act_init = do
-    --   (result', st') <- runCore st Start Init
-    --   void $ basedOn result' st' Init
-    --   pure st'
-
-    -- act_route route_with = do
-    --   pure st
-    --   -- (result', st') <- runCore st Final (Route route_with)
-    --   -- void $ basedOn result' st' (Route route_with)
-    --   -- pure st'
-
-
-
-store :: ReactStore Store
-store = mkStore defaultStore
 
 
 
@@ -164,14 +123,13 @@ renderRouteView Store{..} = do
       RouteWith About _                       -> About.view_
       RouteWith Portal _                      -> Portal.view_
       RouteWith (Organizations Index) _       -> Organizations.viewIndex_ _pageInfo _l_organizations
-      RouteWith (Organizations crud) params   -> Organizations.view_ crud
+      RouteWith (Organizations New) _         -> Organizations.viewNew Nothing _m_organizationRequest
+      RouteWith (Organizations (ShowS _)) _   -> Organizations.viewShowS _l_m_organization _l_forums
+      RouteWith (Organizations (EditS _)) _   -> Organizations.viewEditS Nothing _m_organizationRequest _l_m_organization
+--      RouteWith (Organizations (DeleteS _)) _ -> Organizations.viewDeleteS
+--      RouteWith (Organizations crud) params   -> Organizations.view_ crud
       RouteWith (OrganizationsForums org_sid crud) params -> Forums.view_ org_sid crud
       RouteWith (OrganizationsForumsBoards org_sid forum_sid crud) params -> Boards.view_ org_sid forum_sid crud
       RouteWith (Users Index) params          -> Users.viewIndex_ _pageInfo _l_users
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
       RouteWith _ _                           -> NotFound.view_
-
-
-
-dispatch :: Action -> [SomeStoreAction]
-dispatch a = [SomeStoreAction store a]

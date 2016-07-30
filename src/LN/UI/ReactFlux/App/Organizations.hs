@@ -6,15 +6,17 @@
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.ReactFlux.App.Organizations (
-  Store,
-  defaultStore,
-  Action (..),
-  store,
-  view_,
-  view,
-  viewIndex,
+  -- Store,
+  -- defaultStore,
+  -- Action (..),
+  -- store,
+  -- view_,
+  -- view,
   viewIndex_,
-  viewIndex__
+  viewIndex__,
+  viewNew,
+  viewEditS,
+  viewShowS
 ) where
 
 
@@ -77,6 +79,7 @@ import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
 import qualified LN.UI.ReactFlux.App.Route            as Route
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefName,
                                                        className_, classNames_)
+import LN.UI.ReactFlux.App.Core.Shared
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
 import           LN.UI.ReactFlux.View.Field
@@ -84,100 +87,9 @@ import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
 
 
 
-data Store = Store {
-  _m_requestTag    :: Maybe Text
-}
 
-
-
-data Action
-  = Save
-  | Edit
-  | Nop
-  deriving (Show, Typeable, Generic, NFData)
-
-
-
-instance StoreData Store where
-  type StoreAction Store = Action
-  transform action st@Store{..} = do
-
-    case action of
-      Nop  -> pure st
-      Save -> action_save
-      Edit -> action_edit
-
-    where
-
-    action_save = pure st
-
-    action_edit = pure st
-
-    -- action_set_request request =
-    --   pure $ st{
-    --     _m_request = Just request
-    --   }
-
-    -- action_set_request_state m_req m_tag = pure $ st{ _m_request = m_req, _m_requestTag = m_tag }
-
-    -- action_save = do
-    --   case _m_request of
-    --     Nothing                   -> pure st
-    --     Just organization_request -> do
-    --       lr <- rd $ postOrganization' $ organization_request { organizationRequestEmail = _requestEmail }
-    --       rehtie lr (const $ pure st) $ \organization_response@OrganizationResponse{..} -> do
-    --         void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
-    --         pure st
-
-    -- action_edit edit_id = do
-    --   case _m_request of
-    --     Nothing                   -> pure st
-    --     Just organization_request -> do
-    --       lr <- rd $ putOrganization' edit_id $ organization_request { organizationRequestEmail = _requestEmail }
-    --       rehtie lr (const $ pure st) $ \organization_response@OrganizationResponse{..} -> do
-    --         void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (Organizations (ShowS $ organizationResponseName)) []
-    --         pure st
-
-
-
-sync :: Store -> Text -> IO Store
-sync st@Store{..} org_sid = do
-  pure st
-
-
-
-store :: ReactStore Store
-store = mkStore defaultStore
-
-
-
-defaultStore :: Store
-defaultStore = Store {
-  _m_requestTag    = Nothing
-}
-
-
-
-view_ :: CRUD -> HTMLEvent_
-view_ crud =
-  RF.view view crud mempty
-
-
-
-view :: ReactView CRUD
-view = defineControllerView "organizations" store $ \st@Store{..} crud ->
-  case crud of
-    Index           -> viewIndex st
-    -- ShowS org_sid   -> viewShowS _lm_organization _l_forums
-    -- New             -> viewNew _m_requestTag _m_request
-    -- EditS org_sid   -> viewEditS _m_requestTag _m_request _lm_organization
-    -- DeleteS org_sid -> Delete.view_
-    -- _               -> NotFound.view_
-
-
-
-viewIndex :: Store -> HTMLView_
-viewIndex Store{..} = mempty
+-- viewIndex :: Store -> HTMLView_
+-- viewIndex Store{..} = mempty
 
 
 
@@ -294,46 +206,45 @@ viewEditS m_tag m_request l_organization_pack =
 
 viewMod :: TyCRUD -> Maybe OrganizationId -> Maybe Text -> OrganizationRequest -> HTMLView_
 viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
-  mempty
-  -- div_ $ do
-  --   h1_ $ elemText $ linkName tycrud <> " Organization"
+  div_ $ do
+    h1_ $ elemText $ linkName tycrud <> " Organization"
 
-  --   mandatoryNameField organizationRequestDisplayName
-  --     (\input -> dispatch $ SetRequest $ request{organizationRequestDisplayName = input})
+    mandatoryNameField organizationRequestDisplayName
+      (\input -> dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestDisplayName = input}}))
 
-  --   optionalDescriptionField organizationRequestDescription
-  --     (\input -> dispatch $ SetRequest $ request{organizationRequestDescription = Just input})
-  --     (dispatch $ SetRequest $ request{organizationRequestDescription = Nothing})
+    optionalDescriptionField organizationRequestDescription
+      (\input -> dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestDescription = Just input}}))
+      (dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestDescription = Nothing }}))
 
-  --   mandatoryCompanyField organizationRequestCompany
-  --     (\input -> dispatch $ SetRequest $ request{organizationRequestCompany = input})
+    mandatoryCompanyField organizationRequestCompany
+      (\input -> dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestCompany = input}}))
 
-  --   mandatoryLocationField organizationRequestLocation
-  --     (\input -> dispatch $ SetRequest $ request{organizationRequestLocation = input})
+    mandatoryLocationField organizationRequestLocation
+      (\input -> dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestLocation = input}}))
 
-  --   mandatoryMembershipField organizationRequestMembership
-  --     (\input -> dispatch $ SetRequest $ request{organizationRequestMembership = input})
+    mandatoryMembershipField organizationRequestMembership
+      (\input -> dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestMembership = input}}))
 
-  --   mandatoryVisibilityField organizationRequestVisibility
-  --     (\input -> dispatch $ SetRequest $ request{organizationRequestVisibility = input})
+    mandatoryVisibilityField organizationRequestVisibility
+      (\input -> dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestVisibility = input}}))
 
-  --   -- icon
+    -- -- icon
 
-  --   tagsField
-  --      organizationRequestTags
-  --      (maybe ""  id m_tag)
-  --      (\input -> dispatch $ SetRequestState (Just request) (Just input))
-  --      (dispatch $ SetRequestState (Just $ request{organizationRequestTags = maybe organizationRequestTags (\tag -> organizationRequestTags <> [tag]) m_tag}) Nothing)
-  --      (\idx -> dispatch $ SetRequest $ request{organizationRequestTags = deleteNth idx organizationRequestTags})
-  --      (dispatch $ SetRequest $ request{organizationRequestTags = []})
+    -- tagsField
+    --    organizationRequestTags
+    --    (maybe ""  id m_tag)
+    --    (\input -> dispatch $ SetRequestState (Just request) (Just input))
+    --    (dispatch $ SetRequestState (Just $ request{organizationRequestTags = maybe organizationRequestTags (\tag -> organizationRequestTags <> [tag]) m_tag}) Nothing)
+    --    (\idx -> dispatch $ SetRequest $ request{organizationRequestTags = deleteNth idx organizationRequestTags})
+    --    (dispatch $ SetRequest $ request{organizationRequestTags = []})
 
-  --   createButtonsCreateEditCancel
-  --     m_organization_id
-  --     (dispatch Save)
-  --     (\edit_id -> dispatch $ Edit edit_id)
-  --     (routeWith' Home)
-
+    -- createButtonsCreateEditCancel
+    --   m_organization_id
+    --   (dispatch Save)
+    --   (\edit_id -> dispatch $ Edit edit_id)
+    --   (routeWith' Home)
 
 
-dispatch :: Action -> [SomeStoreAction]
-dispatch a = [SomeStoreAction store a]
+
+-- dispatch :: Action -> [SomeStoreAction]
+-- dispatch a = [SomeStoreAction store a]
