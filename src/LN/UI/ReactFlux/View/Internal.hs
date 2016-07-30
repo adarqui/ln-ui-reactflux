@@ -177,7 +177,7 @@ createTagsField label tags current_tag set_tag_handler add_tag_handler delete_ta
       span_ [] $ do
         button_ [ classNames_ [B.btn, B.btnDefault, B.btnXs]
                 , onClick (\_ _ -> delete_tag_handler idx)
-                ] $ span_ [classNames_ [B.glyphicon, B.glyphiconRemove]] $ elemText "✖"
+                ] $ span_ [classNames_ [B.glyphicon, B.glyphiconRemove]] mempty
       ) $ toSeqList tags
 
 

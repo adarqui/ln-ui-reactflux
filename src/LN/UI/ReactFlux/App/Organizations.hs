@@ -235,20 +235,25 @@ viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
     tagsField
        organizationRequestTags
        (maybe ""  id m_tag)
+       -- Set current tag
        (\input -> dispatch $! ApplyState (\st->
          st{
            _m_organizationRequest = Just $! request
-         -- , (Just input))
+         , _m_organizationRequestTag = Just $! input
          }))
+       -- Add current tag
        (dispatch $! ApplyState (\st->
          st{
            _m_organizationRequest = Just $!
             request{organizationRequestTags = maybe organizationRequestTags (\tag -> organizationRequestTags <> [tag]) m_tag}
+         , _m_organizationRequestTag = Nothing
          }))
+       -- Delete tag
        (\idx -> dispatch $! ApplyState (\st->
          st{
            _m_organizationRequest = Just $! request{organizationRequestTags = deleteNth idx organizationRequestTags}
          }))
+       -- Clear tags
        (dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestTags = []}}))
 
     -- createButtonsCreateEditCancel
