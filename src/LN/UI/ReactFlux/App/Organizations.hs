@@ -204,29 +204,31 @@ viewEditS m_tag m_request l_organization_pack =
 
 
 
+-- | Strictness requirement on input fields
+--
 viewMod :: TyCRUD -> Maybe OrganizationId -> Maybe Text -> OrganizationRequest -> HTMLView_
 viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Organization"
 
     mandatoryNameField organizationRequestDisplayName
-      (\input -> dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestDisplayName = input}}))
+      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestDisplayName = input}}))
 
     optionalDescriptionField organizationRequestDescription
-      (\input -> dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestDescription = Just input}}))
-      (dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestDescription = Nothing }}))
+      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestDescription = Just input}}))
+      (dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestDescription = Nothing }}))
 
     mandatoryCompanyField organizationRequestCompany
-      (\input -> dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestCompany = input}}))
+      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestCompany = input}}))
 
     mandatoryLocationField organizationRequestLocation
-      (\input -> dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestLocation = input}}))
+      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestLocation = input}}))
 
     mandatoryMembershipField organizationRequestMembership
-      (\input -> dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestMembership = input}}))
+      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestMembership = input}}))
 
     mandatoryVisibilityField organizationRequestVisibility
-      (\input -> dispatch $ ApplyState (\st->st{_m_organizationRequest = Just $ request{organizationRequestVisibility = input}}))
+      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestVisibility = input}}))
 
     -- -- icon
 
