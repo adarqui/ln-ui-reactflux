@@ -3,6 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeFamilies      #-}
+{-# OPTIONS  -fno-warn-orphans #-}
 
 module LN.UI.ReactFlux.App.Core.Shared (
   Store (..),
@@ -38,11 +39,11 @@ instance StoreData Store where
   type StoreAction Store = Action
   transform action st@Store{..} = do
     (result', st') <- runCore st Start action
-    void $ forkIO $ basedOn result' st' action
+    void $ forkIO $ basedOn result' action
     pure st'
 
     where
-    basedOn result_ st_ act_ = case result_ of
+    basedOn result_ act_ = case result_ of
       Start -> pure ()
       Next -> Dispatcher.dispatch $ SomeStoreAction store (MachNext act_)
       Done -> pure ()
