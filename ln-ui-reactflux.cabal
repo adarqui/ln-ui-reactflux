@@ -17,6 +17,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     LN.UI.ReactFlux
                      , LN.UI.ReactFlux.Access
+                     , LN.UI.ReactFlux.Dispatch
                      , LN.UI.ReactFlux.Main
                      , LN.UI.ReactFlux.App.About
                      , LN.UI.ReactFlux.App.Boards

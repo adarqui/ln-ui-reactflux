@@ -7,8 +7,10 @@ module LN.UI.ReactFlux.Main (
 
 
 
-import qualified LN.UI.ReactFlux.App.Core as Core
 import           React.Flux
+
+import qualified LN.UI.ReactFlux.App.Core as Core
+import LN.UI.ReactFlux.Dispatch
 
 
 
@@ -20,11 +22,14 @@ runMain = pure ()
 runReactMain :: IO ()
 runReactMain = do
 
+  dispatcher
+
   reactRender
     "ln"
     Core.view
     ()
 
-  executeAction $ SomeStoreAction Core.store Core.Init
+--  executeAction $ SomeStoreAction Core.store Core.Init
+  dispatch $ SomeStoreAction Core.store Core.Init
 
   Core.initRouter

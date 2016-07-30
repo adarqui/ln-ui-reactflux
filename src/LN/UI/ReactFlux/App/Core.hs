@@ -34,6 +34,7 @@ import qualified React.Flux                           as RF
 import           React.Flux.Router.WebRoutes          (initRouterRaw'ByteString)
 import qualified Web.Bootstrap3                       as B
 
+import qualified LN.UI.ReactFlux.Dispatch as Dispatcher
 import           LN.Api                               (getMe', getUserSanitizedPacks_ByUsersIds')
 import           LN.T.Pack.Sanitized.User             (UserSanitizedPackResponse (..), UserSanitizedPackResponses (..))
 import           LN.T.User                            (UserResponse (..))
@@ -111,9 +112,10 @@ initRouter =
     print raw_uri
     routeAlterStore $ toRouteWithHash raw_uri
     where
-      routeAlterStore action =
-        -- Update Store with our new route
-        liftIO $ alterStore store $ Route action
+    routeAlterStore action =
+      -- Update Store with our new route
+      -- liftIO $ alterStore store $ Route action
+      Dispatcher.dispatch $ SomeStoreAction store $ Route action
 
 
 
