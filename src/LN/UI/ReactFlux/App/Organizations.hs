@@ -83,6 +83,7 @@ import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
 import           LN.UI.ReactFlux.View.Field
 import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
+import qualified LN.UI.Core.App.Organization as Organization
 
 
 
@@ -210,50 +211,33 @@ viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Organization"
 
-    mandatoryNameField organizationRequestDisplayName
-      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestDisplayName = input}}))
+    mandatoryNameField organizationRequestDisplayName (dispatch . Organization.setDisplayName request)
 
     optionalDescriptionField organizationRequestDescription
-      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestDescription = Just $! input}}))
-      (dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestDescription = Nothing }}))
+      (dispatch . Organization.setDescription request)
+      (dispatch $ Organization.clearDescription request)
 
     mandatoryCompanyField organizationRequestCompany
-      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestCompany = input}}))
+      (dispatch . Organization.setCompany request)
 
     mandatoryLocationField organizationRequestLocation
-      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestLocation = input}}))
+      (dispatch . Organization.setLocation request)
 
     mandatoryMembershipField organizationRequestMembership
-      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestMembership = input}}))
+      (dispatch . Organization.setMembership request)
 
     mandatoryVisibilityField organizationRequestVisibility
-      (\input -> dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestVisibility = input}}))
+      (dispatch . Organization.setVisibility request)
 
     -- -- icon
 
     tagsField
        organizationRequestTags
        (maybe ""  id m_tag)
-       -- Set current tag
-       (\input -> dispatch $! ApplyState (\st->
-         st{
-           _m_organizationRequest = Just $! request
-         , _m_organizationRequestTag = Just $! input
-         }))
-       -- Add current tag
-       (dispatch $! ApplyState (\st->
-         st{
-           _m_organizationRequest = Just $!
-            request{organizationRequestTags = maybe organizationRequestTags (\tag -> organizationRequestTags <> [tag]) m_tag}
-         , _m_organizationRequestTag = Nothing
-         }))
-       -- Delete tag
-       (\idx -> dispatch $! ApplyState (\st->
-         st{
-           _m_organizationRequest = Just $! request{organizationRequestTags = deleteNth idx organizationRequestTags}
-         }))
-       -- Clear tags
-       (dispatch $! ApplyState (\st->st{_m_organizationRequest = Just $! request{organizationRequestTags = []}}))
+       (dispatch . Organization.setTag request)
+       (dispatch $ Organization.addTag request m_tag)
+       (dispatch . Organization.deleteTag request)
+       (dispatch $ Organization.clearTags request)
 
     createButtonsCreateEditCancel
       m_organization_id
