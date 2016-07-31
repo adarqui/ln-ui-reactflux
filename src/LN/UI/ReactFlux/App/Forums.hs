@@ -92,69 +92,6 @@ import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
 
 
 
-    -- action_save = do
-    --   case (_m_request, _lm_organization) of
-    --     (Just forum_request, Loaded (Just OrganizationPackResponse{..})) -> do
-    --       let org_sid = organizationResponseName organizationPackResponseOrganization
-    --       lr <- rd $ postForum_ByOrganizationId' organizationPackResponseOrganizationId forum_request
-    --       rehtie lr (const $ pure st) $ \forum_response@ForumResponse{..} -> do
-    --         void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForums org_sid (ShowS forumResponseName)) []
-    --         pure st
-    --     _            -> pure st
-
-    -- action_edit = do
-    --   case (_m_request, _lm_organization, _lm_forum) of
-    --     (Just forum_request, Loaded (Just OrganizationPackResponse{..}), Loaded (Just ForumPackResponse{..})) -> do
-    --       let org_sid =organizationResponseName organizationPackResponseOrganization
-    --       lr <- rd $ putForum' forumPackResponseForumId $ forum_request
-    --       rehtie lr (const $ pure st) $ \forum_response@ForumResponse{..} -> do
-    --         void $ forkIO $ executeAction $ SomeStoreAction Route.store $ Route.Goto $ routeWith (OrganizationsForums org_sid (ShowS forumResponseName)) []
-    --         pure st
-    --     _           -> pure st
-
-
-
--- | Pull in the latest organization, forum, boards, and recent thread posts
---
--- sync :: Store -> OrganizationName -> Maybe ForumName -> IO Store
--- sync st@Store{..} org_sid m_forum_sid = do
---   lr <- runEitherT $ do
---     -- Always pull in organization
---     --
---     organization@OrganizationPackResponse{..} <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
---     x <- ebyam m_forum_sid (pure Nothing) $ \forum_sid -> do
---       -- ForumName exists, so pull in forum, boards, and recent posts
---       --
---       forum  <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
---       let ForumPackResponse{..} = forum
---       let ForumResponse{..} = forumPackResponseForum
---       boards <- mustPassT $ rd $ getBoardPacks_ByForumId' forumPackResponseForumId
---       recent <- mustPassT $ rd $ getThreadPostPacks_ByForumId [limitInt forumResponseRecentPostsLimit, WithBoard True, WithThread True, SortOrder SortOrderBy_Dsc, Order OrderBy_CreatedAt] forumResponseId
---       pure $ Just (forum, boards, recent)
---     pure (organization, x)
---   rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, x) -> do
---     pure $ st{
---       _m_request       = maybe _m_request (Just . forumResponseToForumRequest . forumPackResponseForum) $ fmap sel1 x
---     , _lm_organization = Loaded $ Just organization
---     , _lm_forum        = maybe _lm_forum (Loaded . Just) $ fmap sel1 x
---     , _l_boards        = maybe _l_boards (Loaded . idmapFrom boardPackResponseBoardId . boardPackResponses) $ fmap sel2 x
---     , _l_recentPosts   = maybe _l_recentPosts (Loaded . idmapFrom threadPostPackResponseThreadPostId . threadPostPackResponses) $ fmap sel3 x
---     }
-
-
-
-
--- view :: ReactView (OrganizationName,CRUD)
--- view = defineControllerView "organizations" store $ \st@Store{..} (org_sid,crud) ->
---   case crud of
---     Index     -> viewIndex st
---     ShowS _   -> viewShowS _lm_organization _lm_forum _l_boards _l_recentPosts
---     New       -> viewNew _lm_organization _m_requestTag _m_request
---     EditS _   -> viewEditS  _lm_forum _m_requestTag _m_request
---     DeleteS _ -> Delete.view_
---     _         -> NotFound.view_
-
-
 
 viewIndex
   :: PageInfo
@@ -229,8 +166,8 @@ viewShowS
   -> Loader (Map ThreadPostId ThreadPostPackResponse)
   -> HTMLView_
 
-viewShowS lm_organization lm_forum l_boards l_recent_posts = do
-  Loading.loader4 lm_organization lm_forum l_boards l_recent_posts $ \m_organization m_forum boards recent_posts -> do
+viewShowS l_m_organization l_m_forum l_boards l_recent_posts = do
+  Loading.loader4 l_m_organization l_m_forum l_boards l_recent_posts $ \m_organization m_forum boards recent_posts -> do
     case (m_organization, m_forum) of
       (Just organization, Just forum) ->
         viewShowS_
@@ -282,8 +219,8 @@ viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..}
 
 
 viewNew :: Loader (Maybe OrganizationPackResponse) -> Maybe Text -> Maybe ForumRequest -> HTMLView_
-viewNew lm_organization m_tag m_request = do
-  Loading.loader1_ lm_organization $ \OrganizationPackResponse{..} ->
+viewNew l_m_organization m_tag m_request = do
+  Loading.loader1_ l_m_organization $ \OrganizationPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewNew_ organizationPackResponseOrganizationId m_tag request
 
 
@@ -294,8 +231,8 @@ viewNew_ organization_id m_tag request = viewMod TyCreate organization_id Nothin
 
 
 viewEditS :: Loader (Maybe ForumPackResponse) -> Maybe Text -> Maybe ForumRequest -> HTMLView_
-viewEditS lm_forum m_tag m_request =
-  Loading.loader1_ lm_forum $ \ForumPackResponse{..} ->
+viewEditS l_m_forum m_tag m_request =
+  Loading.loader1_ l_m_forum $ \ForumPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyUpdate (forumResponseOrgId forumPackResponseForum) (Just forumPackResponseForumId) m_tag request
 
 
