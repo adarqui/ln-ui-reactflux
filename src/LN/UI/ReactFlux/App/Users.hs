@@ -6,15 +6,8 @@
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.ReactFlux.App.Users (
-  Store,
-  defaultStore,
-  Action (..),
-  store,
-  view_,
-  view,
   viewIndex,
-  viewIndex_,
-  viewIndex__
+  viewIndex_
 ) where
 
 
@@ -61,85 +54,16 @@ import           LN.UI.ReactFlux.Types
 
 
 
-data Store = Store {
-  _pageInfo :: PageInfo,
-  _l_users  :: Loader (Map Int64 UserSanitizedPackResponse)
-}
-
-
-
-data Action
-  = Init Params
-  | Nop
-  deriving (Show, Typeable, Generic, NFData)
-
-
-
-instance StoreData Store where
-  type StoreAction Store = Action
-  transform action st = do
-    putStrLn "Users"
-
-    case action of
-      Nop              -> pure st
-      Init params  -> actions_init params
-
-    where
-    actions_init params = do
-      let
-        page_info   = pageInfoFromParams params
-        params_list = paramsFromPageInfo page_info
-      lr <- runEitherT $ do
-        count         <- mustPassT $ rd $ getUsersCount'
-        users <- mustPassT $ rd $ getUserSanitizedPacks params_list
-        pure (count, users)
-      rehtie lr (const $ pure st) $ \(count, user_packs) -> do
-        let new_page_info = runPageInfo count page_info
-        pure $ st{ _l_users = Loaded $ idmapFrom userSanitizedPackResponseUserId (userSanitizedPackResponses user_packs)
-                 , _pageInfo = new_page_info }
-
-
-
-store :: ReactStore Store
-store = mkStore defaultStore
-
-
-
-defaultStore :: Store
-defaultStore = Store {
-  _pageInfo      = defaultPageInfo,
-  _l_users = Loaded Map.empty
-}
-
-
-
-view_ :: CRUD -> HTMLEvent_
-view_ crud =
-  RF.view view crud mempty
-
-
-
-view :: ReactView CRUD
-view = defineControllerView "users" store $ \st@Store{..} crud ->
-  mempty
-
-
-
-viewIndex :: Store -> HTMLView_
-viewIndex Store{..} = viewIndex_ _pageInfo _l_users
-
-
-
-viewIndex_ :: PageInfo -> Loader (Map UserId UserSanitizedPackResponse) -> HTMLView_
-viewIndex_ page_info l_users = do
-  Loader.loader1 l_users (viewIndex__ page_info)
-
-
-
-viewIndex__ :: PageInfo -> Map UserId UserSanitizedPackResponse -> HTMLView_
-viewIndex__ page_info users = do
+viewIndex :: PageInfo -> Loader (Map UserId UserSanitizedPackResponse) -> HTMLView_
+viewIndex page_info l_users = do
   cldiv_ B.containerFluid $ do
     h1_ "Users"
+    Loader.loader1 l_users (viewIndex_ page_info)
+
+
+
+viewIndex_ :: PageInfo -> Map UserId UserSanitizedPackResponse -> HTMLView_
+viewIndex_ page_info users = do
     PageNumbers.view_ (page_info, routeWith' $ Users Index)
     ul_ [className_ B.listUnstyled] $ do
       mapM_ (\UserSanitizedPackResponse{..} -> do

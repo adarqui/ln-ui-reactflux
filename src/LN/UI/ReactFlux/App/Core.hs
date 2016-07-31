@@ -135,6 +135,6 @@ renderRouteView Store{..} = do
 
       RouteWith (OrganizationsForumsBoards org_sid forum_sid crud) params -> Boards.view_ org_sid forum_sid crud
 
-      RouteWith (Users Index) params          -> Users.viewIndex_ _pageInfo _l_users
+      RouteWith (Users Index) params          -> Users.viewIndex _pageInfo _l_users
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
       RouteWith _ _                           -> NotFound.view_
