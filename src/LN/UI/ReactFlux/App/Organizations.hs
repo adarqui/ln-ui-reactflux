@@ -109,9 +109,9 @@ viewIndex_ page_info organizations = do
 
 viewShowS :: Loader (Maybe OrganizationPackResponse) -> Loader (Map OrganizationId ForumPackResponse) -> HTMLView_
 viewShowS lm_organization l_forums = do
-  Loader.loader2 lm_organization l_forums $ go
+  Loader.loader1 lm_organization go
   where
-  go (Just organization_pack@OrganizationPackResponse{..}) forums_map = do
+  go (Just organization_pack@OrganizationPackResponse{..}) = do
     let OrganizationResponse{..} = organizationPackResponseOrganization
     cldiv_ B.containerFluid $ do
       cldiv_ B.pageHeader $ do
@@ -169,11 +169,9 @@ viewShowS lm_organization l_forums = do
         elemText "Tags: "
         showTagsSmall organizationResponseTags
 
-    Forums.viewIndex_ organization_pack forums_map
-    -- renderView_Forums_Index' org_pack forum_packs,
-    -- p_ $ ahref (OrganizationMembership organizationResponseName Index emptyParams)
-    -- p_ $ ahref (OrganizationTeams organizationResponseName Index emptyParams)
-  go _ _ = NotFound.view_
+    Loader.loader1 l_forums $ Forums.viewIndex_ organization_pack
+
+  go _ = NotFound.view_
 
 
 
