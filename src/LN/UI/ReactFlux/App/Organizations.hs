@@ -46,6 +46,7 @@ import           LN.T.Pack.Forum                      (ForumPackResponse (..),
 import           LN.T.Pack.Organization               (OrganizationPackResponse (..), OrganizationPackResponses (..))
 import           LN.T.Size                            (Size (..))
 import           LN.T.User                            (UserSanitizedResponse (..))
+import qualified LN.UI.Core.App.Organization          as Organization
 import           LN.UI.Core.Helpers.DataList          (deleteNth)
 import           LN.UI.Core.Helpers.DataText          (tshow)
 import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
@@ -62,6 +63,7 @@ import           LN.UI.Core.Router                    (CRUD (..), Params,
                                                        linkName, routeWith,
                                                        routeWith')
 import           LN.UI.ReactFlux.Access
+import           LN.UI.ReactFlux.App.Core.Shared
 import qualified LN.UI.ReactFlux.App.Delete           as Delete
 import qualified LN.UI.ReactFlux.App.Forums           as Forums (viewIndex_)
 import qualified LN.UI.ReactFlux.App.Gravatar         as Gravatar
@@ -72,12 +74,10 @@ import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefName,
                                                        className_, classNames_)
-import LN.UI.ReactFlux.App.Core.Shared
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
 import           LN.UI.ReactFlux.View.Field
 import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
-import qualified LN.UI.Core.App.Organization as Organization
 
 
 
@@ -172,7 +172,6 @@ viewShowS lm_organization l_forums = do
     Loader.loader1 l_forums $ Forums.viewIndex_ organization_pack
 
   go _ = NotFound.view_
-
 
 
 
