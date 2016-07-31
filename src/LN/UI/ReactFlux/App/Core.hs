@@ -126,8 +126,8 @@ renderRouteView Store{..} = do
       RouteWith (Organizations New) _         -> Organizations.viewNew _m_organizationRequestTag _m_organizationRequest
       RouteWith (Organizations (ShowS _)) _   -> Organizations.viewShowS _l_m_organization _l_forums
       RouteWith (Organizations (EditS _)) _   -> Organizations.viewEditS _m_organizationRequestTag _m_organizationRequest _l_m_organization
---      RouteWith (Organizations (DeleteS _)) _ -> Organizations.viewDeleteS
-      RouteWith (OrganizationsForums org_sid crud) params -> Forums.view_ org_sid crud
+      RouteWith (OrganizationsForums _ Index) _ -> Forums.viewIndex _pageInfo _l_m_organization _l_forums
+      RouteWith (OrganizationsForums _ New) _   -> Forums.viewNew _l_m_organization _m_forumRequestTag _m_forumRequest
       RouteWith (OrganizationsForumsBoards org_sid forum_sid crud) params -> Boards.view_ org_sid forum_sid crud
       RouteWith (Users Index) params          -> Users.viewIndex_ _pageInfo _l_users
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"

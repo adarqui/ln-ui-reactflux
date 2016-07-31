@@ -7,14 +7,13 @@
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.ReactFlux.App.Forums (
-  Store,
-  defaultStore,
-  Action (..),
-  store,
-  view_,
-  view,
   viewIndex,
-  viewIndex_
+  viewIndex_,
+  viewNew,
+  viewEditS,
+  viewShowS,
+  viewMessagesOfTheWeek_,
+  viewRecentPosts_
 ) where
 
 
@@ -54,6 +53,7 @@ import           LN.T.Size
 import           LN.T.Thread
 import           LN.T.ThreadPost
 import           LN.T.User
+import qualified LN.UI.Core.App.Forum                 as Forum
 import           LN.UI.Core.Helpers.DataList          (deleteNth)
 import           LN.UI.Core.Helpers.DataText          (tshow)
 import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
@@ -71,10 +71,11 @@ import           LN.UI.Core.Router                    (CRUD (..), Params,
                                                        routeWith')
 import           LN.UI.Core.Sort
 import           LN.UI.ReactFlux.Access
+import           LN.UI.ReactFlux.App.Core.Shared
 import qualified LN.UI.ReactFlux.App.Delete           as Delete
 import qualified LN.UI.ReactFlux.App.Gravatar         as Gravatar
-import           LN.UI.ReactFlux.App.Loader          (Loader (..))
-import qualified LN.UI.ReactFlux.App.Loader          as Loading
+import           LN.UI.ReactFlux.App.Loader           (Loader (..))
+import qualified LN.UI.ReactFlux.App.Loader           as Loading
 import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Oops             as Oops (view_)
 import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
@@ -90,81 +91,6 @@ import           LN.UI.ReactFlux.View.Field
 import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
 
 
-
-data Store = Store {
-  _lm_forums       :: Loader (Map ForumId ForumPackResponse),
-  _lm_organization :: Loader (Maybe OrganizationPackResponse),
-  _lm_forum        :: Loader (Maybe ForumPackResponse),
-  _l_boards        :: Loader (Map BoardId BoardPackResponse),
-  _l_recentPosts   :: Loader (Map ThreadPostId ThreadPostPackResponse),
-  _m_request       :: Maybe ForumRequest,
-  _m_requestTag    :: Maybe Text
-}
-
-
-
-data Action
-  = Load
-  | Init            OrganizationName CRUD Params
-  | SetRequest      ForumRequest
-  | SetRequestState (Maybe ForumRequest) (Maybe Text)
-  | Save
-  | Edit
-  | Nop
-  deriving (Show, Typeable, Generic, NFData)
-
-
-
-instance StoreData Store where
-  type StoreAction Store = Action
-  transform action st@Store{..} = do
-
-    pure st
-
-    -- case action of
-    --   Nop                         -> pure st
-    --   Load                        -> action_load
-    --   Init org_sid crud params    -> action_init org_sid crud params
-    --   SetRequest request          -> action_set_m_request request
-    --   SetRequestState m_req m_tag -> action_set_m_request_state m_req m_tag
-    --   Save                        -> action_save
-    --   Edit                        -> action_edit
-
-    -- where
-    -- action_load = pure $ loading st
-
-    -- action_init org_sid crud params = case crud of
-    --   Index -> action_init_index org_sid params
-    --   _     -> action_init_crud org_sid crud params
-
-    -- action_init_index org_sid params = do
-    --   let
-    --     page_info   = pageInfoFromParams params
-    --     params_list = paramsFromPageInfo page_info
-    --   lr <- runEitherT $ do
-    --     organization@OrganizationPackResponse{..}  <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
-    --     forums        <- mustPassT $ rd $ getForumPacks_ByOrganizationId' organizationPackResponseOrganizationId
-    --     pure (organization, forums)
-    --   rehtie lr (const $ pure $ cantLoad st) $ \(organization, forums) -> do
-    --     pure $ st{
-    --       _lm_organization = Loaded $ Just organization
-    --     , _lm_forums       = Loaded $ idmapFrom forumPackResponseForumId (forumPackResponses forums)
-    --     }
-
-    -- action_init_crud org_sid crud params = case crud of
-    --   ShowS forum_sid   -> sync st org_sid (Just forum_sid)
-    --   New               -> sync st org_sid Nothing >>= \st_ -> (pure $ st_{ _m_request = Just defaultForumRequest })
-    --   EditS forum_sid   -> sync st org_sid (Just forum_sid)
-    --   DeleteS forum_sid -> sync st org_sid (Just forum_sid)
-    --   _                 -> pure st
-
-
-    -- action_set_m_request request =
-    --   pure $ st{
-    --     _m_request = Just request
-    --   }
-
-    -- action_set_m_request_state m_req m_tag = pure $ st{ _m_request = m_req, _m_requestTag = m_tag }
 
     -- action_save = do
     --   case (_m_request, _lm_organization) of
@@ -190,96 +116,54 @@ instance StoreData Store where
 
 -- | Pull in the latest organization, forum, boards, and recent thread posts
 --
-sync :: Store -> OrganizationName -> Maybe ForumName -> IO Store
-sync st@Store{..} org_sid m_forum_sid = do
-  lr <- runEitherT $ do
-    -- Always pull in organization
-    --
-    organization@OrganizationPackResponse{..} <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
-    x <- ebyam m_forum_sid (pure Nothing) $ \forum_sid -> do
-      -- ForumName exists, so pull in forum, boards, and recent posts
-      --
-      forum  <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
-      let ForumPackResponse{..} = forum
-      let ForumResponse{..} = forumPackResponseForum
-      boards <- mustPassT $ rd $ getBoardPacks_ByForumId' forumPackResponseForumId
-      recent <- mustPassT $ rd $ getThreadPostPacks_ByForumId [limitInt forumResponseRecentPostsLimit, WithBoard True, WithThread True, SortOrder SortOrderBy_Dsc, Order OrderBy_CreatedAt] forumResponseId
-      pure $ Just (forum, boards, recent)
-    pure (organization, x)
-  rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, x) -> do
-    pure $ st{
-      _m_request       = maybe _m_request (Just . forumResponseToForumRequest . forumPackResponseForum) $ fmap sel1 x
-    , _lm_organization = Loaded $ Just organization
-    , _lm_forum        = maybe _lm_forum (Loaded . Just) $ fmap sel1 x
-    , _l_boards        = maybe _l_boards (Loaded . idmapFrom boardPackResponseBoardId . boardPackResponses) $ fmap sel2 x
-    , _l_recentPosts   = maybe _l_recentPosts (Loaded . idmapFrom threadPostPackResponseThreadPostId . threadPostPackResponses) $ fmap sel3 x
-    }
+-- sync :: Store -> OrganizationName -> Maybe ForumName -> IO Store
+-- sync st@Store{..} org_sid m_forum_sid = do
+--   lr <- runEitherT $ do
+--     -- Always pull in organization
+--     --
+--     organization@OrganizationPackResponse{..} <- mustPassT $ rd $ ApiS.getOrganizationPack' org_sid
+--     x <- ebyam m_forum_sid (pure Nothing) $ \forum_sid -> do
+--       -- ForumName exists, so pull in forum, boards, and recent posts
+--       --
+--       forum  <- mustPassT $ rd $ ApiS.getForumPack_ByOrganizationId' forum_sid organizationPackResponseOrganizationId
+--       let ForumPackResponse{..} = forum
+--       let ForumResponse{..} = forumPackResponseForum
+--       boards <- mustPassT $ rd $ getBoardPacks_ByForumId' forumPackResponseForumId
+--       recent <- mustPassT $ rd $ getThreadPostPacks_ByForumId [limitInt forumResponseRecentPostsLimit, WithBoard True, WithThread True, SortOrder SortOrderBy_Dsc, Order OrderBy_CreatedAt] forumResponseId
+--       pure $ Just (forum, boards, recent)
+--     pure (organization, x)
+--   rehtie lr (const $ pure st) $ \(organization@OrganizationPackResponse{..}, x) -> do
+--     pure $ st{
+--       _m_request       = maybe _m_request (Just . forumResponseToForumRequest . forumPackResponseForum) $ fmap sel1 x
+--     , _lm_organization = Loaded $ Just organization
+--     , _lm_forum        = maybe _lm_forum (Loaded . Just) $ fmap sel1 x
+--     , _l_boards        = maybe _l_boards (Loaded . idmapFrom boardPackResponseBoardId . boardPackResponses) $ fmap sel2 x
+--     , _l_recentPosts   = maybe _l_recentPosts (Loaded . idmapFrom threadPostPackResponseThreadPostId . threadPostPackResponses) $ fmap sel3 x
+--     }
 
 
 
-store :: ReactStore Store
-store = mkStore defaultStore
+
+-- view :: ReactView (OrganizationName,CRUD)
+-- view = defineControllerView "organizations" store $ \st@Store{..} (org_sid,crud) ->
+--   case crud of
+--     Index     -> viewIndex st
+--     ShowS _   -> viewShowS _lm_organization _lm_forum _l_boards _l_recentPosts
+--     New       -> viewNew _lm_organization _m_requestTag _m_request
+--     EditS _   -> viewEditS  _lm_forum _m_requestTag _m_request
+--     DeleteS _ -> Delete.view_
+--     _         -> NotFound.view_
 
 
 
-defaultStore :: Store
-defaultStore = Store {
-  _lm_organization  = Loaded Nothing,
-  _lm_forums        = Loaded Map.empty,
-  _lm_forum         = Loaded Nothing,
-  _l_boards         = Loaded Map.empty,
-  _l_recentPosts    = Loaded Map.empty,
-  _m_request        = Nothing,
-  _m_requestTag     = Nothing
-}
+viewIndex
+  :: PageInfo
+  -> Loader (Maybe OrganizationPackResponse)
+  -> Loader (Map ForumId ForumPackResponse)
+  -> HTMLView_
 
-
-
-loading :: Store -> Store
-loading st =
-  st{
-    _lm_forums       = Loading
-  , _lm_organization = Loading
-  , _lm_forum        = Loading
-  , _l_boards        = Loading
-  , _l_recentPosts   = Loading
-  }
-
-
-
-cantLoad :: Store -> Store
-cantLoad st =
-  st{
-    _lm_forums       = CantLoad
-  , _lm_organization = CantLoad
-  , _lm_forum        = CantLoad
-  , _l_boards        = CantLoad
-  , _l_recentPosts   = CantLoad
-  }
-
-
-
-view_ :: OrganizationName -> CRUD -> HTMLEvent_
-view_ org_sid crud =
-  RF.view view (org_sid,crud) mempty
-
-
-
-view :: ReactView (OrganizationName,CRUD)
-view = defineControllerView "organizations" store $ \st@Store{..} (org_sid,crud) ->
-  case crud of
-    Index     -> viewIndex st
-    ShowS _   -> viewShowS _lm_organization _lm_forum _l_boards _l_recentPosts
-    New       -> viewNew _lm_organization _m_requestTag _m_request
-    EditS _   -> viewEditS  _lm_forum _m_requestTag _m_request
-    DeleteS _ -> Delete.view_
-    _         -> NotFound.view_
-
-
-
-viewIndex :: Store -> HTMLView_
-viewIndex Store{..} = do
-  Loading.loader2 _lm_organization _lm_forums $ \m_organization forums -> do
+viewIndex page_info l_m_organization l_forums = do
+  Loading.loader2 l_m_organization l_forums $ \m_organization forums -> do
     case m_organization of
       Nothing           -> mempty
       Just organization -> viewIndex_ organization forums
@@ -427,43 +311,42 @@ viewMod tycrud organization_id m_forum_id m_tag request@ForumRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Forum"
 
-    mandatoryNameField forumRequestDisplayName
-      (\input -> dispatch $ SetRequest $ request{forumRequestDisplayName = input})
+    mandatoryNameField forumRequestDisplayName (dispatch . Forum.setDisplayName request)
 
     optionalDescriptionField forumRequestDescription
-      (\input -> dispatch $ SetRequest $ request{forumRequestDescription = Just input})
-      (dispatch $ SetRequest $ request{forumRequestDescription = Nothing})
+      (dispatch . Forum.setDescription request)
+      (dispatch $ Forum.clearDescription request)
 
     mandatoryIntegerField "Threads per Board" forumRequestThreadsPerBoard 20 10 50 10
-      (\input -> dispatch $ SetRequest $ request{forumRequestThreadsPerBoard = input})
+      (dispatch . Forum.setThreadsPerBoard request)
 
     mandatoryIntegerField "Posts per Thread" forumRequestThreadPostsPerThread 20 10 50 10
-      (\input -> dispatch $ SetRequest $ request{forumRequestThreadPostsPerThread = input})
+      (dispatch . Forum.setThreadPostsPerThread request)
 
     mandatoryIntegerField "Recent threads (limit)" forumRequestRecentThreadsLimit 10 0 20 1
-      (\input -> dispatch $ SetRequest $ request{forumRequestRecentThreadsLimit = input})
+      (dispatch . Forum.setRecentThreadsLimit request)
 
     mandatoryIntegerField "Recent posts (limit)" forumRequestRecentPostsLimit 10 0 20 1
-      (\input -> dispatch $ SetRequest $ request{forumRequestRecentPostsLimit = input})
+      (dispatch . Forum.setRecentPostsLimit request)
 
     mandatoryIntegerField "Messages of the week (limit)" forumRequestMotwLimit 10 0 20 1
-      (\input -> dispatch $ SetRequest $ request{forumRequestMotwLimit = input})
+      (dispatch . Forum.setMotwLimit request)
 
     mandatoryVisibilityField forumRequestVisibility
-      (\input -> dispatch $ SetRequest $ request{forumRequestVisibility = input})
+      (dispatch . Forum.setVisibility request)
 
     tagsField
       forumRequestTags
       (maybe "" id m_tag)
-      (\input -> dispatch $ SetRequestState (Just request) (Just input))
-      (dispatch $ SetRequestState (Just $ request{forumRequestTags = maybe forumRequestTags (\tag -> forumRequestTags <> [tag]) m_tag}) Nothing)
-      (\idx -> dispatch $ SetRequest $ request{forumRequestTags = deleteNth idx forumRequestTags})
-      (dispatch $ SetRequest $ request{forumRequestTags = []})
+      (dispatch . Forum.setTag request)
+      (dispatch $ Forum.addTag request m_tag)
+      (dispatch . Forum.deleteTag request)
+      (dispatch $ Forum.clearTags request)
 
     createButtonsCreateEditCancel
       m_forum_id
       (dispatch Save)
-      (const $ dispatch Edit)
+      (const $ dispatch Save)
       (routeWith' Home)
 
 
@@ -506,8 +389,3 @@ viewRecentPosts_ organization@OrganizationPackResponse{..} forum@ForumPackRespon
   where
   ForumResponse{..} = forumPackResponseForum
   OrganizationResponse{..} = organizationPackResponseOrganization
-
-
-
-dispatch :: Action -> [SomeStoreAction]
-dispatch a = [SomeStoreAction store a]
