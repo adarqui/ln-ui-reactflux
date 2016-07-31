@@ -122,7 +122,7 @@ renderRouteView Store{..} = do
       RouteWith Home _                        -> Home.view_
       RouteWith About _                       -> About.view_
       RouteWith Portal _                      -> Portal.view_
-      RouteWith (Organizations Index) _       -> Organizations.viewIndex_ _pageInfo _l_organizations
+      RouteWith (Organizations Index) _       -> Organizations.viewIndex _pageInfo _l_organizations
       RouteWith (Organizations New) _         -> Organizations.viewNew _m_organizationRequestTag _m_organizationRequest
       RouteWith (Organizations (ShowS _)) _   -> Organizations.viewShowS _l_m_organization _l_forums
       RouteWith (Organizations (EditS _)) _   -> Organizations.viewEditS _m_organizationRequestTag _m_organizationRequest _l_m_organization

@@ -6,14 +6,8 @@
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.ReactFlux.App.Organizations (
-  -- Store,
-  -- defaultStore,
-  -- Action (..),
-  -- store,
-  -- view_,
-  -- view,
+  viewIndex,
   viewIndex_,
-  viewIndex__,
   viewNew,
   viewEditS,
   viewShowS
@@ -88,14 +82,14 @@ import qualified LN.UI.Core.App.Organization as Organization
 
 
 
-viewIndex_ :: PageInfo -> Loader (Map OrganizationId OrganizationPackResponse) -> HTMLView_
-viewIndex_ page_info l_organizations = do
-  Loader.loader1 l_organizations (viewIndex__ page_info)
+viewIndex :: PageInfo -> Loader (Map OrganizationId OrganizationPackResponse) -> HTMLView_
+viewIndex page_info l_organizations = do
+  Loader.loader1 l_organizations (viewIndex_ page_info)
 
 
 
-viewIndex__ :: PageInfo -> Map OrganizationId OrganizationPackResponse -> HTMLView_
-viewIndex__ page_info organizations = do
+viewIndex_ :: PageInfo -> Map OrganizationId OrganizationPackResponse -> HTMLView_
+viewIndex_ page_info organizations = do
   cldiv_ B.containerFluid $ do
     h1_ "Organizations"
     ahref $ routeWith' $ Organizations New
