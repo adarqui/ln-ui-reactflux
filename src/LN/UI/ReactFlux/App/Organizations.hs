@@ -88,11 +88,6 @@ import qualified LN.UI.Core.App.Organization as Organization
 
 
 
--- viewIndex :: Store -> HTMLView_
--- viewIndex Store{..} = mempty
-
-
-
 viewIndex_ :: PageInfo -> Loader (Map OrganizationId OrganizationPackResponse) -> HTMLView_
 viewIndex_ page_info l_organizations = do
   Loader.loader1 l_organizations (viewIndex__ page_info)
@@ -229,8 +224,6 @@ viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
     mandatoryVisibilityField organizationRequestVisibility
       (dispatch . Organization.setVisibility request)
 
-    -- -- icon
-
     tagsField
        organizationRequestTags
        (maybe ""  id m_tag)
@@ -244,8 +237,3 @@ viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
       (dispatch Save)
       (const $ dispatch Save)
       (routeWith' Home)
-
-
-
--- dispatch :: Action -> [SomeStoreAction]
--- dispatch a = [SomeStoreAction store a]
