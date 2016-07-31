@@ -21,6 +21,7 @@ import           Control.Monad              (void)
 import           Data.Int                   (Int64)
 import           Data.Map                   (Map)
 import qualified Data.Map                   as Map
+import           Data.Monoid                ((<>))
 import qualified Data.Text                  as Text
 import           Data.Typeable              (Typeable)
 import           GHC.Generics               (Generic)
@@ -43,10 +44,12 @@ instance StoreData Store where
   type StoreAction Store = Action
 
   transform (Goto route_with) st = do
+    putStrLn $ "Goto: " <> show route_with
     setLocationHash $ Text.unpack $ fromRouteWith route_with
     pure st
 
   transform action st@Store{..} = do
+    putStrLn $ "Route: " <> show _route
     (result', st') <- runCore st Start action
     void $ forkIO $ basedOn result' action
     pure st'

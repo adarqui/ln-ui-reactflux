@@ -71,7 +71,6 @@ initRouter =
     where
     routeAlterStore action =
       -- Update Store with our new route
-      -- liftIO $ alterStore store $ Route action
       Dispatcher.dispatch $ SomeStoreAction store $ Route action
 
 
