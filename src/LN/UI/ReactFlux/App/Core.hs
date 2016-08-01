@@ -142,7 +142,10 @@ renderRouteView Store{..} = do
 
 
 
-      RouteWith (OrganizationsForumsBoardsThreads _ _ _ Index) _ -> Threads.viewIndex _pageInfo _l_m_organization _l_m_forum _l_m_board _l_threads
+      RouteWith (OrganizationsForumsBoardsThreads _ _ _ Index) _     -> Threads.viewIndex _pageInfo _l_m_organization _l_m_forum _l_m_board _l_threads
+      RouteWith (OrganizationsForumsBoardsThreads _ _ _ New) _       -> Threads.viewNew _l_m_board _m_threadRequest
+      RouteWith (OrganizationsForumsBoardsThreads _ _ _ (EditS _)) _ -> Threads.viewEditS _l_m_thread _m_threadRequest
+      RouteWith (OrganizationsForumsBoardsThreads _ _ _ (ShowS _)) _ -> Threads.viewShowS _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts
 
       RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ Index) _ -> ThreadPosts.viewIndex _pageInfo _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts
 

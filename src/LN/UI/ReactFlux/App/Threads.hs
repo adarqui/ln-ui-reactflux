@@ -124,17 +124,19 @@ viewShowS
   :: Loader (Maybe OrganizationPackResponse)
   -> Loader (Maybe ForumPackResponse)
   -> Loader (Maybe BoardPackResponse)
-  -> Loader (Map ThreadId ThreadPackResponse)
+  -> Loader (Maybe ThreadPackResponse)
+  -> Loader (Map ThreadId ThreadPostPackResponse)
   -> HTMLView_
 
-viewShowS lm_organization lm_forum lm_board l_threads = do
-  Loader.loader4 lm_organization lm_forum lm_board l_threads $ \m_organization m_forum m_board threads -> do
-    case (m_organization, m_forum, m_board) of
-      (Just organization, Just forum, Just board) ->
+viewShowS l_m_organization l_m_forum l_m_board l_m_thread l_posts = do
+  Loader.loader5 l_m_organization l_m_forum l_m_board l_m_thread l_posts $ \m_organization m_forum m_board m_thread posts -> do
+    case (m_organization, m_forum, m_board, m_thread) of
+      (Just organization, Just forum, Just board, Just thread) ->
         viewShowS_
           organization
           forum
           board
+          thread
           mempty
       _ -> Oops.view_
 
@@ -144,54 +146,56 @@ viewShowS_
   :: OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
-  -> HTMLView_ -- ^ plumbing threads
+  -> ThreadPackResponse
+  -> HTMLView_ -- ^ plumbing thread posts
   -> HTMLView_
 
-viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} plumbing_threads = do
+viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} thread@ThreadPackResponse{..} plumbing_posts = do
   cldiv_ B.containerFluid $ do
     cldiv_ B.pageHeader $ do
       p_ [className_ B.lead] $ elemText $ maybe "No description." id boardResponseDescription
 
-      div_ plumbing_threads
+      div_ plumbing_posts
 
   where
   OrganizationResponse{..} = organizationPackResponseOrganization
   ForumResponse{..}        = forumPackResponseForum
   BoardResponse{..}        = boardPackResponseBoard
+  ThreadResponse{..}       = threadPackResponseThread
 
 
 
 viewNew
-  :: Loader (Maybe ForumPackResponse)
-  -> Maybe BoardRequest
+  :: Loader (Maybe BoardPackResponse)
+  -> Maybe ThreadRequest
   -> HTMLView_
-viewNew lm_forum m_request = do
-  Loader.loader1_ lm_forum $ \ForumPackResponse{..} ->
-    ebyam m_request mempty $ \request -> viewMod TyCreate forumPackResponseForumId Nothing request
+viewNew l_m_board m_request = do
+  Loader.loader1_ l_m_board $ \BoardPackResponse{..} ->
+    ebyam m_request mempty $ \request -> viewMod TyCreate boardPackResponseBoardId Nothing request
 
 
 
 viewEditS
-  :: Loader (Maybe BoardPackResponse)
-  -> Maybe BoardRequest
+  :: Loader (Maybe ThreadPackResponse)
+  -> Maybe ThreadRequest
   -> HTMLView_
-viewEditS lm_board m_request =
-  Loader.loader1_ lm_board $ \BoardPackResponse{..} ->
-    ebyam m_request mempty $ \request -> viewMod TyUpdate (boardResponseOrgId boardPackResponseBoard) (Just boardPackResponseBoardId) request
+viewEditS l_m_thread m_request =
+  Loader.loader1_ l_m_thread $ \ThreadPackResponse{..} ->
+    ebyam m_request mempty $ \request -> viewMod TyUpdate (threadResponseBoardId threadPackResponseThread) (Just threadPackResponseThreadId) request
 
 
 
 viewEditS_
-  :: OrganizationId
-  -> BoardId
-  -> Maybe BoardRequest
+  :: BoardId
+  -> ThreadId
+  -> Maybe ThreadRequest
   -> HTMLView_
-viewEditS_ organization_id board_id m_request =
-  ebyam m_request mempty $ \request -> viewMod TyUpdate organization_id (Just board_id) request
+viewEditS_ board_id thread_id m_request =
+  ebyam m_request mempty $ \request -> viewMod TyUpdate board_id (Just thread_id) request
 
 
 
-viewMod :: TyCRUD -> OrganizationId -> Maybe ForumId -> BoardRequest -> HTMLView_
-viewMod tycrud organization_id m_forum_id request@BoardRequest{..} = do
+viewMod :: TyCRUD -> BoardId -> Maybe ThreadId -> ThreadRequest -> HTMLView_
+viewMod tycrud boardid m_thread_id request@ThreadRequest{..} = do
   div_ $ do
-    h1_ $ elemText $ linkName tycrud <> " Board"
+    h1_ $ elemText $ linkName tycrud <> " Thread"
