@@ -218,33 +218,33 @@ viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..}
 
 
 
-viewNew :: Loader (Maybe OrganizationPackResponse) -> Maybe Text -> Maybe ForumRequest -> HTMLView_
-viewNew l_m_organization m_tag m_request = do
+viewNew :: Loader (Maybe OrganizationPackResponse) -> Maybe ForumRequest -> HTMLView_
+viewNew l_m_organization m_request = do
   Loading.loader1_ l_m_organization $ \OrganizationPackResponse{..} ->
-    ebyam m_request mempty $ \request -> viewNew_ organizationPackResponseOrganizationId m_tag request
+    ebyam m_request mempty $ \request -> viewNew_ organizationPackResponseOrganizationId request
 
 
 
-viewNew_ :: OrganizationId -> Maybe Text -> ForumRequest -> HTMLView_
-viewNew_ organization_id m_tag request = viewMod TyCreate organization_id Nothing m_tag request
+viewNew_ :: OrganizationId -> ForumRequest -> HTMLView_
+viewNew_ organization_id request = viewMod TyCreate organization_id Nothing request
 
 
 
-viewEditS :: Loader (Maybe ForumPackResponse) -> Maybe Text -> Maybe ForumRequest -> HTMLView_
-viewEditS l_m_forum m_tag m_request =
+viewEditS :: Loader (Maybe ForumPackResponse) -> Maybe ForumRequest -> HTMLView_
+viewEditS l_m_forum m_request =
   Loading.loader1_ l_m_forum $ \ForumPackResponse{..} ->
-    ebyam m_request mempty $ \request -> viewMod TyUpdate (forumResponseOrgId forumPackResponseForum) (Just forumPackResponseForumId) m_tag request
+    ebyam m_request mempty $ \request -> viewMod TyUpdate (forumResponseOrgId forumPackResponseForum) (Just forumPackResponseForumId) request
 
 
 
-viewEditS_ :: OrganizationId -> ForumId -> Maybe Text -> Maybe ForumRequest -> HTMLView_
-viewEditS_ organization_id forum_id m_tag m_request =
-  ebyam m_request mempty $ \request -> viewMod TyUpdate organization_id (Just forum_id) m_tag request
+viewEditS_ :: OrganizationId -> ForumId -> Maybe ForumRequest -> HTMLView_
+viewEditS_ organization_id forum_id m_request =
+  ebyam m_request mempty $ \request -> viewMod TyUpdate organization_id (Just forum_id) request
 
 
 
-viewMod :: TyCRUD -> OrganizationId -> Maybe ForumId -> Maybe Text -> ForumRequest -> HTMLView_
-viewMod tycrud organization_id m_forum_id m_tag request@ForumRequest{..} = do
+viewMod :: TyCRUD -> OrganizationId -> Maybe ForumId -> ForumRequest -> HTMLView_
+viewMod tycrud organization_id m_forum_id request@ForumRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Forum"
 
@@ -274,9 +274,9 @@ viewMod tycrud organization_id m_forum_id m_tag request@ForumRequest{..} = do
 
     tagsField
       forumRequestTags
-      (maybe "" id m_tag)
+      (maybe "" id forumRequestStateTag)
       (dispatch . Forum.setTag request)
-      (dispatch $ Forum.addTag request m_tag)
+      (dispatch $ Forum.addTag request)
       (dispatch . Forum.deleteTag request)
       (dispatch $ Forum.clearTags request)
 

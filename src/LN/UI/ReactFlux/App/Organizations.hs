@@ -175,25 +175,25 @@ viewShowS lm_organization l_forums = do
 
 
 
-viewNew :: Maybe Text -> Maybe OrganizationRequest -> HTMLView_
-viewNew m_tag m_request =
-  ebyam m_request mempty $ \request -> viewMod TyCreate Nothing m_tag request
+viewNew :: Maybe OrganizationRequest -> HTMLView_
+viewNew m_request =
+  ebyam m_request mempty $ \request -> viewMod TyCreate Nothing request
 
 
 
-viewEditS :: Maybe Text -> Maybe OrganizationRequest -> Loader (Maybe OrganizationPackResponse) -> HTMLView_
-viewEditS m_tag m_request l_organization_pack =
+viewEditS :: Maybe OrganizationRequest -> Loader (Maybe OrganizationPackResponse) -> HTMLView_
+viewEditS m_request l_organization_pack =
   Loader.loader1 l_organization_pack $ \m_organization_pack -> do
     case (m_request, m_organization_pack) of
-      (Just request, Just OrganizationPackResponse{..}) -> viewMod TyUpdate (Just organizationPackResponseOrganizationId) m_tag request
+      (Just request, Just OrganizationPackResponse{..}) -> viewMod TyUpdate (Just organizationPackResponseOrganizationId) request
       (_, _) -> mempty
 
 
 
 -- | Strictness requirement on input fields
 --
-viewMod :: TyCRUD -> Maybe OrganizationId -> Maybe Text -> OrganizationRequest -> HTMLView_
-viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
+viewMod :: TyCRUD -> Maybe OrganizationId -> OrganizationRequest -> HTMLView_
+viewMod tycrud m_organization_id request@OrganizationRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Organization"
 
@@ -217,9 +217,9 @@ viewMod tycrud m_organization_id m_tag request@OrganizationRequest{..} = do
 
     tagsField
        organizationRequestTags
-       (maybe ""  id m_tag)
+       (maybe ""  id organizationRequestStateTag)
        (dispatch . Organization.setTag request)
-       (dispatch $ Organization.addTag request m_tag)
+       (dispatch $ Organization.addTag request)
        (dispatch . Organization.deleteTag request)
        (dispatch $ Organization.clearTags request)
 
