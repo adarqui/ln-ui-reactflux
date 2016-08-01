@@ -6,7 +6,7 @@
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TypeFamilies      #-}
 
-module LN.UI.ReactFlux.App.Boards (
+module LN.UI.ReactFlux.App.ThreadPosts (
   viewIndex,
   viewIndex_,
   viewNew,
@@ -94,25 +94,31 @@ viewIndex
   :: PageInfo
   -> Loader (Maybe OrganizationPackResponse)
   -> Loader (Maybe ForumPackResponse)
-  -> Loader (Map BoardId BoardPackResponse)
+  -> Loader (Maybe BoardPackResponse)
+  -> Loader (Maybe ThreadPackResponse)
+  -> Loader (Map ThreadPostId ThreadPostPackResponse)
   -> HTMLView_
 
-viewIndex page_info l_m_organization l_m_forum l_boards = do
-  h1_ [className_ B.textCenter] $ elemText "Boards"
+viewIndex page_info l_m_organization l_m_forum l_m_board l_m_thread l_posts = do
+  h1_ [className_ B.textCenter] $ elemText "Posts"
   Loader.loader1_ l_m_organization $ \organization -> do
     Loader.loader1_ l_m_forum $ \forum -> do
-      Loader.loader1 l_boards $ \boards -> do
-        viewIndex_ organization forum boards
+      Loader.loader1_ l_m_board $ \board -> do
+        Loader.loader1_ l_m_thread $ \thread -> do
+          Loader.loader1 l_posts $ \posts -> do
+            viewIndex_ organization forum board thread posts
 
 
 
 viewIndex_
   :: OrganizationPackResponse
   -> ForumPackResponse
-  -> Map Int64 BoardPackResponse
+  -> BoardPackResponse
+  -> ThreadPackResponse
+  -> Map ThreadPostId ThreadPostPackResponse
   -> HTMLView_
 
-viewIndex_ organization forum boards = do
+viewIndex_ organization forum board thread posts = do
   p_ $ elemText "..."
 
 

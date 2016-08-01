@@ -45,6 +45,7 @@ import           LN.UI.Core.State                     (Action (..), Store (..),
                                                        defaultStore)
 import qualified LN.UI.ReactFlux.App.About            as About
 import qualified LN.UI.ReactFlux.App.Boards           as Boards
+import qualified LN.UI.ReactFlux.App.Boards           as Boards
 import qualified LN.UI.ReactFlux.App.Breadcrumbs      as Breadcrumbs
 import           LN.UI.ReactFlux.App.Core.Shared      as A
 import qualified LN.UI.ReactFlux.App.Forums           as Forums
@@ -52,6 +53,8 @@ import qualified LN.UI.ReactFlux.App.Home             as Home
 import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Organizations    as Organizations
 import qualified LN.UI.ReactFlux.App.Portal           as Portal
+import qualified LN.UI.ReactFlux.App.ThreadPosts      as ThreadPosts
+import qualified LN.UI.ReactFlux.App.Threads          as Threads
 import qualified LN.UI.ReactFlux.App.Users            as Users
 import qualified LN.UI.ReactFlux.Dispatcher           as Dispatcher
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
@@ -132,7 +135,12 @@ renderRouteView Store{..} = do
       RouteWith (OrganizationsForums _ (EditS _)) _ -> Forums.viewEditS _l_m_forum _m_forumRequestTag _m_forumRequest
       RouteWith (OrganizationsForums _ (ShowS _)) _ -> Forums.viewShowS _l_m_organization _l_m_forum _l_boards _l_recentThreadPosts
 
-      RouteWith (OrganizationsForumsBoards org_sid forum_sid crud) params -> Boards.view_ org_sid forum_sid crud
+      RouteWith (OrganizationsForumsBoards _ _ Index) _ -> Boards.viewIndex _pageInfo _l_m_organization _l_m_forum _l_boards
+--      RouteWith (OrganizationsForumsBoards org_sid forum_sid crud) params -> Boards.view_ org_sid forum_sid crud
+
+      RouteWith (OrganizationsForumsBoardsThreads _ _ _ Index) _ -> Threads.viewIndex _pageInfo _l_m_organization _l_m_forum _l_m_board _l_threads
+
+      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ Index) _ -> ThreadPosts.viewIndex _pageInfo _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts
 
       RouteWith (Users Index) params          -> Users.viewIndex _pageInfo _l_users
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
