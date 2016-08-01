@@ -124,8 +124,8 @@ viewShowS
   -> Loader (Map ThreadId ThreadPackResponse)
   -> HTMLView_
 
-viewShowS lm_organization lm_forum lm_board l_threads = do
-  Loader.loader4 lm_organization lm_forum lm_board l_threads $ \m_organization m_forum m_board threads -> do
+viewShowS l_morganization l_mforum l_mboard l_threads = do
+  Loader.loader4 l_morganization l_mforum l_mboard l_threads $ \m_organization m_forum m_board threads -> do
     case (m_organization, m_forum, m_board) of
       (Just organization, Just forum, Just board) ->
         viewShowS_
@@ -160,47 +160,36 @@ viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..}
 
 viewNew
   :: Loader (Maybe ForumPackResponse)
-  -> Maybe Text
   -> Maybe BoardRequest
   -> HTMLView_
-viewNew lm_forum m_tag m_request = do
-  Loader.loader1_ lm_forum $ \ForumPackResponse{..} ->
-    ebyam m_request mempty $ \request -> viewNew_ forumPackResponseForumId m_tag request
+viewNew l_mforum m_request = do
+  Loader.loader1_ l_mforum $ \ForumPackResponse{..} ->
+    ebyam m_request mempty $ \request -> viewMod TyCreate forumPackResponseForumId Nothing request
 
-
-
-viewNew_
-  :: ForumId
-  -> Maybe Text
-  -> BoardRequest
-  -> HTMLView_
-viewNew_ forum_id m_tag request = viewMod TyCreate forum_id Nothing m_tag request
 
 
 
 viewEditS
   :: Loader (Maybe BoardPackResponse)
-  -> Maybe Text
   -> Maybe BoardRequest
   -> HTMLView_
-viewEditS lm_board m_tag m_request =
-  Loader.loader1_ lm_board $ \BoardPackResponse{..} ->
-    ebyam m_request mempty $ \request -> viewMod TyUpdate (boardResponseOrgId boardPackResponseBoard) (Just boardPackResponseBoardId) m_tag request
+viewEditS l_mboard m_request =
+  Loader.loader1_ l_mboard $ \BoardPackResponse{..} ->
+    ebyam m_request mempty $ \request -> viewMod TyUpdate (boardResponseOrgId boardPackResponseBoard) (Just boardPackResponseBoardId) request
 
 
 
 viewEditS_
   :: OrganizationId
   -> BoardId
-  -> Maybe Text
   -> Maybe BoardRequest
   -> HTMLView_
-viewEditS_ organization_id board_id m_tag m_request =
-  ebyam m_request mempty $ \request -> viewMod TyUpdate organization_id (Just board_id) m_tag request
+viewEditS_ organization_id board_id m_request =
+  ebyam m_request mempty $ \request -> viewMod TyUpdate organization_id (Just board_id) request
 
 
 
-viewMod :: TyCRUD -> OrganizationId -> Maybe ForumId -> Maybe Text -> BoardRequest -> HTMLView_
-viewMod tycrud organization_id m_forum_id m_tag request@BoardRequest{..} = do
+viewMod :: TyCRUD -> OrganizationId -> Maybe ForumId -> BoardRequest -> HTMLView_
+viewMod tycrud organization_id m_forum_id request@BoardRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Board"
