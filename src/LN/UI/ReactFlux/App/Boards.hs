@@ -168,7 +168,6 @@ viewNew l_mforum m_request = do
 
 
 
-
 viewEditS
   :: Loader (Maybe BoardPackResponse)
   -> Maybe BoardRequest
@@ -176,16 +175,6 @@ viewEditS
 viewEditS l_mboard m_request =
   Loader.loader1_ l_mboard $ \BoardPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyUpdate (boardResponseOrgId boardPackResponseBoard) (Just boardPackResponseBoardId) request
-
-
-
-viewEditS_
-  :: OrganizationId
-  -> BoardId
-  -> Maybe BoardRequest
-  -> HTMLView_
-viewEditS_ organization_id board_id m_request =
-  ebyam m_request mempty $ \request -> viewMod TyUpdate organization_id (Just board_id) request
 
 
 
