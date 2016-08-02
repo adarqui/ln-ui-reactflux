@@ -10,8 +10,8 @@ module LN.UI.ReactFlux.App.ThreadPosts (
   viewIndex,
   viewIndex_,
   viewNew,
-  viewEditS,
-  viewShowS
+  viewEditI,
+  viewShowI
 ) where
 
 
@@ -123,90 +123,71 @@ viewIndex_ organization forum board thread posts = do
 
 
 
-viewShowS
+viewShowI
   :: Loader (Maybe OrganizationPackResponse)
   -> Loader (Maybe ForumPackResponse)
   -> Loader (Maybe BoardPackResponse)
-  -> Loader (Map ThreadId ThreadPackResponse)
+  -> Loader (Maybe ThreadPackResponse)
+  -> Loader (Maybe ThreadPostPackResponse)
   -> HTMLView_
 
-viewShowS lm_organization lm_forum lm_board l_threads = do
-  Loader.loader4 lm_organization lm_forum lm_board l_threads $ \m_organization m_forum m_board threads -> do
-    case (m_organization, m_forum, m_board) of
-      (Just organization, Just forum, Just board) ->
-        viewShowS_
-          organization
-          forum
-          board
-          mempty
-      _ -> Oops.view_
+viewShowI l_m_organization l_m_forum l_m_board l_m_thread l_m_post = do
+  Loader.maybeLoader5 l_m_organization l_m_forum l_m_board l_m_thread l_m_post $ \organization forum board thread post -> do
+    viewShowI_
+      organization
+      forum
+      board
+      thread
+      post
+      mempty
 
 
 
-viewShowS_
+viewShowI_
   :: OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
-  -> HTMLView_ -- ^ plumbing threads
+  -> ThreadPackResponse
+  -> ThreadPostPackResponse
+  -> HTMLView_ -- ^ plumbing?
   -> HTMLView_
 
-viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} plumbing_threads = do
+viewShowI_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} thread@ThreadPackResponse{..} post@ThreadPostPackResponse{..} plumbing_threads = do
   cldiv_ B.containerFluid $ do
     cldiv_ B.pageHeader $ do
-      p_ [className_ B.lead] $ elemText $ maybe "No description." id boardResponseDescription
-
+      p_ $ elemText "post"
       div_ plumbing_threads
 
   where
   OrganizationResponse{..} = organizationPackResponseOrganization
   ForumResponse{..}        = forumPackResponseForum
   BoardResponse{..}        = boardPackResponseBoard
+  ThreadResponse{..}       = threadPackResponseThread
+  ThreadPostResponse{..}   = threadPostPackResponseThreadPost
 
 
 
 viewNew
-  :: Loader (Maybe ForumPackResponse)
-  -> Maybe Text
-  -> Maybe BoardRequest
+  :: Loader (Maybe ThreadPackResponse)
+  -> Maybe ThreadPostRequest
   -> HTMLView_
-viewNew lm_forum m_tag m_request = do
-  Loader.maybeLoader1 lm_forum $ \ForumPackResponse{..} ->
-    ebyam m_request mempty $ \request -> viewNew_ forumPackResponseForumId m_tag request
+viewNew l_m_thread m_request = do
+  Loader.maybeLoader1 l_m_thread $ \ThreadPackResponse{..} ->
+    ebyam m_request mempty $ \request -> viewMod TyCreate threadPackResponseThreadId Nothing request
 
 
 
-viewNew_
-  :: ForumId
-  -> Maybe Text
-  -> BoardRequest
+viewEditI
+  :: Loader (Maybe ThreadPostPackResponse)
+  -> Maybe ThreadPostRequest
   -> HTMLView_
-viewNew_ forum_id m_tag request = viewMod TyCreate forum_id Nothing m_tag request
+viewEditI l_m_post m_request =
+  Loader.maybeLoader1 l_m_post $ \ThreadPostPackResponse{..} ->
+    ebyam m_request mempty $ \request -> viewMod TyUpdate (threadPostResponseThreadId threadPostPackResponseThreadPost) (Just threadPostPackResponseThreadPostId) request
 
 
 
-viewEditS
-  :: Loader (Maybe BoardPackResponse)
-  -> Maybe Text
-  -> Maybe BoardRequest
-  -> HTMLView_
-viewEditS lm_board m_tag m_request =
-  Loader.maybeLoader1 lm_board $ \BoardPackResponse{..} ->
-    ebyam m_request mempty $ \request -> viewMod TyUpdate (boardResponseOrgId boardPackResponseBoard) (Just boardPackResponseBoardId) m_tag request
-
-
-
-viewEditS_
-  :: OrganizationId
-  -> BoardId
-  -> Maybe Text
-  -> Maybe BoardRequest
-  -> HTMLView_
-viewEditS_ organization_id board_id m_tag m_request =
-  ebyam m_request mempty $ \request -> viewMod TyUpdate organization_id (Just board_id) m_tag request
-
-
-
-viewMod :: TyCRUD -> OrganizationId -> Maybe ForumId -> Maybe Text -> BoardRequest -> HTMLView_
-viewMod tycrud organization_id m_forum_id m_tag request@BoardRequest{..} = do
+viewMod :: TyCRUD -> ThreadId -> Maybe ThreadPostId -> ThreadPostRequest -> HTMLView_
+viewMod tycrud thread_id m_post_id request@ThreadPostRequest{..} = do
   div_ $ do
-    h1_ $ elemText $ linkName tycrud <> " Board"
+    h1_ $ elemText $ linkName tycrud <> " Post"

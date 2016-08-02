@@ -108,8 +108,8 @@ viewIndex_ page_info organizations = do
 
 
 viewShowS :: Loader (Maybe OrganizationPackResponse) -> Loader (Map OrganizationId ForumPackResponse) -> HTMLView_
-viewShowS lm_organization l_forums = do
-  Loader.loader1 lm_organization go
+viewShowS l_m_organization l_forums = do
+  Loader.loader1 l_m_organization go
   where
   go (Just organization_pack@OrganizationPackResponse{..}) = do
     let OrganizationResponse{..} = organizationPackResponseOrganization
