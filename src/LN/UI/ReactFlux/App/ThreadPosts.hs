@@ -101,10 +101,10 @@ viewIndex
 
 viewIndex page_info l_m_organization l_m_forum l_m_board l_m_thread l_posts = do
   h1_ [className_ B.textCenter] $ elemText "Posts"
-  Loader.loader1_ l_m_organization $ \organization -> do
-    Loader.loader1_ l_m_forum $ \forum -> do
-      Loader.loader1_ l_m_board $ \board -> do
-        Loader.loader1_ l_m_thread $ \thread -> do
+  Loader.maybeLoader1 l_m_organization $ \organization -> do
+    Loader.maybeLoader1 l_m_forum $ \forum -> do
+      Loader.maybeLoader1 l_m_board $ \board -> do
+        Loader.maybeLoader1 l_m_thread $ \thread -> do
           Loader.loader1 l_posts $ \posts -> do
             viewIndex_ organization forum board thread posts
 
@@ -170,7 +170,7 @@ viewNew
   -> Maybe BoardRequest
   -> HTMLView_
 viewNew lm_forum m_tag m_request = do
-  Loader.loader1_ lm_forum $ \ForumPackResponse{..} ->
+  Loader.maybeLoader1 lm_forum $ \ForumPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewNew_ forumPackResponseForumId m_tag request
 
 
@@ -190,7 +190,7 @@ viewEditS
   -> Maybe BoardRequest
   -> HTMLView_
 viewEditS lm_board m_tag m_request =
-  Loader.loader1_ lm_board $ \BoardPackResponse{..} ->
+  Loader.maybeLoader1 lm_board $ \BoardPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyUpdate (boardResponseOrgId boardPackResponseBoard) (Just boardPackResponseBoardId) m_tag request
 
 

@@ -220,7 +220,7 @@ viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..}
 
 viewNew :: Loader (Maybe OrganizationPackResponse) -> Maybe ForumRequest -> HTMLView_
 viewNew l_m_organization m_request = do
-  Loading.loader1_ l_m_organization $ \OrganizationPackResponse{..} ->
+  Loading.maybeLoader1 l_m_organization $ \OrganizationPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewNew_ organizationPackResponseOrganizationId request
 
 
@@ -232,7 +232,7 @@ viewNew_ organization_id request = viewMod TyCreate organization_id Nothing requ
 
 viewEditS :: Loader (Maybe ForumPackResponse) -> Maybe ForumRequest -> HTMLView_
 viewEditS l_m_forum m_request =
-  Loading.loader1_ l_m_forum $ \ForumPackResponse{..} ->
+  Loading.maybeLoader1 l_m_forum $ \ForumPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyUpdate (forumResponseOrgId forumPackResponseForum) (Just forumPackResponseForumId) request
 
 

@@ -100,9 +100,9 @@ viewIndex
 
 viewIndex page_info l_m_organization l_m_forum l_m_board l_threads = do
   h1_ [className_ B.textCenter] $ elemText "Threads"
-  Loader.loader1_ l_m_organization $ \organization -> do
-    Loader.loader1_ l_m_forum $ \forum -> do
-      Loader.loader1_ l_m_board $ \board -> do
+  Loader.maybeLoader1 l_m_organization $ \organization -> do
+    Loader.maybeLoader1 l_m_forum $ \forum -> do
+      Loader.maybeLoader1 l_m_board $ \board -> do
         Loader.loader1 l_threads $ \threads -> do
           viewIndex_ organization forum board threads
 
@@ -170,7 +170,7 @@ viewNew
   -> Maybe ThreadRequest
   -> HTMLView_
 viewNew l_m_board m_request = do
-  Loader.loader1_ l_m_board $ \BoardPackResponse{..} ->
+  Loader.maybeLoader1 l_m_board $ \BoardPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyCreate boardPackResponseBoardId Nothing request
 
 
@@ -180,7 +180,7 @@ viewEditS
   -> Maybe ThreadRequest
   -> HTMLView_
 viewEditS l_m_thread m_request =
-  Loader.loader1_ l_m_thread $ \ThreadPackResponse{..} ->
+  Loader.maybeLoader1 l_m_thread $ \ThreadPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyUpdate (threadResponseBoardId threadPackResponseThread) (Just threadPackResponseThreadId) request
 
 

@@ -99,8 +99,8 @@ viewIndex
 
 viewIndex page_info l_m_organization l_m_forum l_boards = do
   h1_ [className_ B.textCenter] $ elemText "Boards"
-  Loader.loader1_ l_m_organization $ \organization -> do
-    Loader.loader1_ l_m_forum $ \forum -> do
+  Loader.maybeLoader1 l_m_organization $ \organization -> do
+    Loader.maybeLoader1 l_m_forum $ \forum -> do
       Loader.loader1 l_boards $ \boards -> do
         viewIndex_ organization forum boards
 
@@ -163,7 +163,7 @@ viewNew
   -> Maybe BoardRequest
   -> HTMLView_
 viewNew l_mforum m_request = do
-  Loader.loader1_ l_mforum $ \ForumPackResponse{..} ->
+  Loader.maybeLoader1 l_mforum $ \ForumPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyCreate forumPackResponseForumId Nothing request
 
 
@@ -173,7 +173,7 @@ viewEditS
   -> Maybe BoardRequest
   -> HTMLView_
 viewEditS l_mboard m_request =
-  Loader.loader1_ l_mboard $ \BoardPackResponse{..} ->
+  Loader.maybeLoader1 l_mboard $ \BoardPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyUpdate (boardResponseOrgId boardPackResponseBoard) (Just boardPackResponseBoardId) request
 
 
