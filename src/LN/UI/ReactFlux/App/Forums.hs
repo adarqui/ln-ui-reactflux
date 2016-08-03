@@ -100,6 +100,7 @@ viewIndex
   -> HTMLView_
 
 viewIndex page_info l_m_organization l_forums = do
+  h1_ [className_ B.textCenter] $ elemText "Forums"
   Loading.loader2 l_m_organization l_forums $ \m_organization forums -> do
     case m_organization of
       Nothing           -> mempty
@@ -109,7 +110,6 @@ viewIndex page_info l_m_organization l_forums = do
 
 viewIndex_ :: OrganizationPackResponse -> Map Int64 ForumPackResponse -> HTMLView_
 viewIndex_ org_pack@OrganizationPackResponse{..} forums_map = do
-  h1_ [className_ B.textCenter] $ elemText "Forums"
 
   -- ACCESS: Organization
   -- * Create: can create forums

@@ -112,8 +112,17 @@ viewIndex_
   -> Map Int64 BoardPackResponse
   -> HTMLView_
 
-viewIndex_ organization forum boards = do
-  p_ $ elemText "..."
+viewIndex_ organization forum boards_map = do
+  ul_ [className_ B.listUnstyled] $
+    mapM_ (\BoardPackResponse{..} -> do
+      let
+        BoardResponse{..}     = boardPackResponseBoard
+        BoardStatResponse{..} = boardPackResponseStat
+        thread                = boardPackResponseLatestThread
+        post                  = boardPackResponseLatestThreadPost
+      li_ $ do
+        p_ $ elemText "li"
+    ) $ Map.elems boards_map
 
 
 
