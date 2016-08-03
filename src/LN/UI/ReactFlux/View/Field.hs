@@ -172,11 +172,10 @@ mandatoryBooleanField
   :: Text
   -> Bool
   -> Bool
-  -> (Bool -> viewEventHandler)
+  -> (Bool -> ViewEventHandler)
   -> HTMLView_
-mandatoryBooleanField label value default_value set_handler =
-  mempty
---  internalSelectList label value default [true, false] (set_cb)
+mandatoryBooleanField label value default_value set_value_handler =
+  createSelectList label value default_value [True, False] set_value_handler
 
 
 
@@ -184,33 +183,32 @@ mandatoryBooleanYesNoField
   :: Text
   -> Bool
   -> Bool
-  -> (Bool -> viewEventHandler)
+  -> (Bool -> ViewEventHandler)
   -> HTMLView_
 
-mandatoryBooleanYesNoField label value default_value set_handler =
-  mempty
---  internalSelectList label value default [true, false] (set_cb)
---  internalSelectList label (show value) (show default) ["yes", "no"] (set_cb <<< boolFromYesNoText)
+mandatoryBooleanYesNoField label value default_value set_value_handler =
+  createSelectList label value default_value [True, False] set_value_handler
+  -- createSelectList label (show value) (show default) ["yes", "no"] (set_cb <<< boolFromYesNoText)
 
 
 
 createSelectList
-  :: (Show a, Eq a)
+  :: (Show a, Read a, Eq a)
   => Text
   -> a
   -> a
   -> [a]
-  -> (a -> viewEventHandler)
+  -> (a -> ViewEventHandler)
   -> HTMLView_
 
-createSelectList label value default_value optional_values set_handler =
+createSelectList label value default_value optional_values set_value_handler =
   div_ $ do
     cldiv_ B.inputGroup $ do
       label_ $ elemText label
       select_ [ className_ B.formControl
---              , onChange ..
+              , onChange (set_value_handler . read . targetValue)
               ] $ mapM_ (\option -> option_ [ "selected" @= (value == option) ] $ elemShow option) optional_values
       span_ [className_ B.inputGroupBtn] $ do
         button_ [ classNames_ buttonInfoClasses
---               , onClick
+                , onClick $ \_ _ -> set_value_handler default_value
                 ] $ elemText "default"
