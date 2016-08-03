@@ -109,7 +109,7 @@ viewIndex page_info l_m_organization l_forums = do
 
 
 viewIndex_ :: OrganizationPackResponse -> Map Int64 ForumPackResponse -> HTMLView_
-viewIndex_ org_pack@OrganizationPackResponse{..} forums_map = do
+viewIndex_ organization forums_map = do
 
   -- ACCESS: Organization
   -- * Create: can create forums
@@ -154,6 +154,7 @@ viewIndex_ org_pack@OrganizationPackResponse{..} forums_map = do
     ) $ Map.elems forums_map
 
   where
+  OrganizationPackResponse{..} = organization
   org@OrganizationResponse{..} = organizationPackResponseOrganization
 
 

@@ -121,8 +121,20 @@ viewIndex_ organization forum boards_map = do
         thread                = boardPackResponseLatestThread
         post                  = boardPackResponseLatestThreadPost
       li_ $ do
-        p_ $ elemText "li"
+        cldiv_ B.row $ do
+          cldiv_ B.colXs1 $ do
+            p_ $ elemText "icon"
+          cldiv_ B.colXs5 $ do
+            cldiv_ B.listGroup $ do
+              ahrefClassesName [B.listGroupItem] boardResponseDisplayName $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName)
+              p_ $ elemText $ maybe "No description." id boardResponseDescription
     ) $ Map.elems boards_map
+  where
+  OrganizationPackResponse{..} = organization
+  OrganizationResponse{..}     = organizationPackResponseOrganization
+  ForumPackResponse{..}        = forum
+  ForumResponse{..}            = forumPackResponseForum
+
 
 
 
