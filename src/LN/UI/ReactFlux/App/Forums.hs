@@ -71,6 +71,7 @@ import           LN.UI.Core.Router                    (CRUD (..), Params,
                                                        routeWith')
 import           LN.UI.Core.Sort
 import           LN.UI.ReactFlux.Access
+import qualified LN.UI.ReactFlux.App.Boards           as Boards
 import           LN.UI.ReactFlux.App.Core.Shared
 import qualified LN.UI.ReactFlux.App.Delete           as Delete
 import qualified LN.UI.ReactFlux.App.Gravatar         as Gravatar
@@ -174,7 +175,7 @@ viewShowS l_m_organization l_m_forum l_boards l_recent_posts = do
         viewShowS_
           organization
           forum
-          mempty
+          (Boards.viewIndex_ organization forum boards)
           (viewRecentPosts_ organization forum recent_posts)
           (viewMessagesOfTheWeek_ organization forum)
       _ -> Oops.view_

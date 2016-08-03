@@ -110,7 +110,7 @@ viewIndex page_info l_m_organization l_m_forum l_boards = do
 viewIndex_
   :: OrganizationPackResponse
   -> ForumPackResponse
-  -> Map Int64 BoardPackResponse
+  -> Map BoardId BoardPackResponse
   -> HTMLView_
 
 viewIndex_ organization forum boards_map = do
