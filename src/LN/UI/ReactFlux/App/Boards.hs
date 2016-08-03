@@ -52,6 +52,7 @@ import           LN.T.Size
 import           LN.T.Thread
 import           LN.T.ThreadPost
 import           LN.T.User
+import LN.UI.Core.App.Board as Board
 import           LN.UI.Core.Helpers.DataList          (deleteNth)
 import           LN.UI.Core.Helpers.DataText          (tshow)
 import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
@@ -69,6 +70,7 @@ import           LN.UI.Core.Router                    (CRUD (..), Params,
                                                        routeWith')
 import           LN.UI.Core.Sort
 import           LN.UI.ReactFlux.Access
+import           LN.UI.ReactFlux.App.Core.Shared
 import qualified LN.UI.ReactFlux.App.Delete           as Delete
 import qualified LN.UI.ReactFlux.App.Gravatar         as Gravatar
 import           LN.UI.ReactFlux.App.Loader           (Loader (..))
@@ -243,3 +245,40 @@ viewMod :: TyCRUD -> OrganizationId -> Maybe ForumId -> BoardRequest -> HTMLView
 viewMod tycrud organization_id m_forum_id request@BoardRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Board"
+
+    mandatoryNameField boardRequestDisplayName (dispatch . Board.setDisplayName request)
+
+    optionalDescriptionField boardRequestDescription
+      (dispatch . Board.setDescription request)
+      (dispatch $ Board.clearDescription request)
+
+    mandatoryBooleanYesNoField "Anonymous" boardRequestIsAnonymous False
+      (dispatch . Board.setIsAnonymous request)
+
+    mandatoryBooleanYesNoField "Can create sub-boards" boardRequestCanCreateSubBoards True
+      (dispatch . Board.setCanCreateSubBoards request)
+
+    mandatoryBooleanYesNoField "Can create threads" boardRequestCanCreateThreads True
+      (dispatch . Board.setCanCreateThreads request)
+
+    suggestedTagsField
+      boardRequestSuggestedTags
+      (maybe "" id boardRequestStateSuggestedTag)
+      (dispatch . Board.setSuggestedTag request)
+      (dispatch $ Board.addSuggestedTag request)
+      (dispatch . Board.deleteSuggestedTag request)
+      (dispatch $ Board.clearSuggestedTags request)
+
+    tagsField
+      boardRequestTags
+      (maybe "" id boardRequestStateTag)
+      (dispatch . Board.setTag request)
+      (dispatch $ Board.addTag request)
+      (dispatch . Board.deleteTag request)
+      (dispatch $ Board.clearTags request)
+
+    createButtonsCreateEditCancel
+      m_forum_id
+      (dispatch Save)
+      (const $ dispatch Save)
+      (routeWith' Home)
