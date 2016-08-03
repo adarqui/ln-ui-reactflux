@@ -83,7 +83,6 @@ import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
                                                        classNames_)
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
-import           LN.UI.ReactFlux.View.Button          (showBadge)
 import           LN.UI.ReactFlux.View.Field
 import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
 
@@ -120,6 +119,7 @@ viewIndex_ organization forum boards_map = do
         BoardStatResponse{..} = boardPackResponseStat
         thread                = boardPackResponseLatestThread
         post                  = boardPackResponseLatestThreadPost
+        user                  = boardPackResponseLatestThreadPostUser
       li_ $ do
         cldiv_ B.row $ do
           cldiv_ B.colXs1 $ do
@@ -128,6 +128,23 @@ viewIndex_ organization forum boards_map = do
             cldiv_ B.listGroup $ do
               ahrefClassesName [B.listGroupItem] boardResponseDisplayName $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName)
               p_ $ elemText $ maybe "No description." id boardResponseDescription
+          cldiv_ B.colXs2 $ do
+            showBadge "threads " boardStatResponseThreads
+            showBadge "posts "   boardStatResponseThreadPosts
+            showBadge "views "   boardStatResponseViews
+          cldiv_ B.colXs3 $ do
+            case (thread, post, user) of
+              (Just ThreadResponse{..}, Just ThreadPostResponse{..}, Just UserSanitizedResponse{..}) -> do
+                div_ $ do
+                  p_ $ do
+                    elemText "Last post by "
+                    ahref $ routeWith' (Users (ShowS userSanitizedResponseName))
+                  p_ $ do
+                    elemText "in "
+                    ahref $ routeWith (OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName)) [(ParamTag_Offset, Offset (-1))]
+                  p_ $ elemText $ prettyUTCTimeMaybe threadPostResponseCreatedAt
+              _ -> div_ $ p_ $ elemText "No posts."
+
     ) $ Map.elems boards_map
   where
   OrganizationPackResponse{..} = organization
