@@ -144,6 +144,29 @@ viewIndex_ organization forum boards_map = do
                     ahref $ routeWith (OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName)) [(ParamTag_Offset, Offset (-1))]
                   p_ $ elemText $ prettyUTCTimeMaybe threadPostResponseCreatedAt
               _ -> div_ $ p_ $ elemText "No posts."
+          cldiv_ B.colXs1 $ do
+            cldiv_ B.container $ do
+              buttonGroup_VerticalSm1 $ do
+                -- ACCESS: Forum
+                -- * Create: can create boards
+                --
+                permissionsMatchCreateHTML
+                  forumPackResponsePermissions
+                  -- TODO FIXME: Child board
+                  (button_newBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName New)
+                  mempty
+
+                -- ACCESS: Board
+                -- * Update: can edit board settings
+                -- * Delete: can delete boads
+                --
+                permissionsHTML'
+                  boardPackResponsePermissions
+                  permCreateEmpty
+                  permReadEmpty
+                  (button_editBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (EditS boardResponseName))
+                  (button_deleteBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (DeleteS boardResponseName))
+                  permExecuteEmpty
 
     ) $ Map.elems boards_map
   where
