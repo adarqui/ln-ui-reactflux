@@ -12,7 +12,8 @@ module LN.UI.ReactFlux.View.Field (
   tagsField,
   privateTagsField,
   suggestedTagsField,
-  mandatoryIntegerField
+  mandatoryIntegerField,
+  mandatoryBooleanYesNoField
 ) where
 
 
@@ -152,3 +153,64 @@ mandatoryIntegerField label value default_value min max step set_value_handler =
                 , "title" $= "Default"
                 , onClick $ \_ _ -> set_value_handler default_value
                 ] $ elemText "Default"
+
+
+
+boolFromText :: Text -> Bool
+boolFromText "true" = True
+boolFromText _      = False
+
+
+
+boolFromYesNoText :: Text -> Bool
+boolFromYesNoText "true" = True
+boolFromYesNoText _      = False
+
+
+
+mandatoryBooleanField
+  :: Text
+  -> Bool
+  -> Bool
+  -> (Bool -> viewEventHandler)
+  -> HTMLView_
+mandatoryBooleanField label value default_value set_handler =
+  mempty
+--  internalSelectList label value default [true, false] (set_cb)
+
+
+
+mandatoryBooleanYesNoField
+  :: Text
+  -> Bool
+  -> Bool
+  -> (Bool -> viewEventHandler)
+  -> HTMLView_
+
+mandatoryBooleanYesNoField label value default_value set_handler =
+  mempty
+--  internalSelectList label value default [true, false] (set_cb)
+--  internalSelectList label (show value) (show default) ["yes", "no"] (set_cb <<< boolFromYesNoText)
+
+
+
+createSelectList
+  :: (Show a, Eq a)
+  => Text
+  -> a
+  -> a
+  -> [a]
+  -> (a -> viewEventHandler)
+  -> HTMLView_
+
+createSelectList label value default_value optional_values set_handler =
+  div_ $ do
+    cldiv_ B.inputGroup $ do
+      label_ $ elemText label
+      select_ [ className_ B.formControl
+--              , onChange ..
+              ] $ mapM_ (\option -> option_ [ "selected" @= (value == option) ] $ elemShow option) optional_values
+      span_ [className_ B.inputGroupBtn] $ do
+        button_ [ classNames_ buttonInfoClasses
+--               , onClick
+                ] $ elemText "default"
