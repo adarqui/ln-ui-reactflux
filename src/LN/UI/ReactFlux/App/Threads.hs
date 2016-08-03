@@ -153,8 +153,8 @@ viewShowS_
 viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} thread@ThreadPackResponse{..} plumbing_posts = do
   cldiv_ B.containerFluid $ do
     cldiv_ B.pageHeader $ do
+      h2_ $ elemText threadResponseName
       p_ [className_ B.lead] $ elemText $ maybe "No description." id boardResponseDescription
-
       div_ plumbing_posts
 
   where

@@ -191,6 +191,7 @@ viewShowS_
 viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} plumbing_boards plumbing_recent_posts plumbing_messages_of_the_week = do
   cldiv_ B.containerFluid $ do
     cldiv_ B.pageHeader $ do
+      h2_ $ elemText forumResponseName
       p_ [className_ B.lead] $ elemText $ maybe "No description." id forumResponseDescription
 
       -- ACCESS: Forum
