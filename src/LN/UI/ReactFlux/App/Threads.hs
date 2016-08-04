@@ -52,6 +52,8 @@ import           LN.T.Size
 import           LN.T.Thread
 import           LN.T.ThreadPost
 import           LN.T.User
+import qualified LN.UI.Core.App.Thread as Thread
+import LN.UI.ReactFlux.App.Core.Shared
 import           LN.UI.Core.Helpers.DataList          (deleteNth)
 import           LN.UI.Core.Helpers.DataText          (tshow)
 import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
@@ -185,17 +187,35 @@ viewEditS l_m_thread m_request =
 
 
 
-viewEditS_
-  :: BoardId
-  -> ThreadId
-  -> Maybe ThreadRequest
-  -> HTMLView_
-viewEditS_ board_id thread_id m_request =
-  ebyam m_request mempty $ \request -> viewMod TyUpdate board_id (Just thread_id) request
-
-
-
 viewMod :: TyCRUD -> BoardId -> Maybe ThreadId -> ThreadRequest -> HTMLView_
 viewMod tycrud boardid m_thread_id request@ThreadRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Thread"
+
+    mandatoryNameField threadRequestDisplayName (dispatch . Thread.setDisplayName request)
+
+    optionalDescriptionField threadRequestDescription
+      (dispatch . Thread.setDescription request)
+      (dispatch $ Thread.clearDescription request)
+
+    mandatoryBooleanYesNoField "Sticky" threadRequestSticky False
+      (dispatch . Thread.setSticky request)
+
+    mandatoryBooleanYesNoField "Locked" threadRequestLocked False
+      (dispatch . Thread.setLocked request)
+
+    p_ $ elemText "poll: TODO"
+
+    tagsField
+      threadRequestTags
+      (maybe "" id threadRequestStateTag)
+      (dispatch . Thread.setTag request)
+      (dispatch $ Thread.addTag request)
+      (dispatch . Thread.deleteTag request)
+      (dispatch $ Thread.clearTags request)
+
+    createButtonsCreateEditCancel
+      m_thread_id
+      (dispatch Save)
+      (const $ dispatch Save)
+      (routeWith' Home)
