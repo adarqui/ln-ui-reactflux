@@ -212,7 +212,20 @@ viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..}
     cldiv_ B.pageHeader $ do
       h2_ $ elemText boardResponseName
       p_ [className_ B.lead] $ elemText $ maybe "No description." id boardResponseDescription
-      div_ plumbing_threads
+      buttonGroup_HorizontalSm1 $ do
+        -- ACCESS: Board
+        -- * Create: can create threads and sub-boards
+        -- * Update: can edit board settings
+        -- * Delete: can delete board
+        --
+        permissionsHTML'
+          boardPackResponsePermissions
+          (button_newThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName New)
+          permReadEmpty
+          (button_editBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (EditS boardResponseName))
+          (button_deleteBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (DeleteS boardResponseName))
+          permExecuteEmpty
+    div_ plumbing_threads
 
   where
   OrganizationResponse{..} = organizationPackResponseOrganization
