@@ -187,8 +187,8 @@ viewShowS
   -> Loader (Map ThreadId ThreadPackResponse)
   -> HTMLView_
 
-viewShowS l_morganization l_mforum l_mboard l_threads = do
-  Loader.loader4 l_morganization l_mforum l_mboard l_threads $ \m_organization m_forum m_board threads -> do
+viewShowS l_m_organization l_m_forum l_m_board l_threads = do
+  Loader.loader4 l_m_organization l_m_forum l_m_board l_threads $ \m_organization m_forum m_board threads -> do
     case (m_organization, m_forum, m_board) of
       (Just organization, Just forum, Just board) ->
         viewShowS_
@@ -238,8 +238,8 @@ viewNew
   :: Loader (Maybe ForumPackResponse)
   -> Maybe BoardRequest
   -> HTMLView_
-viewNew l_mforum m_request = do
-  Loader.maybeLoader1 l_mforum $ \ForumPackResponse{..} ->
+viewNew l_m_forum m_request = do
+  Loader.maybeLoader1 l_m_forum $ \ForumPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyCreate forumPackResponseForumId Nothing request
 
 
@@ -248,8 +248,8 @@ viewEditS
   :: Loader (Maybe BoardPackResponse)
   -> Maybe BoardRequest
   -> HTMLView_
-viewEditS l_mboard m_request =
-  Loader.maybeLoader1 l_mboard $ \BoardPackResponse{..} ->
+viewEditS l_m_board m_request =
+  Loader.maybeLoader1 l_m_board $ \BoardPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyUpdate (boardResponseOrgId boardPackResponseBoard) (Just boardPackResponseBoardId) request
 
 
