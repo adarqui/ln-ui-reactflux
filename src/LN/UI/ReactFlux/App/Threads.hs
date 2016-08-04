@@ -18,7 +18,7 @@ module LN.UI.ReactFlux.App.Threads (
 
 import           Control.Concurrent                   (forkIO)
 import           Control.DeepSeq                      (NFData)
-import           Control.Monad                        (void)
+import           Control.Monad                        (void, forM_)
 import           Control.Monad.Trans.Either           (EitherT, runEitherT)
 import           Data.Ebyam                           (ebyam)
 import           Data.Int                             (Int64)
@@ -117,8 +117,31 @@ viewIndex_
   -> Map ThreadId ThreadPackResponse
   -> HTMLView_
 
-viewIndex_ organization forum board threads = do
-  p_ $ elemText "..."
+viewIndex_ organization forum board threads_map = do
+  -- renderPageNumbers ...
+  ul_ [className_ B.listUnstyled] $ do
+    forM_ (Map.elems threads_map) $ \ThreadPackResponse{..} -> do
+      let
+        ThreadResponse{..}     = threadPackResponseThread
+        ThreadStatResponse{..} = threadPackResponseStat
+        thread_post            = threadPackResponseLatestThreadPost
+        user                   = threadPackResponseLatestThreadPostUser
+      li_ $ do
+        cldiv_ B.row $ do
+          cldiv_ B.colXs1 $ do
+            -- p_ $ ahref ...
+            -- renderGravatar ...
+          cldiv_ B.colXs5 $ do
+            cldiv_ B.listGroup $ do
+              ahrefClassesName [B.listGroupItem] threadResponseDisplayName $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName)
+
+  where
+  OrganizationPackResponse{..} = organization
+  OrganizationResponse{..}     = organizationPackResponseOrganization
+  ForumPackResponse{..}        = forum
+  ForumResponse{..}            = forumPackResponseForum
+  BoardPackResponse{..}        = board
+  BoardResponse{..}            = boardPackResponseBoard
 
 
 
