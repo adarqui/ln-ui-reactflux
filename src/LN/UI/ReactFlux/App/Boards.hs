@@ -52,7 +52,7 @@ import           LN.T.Size
 import           LN.T.Thread
 import           LN.T.ThreadPost
 import           LN.T.User
-import LN.UI.Core.App.Board as Board
+import           LN.UI.Core.App.Board                 as Board
 import           LN.UI.Core.Helpers.DataList          (deleteNth)
 import           LN.UI.Core.Helpers.DataText          (tshow)
 import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
@@ -79,6 +79,7 @@ import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Oops             as Oops (view_)
 import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
+import qualified LN.UI.ReactFlux.App.Threads          as Threads
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
                                                        ahrefClassesName,
                                                        ahrefName, className_,
@@ -195,7 +196,7 @@ viewShowS l_morganization l_mforum l_mboard l_threads = do
           organization
           forum
           board
-          mempty
+          (Threads.viewIndex_ organization forum board threads)
       _ -> Oops.view_
 
 
