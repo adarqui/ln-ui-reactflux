@@ -175,7 +175,8 @@ viewShowS l_m_organization l_m_forum l_boards l_recent_posts = do
         viewShowS_
           organization
           forum
-          (Boards.viewIndex_ organization forum boards)
+          mempty
+--          (Boards.viewIndex_ organization forum boards)
           (viewRecentPosts_ organization forum recent_posts)
           (viewMessagesOfTheWeek_ organization forum)
       _ -> Oops.view_
