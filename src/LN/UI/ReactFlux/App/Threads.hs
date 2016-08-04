@@ -16,9 +16,10 @@ module LN.UI.ReactFlux.App.Threads (
 
 
 
+import Data.Maybe (isJust, fromJust)
 import           Control.Concurrent                   (forkIO)
 import           Control.DeepSeq                      (NFData)
-import           Control.Monad                        (void, forM_)
+import           Control.Monad                        (forM_, void)
 import           Control.Monad.Trans.Either           (EitherT, runEitherT)
 import           Data.Ebyam                           (ebyam)
 import           Data.Int                             (Int64)
@@ -52,8 +53,7 @@ import           LN.T.Size
 import           LN.T.Thread
 import           LN.T.ThreadPost
 import           LN.T.User
-import qualified LN.UI.Core.App.Thread as Thread
-import LN.UI.ReactFlux.App.Core.Shared
+import qualified LN.UI.Core.App.Thread                as Thread
 import           LN.UI.Core.Helpers.DataList          (deleteNth)
 import           LN.UI.Core.Helpers.DataText          (tshow)
 import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
@@ -71,6 +71,7 @@ import           LN.UI.Core.Router                    (CRUD (..), Params,
                                                        routeWith')
 import           LN.UI.Core.Sort
 import           LN.UI.ReactFlux.Access
+import           LN.UI.ReactFlux.App.Core.Shared
 import qualified LN.UI.ReactFlux.App.Delete           as Delete
 import qualified LN.UI.ReactFlux.App.Gravatar         as Gravatar
 import           LN.UI.ReactFlux.App.Loader           (Loader (..))
@@ -120,20 +121,56 @@ viewIndex_
 viewIndex_ organization forum board threads_map = do
   -- renderPageNumbers ...
   ul_ [className_ B.listUnstyled] $ do
-    forM_ (Map.elems threads_map) $ \ThreadPackResponse{..} -> do
+    -- TODO FIXME: This is good actually.. frontend shouldn't show threads with no posts.
+    -- We also shouldn't allow threads to be created without posts.. that's another issue
+    --
+    forM_ ({- sortThreadPacks SortOrderBy_Dsc $-} (filter (isJust . threadPackResponseLatestThreadPostUser) $ Map.elems threads_map)) $ \ThreadPackResponse{..} -> do
       let
-        ThreadResponse{..}     = threadPackResponseThread
-        ThreadStatResponse{..} = threadPackResponseStat
-        thread_post            = threadPackResponseLatestThreadPost
-        user                   = threadPackResponseLatestThreadPostUser
+        ThreadResponse{..}        = threadPackResponseThread
+        ThreadStatResponse{..}    = threadPackResponseStat
+        post                      = threadPackResponseLatestThreadPost
+        UserSanitizedResponse{..} = fromJust threadPackResponseLatestThreadPostUser
       li_ $ do
         cldiv_ B.row $ do
           cldiv_ B.colXs1 $ do
+            -- TODO FIXME: add link to user name
             -- p_ $ ahref ...
-            -- renderGravatar ...
+            p_ $ ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
+            Gravatar.viewUser_ XSmall organizationPackResponseUser
           cldiv_ B.colXs5 $ do
             cldiv_ B.listGroup $ do
               ahrefClassesName [B.listGroupItem] threadResponseDisplayName $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName)
+            p_ $ elemText "page-numbers"
+            p_ $ elemText $ prettyUTCTimeMaybe threadResponseCreatedAt
+          cldiv_ B.colXs2 $ do
+            showBadge "posts " threadStatResponseThreadPosts
+            showBadge "views " threadStatResponseViews
+          cldiv_ B.colXs3 $ do
+            case post of
+              Just ThreadPostResponse{..} -> do
+                div_ $ do
+                  p_ $ do
+                    elemText "Last "
+                    ahrefName "post" $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
+                    elemText " by "
+                    ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
+              _ -> div_ $ p_ $ elemText "No posts."
+          cldiv_ B.colXs1 $ do
+            cldiv_ B.container $ do
+              buttonGroup_VerticalSm1 $ do
+                -- ACCESS: Thread
+                -- * Update: edit thread & thread settings
+                -- * Delete: delete thread
+                --
+                permissionsHTML'
+                  threadPackResponsePermissions
+                  permCreateEmpty
+                  permReadEmpty
+                  (button_editThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (EditS threadResponseName))
+                  (button_deleteThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (DeleteS threadResponseName))
+                  permExecuteEmpty
+
+  -- renderPagenNumbers
 
   where
   OrganizationPackResponse{..} = organization
