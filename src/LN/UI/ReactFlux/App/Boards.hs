@@ -128,9 +128,8 @@ viewIndex_ organization forum boards_map = do
           cldiv_ B.colXs1 $ do
             p_ $ elemText "icon"
           cldiv_ B.colXs5 $ do
-            cldiv_ B.listGroup $ do
-              ahrefClassesName [B.listGroupItem] boardResponseDisplayName $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName)
-              p_ $ elemText $ maybe "No description." id boardResponseDescription
+            p_ $ ahrefName boardResponseDisplayName $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName)
+            p_ $ elemText $ maybe "No description." id boardResponseDescription
           cldiv_ B.colXs2 $ do
             showBadge "threads " boardStatResponseThreads
             showBadge "posts "   boardStatResponseThreadPosts

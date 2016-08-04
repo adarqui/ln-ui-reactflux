@@ -129,8 +129,7 @@ viewIndex_ organization forums_map = do
         cldiv_ B.row $ do
           cldiv_ B.colXs1 $ p_ $ elemText "icon"
         cldiv_ B.colXs6 $ do
-          cldiv_ B.listGroup $ do
-            ahrefClassesName [B.listGroupItem] forumResponseDisplayName $ routeWith' $ OrganizationsForums organizationResponseName (ShowS forumResponseName)
+            p_ $ ahrefName forumResponseDisplayName $ routeWith' $ OrganizationsForums organizationResponseName (ShowS forumResponseName)
             p_ $ elemText $ maybe "No description." id forumResponseDescription
             showTagsSmall forumResponseTags
         cldiv_ B.colXs2 $ do
@@ -175,8 +174,7 @@ viewShowS l_m_organization l_m_forum l_boards l_recent_posts = do
         viewShowS_
           organization
           forum
-          mempty
---          (Boards.viewIndex_ organization forum boards)
+          (Boards.viewIndex_ organization forum boards)
           (viewRecentPosts_ organization forum recent_posts)
           (viewMessagesOfTheWeek_ organization forum)
       _ -> Oops.view_

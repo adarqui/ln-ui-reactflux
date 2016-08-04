@@ -138,8 +138,7 @@ viewIndex_ organization forum board threads_map = do
             p_ $ ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
             Gravatar.viewUser_ XSmall organizationPackResponseUser
           cldiv_ B.colXs5 $ do
-            cldiv_ B.listGroup $ do
-              ahrefClassesName [B.listGroupItem] threadResponseDisplayName $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName)
+            p_ $ ahrefName threadResponseDisplayName $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName)
             p_ $ elemText "page-numbers"
             p_ $ elemText $ prettyUTCTimeMaybe threadResponseCreatedAt
           cldiv_ B.colXs2 $ do
