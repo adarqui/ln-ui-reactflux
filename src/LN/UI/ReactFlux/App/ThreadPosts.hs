@@ -18,7 +18,7 @@ module LN.UI.ReactFlux.App.ThreadPosts (
 
 import           Control.Concurrent                   (forkIO)
 import           Control.DeepSeq                      (NFData)
-import           Control.Monad                        (void, forM_)
+import           Control.Monad                        (forM_, void)
 import           Control.Monad.Trans.Either           (EitherT, runEitherT)
 import           Data.Ebyam                           (ebyam)
 import           Data.Int                             (Int64)
@@ -45,6 +45,7 @@ import           LN.T.Organization
 import           LN.T.Pack.Board
 import           LN.T.Pack.Forum
 import           LN.T.Pack.Organization
+import           LN.T.Pack.Sanitized.User
 import           LN.T.Pack.Thread
 import           LN.T.Pack.ThreadPost
 import           LN.T.Param
@@ -52,6 +53,7 @@ import           LN.T.Size
 import           LN.T.Thread
 import           LN.T.ThreadPost
 import           LN.T.User
+import           LN.UI.Core.Access
 import           LN.UI.Core.Helpers.DataList          (deleteNth)
 import           LN.UI.Core.Helpers.DataText          (tshow)
 import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
@@ -123,41 +125,44 @@ viewIndex_ page_info organization forum board thread posts = do
 
 viewShowI
   :: PageInfo
+  -> UserId
   -> Loader (Maybe OrganizationPackResponse)
   -> Loader (Maybe ForumPackResponse)
   -> Loader (Maybe BoardPackResponse)
   -> Loader (Maybe ThreadPackResponse)
   -> Loader (Maybe ThreadPostPackResponse)
+  -> Map UserId UserSanitizedPackResponse
   -> HTMLView_
 
-viewShowI page_info l_m_organization l_m_forum l_m_board l_m_thread l_m_post = do
+viewShowI page_info me_id l_m_organization l_m_forum l_m_board l_m_thread l_m_post users_map = do
   Loader.maybeLoader5 l_m_organization l_m_forum l_m_board l_m_thread l_m_post $ \organization forum board thread post -> do
     viewShowI_
       page_info
+      me_id
       organization
       forum
       board
       thread
       post
-      mempty
+      users_map
 
 
 
 viewShowI_
   :: PageInfo
+  -> UserId
   -> OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
   -> ThreadPackResponse
   -> ThreadPostPackResponse
-  -> HTMLView_ -- ^ plumbing?
+  -> Map UserId UserSanitizedPackResponse
   -> HTMLView_
 
-viewShowI_ page_info organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} thread@ThreadPackResponse{..} post@ThreadPostPackResponse{..} plumbing_threads = do
+viewShowI_ page_info me_id organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} thread@ThreadPackResponse{..} post@ThreadPostPackResponse{..} users_map = do
   cldiv_ B.containerFluid $ do
     cldiv_ B.pageHeader $ do
       p_ $ elemText "post"
-      div_ plumbing_threads
 
   where
   OrganizationResponse{..} = organizationPackResponseOrganization
@@ -165,6 +170,56 @@ viewShowI_ page_info organization@OrganizationPackResponse{..} forum@ForumPackRe
   BoardResponse{..}        = boardPackResponseBoard
   ThreadResponse{..}       = threadPackResponseThread
   ThreadPostResponse{..}   = threadPostPackResponseThreadPost
+
+
+
+
+viewShared
+  :: PageInfo
+  -> UserId
+  -> OrganizationPackResponse
+  -> ForumPackResponse
+  -> BoardPackResponse
+  -> ThreadPackResponse
+  -> Map ThreadPostId ThreadPostPackResponse
+  -> PageInfo
+  -> Route
+  -> Map UserId UserSanitizedPackResponse
+  -> ThreadPostRequest
+  -> HTMLView_
+
+viewShared
+  page_info
+  me_id
+  organization
+  forum
+  board
+  thread
+  posts
+  posts_page_info
+  posts_route
+  users_map
+  request
+  =
+  div_ $ do
+    PageNumbers.view_ (posts_page_info, routeWith' Home)
+    ul_ [className_ B.listUnstyled] $ do
+      forM_ (Map.elems posts) $ \post -> do
+        li_ $ viewShowI_ page_info me_id organization forum board thread post users_map
+      -- INPUT FORM AT THE BOTTOM
+      -- ACCESS: Thread
+      -- * Create: post within a thread
+      --
+      permissionsMatchCreateHTML
+        threadPackResponsePermissions
+        mempty
+        mempty
+    PageNumbers.view_ (posts_page_info, routeWith' Home)
+  where
+  OrganizationPackResponse{..} = organization
+  ForumPackResponse{..}        = forum
+  BoardPackResponse{..}        = board
+  ThreadPackResponse{..}       = thread
 
 
 
