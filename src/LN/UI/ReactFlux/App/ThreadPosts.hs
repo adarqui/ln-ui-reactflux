@@ -49,6 +49,7 @@ import           LN.T.Pack.Sanitized.User
 import           LN.T.Pack.Thread
 import           LN.T.Pack.ThreadPost
 import           LN.T.Param
+import           LN.T.Profile
 import           LN.T.Size
 import           LN.T.Thread
 import           LN.T.ThreadPost
@@ -159,17 +160,61 @@ viewShowI_
   -> Map UserId UserSanitizedPackResponse
   -> HTMLView_
 
-viewShowI_ page_info me_id organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} thread@ThreadPackResponse{..} post@ThreadPostPackResponse{..} users_map = do
-  cldiv_ B.containerFluid $ do
-    cldiv_ B.pageHeader $ do
-      p_ $ elemText "post"
+viewShowI_ page_info me_id organization forum board thread post users_map = do
+  cldiv_ B.row $ do
+    cldiv_ B.colXs2 $ do
+      ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
+      Gravatar.viewUser_ Medium user
+      -- TODO FIXME: displayUserStats user
+    cldiv_ B.colXs8 $ do
+      ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
+      p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
+      p_ $ elemText "quote / reply"
+
+      -- white-space: pre ... for proper output of multiple spaces etc
+      div_ [ "style" $= "text-white-space: whitespace-pre"
+           ] (p_ $ elemText "displayPostData") -- TODO FIXME displayPostData threadPostResponseBody
+
+      p_ $ elemText $ maybe "" id profileResponseSignature
+
+    cldiv_ B.colXs1 $ do
+      buttonGroup_VerticalSm1 $ do
+        -- ACCESS: ThreadPost
+        -- * Update: edit thread post
+        -- * Delete: delete thread post
+        --
+        permissionsHTML'
+          threadPostPackResponsePermissions
+          permCreateEmpty
+          permReadEmpty
+          (button_editThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (EditI threadPostResponseId))
+          (button_deleteThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (DeleteI threadPostResponseId))
+          permExecuteEmpty
+
+      cldiv_ B.colXs1 $ do
+        -- ACCESS: Member & Not self
+        -- Member: must be a member to like/star
+        -- Not Self: can't like/star your own posts
+        if orgMember organization && notSelf me_id threadPostResponseUserId
+          then p_ $ elemText "like.." -- TODO FIXME: renderLike Ent_ThreadPost post.id like star
+          else mempty
+        -- TODO FIXME: displayPostStats threadPostPackStats
 
   where
-  OrganizationResponse{..} = organizationPackResponseOrganization
-  ForumResponse{..}        = forumPackResponseForum
-  BoardResponse{..}        = boardPackResponseBoard
-  ThreadResponse{..}       = threadPackResponseThread
-  ThreadPostResponse{..}   = threadPostPackResponseThreadPost
+  OrganizationPackResponse{..}  = organization
+  OrganizationResponse{..}      = organizationPackResponseOrganization
+  ForumPackResponse{..}         = forum
+  ForumResponse{..}             = forumPackResponseForum
+  BoardPackResponse{..}         = board
+  BoardResponse{..}             = boardPackResponseBoard
+  ThreadPackResponse{..}        = thread
+  ThreadResponse{..}            = threadPackResponseThread
+  ThreadPostPackResponse{..}    = post
+  ThreadPostResponse{..}        = threadPostPackResponseThreadPost
+  user                          = undefined -- TODO FIXME: Lookup user in map
+  UserSanitizedPackResponse{..} = user
+  UserSanitizedResponse{..}     = userSanitizedPackResponseUser
+  ProfileResponse{..}           = userSanitizedPackResponseProfile
 
 
 
