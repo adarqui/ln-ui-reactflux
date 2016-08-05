@@ -12,6 +12,7 @@ module LN.UI.ReactFlux.App.Users (
 
 
 
+import Control.Monad (forM_)
 import           Control.DeepSeq                      (NFData)
 import           Control.Monad.Trans.Either           (EitherT, runEitherT)
 import           Data.Int                             (Int64)
@@ -66,11 +67,10 @@ viewIndex_ :: PageInfo -> Map UserId UserSanitizedPackResponse -> HTMLView_
 viewIndex_ page_info users = do
     PageNumbers.view_ (page_info, routeWith' $ Users Index)
     ul_ [className_ B.listUnstyled] $ do
-      mapM_ (\UserSanitizedPackResponse{..} -> do
+      forM_ users $ \UserSanitizedPackResponse{..} -> do
         let user = userSanitizedPackResponseUser
         li_ $ do
           cldiv_ B.row $ do
             cldiv_ B.colXs1 $ p_ $ Gravatar.viewUser_ XSmall user
             cldiv_ B.colXs3 $ p_ $ ahrefName (userSanitizedResponseDisplayName user) (routeWith' $ Users (ShowS $ userSanitizedResponseName user))
             cldiv_ B.colXs2 $ p_ $ elemText $ prettyUTCTimeMaybe $ userSanitizedResponseCreatedAt user
-        ) users

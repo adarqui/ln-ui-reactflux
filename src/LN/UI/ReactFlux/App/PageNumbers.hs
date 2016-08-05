@@ -14,18 +14,18 @@ module LN.UI.ReactFlux.App.PageNumbers (
 
 
 
-import           Data.Int                   (Int64)
-import           React.Flux                 hiding (view)
-import qualified React.Flux                 as RF
-import qualified Web.Bootstrap3 as B
+import           Control.Monad                        (forM_)
+import           Data.Int                             (Int64)
+import           React.Flux                           hiding (view)
+import qualified React.Flux                           as RF
+import qualified Web.Bootstrap3                       as B
 
-import           LN.T.Count                 (CountResponse (..),
-                                             CountResponses (..))
-import           LN.UI.Core.Helpers.DataText     (tshow)
+import           LN.T.Count                           (CountResponse (..),
+                                                       CountResponses (..))
+import           LN.UI.Core.Helpers.DataText          (tshow)
+import           LN.UI.Core.PageInfo                  (PageInfo (..))
+import           LN.UI.Core.Router                    (RouteWith (..), updateParams_Offset_Limit)
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahrefName, classNames_)
-import           LN.UI.Core.Router               (RouteWith (..),
-                                             updateParams_Offset_Limit)
-import           LN.UI.Core.PageInfo       (PageInfo (..))
 import           LN.UI.ReactFlux.Types                (HTMLEvent_)
 
 
@@ -56,7 +56,7 @@ view = defineView "pageNumbers" $ \(page_info, route_with@(RouteWith route param
       div_ $ do
         ul_ [classNames_ [B.pagination, B.paginationSm]] $ do
           li_ $ ahrefName "prev" (upd prev)
-          mapM_ (\page_number -> li_ $ ahrefName (tshow page_number) (upd page_number)) pages
+          forM_ pages $ \page_number -> li_ $ ahrefName (tshow page_number) (upd page_number)
           li_ $ ahrefName "next" (upd next)
 
 

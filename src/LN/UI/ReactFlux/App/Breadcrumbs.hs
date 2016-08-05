@@ -10,6 +10,7 @@ module LN.UI.ReactFlux.App.Breadcrumbs (
 
 
 
+import           Control.Monad                        (forM_)
 import           React.Flux                           hiding (view)
 import qualified React.Flux                           as RF
 import qualified Web.Bootstrap3                       as B
@@ -33,4 +34,4 @@ view = defineView "breadcrumbs" $ \(RouteWith route params) ->
     xs -> do
       div_ $ p_ $ do
         ol_ [className_ B.breadcrumb] $
-          mapM_ (\breadcrumb -> li_ $ ahref $ routeWith' breadcrumb) xs
+          forM_ xs $ \breadcrumb -> li_ $ ahref $ routeWith' breadcrumb
