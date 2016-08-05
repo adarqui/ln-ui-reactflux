@@ -133,12 +133,12 @@ viewIndex_ page_info organization forum board threads_map = do
         UserSanitizedResponse{..} = fromJust threadPackResponseLatestThreadPostUser
       li_ $ do
         cldiv_ B.row $ do
-          cldiv_ B.colXs1 $ do
+          cldiv_ B.colXs2 $ do
             -- TODO FIXME: add link to user name
             -- p_ $ ahref ...
             p_ $ ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
-            Gravatar.viewUser_ XSmall organizationPackResponseUser
-          cldiv_ B.colXs5 $ do
+            Gravatar.viewUser_ Small organizationPackResponseUser
+          cldiv_ B.colXs4 $ do
             p_ $ ahrefName threadResponseDisplayName $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName)
             p_ $ elemText "page-numbers"
             p_ $ elemText $ prettyUTCTimeMaybe threadResponseCreatedAt
