@@ -101,12 +101,9 @@ viewIndex
 
 viewIndex page_info l_m_organization l_m_forum l_m_board l_m_thread l_posts = do
   h1_ [className_ B.textCenter] $ elemText "Posts"
-  Loader.maybeLoader1 l_m_organization $ \organization -> do
-    Loader.maybeLoader1 l_m_forum $ \forum -> do
-      Loader.maybeLoader1 l_m_board $ \board -> do
-        Loader.maybeLoader1 l_m_thread $ \thread -> do
-          Loader.loader1 l_posts $ \posts -> do
-            viewIndex_ page_info organization forum board thread posts
+  Loader.maybeLoader4 l_m_organization l_m_forum l_m_board l_m_thread $ \organization forum board thread -> do
+    Loader.loader1 l_posts $ \posts -> do
+      viewIndex_ page_info organization forum board thread posts
 
 
 
