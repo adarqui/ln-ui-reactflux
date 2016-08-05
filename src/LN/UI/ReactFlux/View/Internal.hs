@@ -19,16 +19,17 @@ module LN.UI.ReactFlux.View.Internal (
 ) where
 
 
-import           Data.Text                  (Text)
-import           React.Flux                 hiding (view)
-import qualified React.Flux                 as RF
+import           Data.Text                            (Text)
+import           React.Flux                           hiding (view)
+import qualified React.Flux                           as RF
 import           React.Flux.Internal
-import qualified Web.Bootstrap3             as B
+import qualified Web.Bootstrap3                       as B
 
-import           LN.UI.Core.Helpers.DataList     (toSeqList)
-import           LN.UI.Core.Helpers.GHCJS        (JSString, textToJSString')
+import           LN.UI.Core.Helpers.DataList          (toSeqList)
+import           LN.UI.Core.Helpers.GHCJS             (JSString,
+                                                       textToJSString')
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (className_, classNames_,
-                                             targetValue)
+                                                       targetValue)
 import           LN.UI.ReactFlux.Types                (HTMLView_)
 
 

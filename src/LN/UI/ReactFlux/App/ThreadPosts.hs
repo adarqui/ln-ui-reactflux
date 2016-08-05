@@ -55,6 +55,7 @@ import           LN.T.Thread
 import           LN.T.ThreadPost
 import           LN.T.User
 import           LN.UI.Core.Access
+import qualified LN.UI.Core.App.ThreadPost            as ThreadPost
 import           LN.UI.Core.Helpers.DataList          (deleteNth)
 import           LN.UI.Core.Helpers.DataText          (tshow)
 import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
@@ -72,6 +73,7 @@ import           LN.UI.Core.Router                    (CRUD (..), Params,
                                                        routeWith')
 import           LN.UI.Core.Sort
 import           LN.UI.ReactFlux.Access
+import           LN.UI.ReactFlux.App.Core.Shared
 import qualified LN.UI.ReactFlux.App.Delete           as Delete
 import qualified LN.UI.ReactFlux.App.Gravatar         as Gravatar
 import           LN.UI.ReactFlux.App.Loader           (Loader (..))
@@ -80,6 +82,7 @@ import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Oops             as Oops (view_)
 import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (targetValue)
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
                                                        ahrefClassesName,
                                                        ahrefName, className_,
@@ -189,7 +192,7 @@ viewShowI_ page_info me_id organization forum board thread post users_map = do
 
       -- white-space: pre ... for proper output of multiple spaces etc
       div_ [ "style" $= "text-white-space: whitespace-pre"
-           ] (p_ $ elemText "displayPostData") -- TODO FIXME displayPostData threadPostResponseBody
+           ] $ viewPostData threadPostResponseBody
 
       p_ $ elemText $ maybe "" id profileResponseSignature
 
@@ -304,6 +307,32 @@ viewMod :: TyCRUD -> ThreadId -> Maybe ThreadPostId -> ThreadPostRequest -> HTML
 viewMod tycrud thread_id m_post_id request@ThreadPostRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Post"
+
+    li_ $ do
+      cldiv_ B.row $ do
+        cldiv_ B.colXs2 mempty
+        cldiv_ B.colXs9 $ do
+          tagsField
+            threadPostRequestTags
+            (maybe "" id threadPostRequestStateTag)
+            (dispatch . ThreadPost.setTag request)
+            (dispatch $ ThreadPost.addTag request)
+            (dispatch . ThreadPost.deleteTag request)
+            (dispatch $ ThreadPost.clearTags request)
+
+          cldiv_ B.well $ do
+            p_ $ elemText "bold"
+            p_ $ elemText "youtube"
+            textarea_ [ className_ B.formControl
+                      , "rows" $= "10"
+                      , "value" @= body
+                      , onChange $ \input -> dispatch $ ThreadPost.setBody request (PostDataRaw $ targetValue input)
+                      ] mempty
+            button_ [] $ elemText "cancel"
+            button_ [] $ elemText "send"
+        cldiv_ B.colXs1 mempty
+  where
+  body = postDataToBody threadPostRequestBody
 
 
 
