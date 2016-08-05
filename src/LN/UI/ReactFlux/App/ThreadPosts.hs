@@ -292,3 +292,52 @@ viewMod :: TyCRUD -> ThreadId -> Maybe ThreadPostId -> ThreadPostRequest -> HTML
 viewMod tycrud thread_id m_post_id request@ThreadPostRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Post"
+
+
+
+viewUserStats :: Maybe UserSanitizedPackResponse -> HTMLView_
+viewUserStats Nothing = p_ $ elemText "No stats."
+viewUserStats (Just user) =
+  div_ $ do
+    showBadge "respect "   userSanitizedStatResponseRespect
+    showBadge "threads "   userSanitizedStatResponseThreads
+    showBadge "posts "     userSanitizedStatResponseThreadPosts
+    showBadge "workouts "  userSanitizedStatResponseWorkouts
+    -- showBadge' "resources " userSanitizedStatResponseResources,
+    -- showBadge' "leurons "   userSanitizedStatResponseLeurons
+  where
+  UserSanitizedPackResponse{..} = user
+  UserSanitizedStatResponse{..} = userSanitizedPackResponseStat
+
+
+
+viewPostStats :: ThreadPostStatResponse -> HTMLView_
+viewPostStats ThreadPostStatResponse{..} =
+  div_ $ do
+    showBadge "score: "   $ threadPostStatResponseLikes - threadPostStatResponseDislikes
+    showBadge "up: "      threadPostStatResponseLikes
+    showBadge "neutral: " threadPostStatResponseNeutral
+    showBadge "down: "    threadPostStatResponseDislikes
+    showBadge "stars: "   threadPostStatResponseStars
+    showBadge "views: "   threadPostStatResponseViews
+
+
+
+viewPostData :: PostData -> HTMLView_
+viewPostData body =
+  case body of
+    PostDataEmpty      -> p_ mempty
+    PostDataRaw v      -> p_ $ elemText v
+    PostDataBBCode v   -> p_ $ elemText v
+    -- PostDataBBCode v   ->
+    --   case parseBBCode v of
+    --        Left err    -> H.p_ [H.text "error: ", H.text err]
+    --        Right codes -> H.p_ $ runBBCodeToHTML codes
+    PostDataMarkdown v -> p_ $ elemText "markdown"
+    _                  -> p_ $ elemText "unknown post body"
+
+
+
+postDataToBody :: PostData -> Text
+postDataToBody (PostDataBBCode v) = v
+postDataToBody _                  = ""
