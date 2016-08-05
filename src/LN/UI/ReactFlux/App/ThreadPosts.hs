@@ -270,16 +270,18 @@ viewShared
       -- ACCESS: Thread
       -- * Create: post within a thread
       --
-      permissionsMatchCreateHTML
-        threadPackResponsePermissions
-        mempty
-        mempty
+      ebyam m_request mempty $ \request -> do
+        permissionsMatchCreateHTML
+          threadPackResponsePermissions
+          (viewMod TyCreate threadResponseId Nothing request)
+          mempty
     PageNumbers.view_ (page_info, routeWith' Home)
   where
   OrganizationPackResponse{..} = organization
   ForumPackResponse{..}        = forum
   BoardPackResponse{..}        = board
   ThreadPackResponse{..}       = thread
+  ThreadResponse{..}           = threadPackResponseThread
 
 
 
@@ -380,5 +382,7 @@ viewPostData body =
 
 
 postDataToBody :: PostData -> Text
-postDataToBody (PostDataBBCode v) = v
-postDataToBody _                  = ""
+postDataToBody p = case p of
+  PostDataRaw v    -> v
+  PostDataBBCode v -> v
+  _                -> ""
