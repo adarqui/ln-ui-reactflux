@@ -16,7 +16,6 @@ module LN.UI.ReactFlux.App.Threads (
 
 
 
-import Data.Maybe (isJust, fromJust)
 import           Control.Concurrent                   (forkIO)
 import           Control.DeepSeq                      (NFData)
 import           Control.Monad                        (forM_, void)
@@ -25,6 +24,7 @@ import           Data.Ebyam                           (ebyam)
 import           Data.Int                             (Int64)
 import           Data.Map                             (Map)
 import qualified Data.Map                             as Map
+import           Data.Maybe                           (fromJust, isJust)
 import           Data.Monoid                          ((<>))
 import           Data.Rehtie                          (rehtie)
 import           Data.Text                            (Text)
@@ -80,6 +80,7 @@ import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Oops             as Oops (view_)
 import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
+import qualified LN.UI.ReactFlux.App.ThreadPosts      as ThreadPosts
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
                                                        ahrefClassesName,
                                                        ahrefName, className_,
@@ -198,7 +199,7 @@ viewShowS l_m_organization l_m_forum l_m_board l_m_thread l_posts = do
           forum
           board
           thread
-          mempty
+          (ThreadPosts.viewIndex_ organization forum board thread posts)
       _ -> Oops.view_
 
 
@@ -215,7 +216,21 @@ viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..}
   cldiv_ B.containerFluid $ do
     cldiv_ B.pageHeader $ do
       h2_ $ elemText threadResponseName
-      p_ [className_ B.lead] $ elemText $ maybe "No description." id boardResponseDescription
+      cldiv_ B.containerFluid $ do
+        cldiv_ B.pageHeader $ do
+          buttonGroup_HorizontalSm1 $ do
+            -- ACCESS:
+            -- * Update: edit thread settings
+            -- * Delete: delete thread settings
+            --
+            permissionsHTML'
+              threadPackResponsePermissions
+              permCreateEmpty
+              permReadEmpty
+              (button_editThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (EditS threadResponseName))
+              (button_deleteThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (DeleteS threadResponseName))
+              permExecuteEmpty
+
       div_ plumbing_posts
 
   where
