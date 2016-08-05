@@ -18,7 +18,7 @@ module LN.UI.ReactFlux.App.Boards (
 
 import           Control.Concurrent                   (forkIO)
 import           Control.DeepSeq                      (NFData)
-import           Control.Monad                        (void)
+import           Control.Monad                        (void, forM_)
 import           Control.Monad.Trans.Either           (EitherT, runEitherT)
 import           Data.Ebyam                           (ebyam)
 import           Data.Int                             (Int64)
@@ -104,19 +104,20 @@ viewIndex page_info l_m_organization l_m_forum l_boards = do
   Loader.maybeLoader1 l_m_organization $ \organization -> do
     Loader.maybeLoader1 l_m_forum $ \forum -> do
       Loader.loader1 l_boards $ \boards -> do
-        viewIndex_ organization forum boards
+        viewIndex_ page_info organization forum boards
 
 
 
 viewIndex_
-  :: OrganizationPackResponse
+  :: PageInfo
+  -> OrganizationPackResponse
   -> ForumPackResponse
   -> Map BoardId BoardPackResponse
   -> HTMLView_
 
-viewIndex_ organization forum boards_map = do
+viewIndex_ page_info organization forum boards_map = do
   ul_ [className_ B.listUnstyled] $
-    mapM_ (\BoardPackResponse{..} -> do
+    forM_ (Map.elems boards_map) $ \BoardPackResponse{..} -> do
       let
         BoardResponse{..}     = boardPackResponseBoard
         BoardStatResponse{..} = boardPackResponseStat
@@ -170,7 +171,6 @@ viewIndex_ organization forum boards_map = do
                   (button_deleteBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (DeleteS boardResponseName))
                   permExecuteEmpty
 
-    ) $ Map.elems boards_map
   where
   OrganizationPackResponse{..} = organization
   OrganizationResponse{..}     = organizationPackResponseOrganization
@@ -181,33 +181,36 @@ viewIndex_ organization forum boards_map = do
 
 
 viewShowS
-  :: Loader (Maybe OrganizationPackResponse)
+  :: PageInfo
+  -> Loader (Maybe OrganizationPackResponse)
   -> Loader (Maybe ForumPackResponse)
   -> Loader (Maybe BoardPackResponse)
   -> Loader (Map ThreadId ThreadPackResponse)
   -> HTMLView_
 
-viewShowS l_m_organization l_m_forum l_m_board l_threads = do
+viewShowS page_info l_m_organization l_m_forum l_m_board l_threads = do
   Loader.loader4 l_m_organization l_m_forum l_m_board l_threads $ \m_organization m_forum m_board threads -> do
     case (m_organization, m_forum, m_board) of
       (Just organization, Just forum, Just board) ->
         viewShowS_
+          page_info
           organization
           forum
           board
-          (Threads.viewIndex_ organization forum board threads)
+          (Threads.viewIndex_ page_info organization forum board threads)
       _ -> Oops.view_
 
 
 
 viewShowS_
-  :: OrganizationPackResponse
+  :: PageInfo
+  -> OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
   -> HTMLView_ -- ^ plumbing threads
   -> HTMLView_
 
-viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} plumbing_threads = do
+viewShowS_ page_info organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} plumbing_threads = do
   cldiv_ B.containerFluid $ do
     cldiv_ B.pageHeader $ do
       h2_ $ elemText boardResponseName

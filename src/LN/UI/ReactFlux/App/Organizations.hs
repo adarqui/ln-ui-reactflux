@@ -17,7 +17,7 @@ module LN.UI.ReactFlux.App.Organizations (
 
 import           Control.Concurrent                   (forkIO)
 import           Control.DeepSeq                      (NFData)
-import           Control.Monad                        (void)
+import           Control.Monad                        (void, forM_)
 import           Control.Monad.Trans.Either           (EitherT, runEitherT)
 import           Data.Ebyam                           (ebyam)
 import           Data.Map                             (Map)
@@ -95,7 +95,7 @@ viewIndex_ page_info organizations = do
   ahref $ routeWith' $ Organizations New
   PageNumbers.view_ (page_info, routeWith' $ Organizations Index)
   ul_ [className_ B.listUnstyled] $ do
-    mapM_ (\OrganizationPackResponse{..} -> do
+    forM_ organizations $ \OrganizationPackResponse{..} -> do
       let OrganizationResponse{..} = organizationPackResponseOrganization
       li_ $ do
         cldiv_ B.row $ do
@@ -103,12 +103,11 @@ viewIndex_ page_info organizations = do
           cldiv_ B.colXs3 $ p_ $ ahrefName organizationResponseDisplayName (routeWith' $ Organizations (ShowS organizationResponseName))
           cldiv_ B.colXs6 $ p_ $ elemText $ maybe "No Description." id organizationResponseDescription
           cldiv_ B.colXs2 $ p_ $ elemText $ prettyUTCTimeMaybe organizationResponseCreatedAt
-      ) organizations
 
 
 
-viewShowS :: Loader (Maybe OrganizationPackResponse) -> Loader (Map OrganizationId ForumPackResponse) -> HTMLView_
-viewShowS l_m_organization l_forums = do
+viewShowS :: PageInfo -> Loader (Maybe OrganizationPackResponse) -> Loader (Map OrganizationId ForumPackResponse) -> HTMLView_
+viewShowS page_info l_m_organization l_forums = do
   Loader.loader1 l_m_organization go
   where
   go (Just organization_pack@OrganizationPackResponse{..}) = do
@@ -169,7 +168,7 @@ viewShowS l_m_organization l_forums = do
         elemText "Tags: "
         showTagsSmall organizationResponseTags
 
-    Loader.loader1 l_forums $ Forums.viewIndex_ organization_pack
+    Loader.loader1 l_forums $ Forums.viewIndex_ page_info organization_pack
 
   go _ = NotFound.view_
 

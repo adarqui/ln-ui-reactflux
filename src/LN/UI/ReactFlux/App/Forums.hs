@@ -20,7 +20,7 @@ module LN.UI.ReactFlux.App.Forums (
 
 import           Control.Concurrent                   (forkIO)
 import           Control.DeepSeq                      (NFData)
-import           Control.Monad                        (void)
+import           Control.Monad                        (void, forM_)
 import           Control.Monad.Trans.Either           (EitherT, runEitherT)
 import           Data.Ebyam                           (ebyam)
 import           Data.Int                             (Int64)
@@ -105,12 +105,12 @@ viewIndex page_info l_m_organization l_forums = do
   Loading.loader2 l_m_organization l_forums $ \m_organization forums -> do
     case m_organization of
       Nothing           -> mempty
-      Just organization -> viewIndex_ organization forums
+      Just organization -> viewIndex_ page_info organization forums
 
 
 
-viewIndex_ :: OrganizationPackResponse -> Map Int64 ForumPackResponse -> HTMLView_
-viewIndex_ organization forums_map = do
+viewIndex_ :: PageInfo -> OrganizationPackResponse -> Map Int64 ForumPackResponse -> HTMLView_
+viewIndex_ page_info organization forums_map = do
 
   -- ACCESS: Organization
   -- * Create: can create forums
@@ -121,7 +121,7 @@ viewIndex_ organization forums_map = do
     mempty
 
   cldiv_ B.listUnstyled $
-    mapM_ (\ForumPackResponse{..} -> do
+    forM_ (Map.elems forums_map) $ \ForumPackResponse{..} -> do
       let
         ForumResponse{..}     = forumPackResponseForum
         ForumStatResponse{..} = forumPackResponseStat
@@ -151,7 +151,6 @@ viewIndex_ organization forums_map = do
             (button_editForum $ routeWith' $ OrganizationsForums organizationResponseName (EditS forumResponseName))
             (button_deleteForum $ routeWith' $ OrganizationsForums organizationResponseName (DeleteS forumResponseName))
             permExecuteEmpty
-    ) $ Map.elems forums_map
 
   where
   OrganizationPackResponse{..} = organization
@@ -161,20 +160,22 @@ viewIndex_ organization forums_map = do
 
 
 viewShowS
-  :: Loader (Maybe OrganizationPackResponse)
+  :: PageInfo
+  -> Loader (Maybe OrganizationPackResponse)
   -> Loader (Maybe ForumPackResponse)
   -> Loader (Map BoardId BoardPackResponse)
   -> Loader (Map ThreadPostId ThreadPostPackResponse)
   -> HTMLView_
 
-viewShowS l_m_organization l_m_forum l_boards l_recent_posts = do
+viewShowS page_info l_m_organization l_m_forum l_boards l_recent_posts = do
   Loading.loader4 l_m_organization l_m_forum l_boards l_recent_posts $ \m_organization m_forum boards recent_posts -> do
     case (m_organization, m_forum) of
       (Just organization, Just forum) ->
         viewShowS_
+          page_info
           organization
           forum
-          (Boards.viewIndex_ organization forum boards)
+          (Boards.viewIndex_ page_info organization forum boards)
           (viewRecentPosts_ organization forum recent_posts)
           (viewMessagesOfTheWeek_ organization forum)
       _ -> Oops.view_
@@ -182,14 +183,15 @@ viewShowS l_m_organization l_m_forum l_boards l_recent_posts = do
 
 
 viewShowS_
-  :: OrganizationPackResponse
+  :: PageInfo
+  -> OrganizationPackResponse
   -> ForumPackResponse
   -> HTMLView_ -- ^ plumbing boards
   -> HTMLView_ -- ^ plumbing recent posts
   -> HTMLView_ -- ^ plumbing messages of the week
   -> HTMLView_
 
-viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} plumbing_boards plumbing_recent_posts plumbing_messages_of_the_week = do
+viewShowS_ page_info organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} plumbing_boards plumbing_recent_posts plumbing_messages_of_the_week = do
   cldiv_ B.containerFluid $ do
     cldiv_ B.pageHeader $ do
       h2_ $ elemText forumResponseName
@@ -309,7 +311,7 @@ viewRecentPosts_ organization@OrganizationPackResponse{..} forum@ForumPackRespon
   cldiv_ B.containerFluid $ do
     cldiv_ B.pageHeader $ h4_ $ elemText "Recent posts"
     ul_ [className_ B.listUnstyled] $ do
-      mapM_ (\pack@ThreadPostPackResponse{..} -> do
+      forM_ (sortThreadPostPacks SortOrderBy_Dsc posts_map) $ \pack@ThreadPostPackResponse{..} -> do
         let
           post@ThreadPostResponse{..} = threadPostPackResponseThreadPost
           m_board = threadPostPackResponseWithBoard
@@ -324,7 +326,7 @@ viewRecentPosts_ organization@OrganizationPackResponse{..} forum@ForumPackRespon
             ahref $ routeWith' (Users (ShowS userSanitizedResponseName))
             elemText " at "
             elemText $ tshow threadPostResponseCreatedAt
-        ) $ sortThreadPostPacks SortOrderBy_Dsc posts_map
+
   where
   ForumResponse{..} = forumPackResponseForum
   OrganizationResponse{..} = organizationPackResponseOrganization

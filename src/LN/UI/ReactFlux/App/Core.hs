@@ -128,27 +128,27 @@ renderRouteView Store{..} = do
       RouteWith (Organizations Index) _       -> Organizations.viewIndex _pageInfo _l_organizations
       RouteWith (Organizations New) _         -> Organizations.viewNew _m_organizationRequest
       RouteWith (Organizations (EditS _)) _   -> Organizations.viewEditS _m_organizationRequest _l_m_organization
-      RouteWith (Organizations (ShowS _)) _   -> Organizations.viewShowS _l_m_organization _l_forums
+      RouteWith (Organizations (ShowS _)) _   -> Organizations.viewShowS _pageInfo _l_m_organization _l_forums
 
       RouteWith (OrganizationsForums _ Index) _     -> Forums.viewIndex _pageInfo _l_m_organization _l_forums
       RouteWith (OrganizationsForums _ New) _       -> Forums.viewNew _l_m_organization _m_forumRequest
       RouteWith (OrganizationsForums _ (EditS _)) _ -> Forums.viewEditS _l_m_forum _m_forumRequest
-      RouteWith (OrganizationsForums _ (ShowS _)) _ -> Forums.viewShowS _l_m_organization _l_m_forum _l_boards _l_recentThreadPosts
+      RouteWith (OrganizationsForums _ (ShowS _)) _ -> Forums.viewShowS _pageInfo _l_m_organization _l_m_forum _l_boards _l_recentThreadPosts
 
       RouteWith (OrganizationsForumsBoards _ _ Index) _     -> Boards.viewIndex _pageInfo _l_m_organization _l_m_forum _l_boards
       RouteWith (OrganizationsForumsBoards _ _ New) _       -> Boards.viewNew _l_m_forum _m_boardRequest
       RouteWith (OrganizationsForumsBoards _ _ (EditS _)) _ -> Boards.viewEditS _l_m_board _m_boardRequest
-      RouteWith (OrganizationsForumsBoards _ _ (ShowS _)) _ -> Boards.viewShowS _l_m_organization _l_m_forum _l_m_board _l_threads
+      RouteWith (OrganizationsForumsBoards _ _ (ShowS _)) _ -> Boards.viewShowS _pageInfo _l_m_organization _l_m_forum _l_m_board _l_threads
 
       RouteWith (OrganizationsForumsBoardsThreads _ _ _ Index) _     -> Threads.viewIndex _pageInfo _l_m_organization _l_m_forum _l_m_board _l_threads
       RouteWith (OrganizationsForumsBoardsThreads _ _ _ New) _       -> Threads.viewNew _l_m_board _m_threadRequest
       RouteWith (OrganizationsForumsBoardsThreads _ _ _ (EditS _)) _ -> Threads.viewEditS _l_m_thread _m_threadRequest
-      RouteWith (OrganizationsForumsBoardsThreads _ _ _ (ShowS _)) _ -> Threads.viewShowS _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts
+      RouteWith (OrganizationsForumsBoardsThreads _ _ _ (ShowS _)) _ -> Threads.viewShowS _pageInfo _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts
 
       RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ Index) _     -> ThreadPosts.viewIndex _pageInfo _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts
       RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ New) _       -> ThreadPosts.viewNew _l_m_thread _m_threadPostRequest
       RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (EditI _)) _ -> ThreadPosts.viewEditI _l_m_threadPost _m_threadPostRequest
-      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> ThreadPosts.viewShowI _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_m_threadPost
+      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> ThreadPosts.viewShowI _pageInfo _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_m_threadPost
 
       RouteWith (Users Index) params          -> Users.viewIndex _pageInfo _l_users
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"

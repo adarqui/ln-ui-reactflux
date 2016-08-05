@@ -18,7 +18,7 @@ module LN.UI.ReactFlux.App.ThreadPosts (
 
 import           Control.Concurrent                   (forkIO)
 import           Control.DeepSeq                      (NFData)
-import           Control.Monad                        (void)
+import           Control.Monad                        (void, forM_)
 import           Control.Monad.Trans.Either           (EitherT, runEitherT)
 import           Data.Ebyam                           (ebyam)
 import           Data.Int                             (Int64)
@@ -106,34 +106,37 @@ viewIndex page_info l_m_organization l_m_forum l_m_board l_m_thread l_posts = do
       Loader.maybeLoader1 l_m_board $ \board -> do
         Loader.maybeLoader1 l_m_thread $ \thread -> do
           Loader.loader1 l_posts $ \posts -> do
-            viewIndex_ organization forum board thread posts
+            viewIndex_ page_info organization forum board thread posts
 
 
 
 viewIndex_
-  :: OrganizationPackResponse
+  :: PageInfo
+  -> OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
   -> ThreadPackResponse
   -> Map ThreadPostId ThreadPostPackResponse
   -> HTMLView_
 
-viewIndex_ organization forum board thread posts = do
+viewIndex_ page_info organization forum board thread posts = do
   p_ $ elemText "..."
 
 
 
 viewShowI
-  :: Loader (Maybe OrganizationPackResponse)
+  :: PageInfo
+  -> Loader (Maybe OrganizationPackResponse)
   -> Loader (Maybe ForumPackResponse)
   -> Loader (Maybe BoardPackResponse)
   -> Loader (Maybe ThreadPackResponse)
   -> Loader (Maybe ThreadPostPackResponse)
   -> HTMLView_
 
-viewShowI l_m_organization l_m_forum l_m_board l_m_thread l_m_post = do
+viewShowI page_info l_m_organization l_m_forum l_m_board l_m_thread l_m_post = do
   Loader.maybeLoader5 l_m_organization l_m_forum l_m_board l_m_thread l_m_post $ \organization forum board thread post -> do
     viewShowI_
+      page_info
       organization
       forum
       board
@@ -144,7 +147,8 @@ viewShowI l_m_organization l_m_forum l_m_board l_m_thread l_m_post = do
 
 
 viewShowI_
-  :: OrganizationPackResponse
+  :: PageInfo
+  -> OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
   -> ThreadPackResponse
@@ -152,7 +156,7 @@ viewShowI_
   -> HTMLView_ -- ^ plumbing?
   -> HTMLView_
 
-viewShowI_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} thread@ThreadPackResponse{..} post@ThreadPostPackResponse{..} plumbing_threads = do
+viewShowI_ page_info organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} thread@ThreadPackResponse{..} post@ThreadPostPackResponse{..} plumbing_threads = do
   cldiv_ B.containerFluid $ do
     cldiv_ B.pageHeader $ do
       p_ $ elemText "post"

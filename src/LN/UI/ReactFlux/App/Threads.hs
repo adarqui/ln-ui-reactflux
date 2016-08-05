@@ -108,19 +108,21 @@ viewIndex page_info l_m_organization l_m_forum l_m_board l_threads = do
     Loader.maybeLoader1 l_m_forum $ \forum -> do
       Loader.maybeLoader1 l_m_board $ \board -> do
         Loader.loader1 l_threads $ \threads -> do
-          viewIndex_ organization forum board threads
+          viewIndex_ page_info organization forum board threads
 
 
 
 viewIndex_
-  :: OrganizationPackResponse
+  :: PageInfo
+  -> OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
   -> Map ThreadId ThreadPackResponse
   -> HTMLView_
 
-viewIndex_ organization forum board threads_map = do
+viewIndex_ page_info organization forum board threads_map = do
   -- renderPageNumbers ...
+  PageNumbers.view_ (page_info, routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName))
   ul_ [className_ B.listUnstyled] $ do
     -- TODO FIXME: This is good actually.. frontend shouldn't show threads with no posts.
     -- We also shouldn't allow threads to be created without posts.. that's another issue
@@ -183,36 +185,39 @@ viewIndex_ organization forum board threads_map = do
 
 
 viewShowS
-  :: Loader (Maybe OrganizationPackResponse)
+  :: PageInfo
+  -> Loader (Maybe OrganizationPackResponse)
   -> Loader (Maybe ForumPackResponse)
   -> Loader (Maybe BoardPackResponse)
   -> Loader (Maybe ThreadPackResponse)
   -> Loader (Map ThreadId ThreadPostPackResponse)
   -> HTMLView_
 
-viewShowS l_m_organization l_m_forum l_m_board l_m_thread l_posts = do
+viewShowS page_info l_m_organization l_m_forum l_m_board l_m_thread l_posts = do
   Loader.loader5 l_m_organization l_m_forum l_m_board l_m_thread l_posts $ \m_organization m_forum m_board m_thread posts -> do
     case (m_organization, m_forum, m_board, m_thread) of
       (Just organization, Just forum, Just board, Just thread) ->
         viewShowS_
+          page_info
           organization
           forum
           board
           thread
-          (ThreadPosts.viewIndex_ organization forum board thread posts)
+          (ThreadPosts.viewIndex_ page_info organization forum board thread posts)
       _ -> Oops.view_
 
 
 
 viewShowS_
-  :: OrganizationPackResponse
+  :: PageInfo
+  -> OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
   -> ThreadPackResponse
   -> HTMLView_ -- ^ plumbing thread posts
   -> HTMLView_
 
-viewShowS_ organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} thread@ThreadPackResponse{..} plumbing_posts = do
+viewShowS_ page_info organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} thread@ThreadPackResponse{..} plumbing_posts = do
   cldiv_ B.containerFluid $ do
     cldiv_ B.pageHeader $ do
       h2_ $ elemText threadResponseName
