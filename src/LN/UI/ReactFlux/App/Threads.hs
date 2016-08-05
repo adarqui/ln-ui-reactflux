@@ -46,6 +46,7 @@ import           LN.T.Organization
 import           LN.T.Pack.Board
 import           LN.T.Pack.Forum
 import           LN.T.Pack.Organization
+import           LN.T.Pack.Sanitized.User
 import           LN.T.Pack.Thread
 import           LN.T.Pack.ThreadPost
 import           LN.T.Param
@@ -184,14 +185,17 @@ viewIndex_ page_info organization forum board threads_map = do
 
 viewShowS
   :: PageInfo
+  -> UserId
   -> Loader (Maybe OrganizationPackResponse)
   -> Loader (Maybe ForumPackResponse)
   -> Loader (Maybe BoardPackResponse)
   -> Loader (Maybe ThreadPackResponse)
   -> Loader (Map ThreadId ThreadPostPackResponse)
+  -> Maybe ThreadPostRequest
+  -> Map UserId UserSanitizedPackResponse
   -> HTMLView_
 
-viewShowS page_info l_m_organization l_m_forum l_m_board l_m_thread l_posts = do
+viewShowS page_info me_id l_m_organization l_m_forum l_m_board l_m_thread l_posts m_request users_map = do
   Loader.loader5 l_m_organization l_m_forum l_m_board l_m_thread l_posts $ \m_organization m_forum m_board m_thread posts -> do
     case (m_organization, m_forum, m_board, m_thread) of
       (Just organization, Just forum, Just board, Just thread) ->
@@ -201,7 +205,7 @@ viewShowS page_info l_m_organization l_m_forum l_m_board l_m_thread l_posts = do
           forum
           board
           thread
-          (ThreadPosts.viewIndex_ page_info organization forum board thread posts)
+          (ThreadPosts.viewIndex_ page_info me_id organization forum board thread posts m_request users_map)
       _ -> Oops.view_
 
 

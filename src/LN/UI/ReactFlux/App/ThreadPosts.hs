@@ -95,32 +95,48 @@ import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
 
 viewIndex
   :: PageInfo
+  -> UserId
   -> Loader (Maybe OrganizationPackResponse)
   -> Loader (Maybe ForumPackResponse)
   -> Loader (Maybe BoardPackResponse)
   -> Loader (Maybe ThreadPackResponse)
   -> Loader (Map ThreadPostId ThreadPostPackResponse)
+  -> Maybe ThreadPostRequest
+  -> Map UserId UserSanitizedPackResponse
   -> HTMLView_
 
-viewIndex page_info l_m_organization l_m_forum l_m_board l_m_thread l_posts = do
+viewIndex page_info me_id l_m_organization l_m_forum l_m_board l_m_thread l_posts m_request users_map = do
   h1_ [className_ B.textCenter] $ elemText "Posts"
   Loader.maybeLoader4 l_m_organization l_m_forum l_m_board l_m_thread $ \organization forum board thread -> do
     Loader.loader1 l_posts $ \posts -> do
-      viewIndex_ page_info organization forum board thread posts
+      viewIndex_ page_info me_id organization forum board thread posts m_request users_map
 
 
 
 viewIndex_
   :: PageInfo
+  -> UserId
   -> OrganizationPackResponse
   -> ForumPackResponse
   -> BoardPackResponse
   -> ThreadPackResponse
   -> Map ThreadPostId ThreadPostPackResponse
+  -> Maybe ThreadPostRequest
+  -> Map UserId UserSanitizedPackResponse
   -> HTMLView_
 
-viewIndex_ page_info organization forum board thread posts = do
-  p_ $ elemText "..."
+viewIndex_ page_info me_id organization forum board thread posts m_request users_map = do
+
+  viewShared
+    page_info
+    me_id
+    organization
+    forum
+    board
+    thread
+    posts
+    m_request
+    users_map
 
 
 
@@ -227,10 +243,8 @@ viewShared
   -> BoardPackResponse
   -> ThreadPackResponse
   -> Map ThreadPostId ThreadPostPackResponse
-  -> PageInfo
-  -> Route
+  -> Maybe ThreadPostRequest
   -> Map UserId UserSanitizedPackResponse
-  -> ThreadPostRequest
   -> HTMLView_
 
 viewShared
@@ -241,13 +255,11 @@ viewShared
   board
   thread
   posts
-  posts_page_info
-  posts_route
+  m_request
   users_map
-  request
   =
   div_ $ do
-    PageNumbers.view_ (posts_page_info, routeWith' Home)
+    PageNumbers.view_ (page_info, routeWith' Home)
     ul_ [className_ B.listUnstyled] $ do
       forM_ (Map.elems posts) $ \post -> do
         li_ $ viewShowI_ page_info me_id organization forum board thread post users_map
@@ -259,7 +271,7 @@ viewShared
         threadPackResponsePermissions
         mempty
         mempty
-    PageNumbers.view_ (posts_page_info, routeWith' Home)
+    PageNumbers.view_ (page_info, routeWith' Home)
   where
   OrganizationPackResponse{..} = organization
   ForumPackResponse{..}        = forum
