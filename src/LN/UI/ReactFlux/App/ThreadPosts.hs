@@ -330,8 +330,9 @@ viewMod tycrud thread_id m_post_id request@ThreadPostRequest{..} = do
                       , "value" @= body
                       , onChange $ \input -> dispatch $ ThreadPost.setBody request (PostDataRaw $ targetValue input)
                       ] mempty
-            button_ [] $ elemText "cancel"
-            button_ [] $ elemText "send"
+            -- TODO FIXME: cancel
+            button_ [onClick $ \_ _ -> dispatch $ Goto $ routeWith' Home ] $ elemText "cancel"
+            button_ [onClick $ \_ _ -> dispatch SaveThreadPost] $ elemText "send"
         cldiv_ B.colXs1 mempty
   where
   body = postDataToBody threadPostRequestBody
