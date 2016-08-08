@@ -180,11 +180,29 @@ viewShowI_
   -> HTMLView_
 
 viewShowI_ page_info me_id organization forum board thread post users_map = do
+  case Map.lookup (userSanitizedResponseId $ threadPostPackResponseUser post) users_map of
+    Nothing   -> p_ $ elemText "User not found in Map."
+    Just user -> viewShowI__ page_info me_id organization forum board thread post user
+
+
+
+viewShowI__
+  :: PageInfo
+  -> UserId
+  -> OrganizationPackResponse
+  -> ForumPackResponse
+  -> BoardPackResponse
+  -> ThreadPackResponse
+  -> ThreadPostPackResponse
+  -> UserSanitizedPackResponse
+  -> HTMLView_
+
+viewShowI__ page_info me_id organization forum board thread post user = do
   cldiv_ B.row $ do
     cldiv_ B.colXs2 $ do
       ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
-      Gravatar.viewUser_ Medium user
-      -- TODO FIXME: displayUserStats user
+      Gravatar.viewUser_ Medium userSanitizedPackResponseUser
+      viewUserStats user
     cldiv_ B.colXs8 $ do
       ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
       p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
@@ -230,7 +248,6 @@ viewShowI_ page_info me_id organization forum board thread post users_map = do
   ThreadResponse{..}            = threadPackResponseThread
   ThreadPostPackResponse{..}    = post
   ThreadPostResponse{..}        = threadPostPackResponseThreadPost
-  user                          = undefined -- TODO FIXME: Lookup user in map
   UserSanitizedPackResponse{..} = user
   UserSanitizedResponse{..}     = userSanitizedPackResponseUser
   ProfileResponse{..}           = userSanitizedPackResponseProfile
@@ -339,9 +356,8 @@ viewMod tycrud thread_id m_post_id request@ThreadPostRequest{..} = do
 
 
 
-viewUserStats :: Maybe UserSanitizedPackResponse -> HTMLView_
-viewUserStats Nothing = p_ $ elemText "No stats."
-viewUserStats (Just user) =
+viewUserStats :: UserSanitizedPackResponse -> HTMLView_
+viewUserStats user =
   div_ $ do
     showBadge "respect "   userSanitizedStatResponseRespect
     showBadge "threads "   userSanitizedStatResponseThreads
