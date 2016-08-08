@@ -209,7 +209,7 @@ viewShowI__ page_info me_id organization forum board thread post user = do
       p_ $ elemText "quote / reply"
 
       -- white-space: pre ... for proper output of multiple spaces etc
-      div_ [ "style" $= "text-white-space: whitespace-pre"
+      div_ [ "style" @= (Map.fromList [("text-white-space", "whitespace-pre")] :: Map Text Text)
            ] $ viewPostData threadPostResponseBody
 
       p_ $ elemText $ maybe "" id profileResponseSignature
