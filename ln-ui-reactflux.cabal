@@ -19,6 +19,7 @@ library
                      , LN.UI.ReactFlux.Access
                      , LN.UI.ReactFlux.Dispatcher
                      , LN.UI.ReactFlux.Main
+                     , LN.UI.ReactFlux.Types
                      , LN.UI.ReactFlux.App.About
                      , LN.UI.ReactFlux.App.Boards
                      , LN.UI.ReactFlux.App.Breadcrumbs
