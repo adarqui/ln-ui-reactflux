@@ -55,9 +55,9 @@ view = defineView "pageNumbers" $ \(page_info, route_with@(RouteWith route param
     _      ->
       div_ $ do
         ul_ [classNames_ [B.pagination, B.paginationSm]] $ do
-          li_ $ ahrefName "prev" (upd prev)
-          forM_ pages $ \page_number -> li_ $ ahrefName (tshow page_number) (upd page_number)
-          li_ $ ahrefName "next" (upd next)
+          li_ ["key" $= "pg-prev"] $ ahrefName "prev" (upd prev)
+          forM_ (zip [(1::Int)..] pages) $ \(idx, page_number) -> li_ ["key" @= idx] $ ahrefName (tshow page_number) (upd page_number)
+          li_ ["key" $= "pg-next"] $ ahrefName "next" (upd next)
 
 
 

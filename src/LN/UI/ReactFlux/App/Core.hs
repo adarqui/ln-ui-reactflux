@@ -108,9 +108,9 @@ navBar m_user_pack =
       cldiv_ B.container $ do
         ahrefClasses [B.navbarBrand] $ routeWith' Home
         ul_ [classNames_ [B.navbarNav, B.nav, B.navTabs]] $ do
-          li_ $ ahref $ routeWith' About
-          li_ $ ahref $ routeWith' Portal
-          li_ $ do
+          li_ ["key" $= "nav-about"]  $ ahref $ routeWith' About
+          li_ ["key" $= "nav-portal"] $ ahref $ routeWith' Portal
+          li_ ["key" $= "nav-user"]   $ do
             case m_user_pack of
               Nothing               -> ahref $ routeWith' Login
               Just UserResponse{..} -> ahrefName ("Logout: " <> userResponseName) $ routeWith' Logout
