@@ -32,6 +32,6 @@ view = defineView "breadcrumbs" $ \(RouteWith route params) ->
   case (crumb route) of
     [] -> mempty
     xs -> do
-      div_ $ p_ $ do
+      div_ $ do
         ol_ [className_ B.breadcrumb] $
-          forM_ xs $ \breadcrumb -> li_ $ ahref $ routeWith' breadcrumb
+          forM_ (zip [(1 :: Int)..] xs) $ \(idx, breadcrumb) -> li_ ["key" @= idx] $ ahref $ routeWith' breadcrumb

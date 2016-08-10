@@ -7,7 +7,6 @@
 
 module LN.UI.ReactFlux.App.Organizations (
   viewIndex,
-  viewIndex_,
   viewNew,
   viewEditS,
   viewShowS
@@ -81,23 +80,35 @@ import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
 
 
 
-
 viewIndex :: PageInfo -> Loader (Map OrganizationId OrganizationPackResponse) -> HTMLView_
-viewIndex page_info l_organizations = do
+viewIndex page_info l_organizations = viewWithSKey viewIndex_ "organizations-index" (page_info, l_organizations) mempty
+
+
+
+viewIndex_ :: ReactView (PageInfo, Loader (Map OrganizationId OrganizationPackResponse))
+viewIndex_ = defineView "organization index" $ \(page_info, l_organizations) -> do
   cldiv_ B.containerFluid $ do
     h1_ "Organizations"
-    Loader.loader1 l_organizations (viewIndex_ page_info)
+    Loader.loader1 l_organizations (viewIndex__ page_info)
 
 
 
-viewIndex_ :: PageInfo -> Map OrganizationId OrganizationPackResponse -> HTMLView_
-viewIndex_ page_info organizations = do
+-- viewIndex :: PageInfo -> Loader (Map OrganizationId OrganizationPackResponse) -> HTMLView_
+-- viewIndex page_info l_organizations = do
+--   cldiv_ B.containerFluid $ do
+--     h1_ "Organizations"
+--     Loader.loader1 l_organizations (viewIndex_ page_info)
+
+
+
+viewIndex__ :: PageInfo -> Map OrganizationId OrganizationPackResponse -> HTMLView_
+viewIndex__ page_info organizations = do
   ahref $ routeWith' $ Organizations New
   PageNumbers.view_ (page_info, routeWith' $ Organizations Index)
   ul_ [className_ B.listUnstyled] $ do
     forM_ organizations $ \OrganizationPackResponse{..} -> do
       let OrganizationResponse{..} = organizationPackResponseOrganization
-      li_ $ do
+      li_ ["key" @= organizationResponseId] $ do
         cldiv_ B.row $ do
           cldiv_ B.colXs1 $ p_ $ Gravatar.viewUser_ XSmall organizationPackResponseUser
           cldiv_ B.colXs3 $ p_ $ ahrefName organizationResponseDisplayName (routeWith' $ Organizations (ShowS organizationResponseName))
