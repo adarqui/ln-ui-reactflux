@@ -209,8 +209,7 @@ viewShowI__ page_info me_id organization forum board thread post user = do
       p_ $ elemText "quote / reply"
 
       -- white-space: pre ... for proper output of multiple spaces etc
-      div_ [ "style" @= (Map.fromList [("text-white-space", "whitespace-pre")] :: Map Text Text)
-           ] $ viewPostData threadPostResponseBody
+      div_ $ viewPostData threadPostResponseBody
 
       p_ $ elemText $ maybe "" id profileResponseSignature
 
@@ -388,7 +387,9 @@ viewPostData body =
   case body of
     PostDataEmpty      -> p_ mempty
     PostDataRaw v      -> p_ $ elemText v
-    PostDataBBCode v   -> p_ $ elemText v
+    -- white-space: pre ... for proper output of multiple spaces etc
+    PostDataBBCode v   -> p_ [style [("white-space", "pre")]] $ elemText v
+--    PostDataBBCode v   -> p_ ["style" @= (Map.fromList [("white-space", "pre")] :: Map Text Text)] $ elemText v
     -- PostDataBBCode v   ->
     --   case parseBBCode v of
     --        Left err    -> H.p_ [H.text "error: ", H.text err]
