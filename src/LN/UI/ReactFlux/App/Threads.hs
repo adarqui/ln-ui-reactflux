@@ -120,7 +120,6 @@ viewIndex_
   -> HTMLView_
 
 viewIndex_ page_info organization forum board threads_map = do
-  -- renderPageNumbers ...
   PageNumbers.view_ (page_info, routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName))
   ul_ [className_ B.listUnstyled] $ do
     -- TODO FIXME: This is good actually.. frontend shouldn't show threads with no posts.
@@ -171,7 +170,7 @@ viewIndex_ page_info organization forum board threads_map = do
                   (button_deleteThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (DeleteS threadResponseName))
                   permExecuteEmpty
 
-  -- renderPagenNumbers
+  PageNumbers.view_ (page_info, routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName))
 
   where
   OrganizationPackResponse{..} = organization
