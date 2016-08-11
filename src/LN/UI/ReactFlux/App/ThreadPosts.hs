@@ -278,7 +278,7 @@ viewShared
   users_map
   =
   div_ $ do
-    PageNumbers.view_ (page_info, routeWith' Home)
+    PageNumbers.view_ (page_info, routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
     ul_ [className_ B.listUnstyled] $ do
       forM_ (Map.elems posts) $ \post -> do
         li_ $ viewShowI_ page_info me_id organization forum board thread post users_map
@@ -291,11 +291,14 @@ viewShared
           threadPackResponsePermissions
           (viewMod TyCreate threadResponseId Nothing request)
           mempty
-    PageNumbers.view_ (page_info, routeWith' Home)
+    PageNumbers.view_ (page_info, routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
   where
   OrganizationPackResponse{..} = organization
+  OrganizationResponse{..}     = organizationPackResponseOrganization
   ForumPackResponse{..}        = forum
+  ForumResponse{..}            = forumPackResponseForum
   BoardPackResponse{..}        = board
+  BoardResponse{..}            = boardPackResponseBoard
   ThreadPackResponse{..}       = thread
   ThreadResponse{..}           = threadPackResponseThread
 
