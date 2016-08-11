@@ -148,7 +148,8 @@ renderRouteView Store{..} = do
       RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ Index) _     -> ThreadPosts.viewIndex _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
       RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ New) _       -> ThreadPosts.viewNew _l_m_thread _m_threadPostRequest
       RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (EditI _)) _ -> ThreadPosts.viewEditI _l_m_threadPost _m_threadPostRequest
-      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> ThreadPosts.viewIndex _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
+      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> Threads.viewShowS _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
+--      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> ThreadPosts.viewIndex _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
 --      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> ThreadPosts.viewShowI _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_m_threadPost _usersCache
 
       RouteWith (Users Index) params          -> Users.viewIndex _pageInfo _l_users
