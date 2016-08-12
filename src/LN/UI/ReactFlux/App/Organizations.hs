@@ -87,8 +87,8 @@ viewIndex
   -> Loader (Map OrganizationId OrganizationPackResponse)
   -> HTMLView_
 
-viewIndex !page_info !l_organizations = do
-  defineViewWithSKey "organizations-index-1" (page_info, l_organizations) $ \(page_info, l_organizations) -> do
+viewIndex !page_info' !l_organizations' = do
+  defineViewWithSKey "organizations-index-1" (page_info', l_organizations') $ \(page_info, l_organizations) -> do
     cldiv_ B.containerFluid $ do
       h1_ "Organizations"
       Loader.loader1 l_organizations (viewIndex_ page_info)
@@ -100,8 +100,8 @@ viewIndex_
   -> Map OrganizationId OrganizationPackResponse
   -> HTMLView_
 
-viewIndex_ !page_info !organizations = do
-  defineViewWithSKey "organizations-index-2" (page_info, organizations) $ \(page_info, organizations) -> do
+viewIndex_ !page_info' !organizations' = do
+  defineViewWithSKey "organizations-index-2" (page_info', organizations') $ \(page_info, organizations) -> do
     ahref $ routeWith' $ Organizations New
     PageNumbers.view page_info (routeWith' $ Organizations Index)
     ul_ [className_ B.listUnstyled] $ do
@@ -122,8 +122,8 @@ viewShowS
   -> Loader (Map OrganizationId ForumPackResponse)
   -> HTMLView_
 
-viewShowS !page_info !l_m_organization !l_forums = do
-  defineViewWithSKey "organizations-show-1" (page_info, l_m_organization, l_forums) $ \(page_info, l_m_organization, l_forums) -> do
+viewShowS !page_info' !l_m_organization' !l_forums' = do
+  defineViewWithSKey "organizations-show-1" (page_info', l_m_organization', l_forums') $ \(page_info, l_m_organization, l_forums) -> do
     viewShowS_ page_info l_m_organization l_forums
 
 
@@ -134,71 +134,71 @@ viewShowS_
   -> Loader (Map OrganizationId ForumPackResponse)
   -> HTMLView_
 
-viewShowS_ !page_info !l_m_organization !l_forums = do
-  defineViewWithSKey "organizations-show-2" (page_info, l_m_organization, l_forums) $ \(page_info, l_m_organization, l_forums) -> do
-    Loader.loader1 l_m_organization go
-  where
-  go (Just organization_pack@OrganizationPackResponse{..}) = do
-    let OrganizationResponse{..} = organizationPackResponseOrganization
-    cldiv_ B.containerFluid $ do
+viewShowS_ !page_info' !l_m_organization' !l_forums' = do
+  defineViewWithSKey "organizations-show-2" (page_info', l_m_organization', l_forums') $ \(page_info, l_m_organization, l_forums) -> do
+    Loader.loader1 l_m_organization (go page_info l_forums)
+    where
+    go page_info l_forums (Just organization_pack@OrganizationPackResponse{..}) = do
+      let OrganizationResponse{..} = organizationPackResponseOrganization
+      cldiv_ B.containerFluid $ do
+        cldiv_ B.pageHeader $ do
+          h1_ [className_ B.textCenter] $ elemText $ organizationResponseDisplayName
+          p_ [className_ B.textCenter] $ elemText $ maybe "" id organizationResponseDescription
+
+          -- ACCESS: Organization
+          -- * Member: if not a member, this is a shortcut to join an organization
+          ---
+          isMemberOfOrganizationHTML
+           organization_pack
+           mempty
+           (button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
+
+          -- ACCESS: Organization
+          -- * Update: can edit organization settings
+          -- * Delete: can delete organization
+          --
+          permissionsHTML'
+            organizationPackResponsePermissions
+            permCreateEmpty
+            permReadEmpty
+            (button_editOrganization $ routeWith' $ Organizations (EditS organizationResponseName))
+            (button_deleteOrganization $ routeWith' $ Organizations (DeleteS organizationResponseName))
+            permExecuteEmpty
+
       cldiv_ B.pageHeader $ do
-        h1_ [className_ B.textCenter] $ elemText $ organizationResponseDisplayName
-        p_ [className_ B.textCenter] $ elemText $ maybe "" id organizationResponseDescription
+        p_ $ h4_ $ do
+          elemText "Name:"
+          small_ $ elemText (" " <> organizationResponseName)
 
-        -- ACCESS: Organization
-        -- * Member: if not a member, this is a shortcut to join an organization
-        ---
-        isMemberOfOrganizationHTML
-         organization_pack
-         mempty
-         (button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
+        ebyam organizationResponseDescription mempty $ \desc -> do
+          p_ $ do
+            h4_ $ do
+              elemText "Description"
+              small_ $ elemText desc
 
-        -- ACCESS: Organization
-        -- * Update: can edit organization settings
-        -- * Delete: can delete organization
-        --
-        permissionsHTML'
-          organizationPackResponsePermissions
-          permCreateEmpty
-          permReadEmpty
-          (button_editOrganization $ routeWith' $ Organizations (EditS organizationResponseName))
-          (button_deleteOrganization $ routeWith' $ Organizations (DeleteS organizationResponseName))
-          permExecuteEmpty
+        p_ $ h4_ $ do
+          elemText "Company"
+          small_ $ elemText $ " " <> organizationResponseCompany
 
-    cldiv_ B.pageHeader $ do
-      p_ $ h4_ $ do
-        elemText "Name:"
-        small_ $ elemText (" " <> organizationResponseName)
+        p_ $ h4_ $ do
+          elemText "Location"
+          small_ $ elemText $ " " <> organizationResponseLocation
 
-      ebyam organizationResponseDescription mempty $ \desc -> do
-        p_ $ do
-          h4_ $ do
-            elemText "Description"
-            small_ $ elemText desc
+        p_ $ h4_ $ do
+          elemText "Location"
+          small_ $ elemText $ " " <> tshow organizationResponseMembership
 
-      p_ $ h4_ $ do
-        elemText "Company"
-        small_ $ elemText $ " " <> organizationResponseCompany
+        p_ $ h4_ $ do
+          elemText "Location"
+          small_ $ elemText $ " " <> tshow organizationResponseVisibility
 
-      p_ $ h4_ $ do
-        elemText "Location"
-        small_ $ elemText $ " " <> organizationResponseLocation
+        p_ $ h4_ $ do
+          elemText "Tags: "
+          showTagsSmall organizationResponseTags
 
-      p_ $ h4_ $ do
-        elemText "Location"
-        small_ $ elemText $ " " <> tshow organizationResponseMembership
+      Loader.loader1 l_forums $ Forums.viewIndex_ page_info organization_pack
 
-      p_ $ h4_ $ do
-        elemText "Location"
-        small_ $ elemText $ " " <> tshow organizationResponseVisibility
-
-      p_ $ h4_ $ do
-        elemText "Tags: "
-        showTagsSmall organizationResponseTags
-
-    Loader.loader1 l_forums $ Forums.viewIndex_ page_info organization_pack
-
-  go _ = NotFound.view_
+    go _ _ _ = NotFound.view_
 
 
 
@@ -232,8 +232,10 @@ viewMod
   -> OrganizationRequest
   -> HTMLView_
 
-viewMod !tycrud !m_organization_id !request@OrganizationRequest{..} = do
-  defineViewWithSKey "organizations-mod-1" (tycrud, m_organization_id, request) $ \(tycrud, m_organization_id, request) -> do
+viewMod !tycrud' !m_organization_id' !request' = do
+  defineViewWithSKey "organizations-mod-1" (tycrud', m_organization_id', request') $ \(tycrud, m_organization_id, request) -> do
+    let
+      OrganizationRequest{..} = request
     div_ $ do
       h1_ $ elemText $ linkName tycrud <> " Organization"
 
