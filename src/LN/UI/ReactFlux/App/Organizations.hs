@@ -73,6 +73,7 @@ import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefName,
                                                        className_, classNames_)
+import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
 import           LN.UI.ReactFlux.View.Field

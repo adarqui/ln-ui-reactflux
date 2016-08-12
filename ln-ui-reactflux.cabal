@@ -40,6 +40,7 @@ library
                      , LN.UI.ReactFlux.App.ThreadPosts
                      , LN.UI.ReactFlux.App.Types
                      , LN.UI.ReactFlux.Helpers.ReactFluxDOM
+                     , LN.UI.ReactFlux.Helpers.ReactFluxView
                      , LN.UI.ReactFlux.View
                      , LN.UI.ReactFlux.View.Button
                      , LN.UI.ReactFlux.View.Internal
