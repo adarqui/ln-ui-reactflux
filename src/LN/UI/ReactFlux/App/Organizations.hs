@@ -16,7 +16,7 @@ module LN.UI.ReactFlux.App.Organizations (
 
 import           Control.Concurrent                   (forkIO)
 import           Control.DeepSeq                      (NFData)
-import           Control.Monad                        (void, forM_)
+import           Control.Monad                        (forM_, void)
 import           Control.Monad.Trans.Either           (EitherT, runEitherT)
 import           Data.Ebyam                           (ebyam)
 import           Data.Map                             (Map)
@@ -81,28 +81,19 @@ import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
 
 
 viewIndex :: PageInfo -> Loader (Map OrganizationId OrganizationPackResponse) -> HTMLView_
-viewIndex page_info l_organizations = viewWithSKey viewIndex_ "organizations-index" (page_info, l_organizations) mempty
+viewIndex page_info l_organizations = do
+  viewWithSKey go key (page_info, l_organizations) mempty
+  where
+  key = "organizations-index"
+  go  = defineView key $ \(page_info, l_organizations) -> do
+    cldiv_ B.containerFluid $ do
+      h1_ "Organizations"
+      Loader.loader1 l_organizations (viewIndex_ page_info)
 
 
 
-viewIndex_ :: ReactView (PageInfo, Loader (Map OrganizationId OrganizationPackResponse))
-viewIndex_ = defineView "organization index" $ \(page_info, l_organizations) -> do
-  cldiv_ B.containerFluid $ do
-    h1_ "Organizations"
-    Loader.loader1 l_organizations (viewIndex__ page_info)
-
-
-
--- viewIndex :: PageInfo -> Loader (Map OrganizationId OrganizationPackResponse) -> HTMLView_
--- viewIndex page_info l_organizations = do
---   cldiv_ B.containerFluid $ do
---     h1_ "Organizations"
---     Loader.loader1 l_organizations (viewIndex_ page_info)
-
-
-
-viewIndex__ :: PageInfo -> Map OrganizationId OrganizationPackResponse -> HTMLView_
-viewIndex__ page_info organizations = do
+viewIndex_ :: PageInfo -> Map OrganizationId OrganizationPackResponse -> HTMLView_
+viewIndex_ page_info organizations = do
   ahref $ routeWith' $ Organizations New
   PageNumbers.view_ (page_info, routeWith' $ Organizations Index)
   ul_ [className_ B.listUnstyled] $ do
@@ -119,6 +110,16 @@ viewIndex__ page_info organizations = do
 
 viewShowS :: PageInfo -> Loader (Maybe OrganizationPackResponse) -> Loader (Map OrganizationId ForumPackResponse) -> HTMLView_
 viewShowS page_info l_m_organization l_forums = do
+  viewWithSKey go key (page_info, l_m_organization, l_forums) mempty
+  where
+  key = "organizations-show"
+  go  = defineView key $ \(page_info, l_m_organization, l_forums) -> do
+    viewShowS_ page_info l_m_organization l_forums
+
+
+
+viewShowS_ :: PageInfo -> Loader (Maybe OrganizationPackResponse) -> Loader (Map OrganizationId ForumPackResponse) -> HTMLView_
+viewShowS_ page_info l_m_organization l_forums = do
   Loader.loader1 l_m_organization go
   where
   go (Just organization_pack@OrganizationPackResponse{..}) = do
@@ -200,10 +201,20 @@ viewEditS m_request l_organization_pack =
 
 
 
+viewMod :: TyCRUD -> Maybe OrganizationId -> OrganizationRequest -> HTMLView_
+viewMod tycrud m_organization_id request = do
+  viewWithSKey go key (tycrud, m_organization_id, request) mempty
+  where
+  key = "organizations-mod"
+  go  = defineView key $ \(tycrud, m_organization_id, request) ->
+    viewMod_ tycrud m_organization_id request
+
+
+
 -- | Strictness requirement on input fields
 --
-viewMod :: TyCRUD -> Maybe OrganizationId -> OrganizationRequest -> HTMLView_
-viewMod tycrud m_organization_id request@OrganizationRequest{..} = do
+viewMod_ :: TyCRUD -> Maybe OrganizationId -> OrganizationRequest -> HTMLView_
+viewMod_ tycrud m_organization_id request@OrganizationRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Organization"
 
