@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns      #-}
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE LambdaCase        #-}
@@ -16,28 +17,28 @@ module LN.UI.ReactFlux.App.Boards (
 
 
 
-import           Control.Concurrent                   (forkIO)
-import           Control.DeepSeq                      (NFData)
-import           Control.Monad                        (void, forM_)
-import           Control.Monad.Trans.Either           (EitherT, runEitherT)
-import           Data.Ebyam                           (ebyam)
-import           Data.Int                             (Int64)
-import           Data.Map                             (Map)
-import qualified Data.Map                             as Map
-import           Data.Monoid                          ((<>))
-import           Data.Rehtie                          (rehtie)
-import           Data.Text                            (Text)
+import           Control.Concurrent                    (forkIO)
+import           Control.DeepSeq                       (NFData)
+import           Control.Monad                         (forM_, void)
+import           Control.Monad.Trans.Either            (EitherT, runEitherT)
+import           Data.Ebyam                            (ebyam)
+import           Data.Int                              (Int64)
+import           Data.Map                              (Map)
+import qualified Data.Map                              as Map
+import           Data.Monoid                           ((<>))
+import           Data.Rehtie                           (rehtie)
+import           Data.Text                             (Text)
 import           Data.Tuple.Select
-import           Data.Typeable                        (Typeable)
-import           GHC.Generics                         (Generic)
-import           Haskell.Helpers.Either               (mustPassT)
-import           React.Flux                           hiding (view)
-import qualified React.Flux                           as RF
-import qualified Web.Bootstrap3                       as B
+import           Data.Typeable                         (Typeable)
+import           GHC.Generics                          (Generic)
+import           Haskell.Helpers.Either                (mustPassT)
+import           React.Flux                            hiding (view)
+import qualified React.Flux                            as RF
+import qualified Web.Bootstrap3                        as B
 
 import           LN.Api
-import qualified LN.Api.String                        as ApiS
-import           LN.Generate.Default                  (defaultBoardRequest)
+import qualified LN.Api.String                         as ApiS
+import           LN.Generate.Default                   (defaultBoardRequest)
 import           LN.T.Board
 import           LN.T.Convert
 import           LN.T.Forum
@@ -52,42 +53,43 @@ import           LN.T.Size
 import           LN.T.Thread
 import           LN.T.ThreadPost
 import           LN.T.User
-import           LN.UI.Core.App.Board                 as Board
-import           LN.UI.Core.Helpers.DataList          (deleteNth)
-import           LN.UI.Core.Helpers.DataText          (tshow)
-import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
-import           LN.UI.Core.Helpers.HaskellApiHelpers (rd)
-import           LN.UI.Core.Helpers.Map               (idmapFrom)
-import           LN.UI.Core.PageInfo                  (PageInfo (..),
-                                                       defaultPageInfo,
-                                                       pageInfoFromParams,
-                                                       paramsFromPageInfo)
-import           LN.UI.Core.Router                    (CRUD (..), Params,
-                                                       Route (..),
-                                                       RouteWith (..),
-                                                       TyCRUD (..), emptyParams,
-                                                       linkName, routeWith,
-                                                       routeWith')
+import           LN.UI.Core.App.Board                  as Board
+import           LN.UI.Core.Helpers.DataList           (deleteNth)
+import           LN.UI.Core.Helpers.DataText           (tshow)
+import           LN.UI.Core.Helpers.DataTime           (prettyUTCTimeMaybe)
+import           LN.UI.Core.Helpers.HaskellApiHelpers  (rd)
+import           LN.UI.Core.Helpers.Map                (idmapFrom)
+import           LN.UI.Core.PageInfo                   (PageInfo (..),
+                                                        defaultPageInfo,
+                                                        pageInfoFromParams,
+                                                        paramsFromPageInfo)
+import           LN.UI.Core.Router                     (CRUD (..), Params,
+                                                        Route (..),
+                                                        RouteWith (..),
+                                                        TyCRUD (..),
+                                                        emptyParams, linkName,
+                                                        routeWith, routeWith')
 import           LN.UI.Core.Sort
 import           LN.UI.ReactFlux.Access
 import           LN.UI.ReactFlux.App.Core.Shared
-import qualified LN.UI.ReactFlux.App.Delete           as Delete
-import qualified LN.UI.ReactFlux.App.Gravatar         as Gravatar
-import           LN.UI.ReactFlux.App.Loader           (Loader (..))
-import qualified LN.UI.ReactFlux.App.Loader           as Loader
-import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
-import qualified LN.UI.ReactFlux.App.Oops             as Oops (view_)
-import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
-import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
-import qualified LN.UI.ReactFlux.App.Threads          as Threads
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
-                                                       ahrefClassesName,
-                                                       ahrefName, className_,
-                                                       classNames_)
+import qualified LN.UI.ReactFlux.App.Delete            as Delete
+import qualified LN.UI.ReactFlux.App.Gravatar          as Gravatar
+import           LN.UI.ReactFlux.App.Loader            (Loader (..))
+import qualified LN.UI.ReactFlux.App.Loader            as Loader
+import qualified LN.UI.ReactFlux.App.NotFound          as NotFound (view_)
+import qualified LN.UI.ReactFlux.App.Oops              as Oops (view_)
+import           LN.UI.ReactFlux.App.PageNumbers       (runPageInfo)
+import qualified LN.UI.ReactFlux.App.PageNumbers       as PageNumbers
+import qualified LN.UI.ReactFlux.App.Threads           as Threads
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM  (ahref, ahrefClasses,
+                                                        ahrefClassesName,
+                                                        ahrefName, className_,
+                                                        classNames_)
+import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
 import           LN.UI.ReactFlux.View.Field
-import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
+import           LN.UI.ReactFlux.View.Internal         (showTagsSmall)
 
 
 
@@ -99,11 +101,12 @@ viewIndex
   -> Loader (Map BoardId BoardPackResponse)
   -> HTMLView_
 
-viewIndex page_info l_m_organization l_m_forum l_boards = do
-  h1_ [className_ B.textCenter] $ elemText "Boards"
-  Loader.maybeLoader2 l_m_organization l_m_forum $ \organization forum -> do
-    Loader.loader1 l_boards $ \boards -> do
-      viewIndex_ page_info organization forum boards
+viewIndex !page_info' !l_m_organization' !l_m_forum' !l_boards' = do
+  defineViewWithSKey "boards-index-1" (page_info', l_m_organization', l_m_forum', l_boards') $ \(page_info, l_m_organization, l_m_forum, l_boards) -> do
+    h1_ [className_ B.textCenter] $ elemText "Boards"
+    Loader.maybeLoader2 l_m_organization l_m_forum $ \organization forum -> do
+      Loader.loader1 l_boards $ \boards -> do
+        viewIndex_ page_info organization forum boards
 
 
 
@@ -114,67 +117,68 @@ viewIndex_
   -> Map BoardId BoardPackResponse
   -> HTMLView_
 
-viewIndex_ page_info organization forum boards_map = do
-  ul_ [className_ B.listUnstyled] $
-    forM_ (Map.elems boards_map) $ \BoardPackResponse{..} -> do
-      let
-        BoardResponse{..}     = boardPackResponseBoard
-        BoardStatResponse{..} = boardPackResponseStat
-        thread                = boardPackResponseLatestThread
-        post                  = boardPackResponseLatestThreadPost
-        user                  = boardPackResponseLatestThreadPostUser
-      li_ $ do
-        cldiv_ B.row $ do
-          cldiv_ B.colXs1 $ do
-            p_ $ elemText "icon"
-          cldiv_ B.colXs5 $ do
-            p_ $ ahrefName boardResponseDisplayName $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName)
-            p_ $ elemText $ maybe "No description." id boardResponseDescription
-          cldiv_ B.colXs2 $ do
-            showBadge "threads " boardStatResponseThreads
-            showBadge "posts "   boardStatResponseThreadPosts
-            showBadge "views "   boardStatResponseViews
-          cldiv_ B.colXs3 $ do
-            case (thread, post, user) of
-              (Just ThreadResponse{..}, Just ThreadPostResponse{..}, Just UserSanitizedResponse{..}) -> do
-                div_ $ do
-                  p_ $ do
-                    elemText "Last post by "
-                    ahref $ routeWith' (Users (ShowS userSanitizedResponseName))
-                  p_ $ do
-                    elemText "in "
-                    ahref $ routeWith (OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName)) [(ParamTag_Offset, Offset (-1))]
-                  p_ $ elemText $ prettyUTCTimeMaybe threadPostResponseCreatedAt
-              _ -> div_ $ p_ $ elemText "No posts."
-          cldiv_ B.colXs1 $ do
-            cldiv_ B.container $ do
-              buttonGroup_VerticalSm1 $ do
-                -- ACCESS: Forum
-                -- * Create: can create boards
-                --
-                permissionsMatchCreateHTML
-                  forumPackResponsePermissions
-                  -- TODO FIXME: Child board
-                  (button_newBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName New)
-                  mempty
+viewIndex_ !page_info' !organization' !forum' !boards_map' = do
+  defineViewWithSKey "boards-index-2" (page_info', organization', forum', boards_map') $ \(page_info, organization, forum, boards_map) -> do
+    let
+      OrganizationPackResponse{..} = organization
+      OrganizationResponse{..}     = organizationPackResponseOrganization
+      ForumPackResponse{..}        = forum
+      ForumResponse{..}            = forumPackResponseForum
+    ul_ [className_ B.listUnstyled] $
+      forM_ (Map.elems boards_map) $ \BoardPackResponse{..} -> do
+        let
+          BoardResponse{..}     = boardPackResponseBoard
+          BoardStatResponse{..} = boardPackResponseStat
+          thread                = boardPackResponseLatestThread
+          post                  = boardPackResponseLatestThreadPost
+          user                  = boardPackResponseLatestThreadPostUser
+        li_ $ do
+          cldiv_ B.row $ do
+            cldiv_ B.colXs1 $ do
+              p_ $ elemText "icon"
+            cldiv_ B.colXs5 $ do
+              p_ $ ahrefName boardResponseDisplayName $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName)
+              p_ $ elemText $ maybe "No description." id boardResponseDescription
+            cldiv_ B.colXs2 $ do
+              showBadge "threads " boardStatResponseThreads
+              showBadge "posts "   boardStatResponseThreadPosts
+              showBadge "views "   boardStatResponseViews
+            cldiv_ B.colXs3 $ do
+              case (thread, post, user) of
+                (Just ThreadResponse{..}, Just ThreadPostResponse{..}, Just UserSanitizedResponse{..}) -> do
+                  div_ $ do
+                    p_ $ do
+                      elemText "Last post by "
+                      ahref $ routeWith' (Users (ShowS userSanitizedResponseName))
+                    p_ $ do
+                      elemText "in "
+                      ahref $ routeWith (OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName)) [(ParamTag_Offset, Offset (-1))]
+                    p_ $ elemText $ prettyUTCTimeMaybe threadPostResponseCreatedAt
+                _ -> div_ $ p_ $ elemText "No posts."
+            cldiv_ B.colXs1 $ do
+              cldiv_ B.container $ do
+                buttonGroup_VerticalSm1 $ do
+                  -- ACCESS: Forum
+                  -- * Create: can create boards
+                  --
+                  permissionsMatchCreateHTML
+                    forumPackResponsePermissions
+                    -- TODO FIXME: Child board
+                    (button_newBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName New)
+                    mempty
 
-                -- ACCESS: Board
-                -- * Update: can edit board settings
-                -- * Delete: can delete boads
-                --
-                permissionsHTML'
-                  boardPackResponsePermissions
-                  permCreateEmpty
-                  permReadEmpty
-                  (button_editBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (EditS boardResponseName))
-                  (button_deleteBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (DeleteS boardResponseName))
-                  permExecuteEmpty
+                  -- ACCESS: Board
+                  -- * Update: can edit board settings
+                  -- * Delete: can delete boads
+                  --
+                  permissionsHTML'
+                    boardPackResponsePermissions
+                    permCreateEmpty
+                    permReadEmpty
+                    (button_editBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (EditS boardResponseName))
+                    (button_deleteBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (DeleteS boardResponseName))
+                    permExecuteEmpty
 
-  where
-  OrganizationPackResponse{..} = organization
-  OrganizationResponse{..}     = organizationPackResponseOrganization
-  ForumPackResponse{..}        = forum
-  ForumResponse{..}            = forumPackResponseForum
 
 
 
