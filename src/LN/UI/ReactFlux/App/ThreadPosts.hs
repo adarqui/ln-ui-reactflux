@@ -304,7 +304,8 @@ viewShared
       PageNumbers.view1 page_info (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
       ul_ [className_ B.listUnstyled] $ do
         forM_ (Map.elems posts) $ \post -> do
-          li_ $ viewShowI_ page_info me_id organization forum board thread post users_map
+          -- TODO FIXME ... trying to figure out these react-js warnings
+          defineViewWithSKey (textToJSString' $ tshow $ threadPostPackResponseThreadPostId post) () (const $ li_ $ viewShowI_ page_info me_id organization forum board thread post users_map)
         -- INPUT FORM AT THE BOTTOM
         -- ACCESS: Thread
         -- * Create: post within a thread
