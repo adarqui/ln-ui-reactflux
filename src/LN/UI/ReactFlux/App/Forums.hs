@@ -101,15 +101,24 @@ viewIndex
   -> HTMLView_
 
 viewIndex page_info l_m_organization l_forums = do
-  h1_ [className_ B.textCenter] $ elemText "Forums"
-  Loading.loader2 l_m_organization l_forums $ \m_organization forums -> do
-    case m_organization of
-      Nothing           -> mempty
-      Just organization -> viewIndex_ page_info organization forums
+  viewWithSKey go key (page_info, l_m_organization, l_forums) mempty
+  where
+  key = "forums-index"
+  go  = defineView key $ \(page_info, l_m_organization, l_forums) -> do
+    h1_ [className_ B.textCenter] $ elemText "Forums"
+    Loading.loader2 l_m_organization l_forums $ \m_organization forums -> do
+      case m_organization of
+        Nothing           -> mempty
+        Just organization -> viewIndex_ page_info organization forums
 
 
 
-viewIndex_ :: PageInfo -> OrganizationPackResponse -> Map Int64 ForumPackResponse -> HTMLView_
+viewIndex_
+  :: PageInfo
+  -> OrganizationPackResponse
+  -> Map Int64 ForumPackResponse
+  -> HTMLView_
+
 viewIndex_ page_info organization forums_map = do
 
   -- ACCESS: Organization
@@ -222,32 +231,55 @@ viewShowS_ page_info organization@OrganizationPackResponse{..} forum@ForumPackRe
 
 
 
-viewNew :: Loader (Maybe OrganizationPackResponse) -> Maybe ForumRequest -> HTMLView_
+viewNew
+  :: Loader (Maybe OrganizationPackResponse)
+  -> Maybe ForumRequest
+  -> HTMLView_
+
 viewNew l_m_organization m_request = do
   Loading.maybeLoader1 l_m_organization $ \OrganizationPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewNew_ organizationPackResponseOrganizationId request
 
 
 
-viewNew_ :: OrganizationId -> ForumRequest -> HTMLView_
+viewNew_
+  :: OrganizationId
+  -> ForumRequest
+  -> HTMLView_
+
 viewNew_ organization_id request = viewMod TyCreate organization_id Nothing request
 
 
 
-viewEditS :: Loader (Maybe ForumPackResponse) -> Maybe ForumRequest -> HTMLView_
+viewEditS
+  :: Loader (Maybe ForumPackResponse)
+  -> Maybe ForumRequest
+  -> HTMLView_
+
 viewEditS l_m_forum m_request =
   Loading.maybeLoader1 l_m_forum $ \ForumPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyUpdate (forumResponseOrgId forumPackResponseForum) (Just forumPackResponseForumId) request
 
 
 
-viewEditS_ :: OrganizationId -> ForumId -> Maybe ForumRequest -> HTMLView_
+viewEditS_
+  :: OrganizationId
+  -> ForumId
+  -> Maybe ForumRequest
+  -> HTMLView_
+
 viewEditS_ organization_id forum_id m_request =
   ebyam m_request mempty $ \request -> viewMod TyUpdate organization_id (Just forum_id) request
 
 
 
-viewMod :: TyCRUD -> OrganizationId -> Maybe ForumId -> ForumRequest -> HTMLView_
+viewMod
+  :: TyCRUD
+  -> OrganizationId
+  -> Maybe ForumId
+  -> ForumRequest
+  -> HTMLView_
+
 viewMod tycrud organization_id m_forum_id request@ForumRequest{..} = do
   div_ $ do
     h1_ $ elemText $ linkName tycrud <> " Forum"
