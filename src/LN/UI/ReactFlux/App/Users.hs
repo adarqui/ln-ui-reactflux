@@ -12,8 +12,8 @@ module LN.UI.ReactFlux.App.Users (
 
 
 
-import Control.Monad (forM_)
 import           Control.DeepSeq                      (NFData)
+import           Control.Monad                        (forM_)
 import           Control.Monad.Trans.Either           (EitherT, runEitherT)
 import           Data.Int                             (Int64)
 import           Data.Map                             (Map)
@@ -57,9 +57,13 @@ import           LN.UI.ReactFlux.Types
 
 viewIndex :: PageInfo -> Loader (Map UserId UserSanitizedPackResponse) -> HTMLView_
 viewIndex page_info l_users = do
-  cldiv_ B.containerFluid $ do
-    h1_ "Users"
-    Loader.loader1 l_users (viewIndex_ page_info)
+  viewWithSKey go key (page_info, l_users) mempty
+  where
+  key = "users-index"
+  go  = defineView key $ \(page_info, l_users) -> do
+    cldiv_ B.containerFluid $ do
+      h1_ "Users"
+      Loader.loader1 l_users (viewIndex_ page_info)
 
 
 
