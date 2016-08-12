@@ -321,7 +321,7 @@ viewRecentPosts_ organization@OrganizationPackResponse{..} forum@ForumPackRespon
           user@UserSanitizedResponse{..} = threadPostPackResponseUser
         li_ $ do
           p_ $ do
-            ahref $ routeWith' (OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName board_name thread_name (ShowI threadPostResponseId))
+            ahrefName (thread_name <> "/" <> tshow threadPostResponseId) $ routeWith' (OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName board_name thread_name (ShowI threadPostResponseId))
             elemText " by "
             ahref $ routeWith' (Users (ShowS userSanitizedResponseName))
             elemText " at "
