@@ -264,8 +264,12 @@ viewMod
   -> ForumRequest
   -> HTMLView_
 
-viewMod !tycrud !organization_id !m_forum_id !request = do
-  defineViewWithSKey "forums-mod" (tycrud, organization_id, m_forum_id, request) $ \(tycrud, organization_id, m_forum_id, request) -> do
+viewMod !tycrud' !organization_id' !m_forum_id' !request' = do
+  defineViewWithSKey "forums-mod" (tycrud', organization_id', m_forum_id', request') $ \(tycrud, organization_id, m_forum_id, request) -> do
+
+    let
+      ForumRequest{..} = request
+
     div_ $ do
       h1_ $ elemText $ linkName tycrud <> " Forum"
 
@@ -306,8 +310,6 @@ viewMod !tycrud !organization_id !m_forum_id !request = do
         (dispatch Save)
         (const $ dispatch Save)
         (routeWith' Home)
-      where
-      ForumRequest{..} = request
 
 
 
@@ -319,8 +321,8 @@ viewMessagesOfTheWeek_
   -> ForumPackResponse
   -> HTMLView_
 
-viewMessagesOfTheWeek_ !organization !forum = do
-  defineViewWithSKey "forums-messages-of-the-week" (organization, forum) $ \(organization, forum) -> do
+viewMessagesOfTheWeek_ !organization' !forum' = do
+  defineViewWithSKey "forums-messages-of-the-week" (organization', forum') $ \(organization, forum) -> do
     cldiv_ B.containerFluid $ do
       cldiv_ B.pageHeader $ do
         h4_ $ elemText "Messages of the week"
@@ -336,8 +338,15 @@ viewRecentPosts_
   -> Map ThreadPostId ThreadPostPackResponse
   -> HTMLView_
 
-viewRecentPosts_ !organization !forum !posts_map = do
-  defineViewWithSKey "forums-recent-posts" (organization, forum, posts_map) $ \(organization, forum, posts_map) -> do
+viewRecentPosts_ !organization' !forum' !posts_map' = do
+  defineViewWithSKey "forums-recent-posts" (organization', forum', posts_map') $ \(organization, forum, posts_map) -> do
+
+    let
+      OrganizationPackResponse{..} = organization
+      OrganizationResponse{..}     = organizationPackResponseOrganization
+      ForumPackResponse{..}        = forum
+      ForumResponse{..}            = forumPackResponseForum
+
     cldiv_ B.containerFluid $ do
       cldiv_ B.pageHeader $ h4_ $ elemText "Recent posts"
       ul_ [className_ B.listUnstyled] $ do
@@ -356,9 +365,3 @@ viewRecentPosts_ !organization !forum !posts_map = do
               ahref $ routeWith' (Users (ShowS userSanitizedResponseName))
               elemText " at "
               elemText $ tshow threadPostResponseCreatedAt
-
-    where
-    OrganizationPackResponse{..} = organization
-    OrganizationResponse{..}     = organizationPackResponseOrganization
-    ForumPackResponse{..}        = forum
-    ForumResponse{..}            = forumPackResponseForum
