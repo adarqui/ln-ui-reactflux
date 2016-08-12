@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns      #-}
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -81,47 +82,61 @@ import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
 
 
 
-viewIndex :: PageInfo -> Loader (Map OrganizationId OrganizationPackResponse) -> HTMLView_
-viewIndex page_info l_organizations = do
-  viewWithSKey go key (page_info, l_organizations) mempty
-  where
-  key = "organizations-index"
-  go  = defineView key $ \(page_info, l_organizations) -> do
+viewIndex
+  :: PageInfo
+  -> Loader (Map OrganizationId OrganizationPackResponse)
+  -> HTMLView_
+
+viewIndex !page_info !l_organizations = do
+  defineViewWithSKey "organizations-index-1" (page_info, l_organizations) $ \(page_info, l_organizations) -> do
     cldiv_ B.containerFluid $ do
       h1_ "Organizations"
       Loader.loader1 l_organizations (viewIndex_ page_info)
 
 
 
-viewIndex_ :: PageInfo -> Map OrganizationId OrganizationPackResponse -> HTMLView_
-viewIndex_ page_info organizations = do
-  ahref $ routeWith' $ Organizations New
-  PageNumbers.view_ (page_info, routeWith' $ Organizations Index)
-  ul_ [className_ B.listUnstyled] $ do
-    forM_ organizations $ \OrganizationPackResponse{..} -> do
-      let OrganizationResponse{..} = organizationPackResponseOrganization
-      li_ ["key" @= organizationResponseId] $ do
-        cldiv_ B.row $ do
-          cldiv_ B.colXs1 $ p_ $ Gravatar.viewUser_ XSmall organizationPackResponseUser
-          cldiv_ B.colXs3 $ p_ $ ahrefName organizationResponseDisplayName (routeWith' $ Organizations (ShowS organizationResponseName))
-          cldiv_ B.colXs6 $ p_ $ elemText $ maybe "No Description." id organizationResponseDescription
-          cldiv_ B.colXs2 $ p_ $ elemText $ prettyUTCTimeMaybe organizationResponseCreatedAt
+viewIndex_
+  :: PageInfo
+  -> Map OrganizationId OrganizationPackResponse
+  -> HTMLView_
+
+viewIndex_ !page_info !organizations = do
+  defineViewWithSKey "organizations-index-2" (page_info, organizations) $ \(page_info, organizations) -> do
+    ahref $ routeWith' $ Organizations New
+    PageNumbers.view_ (page_info, routeWith' $ Organizations Index)
+    ul_ [className_ B.listUnstyled] $ do
+      forM_ organizations $ \OrganizationPackResponse{..} -> do
+        let OrganizationResponse{..} = organizationPackResponseOrganization
+        li_ ["key" @= organizationResponseId] $ do
+          cldiv_ B.row $ do
+            cldiv_ B.colXs1 $ p_ $ Gravatar.viewUser_ XSmall organizationPackResponseUser
+            cldiv_ B.colXs3 $ p_ $ ahrefName organizationResponseDisplayName (routeWith' $ Organizations (ShowS organizationResponseName))
+            cldiv_ B.colXs6 $ p_ $ elemText $ maybe "No Description." id organizationResponseDescription
+            cldiv_ B.colXs2 $ p_ $ elemText $ prettyUTCTimeMaybe organizationResponseCreatedAt
 
 
 
-viewShowS :: PageInfo -> Loader (Maybe OrganizationPackResponse) -> Loader (Map OrganizationId ForumPackResponse) -> HTMLView_
-viewShowS page_info l_m_organization l_forums = do
-  viewWithSKey go key (page_info, l_m_organization, l_forums) mempty
-  where
-  key = "organizations-show"
-  go  = defineView key $ \(page_info, l_m_organization, l_forums) -> do
+viewShowS
+  :: PageInfo
+  -> Loader (Maybe OrganizationPackResponse)
+  -> Loader (Map OrganizationId ForumPackResponse)
+  -> HTMLView_
+
+viewShowS !page_info !l_m_organization !l_forums = do
+  defineViewWithSKey "organizations-show-1" (page_info, l_m_organization, l_forums) $ \(page_info, l_m_organization, l_forums) -> do
     viewShowS_ page_info l_m_organization l_forums
 
 
 
-viewShowS_ :: PageInfo -> Loader (Maybe OrganizationPackResponse) -> Loader (Map OrganizationId ForumPackResponse) -> HTMLView_
-viewShowS_ page_info l_m_organization l_forums = do
-  Loader.loader1 l_m_organization go
+viewShowS_
+  :: PageInfo
+  -> Loader (Maybe OrganizationPackResponse)
+  -> Loader (Map OrganizationId ForumPackResponse)
+  -> HTMLView_
+
+viewShowS_ !page_info !l_m_organization !l_forums = do
+  defineViewWithSKey "organizations-show-2" (page_info, l_m_organization, l_forums) $ \(page_info, l_m_organization, l_forums) -> do
+    Loader.loader1 l_m_organization go
   where
   go (Just organization_pack@OrganizationPackResponse{..}) = do
     let OrganizationResponse{..} = organizationPackResponseOrganization
@@ -187,66 +202,69 @@ viewShowS_ page_info l_m_organization l_forums = do
 
 
 
-viewNew :: Maybe OrganizationRequest -> HTMLView_
-viewNew m_request =
+viewNew
+  :: Maybe OrganizationRequest
+  -> HTMLView_
+
+viewNew !m_request =
   ebyam m_request mempty $ \request -> viewMod TyCreate Nothing request
 
 
 
-viewEditS :: Maybe OrganizationRequest -> Loader (Maybe OrganizationPackResponse) -> HTMLView_
-viewEditS m_request l_organization_pack =
+viewEditS
+  :: Maybe OrganizationRequest
+  -> Loader (Maybe OrganizationPackResponse)
+  -> HTMLView_
+
+viewEditS !m_request !l_organization_pack =
   Loader.loader1 l_organization_pack $ \m_organization_pack -> do
     case (m_request, m_organization_pack) of
       (Just request, Just OrganizationPackResponse{..}) -> viewMod TyUpdate (Just organizationPackResponseOrganizationId) request
-      (_, _) -> mempty
-
-
-
-viewMod :: TyCRUD -> Maybe OrganizationId -> OrganizationRequest -> HTMLView_
-viewMod tycrud m_organization_id request = do
-  viewWithSKey go key (tycrud, m_organization_id, request) mempty
-  where
-  key = "organizations-mod"
-  go  = defineView key $ \(tycrud, m_organization_id, request) ->
-    viewMod_ tycrud m_organization_id request
+      _ -> mempty
 
 
 
 -- | Strictness requirement on input fields
 --
-viewMod_ :: TyCRUD -> Maybe OrganizationId -> OrganizationRequest -> HTMLView_
-viewMod_ tycrud m_organization_id request@OrganizationRequest{..} = do
-  div_ $ do
-    h1_ $ elemText $ linkName tycrud <> " Organization"
+viewMod
+  :: TyCRUD
+  -> Maybe OrganizationId
+  -> OrganizationRequest
+  -> HTMLView_
 
-    mandatoryNameField organizationRequestDisplayName (dispatch . Organization.setDisplayName request)
+viewMod !tycrud !m_organization_id !request@OrganizationRequest{..} = do
+  defineViewWithSKey "organizations-mod-1" (tycrud, m_organization_id, request) $ \(tycrud, m_organization_id, request) -> do
+    div_ $ do
+      h1_ $ elemText $ linkName tycrud <> " Organization"
 
-    optionalDescriptionField organizationRequestDescription
-      (dispatch . Organization.setDescription request)
-      (dispatch $ Organization.clearDescription request)
+      mandatoryNameField organizationRequestDisplayName (dispatch . Organization.setDisplayName request)
 
-    mandatoryCompanyField organizationRequestCompany
-      (dispatch . Organization.setCompany request)
+      optionalDescriptionField organizationRequestDescription
+        (dispatch . Organization.setDescription request)
+        (dispatch $ Organization.clearDescription request)
 
-    mandatoryLocationField organizationRequestLocation
-      (dispatch . Organization.setLocation request)
+      mandatoryCompanyField organizationRequestCompany
+        (dispatch . Organization.setCompany request)
 
-    mandatoryMembershipField organizationRequestMembership
-      (dispatch . Organization.setMembership request)
+      mandatoryLocationField organizationRequestLocation
+        (dispatch . Organization.setLocation request)
 
-    mandatoryVisibilityField organizationRequestVisibility
-      (dispatch . Organization.setVisibility request)
+      mandatoryMembershipField organizationRequestMembership
+        (dispatch . Organization.setMembership request)
 
-    tagsField
-       organizationRequestTags
-       (maybe ""  id organizationRequestStateTag)
-       (dispatch . Organization.setTag request)
-       (dispatch $ Organization.addTag request)
-       (dispatch . Organization.deleteTag request)
-       (dispatch $ Organization.clearTags request)
+      mandatoryVisibilityField organizationRequestVisibility
+        (dispatch . Organization.setVisibility request)
 
-    createButtonsCreateEditCancel
-      m_organization_id
-      (dispatch Save)
-      (const $ dispatch Save)
-      (routeWith' Home)
+      tagsField
+         organizationRequestTags
+         (maybe ""  id organizationRequestStateTag)
+         (dispatch . Organization.setTag request)
+         (dispatch $ Organization.addTag request)
+         (dispatch . Organization.deleteTag request)
+         (dispatch $ Organization.clearTags request)
+
+      createButtonsCreateEditCancel
+        m_organization_id
+        (dispatch Save)
+        (const $ dispatch Save)
+        (routeWith' Home)
