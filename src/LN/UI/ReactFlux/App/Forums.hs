@@ -176,8 +176,8 @@ viewShowS
   -> Loader (Map ThreadPostId ThreadPostPackResponse)
   -> HTMLView_
 
-viewShowS !page_info !l_m_organization !l_m_forum !l_boards !l_recent_posts = do
-  defineViewWithSKey "forums-show-1" (l_m_organization, l_m_forum, l_boards, l_recent_posts) $ \(l_m_organization, l_m_forum, l_boards, l_recent_posts) -> do
+viewShowS !page_info' !l_m_organization' !l_m_forum' !l_boards' !l_recent_posts' = do
+  defineViewWithSKey "forums-show-1" (page_info', l_m_organization', l_m_forum', l_boards', l_recent_posts') $ \(page_info, l_m_organization, l_m_forum, l_boards, l_recent_posts) -> do
     Loading.loader4 l_m_organization l_m_forum l_boards l_recent_posts $ \m_organization m_forum boards recent_posts -> do
       case (m_organization, m_forum) of
         (Just organization, Just forum) ->
@@ -201,8 +201,15 @@ viewShowS_
   -> HTMLView_ -- ^ plumbing messages of the week
   -> HTMLView_
 
-viewShowS_ !page_info !organization !forum plumbing_boards !plumbing_recent_posts !plumbing_messages_of_the_week = do
-  defineViewWithSKey "forums-show-2" (page_info, organization, forum, plumbing_boards, plumbing_recent_posts, plumbing_messages_of_the_week) $ \(page_info, organization, forum, plumbing_boards, plumbing_recent_posts, plumbing_messages_of_the_week) -> do
+viewShowS_ !page_info' !organization' !forum' plumbing_boards' !plumbing_recent_posts' !plumbing_messages_of_the_week' = do
+  defineViewWithSKey "forums-show-2" (page_info', organization', forum', plumbing_boards', plumbing_recent_posts', plumbing_messages_of_the_week') $ \(page_info, organization, forum, plumbing_boards, plumbing_recent_posts, plumbing_messages_of_the_week) -> do
+
+    let
+      OrganizationPackResponse{..} = organization
+      OrganizationResponse{..}     = organizationPackResponseOrganization
+      ForumPackResponse{..}        = forum
+      ForumResponse{..}            = forumPackResponseForum
+
     cldiv_ B.containerFluid $ do
       cldiv_ B.pageHeader $ do
         h2_ $ elemText forumResponseName
@@ -225,13 +232,6 @@ viewShowS_ !page_info !organization !forum plumbing_boards !plumbing_recent_post
         div_ plumbing_boards
         div_ plumbing_recent_posts
         div_ plumbing_messages_of_the_week
-
-    where
-    OrganizationPackResponse{..} = organization
-    OrganizationResponse{..}     = organizationPackResponseOrganization
-    ForumPackResponse{..}        = forum
-    ForumResponse{..}            = forumPackResponseForum
-
 
 
 
