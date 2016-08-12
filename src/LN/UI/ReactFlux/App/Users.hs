@@ -58,8 +58,8 @@ import           LN.UI.ReactFlux.Types
 
 
 viewIndex :: PageInfo -> Loader (Map UserId UserSanitizedPackResponse) -> HTMLView_
-viewIndex !page_info !l_users = do
-  defineViewWithSKey "users-index-1" (page_info, l_users) $ \(page_info, l_users) -> do
+viewIndex !page_info' !l_users' = do
+  defineViewWithSKey "users-index-1" (page_info', l_users') $ \(page_info, l_users) -> do
     cldiv_ B.containerFluid $ do
       h1_ "Users"
       Loader.loader1 l_users (viewIndex_ page_info)
@@ -67,8 +67,8 @@ viewIndex !page_info !l_users = do
 
 
 viewIndex_ :: PageInfo -> Map UserId UserSanitizedPackResponse -> HTMLView_
-viewIndex_ !page_info !users = do
-  defineViewWithSKey "users-index-2" (page_info, users) $ \(page_info, users) -> do
+viewIndex_ !page_info' !users' = do
+  defineViewWithSKey "users-index-2" (page_info', users') $ \(page_info, users) -> do
     PageNumbers.view page_info (routeWith' $ Users Index)
     ul_ [className_ B.listUnstyled] $ do
       forM_ users $ \UserSanitizedPackResponse{..} -> do
