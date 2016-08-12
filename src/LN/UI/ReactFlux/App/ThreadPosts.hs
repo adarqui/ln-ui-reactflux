@@ -305,7 +305,9 @@ viewShared
       ul_ [className_ B.listUnstyled] $ do
         forM_ (Map.elems posts) $ \post -> do
           -- TODO FIXME ... trying to figure out these react-js warnings
-          defineViewWithSKey (textToJSString' $ tshow $ threadPostPackResponseThreadPostId post) () (const $ li_ $ viewShowI_ page_info me_id organization forum board thread post users_map)
+          -- defineViewWithSKey (textToJSString' $ tshow $ threadPostPackResponseThreadPostId post) () (const $ li_ $ viewShowI_ page_info me_id organization forum board thread post users_map)
+          -- li_ ["key" $= (textToJSString' $ tshow $ threadPostPackResponseThreadPostId post)] $ viewShowI_ page_info me_id organization forum board thread post users_map
+          li_ $ viewShowI_ page_info me_id organization forum board thread post users_map
         -- INPUT FORM AT THE BOTTOM
         -- ACCESS: Thread
         -- * Create: post within a thread
@@ -358,30 +360,29 @@ viewMod !tycrud' !thread_id' !m_post_id' !request' = do
     div_ $ do
       h1_ $ elemText $ linkName tycrud <> " Post"
 
-      li_ $ do
-        cldiv_ B.row $ do
-          cldiv_ B.colXs2 mempty
-          cldiv_ B.colXs9 $ do
-            tagsField
-              threadPostRequestTags
-              (maybe "" id threadPostRequestStateTag)
-              (dispatch . ThreadPost.setTag request)
-              (dispatch $ ThreadPost.addTag request)
-              (dispatch . ThreadPost.deleteTag request)
-              (dispatch $ ThreadPost.clearTags request)
+      cldiv_ B.row $ do
+        cldiv_ B.colXs2 mempty
+        cldiv_ B.colXs9 $ do
+          tagsField
+            threadPostRequestTags
+            (maybe "" id threadPostRequestStateTag)
+            (dispatch . ThreadPost.setTag request)
+            (dispatch $ ThreadPost.addTag request)
+            (dispatch . ThreadPost.deleteTag request)
+            (dispatch $ ThreadPost.clearTags request)
 
-            cldiv_ B.well $ do
-              p_ $ elemText "bold"
-              p_ $ elemText "youtube"
-              textarea_ [ className_ B.formControl
-                        , "rows" $= "10"
-                        , "value" @= body
-                        , onChange $ \input -> dispatch $ ThreadPost.setBody request (PostDataRaw $ targetValue input)
-                        ] mempty
-              -- TODO FIXME: cancel
-              button_ [onClick $ \_ _ -> dispatch $ Goto $ routeWith' Home ] $ elemText "cancel"
-              button_ [onClick $ \_ _ -> dispatch SaveThreadPost] $ elemText "send"
-          cldiv_ B.colXs1 mempty
+          cldiv_ B.well $ do
+            p_ $ elemText "bold"
+            p_ $ elemText "youtube"
+            textarea_ [ className_ B.formControl
+                      , "rows" $= "10"
+                      , "value" @= body
+                      , onChange $ \input -> dispatch $ ThreadPost.setBody request (PostDataRaw $ targetValue input)
+                      ] mempty
+            -- TODO FIXME: cancel
+            button_ [onClick $ \_ _ -> dispatch $ Goto $ routeWith' Home ] $ elemText "cancel"
+            button_ [onClick $ \_ _ -> dispatch SaveThreadPost] $ elemText "send"
+        cldiv_ B.colXs1 mempty
 
 
 

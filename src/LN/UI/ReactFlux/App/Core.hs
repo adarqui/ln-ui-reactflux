@@ -123,7 +123,7 @@ renderRouteView Store{..} = do
     case _route of
       RouteWith Home _                        -> Home.view_
       RouteWith About _                       -> About.view_
-      RouteWith Portal _                      -> Portal.view_
+      RouteWith Portal _                      -> Portal.view
 
       RouteWith (Organizations Index) _       -> Organizations.viewIndex _pageInfo _l_organizations
       RouteWith (Organizations New) _         -> Organizations.viewNew _m_organizationRequest
