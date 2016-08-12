@@ -119,11 +119,13 @@ viewIndex_
 
 viewIndex_ !page_info' !organization' !forum' !boards_map' = do
   defineViewWithSKey "boards-index-2" (page_info', organization', forum', boards_map') $ \(page_info, organization, forum, boards_map) -> do
+
     let
       OrganizationPackResponse{..} = organization
       OrganizationResponse{..}     = organizationPackResponseOrganization
       ForumPackResponse{..}        = forum
       ForumResponse{..}            = forumPackResponseForum
+
     ul_ [className_ B.listUnstyled] $
       forM_ (Map.elems boards_map) $ \BoardPackResponse{..} -> do
         let
@@ -191,17 +193,18 @@ viewShowS
   -> Loader (Map ThreadId ThreadPackResponse)
   -> HTMLView_
 
-viewShowS page_info l_m_organization l_m_forum l_m_board l_threads = do
-  Loader.loader4 l_m_organization l_m_forum l_m_board l_threads $ \m_organization m_forum m_board threads -> do
-    case (m_organization, m_forum, m_board) of
-      (Just organization, Just forum, Just board) ->
-        viewShowS_
-          page_info
-          organization
-          forum
-          board
-          (Threads.viewIndex_ page_info organization forum board threads)
-      _ -> Oops.view_
+viewShowS !page_info' !l_m_organization' !l_m_forum' !l_m_board' !l_threads' = do
+  defineViewWithSKey "boards-show-1" (page_info', l_m_organization', l_m_forum', l_m_board', l_threads') $ \(page_info, l_m_organization, l_m_forum, l_m_board, l_threads) -> do
+    Loader.loader4 l_m_organization l_m_forum l_m_board l_threads $ \m_organization m_forum m_board threads -> do
+      case (m_organization, m_forum, m_board) of
+        (Just organization, Just forum, Just board) ->
+          viewShowS_
+            page_info
+            organization
+            forum
+            board
+            (Threads.viewIndex_ page_info organization forum board threads)
+        _ -> Oops.view_
 
 
 
@@ -213,30 +216,35 @@ viewShowS_
   -> HTMLView_ -- ^ plumbing threads
   -> HTMLView_
 
-viewShowS_ page_info organization@OrganizationPackResponse{..} forum@ForumPackResponse{..} board@BoardPackResponse{..} plumbing_threads = do
-  cldiv_ B.containerFluid $ do
-    cldiv_ B.pageHeader $ do
-      h2_ $ elemText boardResponseName
-      p_ [className_ B.lead] $ elemText $ maybe "No description." id boardResponseDescription
-      buttonGroup_HorizontalSm1 $ do
-        -- ACCESS: Board
-        -- * Create: can create threads and sub-boards
-        -- * Update: can edit board settings
-        -- * Delete: can delete board
-        --
-        permissionsHTML'
-          boardPackResponsePermissions
-          (button_newThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName New)
-          permReadEmpty
-          (button_editBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (EditS boardResponseName))
-          (button_deleteBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (DeleteS boardResponseName))
-          permExecuteEmpty
-    div_ plumbing_threads
+viewShowS_ !page_info' !organization' !forum' !board' !plumbing_threads' = do
+  defineViewWithSKey "boards-show-2" (page_info', organization', forum', board', plumbing_threads') $ \(page_info, organization, forum, board, plumbing_threads) -> do
 
-  where
-  OrganizationResponse{..} = organizationPackResponseOrganization
-  ForumResponse{..}        = forumPackResponseForum
-  BoardResponse{..}        = boardPackResponseBoard
+    let
+      OrganizationPackResponse{..} = organization
+      OrganizationResponse{..}     = organizationPackResponseOrganization
+      ForumPackResponse{..}        = forum
+      ForumResponse{..}            = forumPackResponseForum
+      BoardPackResponse{..}        = board
+      BoardResponse{..}            = boardPackResponseBoard
+
+    cldiv_ B.containerFluid $ do
+      cldiv_ B.pageHeader $ do
+        h2_ $ elemText boardResponseName
+        p_ [className_ B.lead] $ elemText $ maybe "No description." id boardResponseDescription
+        buttonGroup_HorizontalSm1 $ do
+          -- ACCESS: Board
+          -- * Create: can create threads and sub-boards
+          -- * Update: can edit board settings
+          -- * Delete: can delete board
+          --
+          permissionsHTML'
+            boardPackResponsePermissions
+            (button_newThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName New)
+            permReadEmpty
+            (button_editBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (EditS boardResponseName))
+            (button_deleteBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (DeleteS boardResponseName))
+            permExecuteEmpty
+      div_ plumbing_threads
 
 
 
@@ -244,7 +252,8 @@ viewNew
   :: Loader (Maybe ForumPackResponse)
   -> Maybe BoardRequest
   -> HTMLView_
-viewNew l_m_forum m_request = do
+
+viewNew !l_m_forum !m_request = do
   Loader.maybeLoader1 l_m_forum $ \ForumPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyCreate forumPackResponseForumId Nothing request
 
@@ -254,50 +263,61 @@ viewEditS
   :: Loader (Maybe BoardPackResponse)
   -> Maybe BoardRequest
   -> HTMLView_
-viewEditS l_m_board m_request =
+viewEditS !l_m_board !m_request =
   Loader.maybeLoader1 l_m_board $ \BoardPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyUpdate (boardResponseOrgId boardPackResponseBoard) (Just boardPackResponseBoardId) request
 
 
 
-viewMod :: TyCRUD -> OrganizationId -> Maybe ForumId -> BoardRequest -> HTMLView_
-viewMod tycrud organization_id m_forum_id request@BoardRequest{..} = do
-  div_ $ do
-    h1_ $ elemText $ linkName tycrud <> " Board"
+viewMod
+  :: TyCRUD
+  -> OrganizationId
+  -> Maybe ForumId
+  -> BoardRequest
+  -> HTMLView_
 
-    mandatoryNameField boardRequestDisplayName (dispatch . Board.setDisplayName request)
+viewMod !tycrud' !organization_id' !m_forum_id' !request' = do
+  defineViewWithSKey "boards-mod" (tycrud', organization_id', m_forum_id', request') $ \(tycrud, organization_id, m_forum_id, request) -> do
 
-    optionalDescriptionField boardRequestDescription
-      (dispatch . Board.setDescription request)
-      (dispatch $ Board.clearDescription request)
+    let
+      BoardRequest{..} = request
 
-    mandatoryBooleanYesNoField "Anonymous" boardRequestIsAnonymous False
-      (dispatch . Board.setIsAnonymous request)
+    div_ $ do
+      h1_ $ elemText $ linkName tycrud <> " Board"
 
-    mandatoryBooleanYesNoField "Can create sub-boards" boardRequestCanCreateSubBoards True
-      (dispatch . Board.setCanCreateSubBoards request)
+      mandatoryNameField boardRequestDisplayName (dispatch . Board.setDisplayName request)
 
-    mandatoryBooleanYesNoField "Can create threads" boardRequestCanCreateThreads True
-      (dispatch . Board.setCanCreateThreads request)
+      optionalDescriptionField boardRequestDescription
+        (dispatch . Board.setDescription request)
+        (dispatch $ Board.clearDescription request)
 
-    suggestedTagsField
-      boardRequestSuggestedTags
-      (maybe "" id boardRequestStateSuggestedTag)
-      (dispatch . Board.setSuggestedTag request)
-      (dispatch $ Board.addSuggestedTag request)
-      (dispatch . Board.deleteSuggestedTag request)
-      (dispatch $ Board.clearSuggestedTags request)
+      mandatoryBooleanYesNoField "Anonymous" boardRequestIsAnonymous False
+        (dispatch . Board.setIsAnonymous request)
 
-    tagsField
-      boardRequestTags
-      (maybe "" id boardRequestStateTag)
-      (dispatch . Board.setTag request)
-      (dispatch $ Board.addTag request)
-      (dispatch . Board.deleteTag request)
-      (dispatch $ Board.clearTags request)
+      mandatoryBooleanYesNoField "Can create sub-boards" boardRequestCanCreateSubBoards True
+        (dispatch . Board.setCanCreateSubBoards request)
 
-    createButtonsCreateEditCancel
-      m_forum_id
-      (dispatch Save)
-      (const $ dispatch Save)
-      (routeWith' Home)
+      mandatoryBooleanYesNoField "Can create threads" boardRequestCanCreateThreads True
+        (dispatch . Board.setCanCreateThreads request)
+
+      suggestedTagsField
+        boardRequestSuggestedTags
+        (maybe "" id boardRequestStateSuggestedTag)
+        (dispatch . Board.setSuggestedTag request)
+        (dispatch $ Board.addSuggestedTag request)
+        (dispatch . Board.deleteSuggestedTag request)
+        (dispatch $ Board.clearSuggestedTags request)
+
+      tagsField
+        boardRequestTags
+        (maybe "" id boardRequestStateTag)
+        (dispatch . Board.setTag request)
+        (dispatch $ Board.addTag request)
+        (dispatch . Board.deleteTag request)
+        (dispatch $ Board.clearTags request)
+
+      createButtonsCreateEditCancel
+        m_forum_id
+        (dispatch Save)
+        (const $ dispatch Save)
+        (routeWith' Home)
