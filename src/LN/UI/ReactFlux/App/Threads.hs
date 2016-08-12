@@ -134,7 +134,7 @@ viewIndex_ !page_info' !organization' !forum' !board' !threads_map' = do
       BoardPackResponse{..}        = board
       BoardResponse{..}            = boardPackResponseBoard
 
-    PageNumbers.view page_info (routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName))
+    PageNumbers.view1 page_info (routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName))
     ul_ [className_ B.listUnstyled] $ do
       -- TODO FIXME: This is good actually.. frontend shouldn't show threads with no posts.
       -- We also shouldn't allow threads to be created without posts.. that's another issue
@@ -184,7 +184,7 @@ viewIndex_ !page_info' !organization' !forum' !board' !threads_map' = do
                     (button_deleteThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (DeleteS threadResponseName))
                     permExecuteEmpty
 
-    PageNumbers.view page_info (routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName))
+    PageNumbers.view2 page_info (routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName))
 
 
 
