@@ -227,7 +227,13 @@ viewShowS_
   -> HTMLView_
 
 viewShowS_ !page_info' !organization' !forum' !board' !thread' !plumbing_posts' = do
-  defineViewWithSKey "threads-show-2" (page_info', organization', forum', board', thread', plumbing_posts') $ \(page_info, organization, forum, board, thread, plumbing_posts) -> do
+  defineViewWithSKey
+    "threads-show-2"
+    (page_info', organization', forum', board', thread', plumbing_posts')
+    go
+
+  where
+  go (page_info, organization, forum, board, thread, plumbing_posts) = do
 
     let
       OrganizationPackResponse{..} = organization
