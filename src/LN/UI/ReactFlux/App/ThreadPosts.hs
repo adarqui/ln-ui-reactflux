@@ -426,7 +426,7 @@ viewPostData
 viewPostData !body =
   case body of
     PostDataEmpty      -> p_ mempty
-    PostDataRaw v      -> p_ $ elemText v
+    PostDataRaw v      -> p_ [style [("white-space", "pre")]] $ elemText v
     -- white-space: pre ... for proper output of multiple spaces etc
     PostDataBBCode v   -> p_ [style [("white-space", "pre")]] $ elemText v
 --    PostDataBBCode v   -> p_ ["style" @= (Map.fromList [("white-space", "pre")] :: Map Text Text)] $ elemText v
