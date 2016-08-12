@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns      #-}
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE LambdaCase        #-}
@@ -82,11 +83,11 @@ import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Oops             as Oops (view_)
 import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (targetValue)
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
                                                        ahrefClassesName,
                                                        ahrefName, className_,
-                                                       classNames_)
+                                                       classNames_, targetValue)
+import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
 import           LN.UI.ReactFlux.View.Button          (showBadge)
@@ -108,11 +109,12 @@ viewIndex
   -> Map UserId UserSanitizedPackResponse
   -> HTMLView_
 
-viewIndex page_info me_id l_m_organization l_m_forum l_m_board l_m_thread l_posts m_request users_map = do
-  h1_ [className_ B.textCenter] $ elemText "Posts"
-  Loader.maybeLoader4 l_m_organization l_m_forum l_m_board l_m_thread $ \organization forum board thread -> do
-    Loader.loader1 l_posts $ \posts -> do
-      viewIndex_ page_info me_id organization forum board thread posts m_request users_map
+viewIndex !page_info' !me_id' !l_m_organization' !l_m_forum' !l_m_board' !l_m_thread' !l_posts' !m_request' !users_map' = do
+  defineViewWithSKey "posts-index-1" (page_info', me_id', l_m_organization', l_m_forum', l_m_board', l_m_thread', l_posts', m_request', users_map') $ \(page_info, me_id, l_m_organization, l_m_forum, l_m_board, l_m_thread, l_posts, m_request, users_map) -> do
+    h1_ [className_ B.textCenter] $ elemText "Posts"
+    Loader.maybeLoader4 l_m_organization l_m_forum l_m_board l_m_thread $ \organization forum board thread -> do
+      Loader.loader1 l_posts $ \posts -> do
+        viewIndex_ page_info me_id organization forum board thread posts m_request users_map
 
 
 
@@ -278,7 +280,7 @@ viewShared
   users_map
   =
   div_ $ do
-    PageNumbers.view page_info (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
+    PageNumbers.view1 page_info (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
     ul_ [className_ B.listUnstyled] $ do
       forM_ (Map.elems posts) $ \post -> do
         li_ $ viewShowI_ page_info me_id organization forum board thread post users_map
@@ -291,7 +293,7 @@ viewShared
           threadPackResponsePermissions
           (viewMod TyCreate threadResponseId Nothing request)
           mempty
-    PageNumbers.view page_info (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
+    PageNumbers.view2 page_info (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
   where
   OrganizationPackResponse{..} = organization
   OrganizationResponse{..}     = organizationPackResponseOrganization
