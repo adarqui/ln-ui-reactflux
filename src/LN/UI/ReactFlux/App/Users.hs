@@ -69,7 +69,7 @@ viewIndex !page_info !l_users = do
 viewIndex_ :: PageInfo -> Map UserId UserSanitizedPackResponse -> HTMLView_
 viewIndex_ !page_info !users = do
   defineViewWithSKey "users-index-2" (page_info, users) $ \(page_info, users) -> do
-    PageNumbers.view_ (page_info, routeWith' $ Users Index)
+    PageNumbers.view page_info (routeWith' $ Users Index)
     ul_ [className_ B.listUnstyled] $ do
       forM_ users $ \UserSanitizedPackResponse{..} -> do
         let user = userSanitizedPackResponseUser

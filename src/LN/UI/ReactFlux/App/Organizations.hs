@@ -103,7 +103,7 @@ viewIndex_
 viewIndex_ !page_info !organizations = do
   defineViewWithSKey "organizations-index-2" (page_info, organizations) $ \(page_info, organizations) -> do
     ahref $ routeWith' $ Organizations New
-    PageNumbers.view_ (page_info, routeWith' $ Organizations Index)
+    PageNumbers.view page_info (routeWith' $ Organizations Index)
     ul_ [className_ B.listUnstyled] $ do
       forM_ organizations $ \OrganizationPackResponse{..} -> do
         let OrganizationResponse{..} = organizationPackResponseOrganization
