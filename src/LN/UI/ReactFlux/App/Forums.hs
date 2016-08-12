@@ -102,8 +102,8 @@ viewIndex
   -> Loader (Map ForumId ForumPackResponse)
   -> HTMLView_
 
-viewIndex !page_info l_m_organization l_forums = do
-  defineViewWithSKey "forums-index-1" (page_info, l_m_organization, l_forums) $ \(page_info, l_m_organization, l_forums) -> do
+viewIndex !page_info' l_m_organization' l_forums' = do
+  defineViewWithSKey "forums-index-1" (page_info', l_m_organization', l_forums') $ \(page_info, l_m_organization, l_forums) -> do
     h1_ [className_ B.textCenter] $ elemText "Forums"
     Loading.loader2 l_m_organization l_forums $ \m_organization forums -> do
       case m_organization of
@@ -118,8 +118,12 @@ viewIndex_
   -> Map Int64 ForumPackResponse
   -> HTMLView_
 
-viewIndex_ !page_info !organization !forums_map = do
-  defineViewWithSKey "forums-index-2" (page_info, organization, forums_map) $ \(page_info, organization, forums_map) -> do
+viewIndex_ !page_info' !organization' !forums_map' = do
+  defineViewWithSKey "forums-index-2" (page_info', organization', forums_map') $ \(page_info, organization, forums_map) -> do
+
+    let
+      OrganizationPackResponse{..} = organization
+      OrganizationResponse{..}     = organizationPackResponseOrganization
 
     -- ACCESS: Organization
     -- * Create: can create forums
@@ -160,10 +164,6 @@ viewIndex_ !page_info !organization !forums_map = do
               (button_editForum $ routeWith' $ OrganizationsForums organizationResponseName (EditS forumResponseName))
               (button_deleteForum $ routeWith' $ OrganizationsForums organizationResponseName (DeleteS forumResponseName))
               permExecuteEmpty
-
-    where
-    OrganizationPackResponse{..} = organization
-    org@OrganizationResponse{..} = organizationPackResponseOrganization
 
 
 
