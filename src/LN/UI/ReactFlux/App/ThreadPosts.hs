@@ -60,6 +60,7 @@ import qualified LN.UI.Core.App.ThreadPost            as ThreadPost
 import           LN.UI.Core.Helpers.DataList          (deleteNth)
 import           LN.UI.Core.Helpers.DataText          (tshow)
 import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
+import           LN.UI.Core.Helpers.GHCJS             (textToJSString')
 import           LN.UI.Core.Helpers.HaskellApiHelpers (rd)
 import           LN.UI.Core.Helpers.Map               (idmapFrom)
 import           LN.UI.Core.PageInfo                  (PageInfo (..),
@@ -201,7 +202,13 @@ viewShowI__
   -> HTMLView_
 
 viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !user' = do
-  defineViewWithSKey "posts-show" (page_info', me_id', organization', forum', board', thread', post', user') $ \(page_info, me_id, organization, forum, board, thread, post, user) -> do
+  defineViewWithSKey
+    ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
+    (page_info', me_id', organization', forum', board', thread', post', user')
+    go
+
+  where
+  go (page_info, me_id, organization, forum, board, thread, post, user) = do
 
     let
       OrganizationPackResponse{..}  = organization
