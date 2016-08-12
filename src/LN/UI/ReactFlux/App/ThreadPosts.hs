@@ -111,6 +111,7 @@ viewIndex
 
 viewIndex !page_info' !me_id' !l_m_organization' !l_m_forum' !l_m_board' !l_m_thread' !l_posts' !m_request' !users_map' = do
   defineViewWithSKey "posts-index-1" (page_info', me_id', l_m_organization', l_m_forum', l_m_board', l_m_thread', l_posts', m_request', users_map') $ \(page_info, me_id, l_m_organization, l_m_forum, l_m_board, l_m_thread, l_posts, m_request, users_map) -> do
+
     h1_ [className_ B.textCenter] $ elemText "Posts"
     Loader.maybeLoader4 l_m_organization l_m_forum l_m_board l_m_thread $ \organization forum board thread -> do
       Loader.loader1 l_posts $ \posts -> do
@@ -199,60 +200,61 @@ viewShowI__
   -> UserSanitizedPackResponse
   -> HTMLView_
 
-viewShowI__ page_info me_id organization forum board thread post user = do
-  cldiv_ B.row $ do
-    cldiv_ B.colXs2 $ do
-      ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
-      Gravatar.viewUser_ Medium userSanitizedPackResponseUser
-      viewUserStats user
-    cldiv_ B.colXs8 $ do
-      ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
-      p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
-      p_ $ elemText "quote / reply"
+viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !user' = do
+  defineViewWithSKey "posts-show" (page_info', me_id', organization', forum', board', thread', post', user') $ \(page_info, me_id, organization, forum, board, thread, post, user) -> do
 
-      -- white-space: pre ... for proper output of multiple spaces etc
-      div_ $ viewPostData threadPostResponseBody
+    let
+      OrganizationPackResponse{..}  = organization
+      OrganizationResponse{..}      = organizationPackResponseOrganization
+      ForumPackResponse{..}         = forum
+      ForumResponse{..}             = forumPackResponseForum
+      BoardPackResponse{..}         = board
+      BoardResponse{..}             = boardPackResponseBoard
+      ThreadPackResponse{..}        = thread
+      ThreadResponse{..}            = threadPackResponseThread
+      ThreadPostPackResponse{..}    = post
+      ThreadPostResponse{..}        = threadPostPackResponseThreadPost
+      UserSanitizedPackResponse{..} = user
+      UserSanitizedResponse{..}     = userSanitizedPackResponseUser
+      ProfileResponse{..}           = userSanitizedPackResponseProfile
 
-      p_ $ elemText $ maybe "" id profileResponseSignature
+    cldiv_ B.row $ do
+      cldiv_ B.colXs2 $ do
+        ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
+        Gravatar.viewUser_ Medium userSanitizedPackResponseUser
+        viewUserStats user
+      cldiv_ B.colXs8 $ do
+        ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
+        p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
+        p_ $ elemText "quote / reply"
 
-    cldiv_ B.colXs1 $ do
-      buttonGroup_VerticalSm1 $ do
-        -- ACCESS: ThreadPost
-        -- * Update: edit thread post
-        -- * Delete: delete thread post
-        --
-        permissionsHTML'
-          threadPostPackResponsePermissions
-          permCreateEmpty
-          permReadEmpty
-          (button_editThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (EditI threadPostResponseId))
-          (button_deleteThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (DeleteI threadPostResponseId))
-          permExecuteEmpty
+        -- white-space: pre ... for proper output of multiple spaces etc
+        div_ $ viewPostData threadPostResponseBody
+
+        p_ $ elemText $ maybe "" id profileResponseSignature
 
       cldiv_ B.colXs1 $ do
-        -- ACCESS: Member & Not self
-        -- Member: must be a member to like/star
-        -- Not Self: can't like/star your own posts
-        if orgMember organization && notSelf me_id threadPostResponseUserId
-          then p_ $ elemText "like.." -- TODO FIXME: renderLike Ent_ThreadPost post.id like star
-          else mempty
-        -- TODO FIXME: displayPostStats threadPostPackStats
+        buttonGroup_VerticalSm1 $ do
+          -- ACCESS: ThreadPost
+          -- * Update: edit thread post
+          -- * Delete: delete thread post
+          --
+          permissionsHTML'
+            threadPostPackResponsePermissions
+            permCreateEmpty
+            permReadEmpty
+            (button_editThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (EditI threadPostResponseId))
+            (button_deleteThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (DeleteI threadPostResponseId))
+            permExecuteEmpty
 
-  where
-  OrganizationPackResponse{..}  = organization
-  OrganizationResponse{..}      = organizationPackResponseOrganization
-  ForumPackResponse{..}         = forum
-  ForumResponse{..}             = forumPackResponseForum
-  BoardPackResponse{..}         = board
-  BoardResponse{..}             = boardPackResponseBoard
-  ThreadPackResponse{..}        = thread
-  ThreadResponse{..}            = threadPackResponseThread
-  ThreadPostPackResponse{..}    = post
-  ThreadPostResponse{..}        = threadPostPackResponseThreadPost
-  UserSanitizedPackResponse{..} = user
-  UserSanitizedResponse{..}     = userSanitizedPackResponseUser
-  ProfileResponse{..}           = userSanitizedPackResponseProfile
-
+        cldiv_ B.colXs1 $ do
+          -- ACCESS: Member & Not self
+          -- Member: must be a member to like/star
+          -- Not Self: can't like/star your own posts
+          if orgMember organization && notSelf me_id threadPostResponseUserId
+            then p_ $ elemText "like.." -- TODO FIXME: renderLike Ent_ThreadPost post.id like star
+            else mempty
+          -- TODO FIXME: displayPostStats threadPostPackStats
 
 
 
@@ -269,40 +271,43 @@ viewShared
   -> HTMLView_
 
 viewShared
-  page_info
-  me_id
-  organization
-  forum
-  board
-  thread
-  posts
-  m_request
-  users_map
+  !page_info'
+  !me_id'
+  !organization'
+  !forum'
+  !board'
+  !thread'
+  !posts'
+  !m_request'
+  !users_map'
   =
-  div_ $ do
-    PageNumbers.view1 page_info (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
-    ul_ [className_ B.listUnstyled] $ do
-      forM_ (Map.elems posts) $ \post -> do
-        li_ $ viewShowI_ page_info me_id organization forum board thread post users_map
-      -- INPUT FORM AT THE BOTTOM
-      -- ACCESS: Thread
-      -- * Create: post within a thread
-      --
-      ebyam m_request mempty $ \request -> do
-        permissionsMatchCreateHTML
-          threadPackResponsePermissions
-          (viewMod TyCreate threadResponseId Nothing request)
-          mempty
-    PageNumbers.view2 page_info (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
-  where
-  OrganizationPackResponse{..} = organization
-  OrganizationResponse{..}     = organizationPackResponseOrganization
-  ForumPackResponse{..}        = forum
-  ForumResponse{..}            = forumPackResponseForum
-  BoardPackResponse{..}        = board
-  BoardResponse{..}            = boardPackResponseBoard
-  ThreadPackResponse{..}       = thread
-  ThreadResponse{..}           = threadPackResponseThread
+  defineViewWithSKey "posts-shared" (page_info', me_id', organization', forum', board', thread', posts', m_request', users_map') $ \(page_info, me_id, organization, forum, board, thread, posts, m_request, users_map) -> do
+
+    let
+      OrganizationPackResponse{..} = organization
+      OrganizationResponse{..}     = organizationPackResponseOrganization
+      ForumPackResponse{..}        = forum
+      ForumResponse{..}            = forumPackResponseForum
+      BoardPackResponse{..}        = board
+      BoardResponse{..}            = boardPackResponseBoard
+      ThreadPackResponse{..}       = thread
+      ThreadResponse{..}           = threadPackResponseThread
+
+    div_ $ do
+      PageNumbers.view1 page_info (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
+      ul_ [className_ B.listUnstyled] $ do
+        forM_ (Map.elems posts) $ \post -> do
+          li_ $ viewShowI_ page_info me_id organization forum board thread post users_map
+        -- INPUT FORM AT THE BOTTOM
+        -- ACCESS: Thread
+        -- * Create: post within a thread
+        --
+        ebyam m_request mempty $ \request -> do
+          permissionsMatchCreateHTML
+            threadPackResponsePermissions
+            (viewMod TyCreate threadResponseId Nothing request)
+            mempty
+      PageNumbers.view2 page_info (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
 
 
 
@@ -310,7 +315,8 @@ viewNew
   :: Loader (Maybe ThreadPackResponse)
   -> Maybe ThreadPostRequest
   -> HTMLView_
-viewNew l_m_thread m_request = do
+
+viewNew !l_m_thread !m_request = do
   Loader.maybeLoader1 l_m_thread $ \ThreadPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyCreate threadPackResponseThreadId Nothing request
 
@@ -320,48 +326,62 @@ viewEditI
   :: Loader (Maybe ThreadPostPackResponse)
   -> Maybe ThreadPostRequest
   -> HTMLView_
-viewEditI l_m_post m_request =
+
+viewEditI !l_m_post !m_request =
   Loader.maybeLoader1 l_m_post $ \ThreadPostPackResponse{..} ->
     ebyam m_request mempty $ \request -> viewMod TyUpdate (threadPostResponseThreadId threadPostPackResponseThreadPost) (Just threadPostPackResponseThreadPostId) request
 
 
 
-viewMod :: TyCRUD -> ThreadId -> Maybe ThreadPostId -> ThreadPostRequest -> HTMLView_
-viewMod tycrud thread_id m_post_id request@ThreadPostRequest{..} = do
-  div_ $ do
-    h1_ $ elemText $ linkName tycrud <> " Post"
+viewMod
+  :: TyCRUD
+  -> ThreadId
+  -> Maybe ThreadPostId
+  -> ThreadPostRequest
+  -> HTMLView_
 
-    li_ $ do
-      cldiv_ B.row $ do
-        cldiv_ B.colXs2 mempty
-        cldiv_ B.colXs9 $ do
-          tagsField
-            threadPostRequestTags
-            (maybe "" id threadPostRequestStateTag)
-            (dispatch . ThreadPost.setTag request)
-            (dispatch $ ThreadPost.addTag request)
-            (dispatch . ThreadPost.deleteTag request)
-            (dispatch $ ThreadPost.clearTags request)
+viewMod !tycrud' !thread_id' !m_post_id' !request' = do
+  defineViewWithSKey "posts-mod" (tycrud', thread_id', m_post_id', request') $ \(tycrud, thread_id, m_post_id, request) -> do
 
-          cldiv_ B.well $ do
-            p_ $ elemText "bold"
-            p_ $ elemText "youtube"
-            textarea_ [ className_ B.formControl
-                      , "rows" $= "10"
-                      , "value" @= body
-                      , onChange $ \input -> dispatch $ ThreadPost.setBody request (PostDataRaw $ targetValue input)
-                      ] mempty
-            -- TODO FIXME: cancel
-            button_ [onClick $ \_ _ -> dispatch $ Goto $ routeWith' Home ] $ elemText "cancel"
-            button_ [onClick $ \_ _ -> dispatch SaveThreadPost] $ elemText "send"
-        cldiv_ B.colXs1 mempty
-  where
-  body = postDataToBody threadPostRequestBody
+    let
+      ThreadPostRequest{..} = request
+      body                  = postDataToBody threadPostRequestBody
+
+    div_ $ do
+      h1_ $ elemText $ linkName tycrud <> " Post"
+
+      li_ $ do
+        cldiv_ B.row $ do
+          cldiv_ B.colXs2 mempty
+          cldiv_ B.colXs9 $ do
+            tagsField
+              threadPostRequestTags
+              (maybe "" id threadPostRequestStateTag)
+              (dispatch . ThreadPost.setTag request)
+              (dispatch $ ThreadPost.addTag request)
+              (dispatch . ThreadPost.deleteTag request)
+              (dispatch $ ThreadPost.clearTags request)
+
+            cldiv_ B.well $ do
+              p_ $ elemText "bold"
+              p_ $ elemText "youtube"
+              textarea_ [ className_ B.formControl
+                        , "rows" $= "10"
+                        , "value" @= body
+                        , onChange $ \input -> dispatch $ ThreadPost.setBody request (PostDataRaw $ targetValue input)
+                        ] mempty
+              -- TODO FIXME: cancel
+              button_ [onClick $ \_ _ -> dispatch $ Goto $ routeWith' Home ] $ elemText "cancel"
+              button_ [onClick $ \_ _ -> dispatch SaveThreadPost] $ elemText "send"
+          cldiv_ B.colXs1 mempty
 
 
 
-viewUserStats :: UserSanitizedPackResponse -> HTMLView_
-viewUserStats user =
+viewUserStats
+  :: UserSanitizedPackResponse
+  -> HTMLView_
+
+viewUserStats !user =
   div_ $ do
     showBadge "respect "   userSanitizedStatResponseRespect
     showBadge "threads "   userSanitizedStatResponseThreads
@@ -375,7 +395,10 @@ viewUserStats user =
 
 
 
-viewPostStats :: ThreadPostStatResponse -> HTMLView_
+viewPostStats
+  :: ThreadPostStatResponse
+  -> HTMLView_
+
 viewPostStats ThreadPostStatResponse{..} =
   div_ $ do
     showBadge "score: "   $ threadPostStatResponseLikes - threadPostStatResponseDislikes
@@ -387,8 +410,11 @@ viewPostStats ThreadPostStatResponse{..} =
 
 
 
-viewPostData :: PostData -> HTMLView_
-viewPostData body =
+viewPostData
+  :: PostData
+  -> HTMLView_
+
+viewPostData !body =
   case body of
     PostDataEmpty      -> p_ mempty
     PostDataRaw v      -> p_ $ elemText v
@@ -404,7 +430,10 @@ viewPostData body =
 
 
 
-postDataToBody :: PostData -> Text
+postDataToBody
+  :: PostData
+  -> Text
+
 postDataToBody p = case p of
   PostDataRaw v    -> v
   PostDataBBCode v -> v
