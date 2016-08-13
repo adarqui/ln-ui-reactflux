@@ -41,6 +41,7 @@ import qualified Web.Bootstrap3                        as B
 import           LN.Api
 import qualified LN.Api.String                         as ApiS
 import           LN.Generate.Default                   (defaultForumRequest)
+import           LN.Sanitize.Internal                  (toSafeName)
 import           LN.T.Board
 import           LN.T.Convert                          (forumResponseToForumRequest)
 import           LN.T.Forum
@@ -274,6 +275,8 @@ viewMod !tycrud' !organization_id' !m_forum_id' !request' = do
       h1_ $ elemText $ linkName tycrud <> " Forum"
 
       mandatoryNameField forumRequestDisplayName (dispatch . Forum.setDisplayName request)
+
+      renderedText "Safe name: " (toSafeName forumRequestDisplayName)
 
       optionalDescriptionField forumRequestDescription
         (dispatch . Forum.setDescription request)
