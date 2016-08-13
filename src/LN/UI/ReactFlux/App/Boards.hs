@@ -39,7 +39,7 @@ import qualified Web.Bootstrap3                        as B
 import           LN.Api
 import qualified LN.Api.String                         as ApiS
 import           LN.Generate.Default                   (defaultBoardRequest)
-import           LN.Sanitize.Internal                  (toSafeName)
+import           LN.Sanitize.Internal                  (toSafeUrl)
 import           LN.T.Board
 import           LN.T.Convert
 import           LN.T.Forum
@@ -288,7 +288,7 @@ viewMod !tycrud' !organization_id' !m_forum_id' !request' = do
 
       mandatoryNameField boardRequestDisplayName (dispatch . Board.setDisplayName request)
 
-      renderedText "Safe name: " (toSafeName boardRequestDisplayName)
+      renderedText "Safe name: " (toSafeUrl boardRequestDisplayName)
 
       optionalDescriptionField boardRequestDescription
         (dispatch . Board.setDescription request)

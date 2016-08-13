@@ -40,7 +40,7 @@ import qualified Web.Bootstrap3                        as B
 import           LN.Api
 import qualified LN.Api.String                         as ApiS
 import           LN.Generate.Default                   (defaultBoardRequest)
-import           LN.Sanitize.Internal                  (toSafeName)
+import           LN.Sanitize.Internal                  (toSafeUrl)
 import           LN.T.Board
 import           LN.T.Convert
 import           LN.T.Forum
@@ -308,7 +308,7 @@ viewMod !tycrud' !board_id' !m_thread_id' !request' = do
 
       mandatoryNameField threadRequestDisplayName (dispatch . Thread.setDisplayName request)
 
-      renderedText "Safe name: " (toSafeName threadRequestDisplayName)
+      renderedText "Safe name: " (toSafeUrl threadRequestDisplayName)
 
       optionalDescriptionField threadRequestDescription
         (dispatch . Thread.setDescription request)
