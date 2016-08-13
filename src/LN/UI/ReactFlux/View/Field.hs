@@ -13,7 +13,8 @@ module LN.UI.ReactFlux.View.Field (
   privateTagsField,
   suggestedTagsField,
   mandatoryIntegerField,
-  mandatoryBooleanYesNoField
+  mandatoryBooleanYesNoField,
+  renderedText
 ) where
 
 
@@ -212,3 +213,15 @@ createSelectList label value default_value optional_values set_value_handler =
         button_ [ classNames_ buttonInfoClasses
                 , onClick $ \_ _ -> set_value_handler default_value
                 ] $ elemText "default"
+
+
+
+renderedText
+  :: Text
+  -> Text
+  -> HTMLView_
+
+renderedText label value =
+  h4_ $ do
+    elemText label
+    span_ $ elemText value

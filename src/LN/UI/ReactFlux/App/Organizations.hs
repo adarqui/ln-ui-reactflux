@@ -39,6 +39,7 @@ import           LN.Api                                (getForumPacks_ByOrganiza
                                                         putOrganization')
 import           LN.Api.String                         (getOrganizationPack')
 import           LN.Generate.Default                   (defaultOrganizationRequest)
+import           LN.Sanitize.Internal                  (toSafeName)
 import           LN.T.Convert                          (organizationResponseToOrganizationRequest)
 import           LN.T.Organization                     (OrganizationRequest (..), OrganizationResponse (..), OrganizationResponse (..))
 import           LN.T.Pack.Forum                       (ForumPackResponse (..),
@@ -240,6 +241,8 @@ viewMod !tycrud' !m_organization_id' !request' = do
       h1_ $ elemText $ linkName tycrud <> " Organization"
 
       mandatoryNameField organizationRequestDisplayName (dispatch . Organization.setDisplayName request)
+
+      renderedText "Safe name: " (toSafeName organizationRequestDisplayName)
 
       optionalDescriptionField organizationRequestDescription
         (dispatch . Organization.setDescription request)
