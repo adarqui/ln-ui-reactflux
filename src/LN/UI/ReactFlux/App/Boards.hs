@@ -132,9 +132,9 @@ viewIndex_ !page_info' !organization' !forum' !boards_map' = do
         let
           BoardResponse{..}     = boardPackResponseBoard
           BoardStatResponse{..} = boardPackResponseStat
-          thread                = boardPackResponseLatestThread
-          post                  = boardPackResponseLatestThreadPost
-          user                  = boardPackResponseLatestThreadPostUser
+          m_thread              = boardPackResponseLatestThread
+          m_post                = boardPackResponseLatestThreadPost
+          m_user                = boardPackResponseLatestThreadPostUser
         li_ $ do
           cldiv_ B.row $ do
             cldiv_ B.colXs1 $ do
@@ -147,12 +147,14 @@ viewIndex_ !page_info' !organization' !forum' !boards_map' = do
               showBadge "posts "   boardStatResponseThreadPosts
               showBadge "views "   boardStatResponseViews
             cldiv_ B.colXs3 $ do
-              case (thread, post, user) of
-                (Just ThreadResponse{..}, Just ThreadPostResponse{..}, Just UserSanitizedResponse{..}) -> do
+              case (m_thread, m_post, m_user) of
+                (Just ThreadResponse{..}, Just ThreadPostResponse{..}, Just user@UserSanitizedResponse{..}) -> do
                   div_ $ do
                     p_ $ do
                       elemText "Last post by "
                       ahref $ routeWith' (Users (ShowS userSanitizedResponseName))
+                      elemText " "
+                      Gravatar.viewUser_ XSmall user
                     p_ $ do
                       elemText "in "
                       ahref $ routeWith (OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName)) [(ParamTag_Offset, Offset (-1))]
