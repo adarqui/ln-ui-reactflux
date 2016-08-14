@@ -140,7 +140,7 @@ viewIndex_ !page_info' !organization' !forum' !board' !threads_map' = do
       -- TODO FIXME: This is good actually.. frontend shouldn't show threads with no posts.
       -- We also shouldn't allow threads to be created without posts.. that's another issue
       --
-      forM_ ({- sortThreadPacks SortOrderBy_Dsc $-} (filter (isJust . threadPackResponseLatestThreadPostUser) $ Map.elems threads_map)) $ \ThreadPackResponse{..} -> do
+      forM_ (sortThreadPacks SortOrderBy_Dsc threads_map) $ \ThreadPackResponse{..} -> do
         let
           ThreadResponse{..}        = threadPackResponseThread
           ThreadStatResponse{..}    = threadPackResponseStat
