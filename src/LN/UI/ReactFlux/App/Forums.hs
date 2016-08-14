@@ -213,7 +213,7 @@ viewShowS_ !page_info' !organization' !forum' plumbing_boards' !plumbing_recent_
 
     cldiv_ B.containerFluid $ do
       cldiv_ B.pageHeader $ do
-        h2_ $ elemText forumResponseName
+        h2_ $ elemText forumResponseDisplayName
         p_ [className_ B.lead] $ elemText $ maybe "No description." id forumResponseDescription
 
         -- ACCESS: Forum
