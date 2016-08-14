@@ -232,7 +232,7 @@ viewShowS_ !page_info' !organization' !forum' !board' !plumbing_threads' = do
 
     cldiv_ B.containerFluid $ do
       cldiv_ B.pageHeader $ do
-        h2_ $ elemText boardResponseName
+        h2_ $ elemText boardResponseDisplayName
         p_ [className_ B.lead] $ elemText $ maybe "No description." id boardResponseDescription
         buttonGroup_HorizontalSm1 $ do
           -- ACCESS: Board
