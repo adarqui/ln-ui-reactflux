@@ -250,7 +250,7 @@ viewShowS_ !page_info' !organization' !forum' !board' !thread' !plumbing_posts' 
 
     cldiv_ B.containerFluid $ do
       cldiv_ B.pageHeader $ do
-        h2_ $ elemText threadResponseName
+        h2_ $ elemText threadResponseDisplayName
         cldiv_ B.containerFluid $ do
           cldiv_ B.pageHeader $ do
             buttonGroup_HorizontalSm1 $ do
