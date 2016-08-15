@@ -23,7 +23,7 @@ import           LN.UI.Core.Helpers.DataText           (tshow)
 import           LN.UI.Core.PageInfo                   (PageInfo (..),
                                                         runPageInfo)
 import           LN.UI.Core.PageNumbers                (buildPages)
-import           LN.UI.Core.Router                     (RouteWith (..), updateParams_Offset_Limit)
+import           LN.UI.Core.Router                     (RouteWith (..), updateParams_Offset_Limit, emptyParams)
 import LN.UI.Core.Helpers.GHCJS (JSString)
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM  (ahrefName, classNames_)
 import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
@@ -72,5 +72,15 @@ view_ !key !page_info' !route_with' =
         div_ $ do
           ul_ [classNames_ [B.pagination, B.paginationSm]] $ do
             li_ ["key" $= "pg-prev"] $ ahrefName "prev" (upd prev)
-            forM_ (zip [(1::Int)..] pages) $ \(idx, page_number) -> li_ ["key" @= idx] $ ahrefName (tshow page_number) (upd page_number)
+            forM_ (zip [(1::Int)..] pages) $
+              \(idx, page_number) ->
+                if idx == 1
+                  then
+                    -- in page 1, we don't want offset/limit showing
+                    --
+                    li_ ["key" @= idx] $ ahrefName (tshow page_number) (RouteWith route emptyParams)
+                  else
+                    -- else, append offset/limit to everything
+                    --
+                    li_ ["key" @= idx] $ ahrefName (tshow page_number) (upd page_number)
             li_ ["key" $= "pg-next"] $ ahrefName "next" (upd next)
