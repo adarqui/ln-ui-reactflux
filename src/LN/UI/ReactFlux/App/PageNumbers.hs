@@ -26,7 +26,7 @@ import           LN.UI.Core.PageInfo                   (PageInfo (..),
 import           LN.UI.Core.PageNumbers                (buildPages)
 import           LN.UI.Core.Router                     (RouteWith (..),
                                                         emptyParams, updateParams_Offset_Limit)
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM  (ahrefName, classNames_)
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM  (ahrefName, classNames_, className_)
 import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
 import           LN.UI.ReactFlux.Types                 (HTMLView_)
 
@@ -67,21 +67,27 @@ view_ !key !page_info' !route_with' =
     let
       (prev, pages, next, limit) = buildPages page_info route_with
       route_page page            = RouteWith route (updateParams_Offset_Limit ((page-1)*limit) limit params)
+      isActive p | p == currentPage page_info = className_ "active"
+                 | otherwise                  = className_ "not-active"
     case pages of
       []     -> mempty
       _      ->
         div_ $ do
           ul_ [classNames_ [B.pagination, B.paginationSm]] $ do
-            li_ ["key" $= "pg-prev"] $ ahrefName "prev" (route_page prev)
+
+            li_ ["key" $= "pg-prev"] $ ahrefName "prev" $
+              if prev == 1
+                then RouteWith route emptyParams
+                else route_page prev
+
             forM_ (zip [(1::Int)..] pages) $
               \(idx, page_number) ->
-                if idx == 1
-                  then
+
+                li_ ["key" @= idx, isActive page_number] $ ahrefName (tshow page_number) $
+                  if idx == 1
                     -- in page 1, we don't want offset/limit showing
-                    --
-                    li_ ["key" @= idx] $ ahrefName (tshow page_number) (RouteWith route emptyParams)
-                  else
+                    then RouteWith route emptyParams
                     -- else, append offset/limit to everything
-                    --
-                    li_ ["key" @= idx] $ ahrefName (tshow page_number) (route_page page_number)
+                    else route_page page_number
+
             li_ ["key" $= "pg-next"] $ ahrefName "next" (route_page next)
