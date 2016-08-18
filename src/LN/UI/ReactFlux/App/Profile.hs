@@ -8,7 +8,7 @@
 
 module LN.UI.ReactFlux.App.Profile (
   viewIndex,
-  viewEditS
+  viewEditZ
 ) where
 
 
@@ -81,33 +81,38 @@ import           LN.UI.ReactFlux.View.Internal         (showTagsSmall)
 
 
 viewIndex
-  :: PageInfo
+  :: UserId
   -> Loader (Maybe UserSanitizedPackResponse)
   -> HTMLView_
 
-viewIndex !page_info' !l_m_user' = do
-  defineViewWithSKey "users-profile-index-1" (page_info', l_m_user') $ \(page_info, l_m_user) -> do
-    viewIndex_ page_info l_m_user
+viewIndex !me_id' !l_m_user' = do
+  defineViewWithSKey "users-profile-index-1" (me_id', l_m_user') $ \(me_id, l_m_user) -> do
+    viewIndex_ me_id l_m_user
 
 
 
 viewIndex_
-  :: PageInfo
+  :: UserId
   -> Loader (Maybe UserSanitizedPackResponse)
   -> HTMLView_
 
-viewIndex_ !page_info' !l_m_user' = do
-  defineViewWithSKey "users-profile-index-2" (page_info', l_m_user') $ \(page_info, l_m_user) -> do
-    Loader.maybeLoader1 l_m_user (go page_info)
+viewIndex_ !me_id' !l_m_user' = do
+  defineViewWithSKey "users-profile-index-2" (me_id', l_m_user') $ \(me_id, l_m_user) -> do
+    Loader.maybeLoader1 l_m_user (go me_id)
     where
-    go page_info user_pack@UserSanitizedPackResponse{..} = do
+    go :: UserId -> UserSanitizedPackResponse -> HTMLView_
+    go me_id UserSanitizedPackResponse{..} = do
       let
         UserSanitizedResponse{..} = userSanitizedPackResponseUser
         ProfileResponse{..}       = userSanitizedPackResponseProfile
 
       cldiv_ B.containerFluid $ do
         cldiv_ B.pageHeader $ do
-          h1_ [className_ B.textCenter] $ elemText $ userSanitizedResponseDisplayName
+          h1_ [className_ B.textCenter] $ elemText userSanitizedResponseDisplayName
+
+      ifte_Self me_id userSanitizedResponseId
+        (ahref $ routeWith' $ UsersProfile userSanitizedResponseName EditZ)
+        mempty
 
       cldiv_ B.pageHeader $ do
         p_ $ h4_ $ do
@@ -137,15 +142,15 @@ viewIndex_ !page_info' !l_m_user' = do
 
 
 
-viewEditS
-  :: Maybe ProfileRequest
-  -> Loader (Maybe UserSanitizedPackResponse)
+viewEditZ
+  :: Loader (Maybe UserSanitizedPackResponse)
+  -> Maybe ProfileRequest
   -> HTMLView_
 
-viewEditS !m_request !l_user_pack =
-  Loader.loader1 l_user_pack $ \m_user_pack -> do
-    case (m_request, m_user_pack) of
-      (Just request, Just user_pack) -> go TyUpdate user_pack request
+viewEditZ !l_m_user_pack' !m_request' =
+  Loader.maybeLoader1 l_m_user_pack' $ \user_pack -> do
+    case (m_request') of
+      Just request -> go TyUpdate user_pack request
       _ -> mempty
 
   where
