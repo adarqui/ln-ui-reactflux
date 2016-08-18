@@ -388,8 +388,12 @@ viewRecentPosts_ !organization' !forum' !posts_map' = do
             user@UserSanitizedResponse{..} = threadPostPackResponseUser
           li_ $ do
             p_ $ do
+              Gravatar.viewUser_ XSmall threadPostPackResponseUser
+              elemText " "
               ahrefName (thread_name <> "/" <> tshow threadPostResponseId) $ routeWith' (OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName board_name thread_name (ShowI threadPostResponseId))
               elemText " by "
               ahref $ routeWith' (Users (ShowS userSanitizedResponseName))
-              elemText " at "
-              elemText $ tshow threadPostResponseCreatedAt
+              elemText " ("
+              ahrefName board_name $ routeWith' (OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS board_name))
+              elemText ") at "
+              elemText $ prettyUTCTimeMaybe threadPostResponseCreatedAt
