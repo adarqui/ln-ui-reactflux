@@ -8,7 +8,8 @@
 
 module LN.UI.ReactFlux.App.Users (
   viewIndex,
-  viewIndex_
+  viewIndex_,
+  viewShowS
 ) where
 
 
@@ -78,3 +79,24 @@ viewIndex_ !page_info' !users' = do
             cldiv_ B.colXs1 $ p_ $ Gravatar.viewUser_ XSmall user
             cldiv_ B.colXs3 $ p_ $ ahrefName (userSanitizedResponseDisplayName user) (routeWith' $ Users (ShowS $ userSanitizedResponseName user))
             cldiv_ B.colXs2 $ p_ $ elemText $ prettyUTCTimeMaybe $ userSanitizedResponseCreatedAt user
+
+
+
+
+viewShowS
+  :: PageInfo
+  -> UserId
+  -> Loader (Maybe UserSanitizedPackResponse)
+  -> HTMLView_
+
+viewShowS !page_info' !me_id' !l_m_user' = do
+  defineViewWithSKey "users-show-1" (page_info', me_id', l_m_user') $ \(page_info, me_id, l_m_user) -> do
+    Loader.maybeLoader1 l_m_user (go page_info me_id)
+  where
+  go page_info me_id user = do
+    let
+      UserSanitizedPackResponse{..} = user
+      UserSanitizedResponse{..}     = userSanitizedPackResponseUser
+    cldiv_ B.pageHeader $ do
+      h1_ [className_ B.textCenter] $ elemText userSanitizedResponseDisplayName
+      ahref $ routeWith' (UsersProfile userSanitizedResponseName Index)

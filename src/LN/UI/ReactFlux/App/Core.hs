@@ -162,7 +162,7 @@ renderRouteView Store{..} = do
 --      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> ThreadPosts.viewShowI _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_m_threadPost _usersCache
 
       RouteWith (Users Index) params          -> Users.viewIndex _pageInfo _l_users
-      RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
+      RouteWith (Users crud) params           -> Users.viewShowS _pageInfo _meId _l_m_user
       RouteWith (UsersProfile _ Index) _      -> Profile.viewIndex _meId _l_m_user
       RouteWith (UsersProfile _ EditZ) _      -> Profile.viewEditZ _l_m_user _m_profileRequest
       RouteWith _ _                           -> NotFound.view_

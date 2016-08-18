@@ -143,7 +143,7 @@ viewShowS_ !page_info' !l_m_organization' !l_forums' = do
       let OrganizationResponse{..} = organizationPackResponseOrganization
       cldiv_ B.containerFluid $ do
         cldiv_ B.pageHeader $ do
-          h1_ [className_ B.textCenter] $ elemText $ organizationResponseDisplayName
+          h1_ [className_ B.textCenter] $ elemText organizationResponseDisplayName
           p_ [className_ B.textCenter] $ elemText $ maybe "" id organizationResponseDescription
 
           -- ACCESS: Organization
