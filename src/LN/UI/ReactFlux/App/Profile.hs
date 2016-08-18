@@ -160,19 +160,22 @@ viewEditS !m_request !l_user_pack =
       div_ $ do
         h1_ $ elemText $ linkName tycrud <> " User Profile"
 
-        optionalLabelField "Website" profileResponseWebsite
+        mandatoryGenderField profileRequestGender
+          (dispatch . Profile.setGender request)
+
+        optionalLabelField "Website" profileRequestWebsite
           (dispatch . Profile.setWebsite request)
           (dispatch $ Profile.clearWebsite request)
 
-        optionalLabelField "Location" profileResponseLocation
+        optionalLabelField "Location" profileRequestLocation
           (dispatch . Profile.setLocation request)
           (dispatch $ Profile.clearLocation request)
 
-        optionalLabelField "Signature" profileResponseSignature
+        optionalLabelField "Signature" profileRequestSignature
           (dispatch . Profile.setSignature request)
           (dispatch $ Profile.clearSignature request)
 
-        mandatoryBooleanYesNoField "Debug" profileResponseDebug False
+        mandatoryBooleanYesNoField "Debug" profileRequestDebug False
           (dispatch . Profile.setDebug request)
 
         createButtonsCreateEditCancel

@@ -10,6 +10,7 @@ module LN.UI.ReactFlux.View.Field (
   mandatoryDescriptionField,
   mandatoryMembershipField,
   mandatoryVisibilityField,
+  mandatoryGenderField,
   tagsField,
   privateTagsField,
   suggestedTagsField,
