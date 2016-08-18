@@ -104,7 +104,10 @@ viewIndex
   -> HTMLView_
 
 viewIndex !page_info' l_m_organization' l_forums' = do
-  defineViewWithSKey "forums-index-1" (page_info', l_m_organization', l_forums') $ \(page_info, l_m_organization, l_forums) -> do
+  defineViewWithSKey "forums-index-1" (page_info', l_m_organization', l_forums') go
+
+  where
+  go (page_info, l_m_organization, l_forums) = do
     h1_ [className_ B.textCenter] $ elemText "Forums"
     Loading.loader2 l_m_organization l_forums $ \m_organization forums -> do
       case m_organization of
@@ -120,7 +123,10 @@ viewIndex_
   -> HTMLView_
 
 viewIndex_ !page_info' !organization' !forums_map' = do
-  defineViewWithSKey "forums-index-2" (page_info', organization', forums_map') $ \(page_info, organization, forums_map) -> do
+  defineViewWithSKey "forums-index-2" (page_info', organization', forums_map') go
+
+  where
+  go (page_info, organization, forums_map) = do
 
     let
       OrganizationPackResponse{..} = organization
@@ -178,7 +184,10 @@ viewShowS
   -> HTMLView_
 
 viewShowS !page_info' !l_m_organization' !l_m_forum' !l_boards' !l_recent_posts' = do
-  defineViewWithSKey "forums-show-1" (page_info', l_m_organization', l_m_forum', l_boards', l_recent_posts') $ \(page_info, l_m_organization, l_m_forum, l_boards, l_recent_posts) -> do
+  defineViewWithSKey "forums-show-1" (page_info', l_m_organization', l_m_forum', l_boards', l_recent_posts') go
+
+  where
+  go (page_info, l_m_organization, l_m_forum, l_boards, l_recent_posts) = do
     Loading.loader4 l_m_organization l_m_forum l_boards l_recent_posts $ \m_organization m_forum boards recent_posts -> do
       case (m_organization, m_forum) of
         (Just organization, Just forum) ->
@@ -203,7 +212,13 @@ viewShowS_
   -> HTMLView_
 
 viewShowS_ !page_info' !organization' !forum' plumbing_boards' !plumbing_recent_posts' !plumbing_messages_of_the_week' = do
-  defineViewWithSKey "forums-show-2" (page_info', organization', forum', plumbing_boards', plumbing_recent_posts', plumbing_messages_of_the_week') $ \(page_info, organization, forum, plumbing_boards, plumbing_recent_posts, plumbing_messages_of_the_week) -> do
+  defineViewWithSKey
+    "forums-show-2"
+    (page_info', organization', forum', plumbing_boards', plumbing_recent_posts', plumbing_messages_of_the_week')
+    go
+
+  where
+  go (page_info, organization, forum, plumbing_boards, plumbing_recent_posts, plumbing_messages_of_the_week) = do
 
     let
       OrganizationPackResponse{..} = organization
@@ -266,7 +281,11 @@ viewMod
   -> HTMLView_
 
 viewMod !tycrud' !organization_id' !m_forum_id' !request' = do
-  defineViewWithSKey "forums-mod" (tycrud', organization_id', m_forum_id', request') $ \(tycrud, organization_id, m_forum_id, request) -> do
+  defineViewWithSKey "forums-mod" (tycrud', organization_id', m_forum_id', request') go
+
+  where
+  go :: (TyCRUD, OrganizationId, Maybe ForumId, ForumRequest) -> HTMLView_
+  go (tycrud, organization_id, m_forum_id, request) = do
 
     let
       ForumRequest{..} = request
@@ -325,7 +344,10 @@ viewMessagesOfTheWeek_
   -> HTMLView_
 
 viewMessagesOfTheWeek_ !organization' !forum' = do
-  defineViewWithSKey "forums-messages-of-the-week" (organization', forum') $ \(organization, forum) -> do
+  defineViewWithSKey "forums-messages-of-the-week" (organization', forum') go
+
+  where
+  go (organization, forum) = do
     cldiv_ B.containerFluid $ do
       cldiv_ B.pageHeader $ do
         h4_ $ elemText "Messages of the week"
@@ -342,7 +364,10 @@ viewRecentPosts_
   -> HTMLView_
 
 viewRecentPosts_ !organization' !forum' !posts_map' = do
-  defineViewWithSKey "forums-recent-posts" (organization', forum', posts_map') $ \(organization, forum, posts_map) -> do
+  defineViewWithSKey "forums-recent-posts" (organization', forum', posts_map') go
+
+  where
+  go (organization, forum, posts_map) = do
 
     let
       OrganizationPackResponse{..} = organization
