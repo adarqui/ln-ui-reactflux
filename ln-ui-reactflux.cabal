@@ -35,6 +35,7 @@ library
                      , LN.UI.ReactFlux.App.Organizations
                      , LN.UI.ReactFlux.App.PageNumbers
                      , LN.UI.ReactFlux.App.Portal
+                     , LN.UI.ReactFlux.App.Profile
                      , LN.UI.ReactFlux.App.Users
                      , LN.UI.ReactFlux.App.Threads
                      , LN.UI.ReactFlux.App.ThreadPosts
