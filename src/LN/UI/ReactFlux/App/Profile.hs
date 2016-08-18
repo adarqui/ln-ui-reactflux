@@ -8,9 +8,7 @@
 
 module LN.UI.ReactFlux.App.Profile (
   viewIndex,
-  viewNew,
-  viewEditS,
-  viewShowS
+  viewEditS
 ) where
 
 
@@ -41,16 +39,15 @@ import           LN.Api.String                         (getOrganizationPack')
 import           LN.Generate.Default                   (defaultOrganizationRequest)
 import           LN.Sanitize.Internal                  (toSafeName)
 import           LN.T.Convert                          (organizationResponseToOrganizationRequest)
-import           LN.T.Organization                     (OrganizationRequest (..), OrganizationResponse (..), OrganizationResponse (..))
-import           LN.T.Pack.Forum                       (ForumPackResponse (..),
-                                                        ForumPackResponses (..))
-import           LN.T.Pack.Organization                (OrganizationPackResponse (..), OrganizationPackResponses (..))
+import LN.T.Pack.Sanitized.User
+import LN.T.Profile
+import qualified LN.UI.Core.App.Profile as Profile
 import           LN.T.Size                             (Size (..))
 import           LN.T.User                             (UserSanitizedResponse (..))
 import qualified LN.UI.Core.App.Organization           as Organization
 import           LN.UI.Core.Helpers.DataList           (deleteNth)
 import           LN.UI.Core.Helpers.DataText           (tshow)
-import           LN.UI.Core.Helpers.DataTime           (prettyUTCTimeMaybe)
+import           LN.UI.Core.Helpers.DataTime           (prettyUTCTime)
 import           LN.UI.Core.Helpers.HaskellApiHelpers  (rd)
 import           LN.UI.Core.Helpers.Map                (idmapFrom)
 import           LN.UI.Core.PageInfo                   (PageInfo (..),
@@ -85,191 +82,101 @@ import           LN.UI.ReactFlux.View.Internal         (showTagsSmall)
 
 viewIndex
   :: PageInfo
-  -> Loader (Map OrganizationId OrganizationPackResponse)
+  -> Loader (Maybe UserSanitizedPackResponse)
   -> HTMLView_
 
-viewIndex !page_info' !l_organizations' = do
-  defineViewWithSKey "organizations-index-1" (page_info', l_organizations') $ \(page_info, l_organizations) -> do
-    cldiv_ B.containerFluid $ do
-      h1_ "Organizations"
-      Loader.loader1 l_organizations (viewIndex_ page_info)
+viewIndex !page_info' !l_m_user' = do
+  defineViewWithSKey "users-profile-index-1" (page_info', l_m_user') $ \(page_info, l_m_user) -> do
+    viewIndex_ page_info l_m_user
 
 
 
 viewIndex_
   :: PageInfo
-  -> Map OrganizationId OrganizationPackResponse
+  -> Loader (Maybe UserSanitizedPackResponse)
   -> HTMLView_
 
-viewIndex_ !page_info' !organizations' = do
-  defineViewWithSKey "organizations-index-2" (page_info', organizations') $ \(page_info, organizations) -> do
-    ahref $ routeWith' $ Organizations New
-    PageNumbers.view page_info (routeWith' $ Organizations Index)
-    ul_ [className_ B.listUnstyled] $ do
-      forM_ organizations $ \OrganizationPackResponse{..} -> do
-        let OrganizationResponse{..} = organizationPackResponseOrganization
-        li_ ["key" @= organizationResponseId] $ do
-          cldiv_ B.row $ do
-            cldiv_ B.colXs1 $ p_ $ Gravatar.viewUser_ XSmall organizationPackResponseUser
-            cldiv_ B.colXs3 $ p_ $ ahrefName organizationResponseDisplayName (routeWith' $ Organizations (ShowS organizationResponseName))
-            cldiv_ B.colXs6 $ p_ $ elemText $ maybe "No Description." id organizationResponseDescription
-            cldiv_ B.colXs2 $ p_ $ elemText $ prettyUTCTimeMaybe organizationResponseCreatedAt
-
-
-
-viewShowS
-  :: PageInfo
-  -> Loader (Maybe OrganizationPackResponse)
-  -> Loader (Map OrganizationId ForumPackResponse)
-  -> HTMLView_
-
-viewShowS !page_info' !l_m_organization' !l_forums' = do
-  defineViewWithSKey "organizations-show-1" (page_info', l_m_organization', l_forums') $ \(page_info, l_m_organization, l_forums) -> do
-    viewShowS_ page_info l_m_organization l_forums
-
-
-
-viewShowS_
-  :: PageInfo
-  -> Loader (Maybe OrganizationPackResponse)
-  -> Loader (Map OrganizationId ForumPackResponse)
-  -> HTMLView_
-
-viewShowS_ !page_info' !l_m_organization' !l_forums' = do
-  defineViewWithSKey "organizations-show-2" (page_info', l_m_organization', l_forums') $ \(page_info, l_m_organization, l_forums) -> do
-    Loader.loader1 l_m_organization (go page_info l_forums)
+viewIndex_ !page_info' !l_m_user' = do
+  defineViewWithSKey "users-profile-index-2" (page_info', l_m_user') $ \(page_info, l_m_user) -> do
+    Loader.maybeLoader1 l_m_user (go page_info)
     where
-    go page_info l_forums (Just organization_pack@OrganizationPackResponse{..}) = do
-      let OrganizationResponse{..} = organizationPackResponseOrganization
+    go page_info user_pack@UserSanitizedPackResponse{..} = do
+      let
+        UserSanitizedResponse{..} = userSanitizedPackResponseUser
+        ProfileResponse{..}       = userSanitizedPackResponseProfile
+
       cldiv_ B.containerFluid $ do
         cldiv_ B.pageHeader $ do
-          h1_ [className_ B.textCenter] $ elemText $ organizationResponseDisplayName
-          p_ [className_ B.textCenter] $ elemText $ maybe "" id organizationResponseDescription
-
-          -- ACCESS: Organization
-          -- * Member: if not a member, this is a shortcut to join an organization
-          ---
-          isMemberOfOrganizationHTML
-           organization_pack
-           mempty
-           (button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
-
-          -- ACCESS: Organization
-          -- * Update: can edit organization settings
-          -- * Delete: can delete organization
-          --
-          permissionsHTML'
-            organizationPackResponsePermissions
-            permCreateEmpty
-            permReadEmpty
-            (button_editOrganization $ routeWith' $ Organizations (EditS organizationResponseName))
-            (button_deleteOrganization $ routeWith' $ Organizations (DeleteS organizationResponseName))
-            permExecuteEmpty
+          h1_ [className_ B.textCenter] $ elemText $ userSanitizedResponseDisplayName
 
       cldiv_ B.pageHeader $ do
         p_ $ h4_ $ do
-          elemText "Name:"
-          small_ $ elemText (" " <> organizationResponseName)
-
-        ebyam organizationResponseDescription mempty $ \desc -> do
-          p_ $ do
-            h4_ $ do
-              elemText "Description"
-              small_ $ elemText desc
+          elemText "Gender: "
+          small_ $ elemShow profileResponseGender
 
         p_ $ h4_ $ do
-          elemText "Company"
-          small_ $ elemText $ " " <> organizationResponseCompany
+          elemText "Birthday:"
+          small_ $ elemText $ prettyUTCTime profileResponseBirthdate
 
         p_ $ h4_ $ do
-          elemText "Location"
-          small_ $ elemText $ " " <> organizationResponseLocation
+          elemText "Website: "
+          small_ $ elemText $ do
+            ebyam profileResponseWebsite "No website." id
 
         p_ $ h4_ $ do
-          elemText "Location"
-          small_ $ elemText $ " " <> tshow organizationResponseMembership
+          elemText "Location: "
+          small_ $ elemText $ do
+            ebyam profileResponseLocation "No Location." id
 
         p_ $ h4_ $ do
-          elemText "Location"
-          small_ $ elemText $ " " <> tshow organizationResponseVisibility
+          elemText "Signature: "
+          small_ $ elemText $ do
+            ebyam profileResponseSignature "No signature." id
 
-        p_ $ h4_ $ do
-          elemText "Tags: "
-          showTagsSmall organizationResponseTags
-
-      Loader.loader1 l_forums $ Forums.viewIndex_ page_info organization_pack
-
-    go _ _ _ = NotFound.view_
-
-
-
-viewNew
-  :: Maybe OrganizationRequest
-  -> HTMLView_
-
-viewNew !m_request =
-  ebyam m_request mempty $ \request -> viewMod TyCreate Nothing request
+    go _ _ = NotFound.view_
 
 
 
 viewEditS
-  :: Maybe OrganizationRequest
-  -> Loader (Maybe OrganizationPackResponse)
+  :: Maybe ProfileRequest
+  -> Loader (Maybe UserSanitizedPackResponse)
   -> HTMLView_
 
-viewEditS !m_request !l_organization_pack =
-  Loader.loader1 l_organization_pack $ \m_organization_pack -> do
-    case (m_request, m_organization_pack) of
-      (Just request, Just OrganizationPackResponse{..}) -> viewMod TyUpdate (Just organizationPackResponseOrganizationId) request
+viewEditS !m_request !l_user_pack =
+  Loader.loader1 l_user_pack $ \m_user_pack -> do
+    case (m_request, m_user_pack) of
+      (Just request, Just user_pack) -> go TyUpdate user_pack request
       _ -> mempty
 
+  where
+  go tycrud' user_pack' request' = do
+    defineViewWithSKey "organizations-mod-1" (tycrud', user_pack', request') $ \(tycrud, user_pack, request) -> do
 
+      let
+        UserSanitizedPackResponse {..} = user_pack
+        ProfileResponse{..}            = userSanitizedPackResponseProfile
+        ProfileRequest{..}             = request
 
--- | Strictness requirement on input fields
---
-viewMod
-  :: TyCRUD
-  -> Maybe OrganizationId
-  -> OrganizationRequest
-  -> HTMLView_
+      div_ $ do
+        h1_ $ elemText $ linkName tycrud <> " User Profile"
 
-viewMod !tycrud' !m_organization_id' !request' = do
-  defineViewWithSKey "organizations-mod-1" (tycrud', m_organization_id', request') $ \(tycrud, m_organization_id, request) -> do
-    let
-      OrganizationRequest{..} = request
-    div_ $ do
-      h1_ $ elemText $ linkName tycrud <> " Organization"
+        optionalLabelField "Website" profileResponseWebsite
+          (dispatch . Profile.setWebsite request)
+          (dispatch $ Profile.clearWebsite request)
 
-      mandatoryNameField organizationRequestDisplayName (dispatch . Organization.setDisplayName request)
+        optionalLabelField "Location" profileResponseLocation
+          (dispatch . Profile.setLocation request)
+          (dispatch $ Profile.clearLocation request)
 
-      renderedText "Safe name: " (toSafeName organizationRequestDisplayName)
+        optionalLabelField "Signature" profileResponseSignature
+          (dispatch . Profile.setSignature request)
+          (dispatch $ Profile.clearSignature request)
 
-      optionalDescriptionField organizationRequestDescription
-        (dispatch . Organization.setDescription request)
-        (dispatch $ Organization.clearDescription request)
+        mandatoryBooleanYesNoField "Debug" profileResponseDebug False
+          (dispatch . Profile.setDebug request)
 
-      mandatoryCompanyField organizationRequestCompany
-        (dispatch . Organization.setCompany request)
-
-      mandatoryLocationField organizationRequestLocation
-        (dispatch . Organization.setLocation request)
-
-      mandatoryMembershipField organizationRequestMembership
-        (dispatch . Organization.setMembership request)
-
-      mandatoryVisibilityField organizationRequestVisibility
-        (dispatch . Organization.setVisibility request)
-
-      tagsField
-         organizationRequestTags
-         (maybe ""  id organizationRequestStateTag)
-         (dispatch . Organization.setTag request)
-         (dispatch $ Organization.addTag request)
-         (dispatch . Organization.deleteTag request)
-         (dispatch $ Organization.clearTags request)
-
-      createButtonsCreateEditCancel
-        m_organization_id
-        (dispatch Save)
-        (const $ dispatch Save)
-        (routeWith' Home)
+        createButtonsCreateEditCancel
+          (Just profileResponseId)
+          (dispatch Save)
+          (const $ dispatch Save)
+          (routeWith' Home)

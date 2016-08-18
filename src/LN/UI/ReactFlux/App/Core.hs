@@ -56,6 +56,7 @@ import qualified LN.UI.ReactFlux.App.Portal           as Portal
 import qualified LN.UI.ReactFlux.App.ThreadPosts      as ThreadPosts
 import qualified LN.UI.ReactFlux.App.Threads          as Threads
 import qualified LN.UI.ReactFlux.App.Users            as Users
+import qualified LN.UI.ReactFlux.App.Profile          as Profile
 import qualified LN.UI.ReactFlux.Dispatcher           as Dispatcher
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
                                                        ahrefName, className_,
@@ -162,4 +163,5 @@ renderRouteView Store{..} = do
 
       RouteWith (Users Index) params          -> Users.viewIndex _pageInfo _l_users
       RouteWith (Users crud) params           -> p_ $ elemText "Users crud"
+      RouteWith (UsersProfile _ Index) _      -> Profile.viewIndex _pageInfo _l_m_user
       RouteWith _ _                           -> NotFound.view_

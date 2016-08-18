@@ -5,6 +5,7 @@ module LN.UI.ReactFlux.View.Field (
   mandatoryNameField,
   mandatoryCompanyField,
   mandatoryLocationField,
+  optionalLabelField,
   optionalDescriptionField,
   mandatoryDescriptionField,
   mandatoryMembershipField,
@@ -53,11 +54,16 @@ mandatoryLocationField = mandatoryLabelField "Location"
 
 
 
+optionalLabelField :: Text -> Maybe Text -> (Text -> ViewEventHandler) -> ViewEventHandler -> HTMLView_
+optionalLabelField label m_value set_value_handler remove_value_handler =
+  createLabelButtonTextArea label label (maybe "" id m_value) "✖"
+    (onChange (set_value_handler . targetValue))
+    (onClick $ const . const remove_value_handler)
+
+
+
 optionalDescriptionField :: Maybe Text -> (Text -> ViewEventHandler) -> ViewEventHandler -> HTMLView_
-optionalDescriptionField m_value set_description_handler remove_description_handler =
-  createLabelButtonTextArea "Description" "Description" (maybe "" id m_value) "✖"
-    (onChange (set_description_handler . targetValue))
-    (onClick $ const . const remove_description_handler)
+optionalDescriptionField = optionalLabelField "Description"
 
 
 
