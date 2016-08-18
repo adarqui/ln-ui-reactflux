@@ -20,16 +20,19 @@ module LN.UI.ReactFlux.View.Field (
 
 
 
-import           Data.Text                  (Text)
-import           React.Flux                 hiding (view)
-import qualified React.Flux                 as RF
+import           Data.Text                            (Text)
+import           React.Flux                           hiding (view)
+import qualified React.Flux                           as RF
 import           React.Flux.Internal
-import qualified Web.Bootstrap3 as B
+import qualified Web.Bootstrap3                       as B
 
-import           LN.T.Membership            (Membership (..))
-import           LN.T.Visibility            (Visibility (..))
-import           LN.UI.Core.Helpers.GHCJS        (JSString, textToJSString')
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (targetValue, className_, classNames_)
+import           LN.T.Membership                      (Membership (..))
+import           LN.T.Profile                         (ProfileGender (..))
+import           LN.T.Visibility                      (Visibility (..))
+import           LN.UI.Core.Helpers.GHCJS             (JSString,
+                                                       textToJSString')
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (className_, classNames_,
+                                                       targetValue)
 import           LN.UI.ReactFlux.Types                (HTMLView_)
 import           LN.UI.ReactFlux.View.Internal
 
@@ -94,6 +97,17 @@ mandatoryVisibilityField value visibility_handler =
     [Public, Private]
     value
     visibility_handler
+
+
+
+mandatoryGenderField :: ProfileGender -> (ProfileGender -> ViewEventHandler) -> HTMLView_
+mandatoryGenderField value gender_handler =
+  createRadioMenu
+    "Gender"
+    "gender"
+    [GenderMale, GenderFemale, GenderUnknown]
+    value
+    gender_handler
 
 
 

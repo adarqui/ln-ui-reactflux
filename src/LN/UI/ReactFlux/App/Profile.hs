@@ -39,12 +39,12 @@ import           LN.Api.String                         (getOrganizationPack')
 import           LN.Generate.Default                   (defaultOrganizationRequest)
 import           LN.Sanitize.Internal                  (toSafeName)
 import           LN.T.Convert                          (organizationResponseToOrganizationRequest)
-import LN.T.Pack.Sanitized.User
-import LN.T.Profile
-import qualified LN.UI.Core.App.Profile as Profile
+import           LN.T.Pack.Sanitized.User
+import           LN.T.Profile
 import           LN.T.Size                             (Size (..))
 import           LN.T.User                             (UserSanitizedResponse (..))
 import qualified LN.UI.Core.App.Organization           as Organization
+import qualified LN.UI.Core.App.Profile                as Profile
 import           LN.UI.Core.Helpers.DataList           (deleteNth)
 import           LN.UI.Core.Helpers.DataText           (tshow)
 import           LN.UI.Core.Helpers.DataTime           (prettyUTCTime)
