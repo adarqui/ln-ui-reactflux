@@ -95,17 +95,18 @@ defaultLayout :: Store -> HTMLView_ -> HTMLView_
 defaultLayout st@Store{..} page =
   div_ $ do
     Loader.loader1 _l_m_me $ \m_me -> do
-      navBar m_me
+      navBar m_me _route
       Breadcrumbs.view_ _route
       div_ page
 
 
 
-navBar :: Maybe UserResponse -> HTMLView_
-navBar m_user_pack =
+navBar :: Maybe UserResponse -> RouteWith -> HTMLView_
+navBar m_user_pack route_with =
   cldiv_ B.containerFluid $ do
     nav_ [classNames_ [B.navbarNav, B.navbarStaticTop]] $ do
       cldiv_ B.container $ do
+
         ahrefClasses [B.navbarBrand] $ routeWith' Home
         ul_ [classNames_ [B.navbarNav, B.nav, B.navTabs]] $ do
           li_ ["key" $= "nav-about"]  $ ahref $ routeWith' About
@@ -114,6 +115,13 @@ navBar m_user_pack =
             case m_user_pack of
               Nothing               -> ahref $ routeWith' Login
               Just UserResponse{..} -> ahrefName ("Logout: " <> userResponseName) $ routeWith' Logout
+          li_ ["key" $= "nav-refresh"] $ do
+            -- A method for refreshing the current route, without actually refreshing the page from the browser
+            --
+            button_ [ classNames_ [B.btn, B.btnDefault, B.btnXs]
+                    , onClick $ \_ _ -> dispatch $ Route route_with
+                    ] $ span_ [classNames_ [B.glyphicon, B.glyphiconRefresh]] mempty
+
 
 
 
