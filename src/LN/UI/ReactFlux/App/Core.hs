@@ -115,7 +115,8 @@ navBar m_user_pack route_with =
           li_ ["key" $= "nav-user"]   $ do
             case m_user_pack of
               Nothing               -> ahref $ routeWith' Login
-              Just UserResponse{..} -> ahrefName ("Logout: " <> userResponseName) $ routeWith' Logout
+                                       -- Raw anchor here, to hit the server's /auth/logout
+              Just UserResponse{..} -> a_ ["href" $= "/auth/logout"] $ elemText ("Logout: " <> userResponseName)
           li_ ["key" $= "nav-refresh"] $ do
             -- A method for refreshing the current route, without actually refreshing the page from the browser
             --
