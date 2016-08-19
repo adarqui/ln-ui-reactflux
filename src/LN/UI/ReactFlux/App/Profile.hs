@@ -22,6 +22,7 @@ import           Data.Map                              (Map)
 import qualified Data.Map                              as Map
 import           Data.Monoid                           ((<>))
 import           Data.Rehtie                           (rehtie)
+import qualified Data.Text                             as Text
 import           Data.Text                             (Text)
 import           Data.Typeable                         (Typeable)
 import           GHC.Generics                          (Generic)
