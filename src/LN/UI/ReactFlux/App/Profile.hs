@@ -159,8 +159,8 @@ viewEditZ !l_m_user_pack' !m_request' =
       _ -> mempty
 
   where
-  go tycrud' user_pack' request' = do
-    defineViewWithSKey "organizations-mod-1" (tycrud', user_pack', request') $ \(tycrud, user_pack, request) -> do
+  go !tycrud' !user_pack' !request' = do
+    defineViewWithSKey "users-profile-edit-1" (tycrud', user_pack', request') $ \(tycrud, user_pack, request) -> do
 
       let
         UserSanitizedPackResponse {..} = user_pack
