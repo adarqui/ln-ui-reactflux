@@ -140,7 +140,8 @@ viewIndex_ !me_id' !l_m_user' = do
             ebyam profileResponseSignature "No signature." id
 
         p_ $ h4_ $ do
-          elemText $ "Debug: " <> tshow profileResponseDebug
+          elemText "Debug: "
+          small_ $ elemShow profileResponseDebug
 
     go _ _ = NotFound.view_
 
