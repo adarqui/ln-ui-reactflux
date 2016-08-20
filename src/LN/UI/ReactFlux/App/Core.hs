@@ -103,7 +103,7 @@ defaultLayout st@Store{..} page =
 
 
 navBar :: Maybe UserResponse -> RouteWith -> HTMLView_
-navBar m_user_pack route_with =
+navBar m_user route_with =
   cldiv_ B.containerFluid $ do
     nav_ [classNames_ [B.navbarNav, B.navbarStaticTop]] $ do
       cldiv_ B.container $ do
@@ -112,8 +112,14 @@ navBar m_user_pack route_with =
         ul_ [classNames_ [B.navbarNav, B.nav, B.navTabs]] $ do
           li_ ["key" $= "nav-about"]  $ ahref $ routeWith' About
           li_ ["key" $= "nav-portal"] $ ahref $ routeWith' Portal
+
+          case m_user of
+            Nothing               -> mempty
+            Just UserResponse{..} -> do
+              li_ ["key" $= "nav-me"] $ ahrefName "Me" $ routeWith' $ Users (ShowS userResponseName)
+
           li_ ["key" $= "nav-user"]   $ do
-            case m_user_pack of
+            case m_user of
               Nothing               -> ahref $ routeWith' Login
                                        -- Raw anchor here, to hit the server's /auth/logout
               Just UserResponse{..} -> a_ ["href" $= "/auth/logout"] $ elemText ("Logout: " <> userResponseName)
