@@ -17,30 +17,31 @@ module LN.UI.ReactFlux.App.ThreadPosts (
 
 
 
-import           Control.Concurrent                   (forkIO)
-import           Control.DeepSeq                      (NFData)
-import           Control.Monad                        (forM_, void)
-import           Control.Monad.Trans.Either           (EitherT, runEitherT)
-import           Data.Ebyam                           (ebyam)
-import           Data.Int                             (Int64)
-import           Data.Map                             (Map)
-import qualified Data.Map                             as Map
-import           Data.Monoid                          ((<>))
-import           Data.Rehtie                          (rehtie)
-import           Data.Text                            (Text)
+import           Control.Concurrent                    (forkIO)
+import           Control.DeepSeq                       (NFData)
+import           Control.Monad                         (forM_, void)
+import           Control.Monad.Trans.Either            (EitherT, runEitherT)
+import           Data.Ebyam                            (ebyam)
+import           Data.Int                              (Int64)
+import           Data.Map                              (Map)
+import qualified Data.Map                              as Map
+import           Data.Monoid                           ((<>))
+import           Data.Rehtie                           (rehtie)
+import           Data.Text                             (Text)
 import           Data.Tuple.Select
-import           Data.Typeable                        (Typeable)
-import           GHC.Generics                         (Generic)
-import           Haskell.Helpers.Either               (mustPassT)
-import           React.Flux                           hiding (view)
-import qualified React.Flux                           as RF
-import qualified Web.Bootstrap3                       as B
+import           Data.Typeable                         (Typeable)
+import           GHC.Generics                          (Generic)
+import           Haskell.Helpers.Either                (mustPassT)
+import           React.Flux                            hiding (view)
+import qualified React.Flux                            as RF
+import qualified Web.Bootstrap3                        as B
 
 import           LN.Api
-import qualified LN.Api.String                        as ApiS
-import           LN.Generate.Default                  (defaultBoardRequest)
+import qualified LN.Api.String                         as ApiS
+import           LN.Generate.Default                   (defaultBoardRequest)
 import           LN.T.Board
 import           LN.T.Convert
+import           LN.T.Ent
 import           LN.T.Forum
 import           LN.T.Organization
 import           LN.T.Pack.Board
@@ -55,45 +56,47 @@ import           LN.T.Size
 import           LN.T.Thread
 import           LN.T.ThreadPost
 import           LN.T.User
+import qualified LN.UI.ReactFlux.App.Like as Like
 import           LN.UI.Core.Access
-import qualified LN.UI.Core.App.ThreadPost            as ThreadPost
-import           LN.UI.Core.Helpers.DataList          (deleteNth)
-import           LN.UI.Core.Helpers.DataText          (tshow)
-import           LN.UI.Core.Helpers.DataTime          (prettyUTCTimeMaybe)
-import           LN.UI.Core.Helpers.GHCJS             (textToJSString')
-import           LN.UI.Core.Helpers.HaskellApiHelpers (rd)
-import           LN.UI.Core.Helpers.Map               (idmapFrom)
-import           LN.UI.Core.PageInfo                  (PageInfo (..),
-                                                       defaultPageInfo,
-                                                       pageInfoFromParams,
-                                                       paramsFromPageInfo)
-import           LN.UI.Core.Router                    (CRUD (..), Params,
-                                                       Route (..),
-                                                       RouteWith (..),
-                                                       TyCRUD (..), emptyParams,
-                                                       linkName, routeWith,
-                                                       routeWith')
+import qualified LN.UI.Core.App.ThreadPost             as ThreadPost
+import           LN.UI.Core.Helpers.DataList           (deleteNth)
+import           LN.UI.Core.Helpers.DataText           (tshow)
+import           LN.UI.Core.Helpers.DataTime           (prettyUTCTimeMaybe)
+import           LN.UI.Core.Helpers.GHCJS              (textToJSString')
+import           LN.UI.Core.Helpers.HaskellApiHelpers  (rd)
+import           LN.UI.Core.Helpers.Map                (idmapFrom)
+import           LN.UI.Core.PageInfo                   (PageInfo (..),
+                                                        defaultPageInfo,
+                                                        pageInfoFromParams,
+                                                        paramsFromPageInfo)
+import           LN.UI.Core.Router                     (CRUD (..), Params,
+                                                        Route (..),
+                                                        RouteWith (..),
+                                                        TyCRUD (..),
+                                                        emptyParams, linkName,
+                                                        routeWith, routeWith')
 import           LN.UI.Core.Sort
 import           LN.UI.ReactFlux.Access
 import           LN.UI.ReactFlux.App.Core.Shared
-import qualified LN.UI.ReactFlux.App.Delete           as Delete
-import qualified LN.UI.ReactFlux.App.Gravatar         as Gravatar
-import           LN.UI.ReactFlux.App.Loader           (Loader (..))
-import qualified LN.UI.ReactFlux.App.Loader           as Loader
-import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
-import qualified LN.UI.ReactFlux.App.Oops             as Oops (view_)
-import           LN.UI.ReactFlux.App.PageNumbers      (runPageInfo)
-import qualified LN.UI.ReactFlux.App.PageNumbers      as PageNumbers
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
-                                                       ahrefClassesName,
-                                                       ahrefName, className_,
-                                                       classNames_, targetValue)
+import qualified LN.UI.ReactFlux.App.Delete            as Delete
+import qualified LN.UI.ReactFlux.App.Gravatar          as Gravatar
+import           LN.UI.ReactFlux.App.Loader            (Loader (..))
+import qualified LN.UI.ReactFlux.App.Loader            as Loader
+import qualified LN.UI.ReactFlux.App.NotFound          as NotFound (view_)
+import qualified LN.UI.ReactFlux.App.Oops              as Oops (view_)
+import           LN.UI.ReactFlux.App.PageNumbers       (runPageInfo)
+import qualified LN.UI.ReactFlux.App.PageNumbers       as PageNumbers
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM  (ahref, ahrefClasses,
+                                                        ahrefClassesName,
+                                                        ahrefName, className_,
+                                                        classNames_,
+                                                        targetValue)
 import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
-import           LN.UI.ReactFlux.View.Button          (showBadge)
+import           LN.UI.ReactFlux.View.Button           (showBadge)
 import           LN.UI.ReactFlux.View.Field
-import           LN.UI.ReactFlux.View.Internal        (showTagsSmall)
+import           LN.UI.ReactFlux.View.Internal         (showTagsSmall)
 
 
 
@@ -259,9 +262,9 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
           -- Member: must be a member to like/star
           -- Not Self: can't like/star your own posts
           if orgMember organization && notSelf me_id threadPostResponseUserId
-            then p_ $ elemText "like.." -- TODO FIXME: renderLike Ent_ThreadPost post.id like star
+            then Like.view Ent_ThreadPost threadPostResponseId threadPostPackResponseLike
             else mempty
-          -- TODO FIXME: displayPostStats threadPostPackStats
+          viewPostStats threadPostPackResponseStat
 
 
 
