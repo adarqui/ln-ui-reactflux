@@ -257,14 +257,14 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
             (button_deleteThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (DeleteI threadPostResponseId))
             permExecuteEmpty
 
-        cldiv_ B.colXs1 $ do
-          -- ACCESS: Member & Not self
-          -- Member: must be a member to like/star
-          -- Not Self: can't like/star your own posts
-          if orgMember organization && notSelf me_id threadPostResponseUserId
-            then Like.view Ent_ThreadPost threadPostResponseId threadPostPackResponseLike
-            else mempty
-          viewPostStats threadPostPackResponseStat
+      cldiv_ B.colXs1 $ do
+        -- ACCESS: Member & Not self
+        -- Member: must be a member to like/star
+        -- Not Self: can't like/star your own posts
+        if orgMember organization && notSelf me_id threadPostResponseUserId
+          then Like.view Ent_ThreadPost threadPostResponseId threadPostPackResponseLike
+          else mempty
+        viewPostStats threadPostPackResponseStat
 
 
 

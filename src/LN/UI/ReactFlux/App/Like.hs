@@ -27,36 +27,54 @@ import           LN.UI.ReactFlux.View.Button
 
 
 
+-- | If m_like_response is Just, use this as the Ent and EntId instead of the supplied ent / ent_id
+--
 view
   :: Ent
   -> Int64
   -> Maybe LikeResponse
   -> HTMLView_
 
-view !ent' !ent_id' !m_like' =
+view !ent' !ent_id' !m_like_response' =
+  case m_like_response' of
+    Nothing -> view_ ent' ent_id' m_like_response'
+    Just LikeResponse{..} -> view_ Ent_Like likeResponseId m_like_response'
+
+
+view_
+  :: Ent
+  -> Int64
+  -> Maybe LikeResponse
+  -> HTMLView_
+
+view_ !ent' !ent_id' !m_like' =
   defineViewWithSKey ("like-" <> (textToJSString' $ tshow ent_id')) (ent', ent_id', m_like') go
   where
   go (ent, ent_id, m_like) = do
     cldiv_ B.row $ do
-      p_ $ elemText "like"
-      div_ [className_ color_like]    $ button_like (dispatch $ DoLike ent ent_id Nothing)
-      div_ [className_ color_neutral] $ button_neutral (dispatch $ DoLike ent ent_id Nothing)
-      div_ [className_ color_dislike] $ button_dislike (dispatch $ DoLike ent ent_id Nothing)
+      div_ [className_ color_like]    $ button_like (dispatch $ DoLike ent ent_id (req Like))
+      div_ [className_ color_neutral] $ button_neutral (dispatch $ DoLike ent ent_id (req Neutral))
+      div_ [className_ color_dislike] $ button_dislike (dispatch $ DoLike ent ent_id (req Dislike))
     where
+    req k =
+      case m_like of
+        Nothing               -> Just $ LikeRequest k Nothing 0
+        Just LikeResponse{..} -> if likeResponseOpt == k then Nothing else Just (LikeRequest k Nothing 0)
+
     color_like = case m_like of
-                   Nothing               -> "like-black"
+                   Nothing               -> "like-none"
                    Just LikeResponse{..} -> case likeResponseOpt of
-                                              Like -> "like-green"
-                                              _    -> "like-black"
+                                              Like -> "like-like"
+                                              _    -> "like-none"
 
     color_neutral = case m_like of
-                      Nothing               -> "neutral-black"
+                      Nothing               -> "like-none"
                       Just LikeResponse{..} -> case likeResponseOpt of
-                                                 Neutral -> "neutral-yellow"
-                                                 _       -> "neutral-black"
+                                                 Neutral -> "like-neutral"
+                                                 _       -> "like-none"
 
     color_dislike = case m_like of
-                      Nothing               -> "dislike-black"
+                      Nothing               -> "like-none"
                       Just LikeResponse{..} -> case likeResponseOpt of
-                                                 Dislike -> "dislike-red"
-                                                 _       -> "dislike-black"
+                                                 Dislike -> "like-dislike"
+                                                 _       -> "like-none"
