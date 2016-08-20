@@ -350,12 +350,12 @@ button_editThreadPost'   = glyphButtonLinkDef_Pencil (Just "edit thread post")
 button_deleteThreadPost  = glyphButtonLinkDef_Trash Nothing
 button_deleteThreadPost' = glyphButtonLinkDef_Trash (Just "delete thread post")
 
-button_like  handler    = glyphButtonDef_ArrowUp Nothing  handler
-button_neutral  handler = glyphButtonDef_Minus Nothing  handler
-button_dislike  handler = glyphButtonDef_ArrowDown Nothing  handler
+button_like handler    = glyphButtonDef_ArrowUp Nothing handler
+button_neutral handler = glyphButtonDef_Minus Nothing handler
+button_dislike handler = glyphButtonDef_ArrowDown Nothing handler
 
-button_starEmpty  handler = glyphButtonDef_StarEmpty Nothing  handler
-button_star  handler      = glyphButtonDef_Star Nothing  handler
+button_starEmpty handler = glyphButtonDef_StarEmpty Nothing handler
+button_star handler      = glyphButtonDef_Star Nothing handler
 
 
 
