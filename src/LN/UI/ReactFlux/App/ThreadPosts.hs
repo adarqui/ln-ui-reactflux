@@ -234,7 +234,7 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
         ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
         p_ $ Gravatar.viewUser_ Medium threadPostPackResponseUser
         viewUserStats user
-      cldiv_ B.colXs8 $ do
+      cldiv_ B.colXs7 $ do
         ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
         p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
         p_ $ elemText "quote / reply"
@@ -268,6 +268,7 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
         if orgMember organization && notSelf me_id threadPostResponseUserId
           then Star.view Ent_ThreadPost threadPostResponseId threadPostPackResponseStar
           else mempty
+      cldiv_ B.colXs1 $ do
         viewPostStats threadPostPackResponseStat
 
 
