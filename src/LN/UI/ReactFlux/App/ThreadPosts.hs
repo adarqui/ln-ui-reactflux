@@ -379,8 +379,6 @@ viewMod !tycrud' !thread_id' !m_post_id' !request' = do
             (dispatch $ ThreadPost.clearTags request)
 
           cldiv_ B.well $ do
-            p_ $ elemText "bold"
-            p_ $ elemText "youtube"
             textarea_ [ className_ B.formControl
                       , "rows" $= "10"
                       , "value" @= body
