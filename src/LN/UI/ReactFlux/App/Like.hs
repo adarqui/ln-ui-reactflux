@@ -52,9 +52,9 @@ view_ !ent' !ent_id' !m_like' =
   where
   go (ent, ent_id, m_like) = do
     cldiv_ B.row $ do
-      div_ [className_ color_like]    $ button_like (dispatch $ DoLike ent ent_id (req Like))
-      div_ [className_ color_neutral] $ button_neutral (dispatch $ DoLike ent ent_id (req Neutral))
-      div_ [className_ color_dislike] $ button_dislike (dispatch $ DoLike ent ent_id (req Dislike))
+      div_ $ button_like' [color_like] (dispatch $ DoLike ent ent_id (req Like))
+      div_ $ button_neutral' [color_neutral] (dispatch $ DoLike ent ent_id (req Neutral))
+      div_ $ button_dislike' [color_dislike] (dispatch $ DoLike ent ent_id (req Dislike))
     where
     req k =
       case m_like of
