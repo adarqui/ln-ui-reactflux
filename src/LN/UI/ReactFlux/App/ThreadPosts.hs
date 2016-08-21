@@ -56,7 +56,6 @@ import           LN.T.Size
 import           LN.T.Thread
 import           LN.T.ThreadPost
 import           LN.T.User
-import qualified LN.UI.ReactFlux.App.Like as Like
 import           LN.UI.Core.Access
 import qualified LN.UI.Core.App.ThreadPost             as ThreadPost
 import           LN.UI.Core.Helpers.DataList           (deleteNth)
@@ -80,12 +79,14 @@ import           LN.UI.ReactFlux.Access
 import           LN.UI.ReactFlux.App.Core.Shared
 import qualified LN.UI.ReactFlux.App.Delete            as Delete
 import qualified LN.UI.ReactFlux.App.Gravatar          as Gravatar
+import qualified LN.UI.ReactFlux.App.Like              as Like
 import           LN.UI.ReactFlux.App.Loader            (Loader (..))
 import qualified LN.UI.ReactFlux.App.Loader            as Loader
 import qualified LN.UI.ReactFlux.App.NotFound          as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Oops              as Oops (view_)
 import           LN.UI.ReactFlux.App.PageNumbers       (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers       as PageNumbers
+import qualified LN.UI.ReactFlux.App.Star              as Star
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM  (ahref, ahrefClasses,
                                                         ahrefClassesName,
                                                         ahrefName, className_,
@@ -263,6 +264,9 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
         -- Not Self: can't like/star your own posts
         if orgMember organization && notSelf me_id threadPostResponseUserId
           then Like.view Ent_ThreadPost threadPostResponseId threadPostPackResponseLike
+          else mempty
+        if orgMember organization && notSelf me_id threadPostResponseUserId
+          then Star.view Ent_ThreadPost threadPostResponseId threadPostPackResponseStar
           else mempty
         viewPostStats threadPostPackResponseStat
 

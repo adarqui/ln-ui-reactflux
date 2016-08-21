@@ -37,7 +37,7 @@ view
 
 view !ent' !ent_id' !m_like_response' =
   case m_like_response' of
-    Nothing -> view_ ent' ent_id' m_like_response'
+    Nothing               -> view_ ent' ent_id' m_like_response'
     Just LikeResponse{..} -> view_ Ent_Like likeResponseId m_like_response'
 
 
