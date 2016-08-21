@@ -430,19 +430,21 @@ viewPostData
   :: PostData
   -> HTMLView_
 
-viewPostData !body =
+viewPostData !body = cldiv_ "thread-post-body" $
   case body of
-    PostDataEmpty      -> p_ mempty
-    PostDataRaw v      -> p_ [style [("white-space", "pre")]] $ elemText v
+    PostDataEmpty      -> p_ [className_ "post-data-empty"] mempty
+    PostDataRaw v      -> p_ [className_ "post-data-raw"] $ elemText v
+    PostDataBBCode v   -> p_ [className_ "post-data-bbcode"] $ elemText v
+    -- PostDataRaw v      -> p_ [style [("white-space", "pre")]] $ elemText v
     -- white-space: pre ... for proper output of multiple spaces etc
-    PostDataBBCode v   -> p_ [style [("white-space", "pre")]] $ elemText v
---    PostDataBBCode v   -> p_ ["style" @= (Map.fromList [("white-space", "pre")] :: Map Text Text)] $ elemText v
+    -- PostDataBBCode v   -> p_ [style [("white-space", "pre")]] $ elemText v
+    -- PostDataBBCode v   -> p_ ["style" @= (Map.fromList [("white-space", "pre")] :: Map Text Text)] $ elemText v
     -- PostDataBBCode v   ->
     --   case parseBBCode v of
     --        Left err    -> H.p_ [H.text "error: ", H.text err]
     --        Right codes -> H.p_ $ runBBCodeToHTML codes
-    PostDataMarkdown v -> p_ $ elemText "markdown"
-    _                  -> p_ $ elemText "unknown post body"
+    PostDataMarkdown v -> p_ [className_ "post-data-markdown"] $ elemText "markdown"
+    _                  -> p_ [className_ "post-data-unknown"] $ elemText "unknown post body"
 
 
 
