@@ -234,7 +234,7 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
         ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
         p_ $ Gravatar.viewUser_ Medium threadPostPackResponseUser
         viewUserStats user
-      cldiv_ B.colXs7 $ do
+      cldiv_ B.colXs8 $ do
         ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
         p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
         p_ $ elemText "quote / reply"
@@ -245,11 +245,11 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
         p_ $ elemText $ maybe "" id profileResponseSignature
 
       cldiv_ B.colXs1 $ do
-        buttonGroup_VerticalSm1 $ do
-          -- ACCESS: ThreadPost
-          -- * Update: edit thread post
-          -- * Delete: delete thread post
-          --
+        -- ACCESS: ThreadPost
+        -- * Update: edit thread post
+        -- * Delete: delete thread post
+        --
+        cldiv_ B.row $ do
           permissionsHTML'
             threadPostPackResponsePermissions
             permCreateEmpty
@@ -257,16 +257,13 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
             (button_editThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (EditI threadPostResponseId))
             (button_deleteThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (DeleteI threadPostResponseId))
             permExecuteEmpty
-
-      cldiv_ B.colXs1 $ do
         -- ACCESS: Member & Not self
         -- Member: must be a member to like/star
         -- Not Self: can't like/star your own posts
         if orgMember organization && notSelf me_id threadPostResponseUserId
-          then Like.view Ent_ThreadPost threadPostResponseId threadPostPackResponseLike
-          else mempty
-        if orgMember organization && notSelf me_id threadPostResponseUserId
-          then Star.view Ent_ThreadPost threadPostResponseId threadPostPackResponseStar
+          then do
+            Like.view Ent_ThreadPost threadPostResponseId threadPostPackResponseLike
+            Star.view Ent_ThreadPost threadPostResponseId threadPostPackResponseStar
           else mempty
       cldiv_ B.colXs1 $ do
         viewPostStats threadPostPackResponseStat
