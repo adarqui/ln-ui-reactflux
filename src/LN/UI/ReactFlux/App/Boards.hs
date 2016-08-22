@@ -90,7 +90,7 @@ import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
 import           LN.UI.ReactFlux.View.Field
-import           LN.UI.ReactFlux.View.Internal         (showTagsSmall)
+import           LN.UI.ReactFlux.View.Internal
 
 
 
@@ -143,9 +143,13 @@ viewIndex_ !page_info' !organization' !forum' !boards_map' = do
               p_ $ ahrefName boardResponseDisplayName $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (ShowS boardResponseName)
               p_ $ elemText $ maybe "No description." id boardResponseDescription
             cldiv_ B.colXs2 $ do
-              showBadge "threads " boardStatResponseThreads
-              showBadge "posts "   boardStatResponseThreadPosts
-              showBadge "views "   boardStatResponseViews
+              showTableClean
+                []
+                ["threads", "posts", "views"]
+                [[boardStatResponseThreads]
+                ,[boardStatResponseThreadPosts]
+                ,[boardStatResponseViews]
+                ]
             cldiv_ B.colXs3 $ do
               case (m_thread, m_post, m_user) of
                 (Just ThreadResponse{..}, Just ThreadPostResponse{..}, Just user@UserSanitizedResponse{..}) -> do
