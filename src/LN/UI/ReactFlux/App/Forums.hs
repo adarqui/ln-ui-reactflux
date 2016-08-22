@@ -90,9 +90,8 @@ import           LN.UI.ReactFlux.Helpers.ReactFluxDOM  (ahref, ahrefClasses,
 import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
-import           LN.UI.ReactFlux.View.Button           (showBadge)
 import           LN.UI.ReactFlux.View.Field
-import           LN.UI.ReactFlux.View.Internal         (showTagsSmall)
+import           LN.UI.ReactFlux.View.Internal
 
 
 
@@ -153,10 +152,14 @@ viewIndex_ !page_info' !organization' !forums_map' = do
               p_ $ elemText $ maybe "No description." id forumResponseDescription
               showTagsSmall forumResponseTags
           cldiv_ B.colXs2 $ do
-            showBadge "boards "  forumStatResponseBoards
-            showBadge "threads " forumStatResponseThreads
-            showBadge "posts "   forumStatResponseThreadPosts
-            showBadge "views "   forumStatResponseViews
+            showTableClean
+              []
+              ["boards", "threads", "posts", "views"]
+              [[forumStatResponseBoards]
+              ,[forumStatResponseThreads]
+              ,[forumStatResponseThreadPosts]
+              ,[forumStatResponseViews]
+              ]
           cldiv_ B.colXs2 $ p_ $ elemText "created-at"
           cldiv_ B.colXs1 $ do
 
