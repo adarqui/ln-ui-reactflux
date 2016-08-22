@@ -233,7 +233,7 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
         ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
         p_ $ Gravatar.viewUser_ Medium threadPostPackResponseUser
         viewUserStats user
-      cldiv_ B.colXs8 $ do
+      cldiv_ B.colXs7 $ do
         ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
         p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
         p_ $ elemText "quote / reply"
@@ -264,7 +264,7 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
             Like.view Ent_ThreadPost threadPostResponseId threadPostPackResponseLike
             Star.view Ent_ThreadPost threadPostResponseId threadPostPackResponseStar
           else mempty
-      cldiv_ B.colXs1 $ do
+      cldiv_ B.colXs2 $ do
         viewPostStats threadPostPackResponseStat
 
 
@@ -394,12 +394,16 @@ viewUserStats
 
 viewUserStats !user =
   div_ $ do
-    showBadge "respect "   userSanitizedStatResponseRespect
-    showBadge "threads "   userSanitizedStatResponseThreads
-    showBadge "posts "     userSanitizedStatResponseThreadPosts
-    showBadge "workouts "  userSanitizedStatResponseWorkouts
-    -- showBadge' "resources " userSanitizedStatResponseResources,
-    -- showBadge' "leurons "   userSanitizedStatResponseLeurons
+    showTableClean
+      []
+      ["respect", "threads", "posts", "workouts", "resources", "leurons"]
+      [[userSanitizedStatResponseRespect]
+      ,[userSanitizedStatResponseThreads]
+      ,[userSanitizedStatResponseThreadPosts]
+      ,[userSanitizedStatResponseWorkouts]
+      ,[userSanitizedStatResponseResources]
+      ,[userSanitizedStatResponseLeurons]
+      ]
   where
   UserSanitizedPackResponse{..} = user
   UserSanitizedStatResponse{..} = userSanitizedPackResponseStat
