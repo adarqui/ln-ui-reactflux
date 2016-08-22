@@ -91,9 +91,8 @@ import           LN.UI.ReactFlux.Helpers.ReactFluxDOM  (ahref, ahrefClasses,
 import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
-import           LN.UI.ReactFlux.View.Button           (showBadge)
 import           LN.UI.ReactFlux.View.Field
-import           LN.UI.ReactFlux.View.Internal         (showTagsSmall)
+import           LN.UI.ReactFlux.View.Internal
 
 
 
@@ -158,8 +157,12 @@ viewIndex_ !page_info' !organization' !forum' !board' !threads_map' = do
               p_ $ elemText "page-numbers"
               p_ $ elemText $ prettyUTCTimeMaybe threadResponseCreatedAt
             cldiv_ B.colXs2 $ do
-              showBadge "posts " threadStatResponseThreadPosts
-              showBadge "views " threadStatResponseViews
+              showTableClean
+                []
+                ["posts", "views"]
+                [[threadStatResponseThreadPosts]
+                ,[threadStatResponseViews]
+                ]
             cldiv_ B.colXs3 $ do
               case post of
                 Just ThreadPostResponse{..} -> do
