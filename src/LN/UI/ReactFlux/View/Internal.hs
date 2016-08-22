@@ -15,14 +15,17 @@ module LN.UI.ReactFlux.View.Internal (
   createTagsField,
   createSimpleInfoButton,
   showTags,
-  showTagsSmall
+  showTagsSmall,
+  showTable,
+  showTableClean
 ) where
 
 
+import           Control.Monad                        (forM_)
 import           Data.Text                            (Text)
 import           React.Flux                           hiding (view)
 import qualified React.Flux                           as RF
-import           React.Flux.Internal
+import           React.Flux.Internal hiding (JSString)
 import qualified Web.Bootstrap3                       as B
 
 import           LN.UI.Core.Helpers.DataList          (toSeqList)
@@ -211,3 +214,37 @@ showTagsSmall :: [Text] -> HTMLView_
 showTagsSmall tags = do
   small_ $ do
     span_ $ showTags tags
+
+
+
+-- | Creates a simple table like so:
+--
+--
+showTable
+  :: Show a
+  => [Text]
+  -> [Text]
+  -> [Text]
+  -> [[a]]
+  -> HTMLView_
+
+showTable attrs column_headings row_headings rows = do
+  table_ [classNames_ attrs] $ do
+    thead_ $ do
+      forM_ column_headings $ th_ . elemText
+    tbody_ $ do
+      forM_ (zip row_headings rows) $ \(row_heading, row_values) -> do
+        tr_ $ do
+          th_ $ elemText row_heading
+          forM_ row_values $ td_ . elemShow
+
+
+
+showTableClean
+  :: Show a
+  => [Text]
+  -> [Text]
+  -> [[a]]
+  -> HTMLView_
+
+showTableClean = showTable [B.table, B.tableStriped, B.tableCondensed]

@@ -95,9 +95,8 @@ import           LN.UI.ReactFlux.Helpers.ReactFluxDOM  (ahref, ahrefClasses,
 import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
-import           LN.UI.ReactFlux.View.Button           (showBadge)
 import           LN.UI.ReactFlux.View.Field
-import           LN.UI.ReactFlux.View.Internal         (showTagsSmall)
+import           LN.UI.ReactFlux.View.Internal
 
 
 
@@ -413,12 +412,16 @@ viewPostStats
 
 viewPostStats ThreadPostStatResponse{..} =
   div_ $ do
-    showBadge "score: "   $ threadPostStatResponseLikes - threadPostStatResponseDislikes
-    showBadge "up: "      threadPostStatResponseLikes
-    showBadge "neutral: " threadPostStatResponseNeutral
-    showBadge "down: "    threadPostStatResponseDislikes
-    showBadge "stars: "   threadPostStatResponseStars
-    showBadge "views: "   threadPostStatResponseViews
+    showTableClean
+      []
+      ["score", "up", "neutral", "down", "stars", "views"]
+      [[threadPostStatResponseLikes - threadPostStatResponseDislikes]
+      ,[threadPostStatResponseLikes]
+      ,[threadPostStatResponseNeutral]
+      ,[threadPostStatResponseDislikes]
+      ,[threadPostStatResponseStars]
+      ,[threadPostStatResponseViews]
+      ]
 
 
 
