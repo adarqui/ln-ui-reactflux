@@ -21,7 +21,6 @@ import           Control.Concurrent                    (forkIO)
 import           Control.DeepSeq                       (NFData)
 import           Control.Monad                         (forM_, void)
 import           Control.Monad.Trans.Either            (EitherT, runEitherT)
-import           Data.Ebyam                            (ebyam)
 import           Data.Int                              (Int64)
 import           Data.Map                              (Map)
 import qualified Data.Map                              as Map
@@ -31,11 +30,13 @@ import           Data.Text                             (Text)
 import           Data.Tuple.Select
 import           Data.Typeable                         (Typeable)
 import           GHC.Generics                          (Generic)
-import           Haskell.Helpers.Either                (mustPassT)
 import           React.Flux                            hiding (view)
 import qualified React.Flux                            as RF
-import qualified Web.Bootstrap3                        as B
 
+import           Data.BBCode                           (parseBBCode)
+import           Data.BBCode.HTML.ReactFlux
+import           Data.Ebyam                            (ebyam)
+import           Haskell.Helpers.Either                (mustPassT)
 import           LN.Api
 import qualified LN.Api.String                         as ApiS
 import           LN.Generate.Default                   (defaultBoardRequest)
@@ -97,6 +98,7 @@ import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
 import           LN.UI.ReactFlux.View.Field
 import           LN.UI.ReactFlux.View.Internal
+import qualified Web.Bootstrap3                        as B
 
 
 
@@ -379,7 +381,7 @@ viewMod !tycrud' !thread_id' !m_post_id' !request' = do
             textarea_ [ className_ B.formControl
                       , "rows" $= "10"
                       , "value" @= body
-                      , onChange $ \input -> dispatch $ ThreadPost.setBody request (PostDataRaw $ targetValue input)
+                      , onChange $ \input -> dispatch $ ThreadPost.setBody request (PostDataBBCode $ targetValue input)
                       ] mempty
             -- TODO FIXME: cancel
             button_ [onClick $ \_ _ -> dispatch $ Goto $ routeWith' Home ] $ elemText "cancel"
@@ -437,12 +439,13 @@ viewPostData !body = cldiv_ "thread-post-body" $
   case body of
     PostDataEmpty      -> p_ [className_ "post-data-empty"] mempty
     PostDataRaw v      -> p_ [className_ "post-data-raw"] $ elemText v
-    PostDataBBCode v   -> p_ [className_ "post-data-bbcode"] $ elemText v
+    PostDataBBCode v   -> do
+      case parseBBCode v of
+           Left err    -> p_ $ elemText $ "error: " <> err
+           Right codes -> p_ $ runBBCodeToHTML codes
+    -- PostDataBBCode v   -> p_ [className_ "post-data-bbcode"] $ elemText v
     PostDataMarkdown v -> p_ [className_ "post-data-markdown"] $ elemText "markdown"
     _                  -> p_ [className_ "post-data-unknown"] $ elemText "unknown post body"
-    --   case parseBBCode v of
-    --        Left err    -> H.p_ [H.text "error: ", H.text err]
-    --        Right codes -> H.p_ $ runBBCodeToHTML codes
 
 
 
