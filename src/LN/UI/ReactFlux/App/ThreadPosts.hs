@@ -443,7 +443,6 @@ viewPostData !body = cldiv_ "thread-post-body" $
       case parseBBCode v of
            Left err    -> p_ $ elemText $ "error: " <> err
            Right codes -> p_ $ runBBCodeToHTML codes
-    -- PostDataBBCode v   -> p_ [className_ "post-data-bbcode"] $ elemText v
     PostDataMarkdown v -> p_ [className_ "post-data-markdown"] $ elemText "markdown"
     _                  -> p_ [className_ "post-data-unknown"] $ elemText "unknown post body"
 
