@@ -33,7 +33,7 @@ import           GHC.Generics                          (Generic)
 import           React.Flux                            hiding (view)
 import qualified React.Flux                            as RF
 
-import           Data.BBCode                           (parseBBCode)
+import           Data.BBCode                           hiding (linkName)
 import           Data.BBCode.HTML.ReactFlux
 import           Data.Ebyam                            (ebyam)
 import           Haskell.Helpers.Either                (mustPassT)
@@ -440,7 +440,7 @@ viewPostData !body = cldiv_ "thread-post-body" $
     PostDataEmpty      -> p_ [className_ "post-data-empty"] mempty
     PostDataRaw v      -> p_ [className_ "post-data-raw"] $ elemText v
     PostDataBBCode v   -> do
-      case parseBBCode v of
+      case parseBBCodeWith (defaultParseReader { allowNotClosed = True }) v of
            Left err    -> p_ $ elemText $ "error: " <> err
            Right codes -> p_ $ runBBCodeToHTML codes
     PostDataMarkdown v -> p_ [className_ "post-data-markdown"] $ elemText "markdown"
