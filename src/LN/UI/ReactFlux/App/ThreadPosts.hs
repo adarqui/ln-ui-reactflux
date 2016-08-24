@@ -243,6 +243,7 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
         -- white-space: pre ... for proper output of multiple spaces etc
         div_ $ viewPostData threadPostResponseBody
 
+        cldiv_ B.pageHeader mempty
         p_ $ elemText $ maybe "" id profileResponseSignature
 
       cldiv_ B.colXs1 $ do
