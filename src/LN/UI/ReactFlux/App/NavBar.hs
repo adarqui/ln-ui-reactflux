@@ -51,9 +51,9 @@ view !m_user' !route_with' = do
   where
   go :: (Maybe UserResponse, RouteWith) -> HTMLView_
   go (m_user, route_with) = do
-    div_ [className_ B.containerFluid] $ do
-      nav_ ["key" $= "nav", classNames_ [B.navbarNav, B.navbarStaticTop]] $ do
-        div_ ["key" $= "nav-div-2", className_ B.container] $ do
+    cldiv_ B.containerFluid $ do
+      nav_ [classNames_ [B.navbarNav, B.navbarStaticTop]] $ do
+        cldiv_ B.container $ do
 
           ahrefClassesKey "nav-home" [B.navbarBrand] $ routeWith' Home
           ul_ ["key" $= "nav-ul", classNames_ [B.navbarNav, B.nav, B.navTabs]] $ do
