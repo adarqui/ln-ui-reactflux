@@ -58,10 +58,8 @@ import qualified LN.UI.ReactFlux.App.Threads          as Threads
 import qualified LN.UI.ReactFlux.App.Users            as Users
 import qualified LN.UI.ReactFlux.App.Profile          as Profile
 import qualified LN.UI.ReactFlux.Dispatcher           as Dispatcher
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, ahrefClasses,
-                                                       ahrefName, className_,
-                                                       classNames_)
-import           LN.UI.ReactFlux.Types                (HTMLEvent_, HTMLView_)
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM
+import           LN.UI.ReactFlux.Types
 
 
 
@@ -94,35 +92,35 @@ view =
 
 defaultLayout :: Store -> HTMLView_ -> HTMLView_
 defaultLayout st@Store{..} page =
-  div_ $ do
+  div_ ["key" $= "default-layout"] $ do
     Loader.loader1 _l_m_me $ \m_me -> do
       navBar m_me _route
-      Breadcrumbs.view_ _route
-      div_ page
+      Breadcrumbs.view _route
+      div_ ["key" $= "page"] page
 
 
 
 navBar :: Maybe UserResponse -> RouteWith -> HTMLView_
 navBar m_user route_with =
-  cldiv_ B.containerFluid $ do
-    nav_ [classNames_ [B.navbarNav, B.navbarStaticTop]] $ do
-      cldiv_ B.container $ do
+  div_ ["key" $= "navbar", className_ B.containerFluid] $ do
+    nav_ ["key" $= "nav", classNames_ [B.navbarNav, B.navbarStaticTop]] $ do
+      div_ ["key" $= "nav-div-2", className_ B.container] $ do
 
-        ahrefClasses [B.navbarBrand] $ routeWith' Home
-        ul_ [classNames_ [B.navbarNav, B.nav, B.navTabs]] $ do
-          li_ ["key" $= "nav-about"]  $ ahref $ routeWith' About
-          li_ ["key" $= "nav-portal"] $ ahref $ routeWith' Portal
+        ahrefClassesKey "nav-home" [B.navbarBrand] $ routeWith' Home
+        ul_ ["key" $= "nav-ul", classNames_ [B.navbarNav, B.nav, B.navTabs]] $ do
+          li_ ["key" $= "nav-about"]  $ ahrefKey "nav-about" $ routeWith' About
+          li_ ["key" $= "nav-portal"] $ ahrefKey "nav-portal" $ routeWith' Portal
 
           case m_user of
             Nothing               -> mempty
             Just UserResponse{..} -> do
-              li_ ["key" $= "nav-me"] $ ahrefName "Me" $ routeWith' $ Users (ShowS userResponseName)
+              li_ ["key" $= "nav-me"] $ ahrefNameKey "nav-me" "Me" $ routeWith' $ Users (ShowS userResponseName)
 
           li_ ["key" $= "nav-user"]   $ do
             case m_user of
-              Nothing               -> ahref $ routeWith' Login
+              Nothing               -> ahrefKey "nav-user" $ routeWith' Login
                                        -- Raw anchor here, to hit the server's /auth/logout
-              Just UserResponse{..} -> a_ ["href" $= "/auth/logout"] $ elemText ("Logout: " <> userResponseName)
+              Just UserResponse{..} -> a_ ["key" $= "nav-user", "href" $= "/auth/logout"] $ elemText ("Logout: " <> userResponseName)
           li_ ["key" $= "nav-refresh"] $ do
             -- A method for refreshing the current route, without actually refreshing the page from the browser
             --

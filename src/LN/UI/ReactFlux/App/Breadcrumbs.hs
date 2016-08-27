@@ -1,10 +1,11 @@
+{-# LANGUAGE BangPatterns      #-}
 {-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Rank2Types        #-}
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.ReactFlux.App.Breadcrumbs (
-  view_,
   view
 ) where
 
@@ -17,21 +18,20 @@ import qualified Web.Bootstrap3                       as B
 
 import           LN.UI.Core.Router
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, className_)
-import           LN.UI.ReactFlux.Types                (HTMLEvent_)
+import           LN.UI.ReactFlux.Types
+import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
 
 
 
-view_ :: RouteWith -> HTMLEvent_
-view_ route_with =
-  RF.view view route_with mempty
-
-
-
-view :: ReactView RouteWith
-view = defineView "breadcrumbs" $ \(RouteWith route params) ->
-  case (crumb route) of
-    [] -> mempty
-    xs -> do
-      div_ $ do
-        ol_ [className_ B.breadcrumb] $
-          forM_ (zip [(1 :: Int)..] xs) $ \(idx, breadcrumb) -> li_ ["key" @= idx] $ ahref $ routeWith' breadcrumb
+view :: RouteWith -> HTMLView_
+view !route_with' = do
+  defineViewWithSKey "breadcrumbs" route_with' go
+  where
+  go :: RouteWith -> HTMLView_
+  go (RouteWith route params) = do
+    case (crumb route) of
+      [] -> mempty
+      xs -> do
+        div_ $ do
+          ol_ [className_ B.breadcrumb] $
+            forM_ (zip [(1 :: Int)..] xs) $ \(idx, breadcrumb) -> li_ ["key" @= idx] $ ahref $ routeWith' breadcrumb

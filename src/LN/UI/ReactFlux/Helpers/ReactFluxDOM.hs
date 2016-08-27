@@ -9,6 +9,11 @@ module LN.UI.ReactFlux.Helpers.ReactFluxDOM (
   ahrefClasses,
   ahrefClassesName,
   ahrefElement,
+  ahrefKey,
+  ahrefNameKey,
+  ahrefClassesKey,
+  ahrefClassesNameKey,
+  ahrefElementKey,
   targetValue,
   classNames_,
   className_
@@ -16,6 +21,7 @@ module LN.UI.ReactFlux.Helpers.ReactFluxDOM (
 
 
 
+import           Data.Aeson
 import           Data.Monoid         ((<>))
 import           Data.Text           (Text)
 import qualified Data.Text           as Text
@@ -53,6 +59,34 @@ ahrefClassesName classes name route_with =
 -- ahrefElement :: RouteWith -> HTMLEvent_ -> HTMLEvent_
 ahrefElement route_with element =
   a_ ["href" $= fromRouteWithHash route_with] element
+
+
+
+ahrefKey :: Text -> RouteWith -> HTMLEvent_
+ahrefKey key route_with = ahrefNameKey key (linkName route_with) route_with
+
+
+
+ahrefNameKey :: Text -> Text -> RouteWith -> HTMLEvent_
+ahrefNameKey key name route_with =
+  a_ ["key" @= key, "href" $= fromRouteWithHash route_with] $ elemText name
+
+
+
+ahrefClassesKey :: Text -> [Text] -> RouteWith -> HTMLEvent_
+ahrefClassesKey key classes route_with = ahrefClassesNameKey key classes (linkName route_with) route_with
+
+
+
+ahrefClassesNameKey :: Text -> [Text] -> Text -> RouteWith -> HTMLEvent_
+ahrefClassesNameKey key classes name route_with =
+  a_ ["key" @= key, classNames_ classes, "href" $= fromRouteWithHash route_with] $ elemText name
+
+
+
+-- ahrefElement :: RouteWith -> HTMLEvent_ -> HTMLEvent_
+ahrefElementKey key route_with element =
+  a_ ["key" @= key, "href" $= fromRouteWithHash route_with] element
 
 
 
