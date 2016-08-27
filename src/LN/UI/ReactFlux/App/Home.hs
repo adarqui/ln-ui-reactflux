@@ -1,15 +1,11 @@
 {-# LANGUAGE DeriveAnyClass             #-}
 {-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE FlexibleContexts           #-}
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE TypeFamilies               #-}
 
 module LN.UI.ReactFlux.App.Home (
-  Store,
-  defaultStore,
-  Action (..),
-  store,
-  view_,
   view
 ) where
 
@@ -21,44 +17,13 @@ import           GHC.Generics    (Generic)
 import           React.Flux      hiding (view)
 import qualified React.Flux      as RF
 
-import           LN.UI.ReactFlux.Types     (HTMLEvent_)
+import           LN.UI.ReactFlux.Types
+import           LN.UI.ReactFlux.Helpers.ReactFluxView
 
 
 
-data Store = Store
-  deriving (Show, Typeable, Generic, NFData)
-
-
-
-data Action = Action
-  deriving (Show, Typeable, Generic, NFData)
-
-
-
-instance StoreData Store where
-  type StoreAction Store = Action
-  transform action st = do
-    putStrLn "Home"
-    pure Store
-
-
-
-store :: ReactStore Store
-store = mkStore defaultStore
-
-
-
-defaultStore :: Store
-defaultStore = Store
-
-
-
-view_ :: HTMLEvent_
-view_ =
-  RF.view view () mempty
-
-
-
-view :: ReactView ()
-view = defineControllerView "home" store $ \st _ ->
-  div_ $ p_ $ elemText "Welcome to LN!"
+view :: HTMLView_
+view =
+  defineViewWithSKey "home" () go
+  where
+  go _ = div_ $ p_ $ elemText "Welcome to LN!"

@@ -96,7 +96,7 @@ renderRouteView :: Store -> HTMLView_
 renderRouteView Store{..} = do
   div_ ["key" $= "render-route-view"] $ do
     case _route of
-      RouteWith Home _                        -> Home.view_
+      RouteWith Home _                        -> Home.view
       RouteWith About _                       -> About.view
       RouteWith Portal _                      -> Portal.view
 
