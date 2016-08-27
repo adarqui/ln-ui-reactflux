@@ -16,7 +16,8 @@ module LN.UI.ReactFlux.Helpers.ReactFluxDOM (
   ahrefElementKey,
   targetValue,
   classNames_,
-  className_
+  className_,
+  liKey_
 ) where
 
 
@@ -103,3 +104,8 @@ classNames_ = classNames . flip zip (repeat True)
 
 className_ :: JSString -> PropertyOrHandler handler
 className_ = ($=) "className"
+
+
+
+-- liKey_ :: _ -> _
+liKey_ key = li_ ["key" $= key]
