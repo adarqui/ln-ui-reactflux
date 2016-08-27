@@ -98,5 +98,5 @@ viewShowS !page_info' !me_id' !l_m_user' = do
       UserSanitizedPackResponse{..} = user
       UserSanitizedResponse{..}     = userSanitizedPackResponseUser
     cldiv_ B.pageHeader $ do
-      h1_ [className_ B.textCenter] $ elemText userSanitizedResponseDisplayName
+      -- TODO FIXME: h1_ [className_ B.textCenter] $ elemText userSanitizedResponseDisplayName
       ahref $ routeWith' (UsersProfile userSanitizedResponseName Index)
