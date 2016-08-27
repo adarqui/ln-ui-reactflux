@@ -18,8 +18,8 @@ import qualified Web.Bootstrap3                       as B
 
 import           LN.UI.Core.Router
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahref, className_)
-import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
+import           LN.UI.ReactFlux.Types
 
 
 

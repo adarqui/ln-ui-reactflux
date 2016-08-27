@@ -50,6 +50,7 @@ import qualified LN.UI.ReactFlux.App.Breadcrumbs      as Breadcrumbs
 import           LN.UI.ReactFlux.App.Core.Shared      as A
 import qualified LN.UI.ReactFlux.App.Forums           as Forums
 import qualified LN.UI.ReactFlux.App.Home             as Home
+import qualified LN.UI.ReactFlux.App.NavBar           as NavBar
 import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Organizations    as Organizations
 import qualified LN.UI.ReactFlux.App.Portal           as Portal
@@ -94,40 +95,9 @@ defaultLayout :: Store -> HTMLView_ -> HTMLView_
 defaultLayout st@Store{..} page =
   div_ ["key" $= "default-layout"] $ do
     Loader.loader1 _l_m_me $ \m_me -> do
-      navBar m_me _route
+      NavBar.view m_me _route
       Breadcrumbs.view _route
       div_ ["key" $= "page"] page
-
-
-
-navBar :: Maybe UserResponse -> RouteWith -> HTMLView_
-navBar m_user route_with =
-  div_ ["key" $= "navbar", className_ B.containerFluid] $ do
-    nav_ ["key" $= "nav", classNames_ [B.navbarNav, B.navbarStaticTop]] $ do
-      div_ ["key" $= "nav-div-2", className_ B.container] $ do
-
-        ahrefClassesKey "nav-home" [B.navbarBrand] $ routeWith' Home
-        ul_ ["key" $= "nav-ul", classNames_ [B.navbarNav, B.nav, B.navTabs]] $ do
-          li_ ["key" $= "nav-about"]  $ ahrefKey "nav-about" $ routeWith' About
-          li_ ["key" $= "nav-portal"] $ ahrefKey "nav-portal" $ routeWith' Portal
-
-          case m_user of
-            Nothing               -> mempty
-            Just UserResponse{..} -> do
-              li_ ["key" $= "nav-me"] $ ahrefNameKey "nav-me" "Me" $ routeWith' $ Users (ShowS userResponseName)
-
-          li_ ["key" $= "nav-user"]   $ do
-            case m_user of
-              Nothing               -> ahrefKey "nav-user" $ routeWith' Login
-                                       -- Raw anchor here, to hit the server's /auth/logout
-              Just UserResponse{..} -> a_ ["key" $= "nav-user", "href" $= "/auth/logout"] $ elemText ("Logout: " <> userResponseName)
-          li_ ["key" $= "nav-refresh"] $ do
-            -- A method for refreshing the current route, without actually refreshing the page from the browser
-            --
-            button_ [ classNames_ [B.btn, B.btnDefault, B.btnXs]
-                    , onClick $ \_ _ -> dispatch $ Route route_with
-                    ] $ span_ [classNames_ [B.glyphicon, B.glyphiconRefresh]] mempty
-
 
 
 
