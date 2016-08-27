@@ -97,7 +97,7 @@ renderRouteView Store{..} = do
   div_ ["key" $= "render-route-view"] $ do
     case _route of
       RouteWith Home _                        -> Home.view_
-      RouteWith About _                       -> About.view_
+      RouteWith About _                       -> About.view
       RouteWith Portal _                      -> Portal.view
 
       RouteWith (Organizations Index) _       -> Organizations.viewIndex _pageInfo _l_organizations

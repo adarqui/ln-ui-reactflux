@@ -1,11 +1,11 @@
 {-# LANGUAGE DeriveAnyClass             #-}
 {-# LANGUAGE DeriveGeneric              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE FlexibleContexts           #-}
 {-# LANGUAGE OverloadedStrings          #-}
 {-# LANGUAGE TypeFamilies               #-}
 
 module LN.UI.ReactFlux.App.About (
-  view_,
   view
 ) where
 
@@ -14,16 +14,13 @@ module LN.UI.ReactFlux.App.About (
 import           React.Flux  hiding (view)
 import qualified React.Flux  as RF
 
-import           LN.UI.ReactFlux.Types (HTMLEvent_)
+import           LN.UI.ReactFlux.Types
+import           LN.UI.ReactFlux.Helpers.ReactFluxView
 
 
 
-view_ :: HTMLEvent_
-view_ =
-  RF.view view () mempty
-
-
-
-view :: ReactView ()
-view = defineView "about" $ \_ ->
-  div_ $ p_ $ elemText "LN is a full stack haskell system which powers adarq.org"
+view :: HTMLView_
+view =
+  defineViewWithSKey "about" () go
+  where
+  go _ = div_ $ p_ $ elemText "LN is a full stack haskell system which powers adarq.org"
