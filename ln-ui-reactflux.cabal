@@ -28,6 +28,7 @@ library
                      , LN.UI.ReactFlux.App.Delete
                      , LN.UI.ReactFlux.App.Forums
                      , LN.UI.ReactFlux.App.Gravatar
+                     , LN.UI.ReactFlux.App.Layout
                      , LN.UI.ReactFlux.App.Like
                      , LN.UI.ReactFlux.App.Home
                      , LN.UI.ReactFlux.App.Loader

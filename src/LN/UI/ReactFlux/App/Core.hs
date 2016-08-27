@@ -50,14 +50,15 @@ import qualified LN.UI.ReactFlux.App.Breadcrumbs      as Breadcrumbs
 import           LN.UI.ReactFlux.App.Core.Shared      as A
 import qualified LN.UI.ReactFlux.App.Forums           as Forums
 import qualified LN.UI.ReactFlux.App.Home             as Home
+import qualified LN.UI.ReactFlux.App.Layout           as Layout
 import qualified LN.UI.ReactFlux.App.NavBar           as NavBar
 import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
 import qualified LN.UI.ReactFlux.App.Organizations    as Organizations
 import qualified LN.UI.ReactFlux.App.Portal           as Portal
+import qualified LN.UI.ReactFlux.App.Profile          as Profile
 import qualified LN.UI.ReactFlux.App.ThreadPosts      as ThreadPosts
 import qualified LN.UI.ReactFlux.App.Threads          as Threads
 import qualified LN.UI.ReactFlux.App.Users            as Users
-import qualified LN.UI.ReactFlux.App.Profile          as Profile
 import qualified LN.UI.ReactFlux.Dispatcher           as Dispatcher
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM
 import           LN.UI.ReactFlux.Types
@@ -87,23 +88,13 @@ view_ =
 view :: ReactView ()
 view =
   defineControllerView "core" store $ \st _ ->
-    defaultLayout st (renderRouteView st)
-
-
-
-defaultLayout :: Store -> HTMLView_ -> HTMLView_
-defaultLayout st@Store{..} page =
-  div_ ["key" $= "default-layout"] $ do
-    Loader.loader1 _l_m_me $ \m_me -> do
-      NavBar.view m_me _route
-      Breadcrumbs.view _route
-      div_ ["key" $= "page"] page
+    Layout.view st (renderRouteView st)
 
 
 
 renderRouteView :: Store -> HTMLView_
 renderRouteView Store{..} = do
-  div_ $ do
+  div_ ["key" $= "render-route-view"] $ do
     case _route of
       RouteWith Home _                        -> Home.view_
       RouteWith About _                       -> About.view_
