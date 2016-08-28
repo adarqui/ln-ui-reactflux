@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveAnyClass    #-}
+{-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeFamilies      #-}
 
@@ -23,7 +24,26 @@ import           LN.UI.ReactFlux.Types                 (HTMLView_)
 view :: HTMLView_
 view = defineViewWithSKey "portal" () $ \_ ->
   div_ $ do
-    -- TODO FIXME: h1_ "Portal"
+    viewHeader
+    viewLinks
+
+
+
+viewHeader :: HTMLView_
+viewHeader =
+  defineViewWithSKey "portal-header" () go
+  where
+  go :: () -> HTMLView_
+  go _ = h1_ "Portal"
+
+
+
+viewLinks :: HTMLView_
+viewLinks =
+  defineViewWithSKey "portal-links" () go
+  where
+  go :: () -> HTMLView_
+  go _ = do
     ol_ $ do
-      liKey_ "portal-organizations" $ ahref $ routeWith' (Organizations Index)
-      liKey_ "portal-users"         $ ahref $ routeWith' (Users Index)
+      liKey_ "portal-link-organizations" $ ahref $ routeWith' (Organizations Index)
+      liKey_ "portal-link-users"         $ ahref $ routeWith' (Users Index)
