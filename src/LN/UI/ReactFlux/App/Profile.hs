@@ -108,13 +108,9 @@ viewIndex_ !me_id' !l_m_user' = do
         ProfileResponse{..}       = userSanitizedPackResponseProfile
 
       div_ $ do
-        cldiv_ B.containerFluid $ do
-          cldiv_ B.pageHeader $ do
-            h1_ [className_ B.textCenter] $ elemText userSanitizedResponseDisplayName
+        viewIndexHeader userSanitizedPackResponseUser
 
-        ifte_Self me_id userSanitizedResponseId
-          (ahref $ routeWith' $ UsersProfile userSanitizedResponseName EditZ)
-          mempty
+        viewEditProfile me_id userSanitizedPackResponseUser
 
         div_ ["key" $= "profile-fields", className_ B.pageHeader] $ do
           h4_ ["key" $= "profile-gender-h4"] $ do
@@ -145,6 +141,33 @@ viewIndex_ !me_id' !l_m_user' = do
             small_ ["key" $= "profile-debug-sm"] $ elemShow profileResponseDebug
 
     go _ _ = NotFound.view_
+
+
+
+-- | Simply create a profile header
+--
+viewIndexHeader :: UserSanitizedResponse -> HTMLView_
+viewIndexHeader !user' =
+  defineViewWithSKey "profile-index-header" user' go
+  where
+  go UserSanitizedResponse{..} = do
+    cldiv_ B.containerFluid $ do
+      cldiv_ B.pageHeader $ do
+        h1_ [className_ B.textCenter] $ elemText userSanitizedResponseDisplayName
+
+
+
+-- | Simply adds an "Edit profile" link, if we have access
+--
+viewEditProfile :: UserId -> UserSanitizedResponse -> HTMLView_
+viewEditProfile !me_id' !lookup_user' =
+  defineViewWithSKey "profile-edit" (me_id', lookup_user') go
+  where
+  go :: (UserId, UserSanitizedResponse) -> HTMLView_
+  go (me_id, UserSanitizedResponse{..}) = do
+    ifte_Self me_id userSanitizedResponseId
+      (ahref $ routeWith' $ UsersProfile userSanitizedResponseName EditZ)
+      mempty
 
 
 
