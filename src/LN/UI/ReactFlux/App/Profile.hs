@@ -107,41 +107,42 @@ viewIndex_ !me_id' !l_m_user' = do
         UserSanitizedResponse{..} = userSanitizedPackResponseUser
         ProfileResponse{..}       = userSanitizedPackResponseProfile
 
-      cldiv_ B.containerFluid $ do
-        cldiv_ B.pageHeader $ do
-          h1_ [className_ B.textCenter] $ elemText userSanitizedResponseDisplayName
+      div_ $ do
+        cldiv_ B.containerFluid $ do
+          cldiv_ B.pageHeader $ do
+            h1_ [className_ B.textCenter] $ elemText userSanitizedResponseDisplayName
 
-      ifte_Self me_id userSanitizedResponseId
-        (ahref $ routeWith' $ UsersProfile userSanitizedResponseName EditZ)
-        mempty
+        ifte_Self me_id userSanitizedResponseId
+          (ahref $ routeWith' $ UsersProfile userSanitizedResponseName EditZ)
+          mempty
 
-      cldiv_ B.pageHeader $ do
-        p_ $ h4_ $ do
-          elemText "Gender: "
-          small_ $ elemShow profileResponseGender
+        div_ ["key" $= "profile-fields", className_ B.pageHeader] $ do
+          h4_ ["key" $= "profile-gender-h4"] $ do
+            elemText "Gender: "
+            small_ ["key" $= "profile-gender-sm"] $ elemShow profileResponseGender
 
-        p_ $ h4_ $ do
-          elemText "Birthday:"
-          small_ $ elemText $ prettyUTCTime profileResponseBirthdate
+          h4_ ["key" $= "profile-birthday-h4"] $ do
+            elemText "Birthday:"
+            small_ ["key" $= "profile-birthday-sm"] $ elemText $ prettyUTCTime profileResponseBirthdate
 
-        p_ $ h4_ $ do
-          elemText "Website: "
-          small_ $ elemText $ do
-            ebyam profileResponseWebsite "No website." id
+          h4_ ["key" $= "profile-website-h4"] $ do
+            elemText "Website: "
+            small_ ["key" $= "profile-website-sm"] $ elemText $ do
+              ebyam profileResponseWebsite "No website." id
 
-        p_ $ h4_ $ do
-          elemText "Location: "
-          small_ $ elemText $ do
-            ebyam profileResponseLocation "No Location." id
+          h4_ ["key" $= "profile-location-h4"] $ do
+            elemText "Location: "
+            small_ ["key" $= "profile-location-sm"] $ elemText $ do
+              ebyam profileResponseLocation "No Location." id
 
-        p_ $ h4_ $ do
-          elemText "Signature: "
-          small_ $ elemText $ do
-            ebyam profileResponseSignature "No signature." id
+          h4_ ["key" $= "profile-signature-h4"] $ do
+            elemText "Signature: "
+            small_ ["key" $= "profile-signature-sm"] $ elemText $ do
+              ebyam profileResponseSignature "No signature." id
 
-        p_ $ h4_ $ do
-          elemText "Debug: "
-          small_ $ elemShow profileResponseDebug
+          h4_ ["key" $= "profile-debug-h4"] $ do
+            elemText "Debug: "
+            small_ ["key" $= "profile-debug-sm"] $ elemShow profileResponseDebug
 
     go _ _ = NotFound.view_
 

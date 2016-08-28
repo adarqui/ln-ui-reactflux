@@ -100,41 +100,40 @@ renderRouteView !store = do
   where
   go :: Store -> HTMLView_
   go Store{..} = do
-    div_ $ do
-      case _route of
-        RouteWith Home _                        -> Home.view
-        RouteWith About _                       -> About.view
-        RouteWith Portal _                      -> Portal.view
+    case _route of
+      RouteWith Home _                        -> Home.view
+      RouteWith About _                       -> About.view
+      RouteWith Portal _                      -> Portal.view
 
-        RouteWith (Organizations Index) _       -> Organizations.viewIndex _pageInfo _l_organizations
-        RouteWith (Organizations New) _         -> Organizations.viewNew _m_organizationRequest
-        RouteWith (Organizations (EditS _)) _   -> Organizations.viewEditS _m_organizationRequest _l_m_organization
-        RouteWith (Organizations (ShowS _)) _   -> Organizations.viewShowS _pageInfo _l_m_organization _l_forums
+      RouteWith (Organizations Index) _       -> Organizations.viewIndex _pageInfo _l_organizations
+      RouteWith (Organizations New) _         -> Organizations.viewNew _m_organizationRequest
+      RouteWith (Organizations (EditS _)) _   -> Organizations.viewEditS _m_organizationRequest _l_m_organization
+      RouteWith (Organizations (ShowS _)) _   -> Organizations.viewShowS _pageInfo _l_m_organization _l_forums
 
-        RouteWith (OrganizationsForums _ Index) _     -> Forums.viewIndex _pageInfo _l_m_organization _l_forums
-        RouteWith (OrganizationsForums _ New) _       -> Forums.viewNew _l_m_organization _m_forumRequest
-        RouteWith (OrganizationsForums _ (EditS _)) _ -> Forums.viewEditS _l_m_forum _m_forumRequest
-        RouteWith (OrganizationsForums _ (ShowS _)) _ -> Forums.viewShowS _pageInfo _l_m_organization _l_m_forum _l_boards _l_recentThreadPosts
+      RouteWith (OrganizationsForums _ Index) _     -> Forums.viewIndex _pageInfo _l_m_organization _l_forums
+      RouteWith (OrganizationsForums _ New) _       -> Forums.viewNew _l_m_organization _m_forumRequest
+      RouteWith (OrganizationsForums _ (EditS _)) _ -> Forums.viewEditS _l_m_forum _m_forumRequest
+      RouteWith (OrganizationsForums _ (ShowS _)) _ -> Forums.viewShowS _pageInfo _l_m_organization _l_m_forum _l_boards _l_recentThreadPosts
 
-        RouteWith (OrganizationsForumsBoards _ _ Index) _     -> Boards.viewIndex _pageInfo _l_m_organization _l_m_forum _l_boards
-        RouteWith (OrganizationsForumsBoards _ _ New) _       -> Boards.viewNew _l_m_forum _m_boardRequest
-        RouteWith (OrganizationsForumsBoards _ _ (EditS _)) _ -> Boards.viewEditS _l_m_board _m_boardRequest
-        RouteWith (OrganizationsForumsBoards _ _ (ShowS _)) _ -> Boards.viewShowS _pageInfo _l_m_organization _l_m_forum _l_m_board _l_threads
+      RouteWith (OrganizationsForumsBoards _ _ Index) _     -> Boards.viewIndex _pageInfo _l_m_organization _l_m_forum _l_boards
+      RouteWith (OrganizationsForumsBoards _ _ New) _       -> Boards.viewNew _l_m_forum _m_boardRequest
+      RouteWith (OrganizationsForumsBoards _ _ (EditS _)) _ -> Boards.viewEditS _l_m_board _m_boardRequest
+      RouteWith (OrganizationsForumsBoards _ _ (ShowS _)) _ -> Boards.viewShowS _pageInfo _l_m_organization _l_m_forum _l_m_board _l_threads
 
-        RouteWith (OrganizationsForumsBoardsThreads _ _ _ Index) _     -> Threads.viewIndex _pageInfo _l_m_organization _l_m_forum _l_m_board _l_threads
-        RouteWith (OrganizationsForumsBoardsThreads _ _ _ New) _       -> Threads.viewNew _l_m_board _m_threadRequest
-        RouteWith (OrganizationsForumsBoardsThreads _ _ _ (EditS _)) _ -> Threads.viewEditS _l_m_thread _m_threadRequest
-        RouteWith (OrganizationsForumsBoardsThreads _ _ _ (ShowS _)) _ -> Threads.viewShowS _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
+      RouteWith (OrganizationsForumsBoardsThreads _ _ _ Index) _     -> Threads.viewIndex _pageInfo _l_m_organization _l_m_forum _l_m_board _l_threads
+      RouteWith (OrganizationsForumsBoardsThreads _ _ _ New) _       -> Threads.viewNew _l_m_board _m_threadRequest
+      RouteWith (OrganizationsForumsBoardsThreads _ _ _ (EditS _)) _ -> Threads.viewEditS _l_m_thread _m_threadRequest
+      RouteWith (OrganizationsForumsBoardsThreads _ _ _ (ShowS _)) _ -> Threads.viewShowS _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
 
-        RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ Index) _     -> ThreadPosts.viewIndex _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
-        RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ New) _       -> ThreadPosts.viewNew _l_m_thread _m_threadPostRequest
-        RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (EditI _)) _ -> ThreadPosts.viewEditI _l_m_threadPost _m_threadPostRequest
-        RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> Threads.viewShowS _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
-  --      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> ThreadPosts.viewIndex _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
-  --      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> ThreadPosts.viewShowI _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_m_threadPost _usersCache
+      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ Index) _     -> ThreadPosts.viewIndex _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
+      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ New) _       -> ThreadPosts.viewNew _l_m_thread _m_threadPostRequest
+      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (EditI _)) _ -> ThreadPosts.viewEditI _l_m_threadPost _m_threadPostRequest
+      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> Threads.viewShowS _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
+--      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> ThreadPosts.viewIndex _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
+--      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> ThreadPosts.viewShowI _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_m_threadPost _usersCache
 
-        RouteWith (Users Index) params          -> Users.viewIndex _pageInfo _l_users
-        RouteWith (Users crud) params           -> Users.viewShowS _pageInfo _meId _l_m_user
-        RouteWith (UsersProfile _ Index) _      -> Profile.viewIndex _meId _l_m_user
-        RouteWith (UsersProfile _ EditZ) _      -> Profile.viewEditZ _l_m_user _m_profileRequest
-        RouteWith _ _                           -> NotFound.view_
+      RouteWith (Users Index) params          -> Users.viewIndex _pageInfo _l_users
+      RouteWith (Users crud) params           -> Users.viewShowS _pageInfo _meId _l_m_user
+      RouteWith (UsersProfile _ Index) _      -> Profile.viewIndex _meId _l_m_user
+      RouteWith (UsersProfile _ EditZ) _      -> Profile.viewEditZ _l_m_user _m_profileRequest
+      RouteWith _ _                           -> NotFound.view_
