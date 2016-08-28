@@ -1,6 +1,7 @@
 {-# LANGUAGE BangPatterns      #-}
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Rank2Types        #-}
 {-# LANGUAGE RecordWildCards   #-}
@@ -25,6 +26,7 @@ import qualified Data.Map                              as Map
 import           Data.Monoid                           ((<>))
 import           Data.Rehtie                           (rehtie)
 import           Data.Text                             (Text)
+import           Data.Time                             (UTCTime)
 import           Data.Typeable                         (Typeable)
 import           GHC.Generics                          (Generic)
 import           Haskell.Helpers.Either                (mustPassT)
@@ -51,6 +53,7 @@ import qualified LN.UI.Core.App.Organization           as Organization
 import           LN.UI.Core.Helpers.DataList           (deleteNth)
 import           LN.UI.Core.Helpers.DataText           (tshow)
 import           LN.UI.Core.Helpers.DataTime           (prettyUTCTimeMaybe)
+import           LN.UI.Core.Helpers.GHCJS
 import           LN.UI.Core.Helpers.HaskellApiHelpers  (rd)
 import           LN.UI.Core.Helpers.Map                (idmapFrom)
 import           LN.UI.Core.PageInfo                   (PageInfo (..),
@@ -91,7 +94,9 @@ viewIndex
 viewIndex !page_info' !l_organizations' = do
   defineViewWithSKey "organizations-index-1" (page_info', l_organizations') $ \(page_info, l_organizations) -> do
     cldiv_ B.containerFluid $ do
-      h1_ "Organizations"
+      h1_ ["key" $= "organizations-index-1-h1"] "Organizations"
+      ahref $ routeWith' $ Organizations New
+      PageNumbers.view page_info (routeWith' $ Organizations Index)
       Loader.loader1 l_organizations (viewIndex_ page_info)
 
 
@@ -102,18 +107,57 @@ viewIndex_
   -> HTMLView_
 
 viewIndex_ !page_info' !organizations' = do
-  defineViewWithSKey "organizations-index-2" (page_info', organizations') $ \(page_info, organizations) -> do
-    ahref $ routeWith' $ Organizations New
-    PageNumbers.view page_info (routeWith' $ Organizations Index)
+  defineViewWithSKey "organizations-index-2" (page_info', organizations') go
+  where
+  go (page_info, organizations) = do
     ul_ [className_ B.listUnstyled] $ do
-      forM_ organizations $ \OrganizationPackResponse{..} -> do
-        let OrganizationResponse{..} = organizationPackResponseOrganization
-        li_ ["key" @= organizationResponseId] $ do
-          cldiv_ B.row $ do
-            cldiv_ B.colXs1 $ p_ $ Gravatar.viewUser_ XSmall organizationPackResponseUser
-            cldiv_ B.colXs3 $ p_ $ ahrefName organizationResponseDisplayName (routeWith' $ Organizations (ShowS organizationResponseName))
-            cldiv_ B.colXs6 $ p_ $ elemText $ maybe "No Description." id organizationResponseDescription
-            cldiv_ B.colXs2 $ p_ $ elemText $ prettyUTCTimeMaybe organizationResponseCreatedAt
+      forM_ organizations viewIndexOrganization
+
+
+
+viewIndexOrganization
+  :: OrganizationPackResponse
+  -> HTMLView_
+
+viewIndexOrganization !org' =
+  defineViewWithSKey ("organizations-index-org-" <> (showToJSString' $ organizationPackResponseOrganizationId org')) org' go
+  where
+  go :: OrganizationPackResponse -> HTMLView_
+  go OrganizationPackResponse{..} = do
+    let OrganizationResponse{..} = organizationPackResponseOrganization
+    li_ ["key" @= organizationResponseId, className_ B.row] $ do
+      viewUserGravatar B.colXs1 organizationPackResponseUser
+      viewOrganizationLink B.colXs3 organizationPackResponseOrganization
+      viewDescription B.colXs6 organizationResponseDescription
+      viewUTCTimeMaybe B.colXs2 organizationResponseCreatedAt
+
+
+
+viewUserGravatar :: JSString -> UserSanitizedResponse -> HTMLView_
+viewUserGravatar !col' !user' = defineViewWithSKey "organization-user-gravatar" (col', user') go
+  where
+  go (col, user) = cldiv_ col $ p_ $ Gravatar.viewUser_ XSmall user
+
+
+
+viewOrganizationLink :: JSString -> OrganizationResponse -> HTMLView_
+viewOrganizationLink !col' !org' = defineViewWithSKey "organization-link" (col', org') go
+  where
+  go (col, OrganizationResponse{..}) = cldiv_ col $ p_ $ ahrefName organizationResponseDisplayName (routeWith' $ Organizations (ShowS organizationResponseName))
+
+
+
+viewDescription :: JSString -> Maybe Text -> HTMLView_
+viewDescription !col' !m_desc' = defineViewWithSKey "description" (col', m_desc') go
+  where
+  go (col, m_desc) = cldiv_ col $ p_ $ elemText $ maybe "No Description." id m_desc
+
+
+
+viewUTCTimeMaybe :: JSString -> Maybe UTCTime -> HTMLView_
+viewUTCTimeMaybe !col' !m_utc' = defineViewWithSKey "maybeUTC" (col', m_utc') go
+  where
+  go (col, m_utc) = cldiv_ col $ p_ $ elemText $ prettyUTCTimeMaybe m_utc
 
 
 
