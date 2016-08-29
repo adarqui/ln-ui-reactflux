@@ -173,64 +173,77 @@ viewShowS !page_info' !l_m_organization' !l_forums' = do
     go page_info l_forums (Just organization_pack@OrganizationPackResponse{..}) = do
       let OrganizationResponse{..} = organizationPackResponseOrganization
       cldiv_ B.containerFluid $ do
-        cldiv_ B.pageHeader $ do
-          h1_ [className_ B.textCenter] $ elemText organizationResponseDisplayName
-          p_ [className_ B.textCenter] $ elemText $ maybe "" id organizationResponseDescription
+        viewShowHeader organizationPackResponseOrganization
+
+        -- cldiv_ B.pageHeader $ do
+        --   h1_ [className_ B.textCenter] $ elemText organizationResponseDisplayName
+        --   p_ [className_ B.textCenter] $ elemText $ maybe "" id organizationResponseDescription
 
           -- ACCESS: Organization
           -- * Member: if not a member, this is a shortcut to join an organization
           ---
-          isMemberOfOrganizationHTML
-           organization_pack
-           mempty
-           (button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
+          -- isMemberOfOrganizationHTML
+          --  organization_pack
+          --  mempty
+          --  (button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
 
           -- ACCESS: Organization
           -- * Update: can edit organization settings
           -- * Delete: can delete organization
           --
-          permissionsHTML'
-            organizationPackResponsePermissions
-            permCreateEmpty
-            permReadEmpty
-            (button_editOrganization $ routeWith' $ Organizations (EditS organizationResponseName))
-            (button_deleteOrganization $ routeWith' $ Organizations (DeleteS organizationResponseName))
-            permExecuteEmpty
+          -- permissionsHTML'
+          --   organizationPackResponsePermissions
+          --   permCreateEmpty
+          --   permReadEmpty
+          --   (button_editOrganization $ routeWith' $ Organizations (EditS organizationResponseName))
+          --   (button_deleteOrganization $ routeWith' $ Organizations (DeleteS organizationResponseName))
+          --   permExecuteEmpty
 
       cldiv_ B.pageHeader $ do
-        p_ $ h4_ $ do
+        h4_ $ do
           elemText "Name:"
           small_ $ elemText (" " <> organizationResponseName)
 
         ebyam organizationResponseDescription mempty $ \desc -> do
-          p_ $ do
-            h4_ $ do
-              elemText "Description"
-              small_ $ elemText desc
+          h4_ $ do
+            elemText "Description"
+            small_ $ elemText desc
 
-        p_ $ h4_ $ do
+        h4_ $ do
           elemText "Company"
           small_ $ elemText $ " " <> organizationResponseCompany
 
-        p_ $ h4_ $ do
+        h4_ $ do
           elemText "Location"
           small_ $ elemText $ " " <> organizationResponseLocation
 
-        p_ $ h4_ $ do
+        h4_ $ do
           elemText "Location"
           small_ $ elemText $ " " <> tshow organizationResponseMembership
 
-        p_ $ h4_ $ do
+        h4_ $ do
           elemText "Location"
           small_ $ elemText $ " " <> tshow organizationResponseVisibility
 
-        p_ $ h4_ $ do
+        h4_ $ do
           elemText "Tags: "
           showTagsSmall organizationResponseTags
 
       Loader.loader1 l_forums $ Forums.viewIndex_ page_info organization_pack
 
     go _ _ _ = NotFound.view
+
+
+
+viewShowHeader
+  :: OrganizationResponse
+  -> HTMLView_
+viewShowHeader !org' = defineViewWithSKey "organization-show-header" org' go
+  where
+  go OrganizationResponse{..} = do
+    cldiv_ B.pageHeader $ do
+      h1_ ["key" $= "organization-show-header-h1", className_ B.textCenter] $ elemText organizationResponseDisplayName
+      p_ ["key" $= "organization-show-header-p", className_ B.textCenter] $ elemText $ maybe "" id organizationResponseDescription
 
 
 
