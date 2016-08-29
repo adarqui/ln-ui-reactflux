@@ -251,25 +251,24 @@ viewShowS_ !page_info' !organization' !forum' !board' !thread' !plumbing_posts' 
       ThreadPackResponse{..}       = thread
       ThreadResponse{..}           = threadPackResponseThread
 
+    -- h2_ $ elemText threadResponseDisplayName
     cldiv_ B.containerFluid $ do
-      cldiv_ B.pageHeader $ do
-        h2_ $ elemText threadResponseDisplayName
-        cldiv_ B.containerFluid $ do
-          cldiv_ B.pageHeader $ do
-            buttonGroup_HorizontalSm1 $ do
-              -- ACCESS:
-              -- * Update: edit thread settings
-              -- * Delete: delete thread settings
-              --
-              permissionsHTML'
-                threadPackResponsePermissions
-                permCreateEmpty
-                permReadEmpty
-                (button_editThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (EditS threadResponseName))
-                (button_deleteThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (DeleteS threadResponseName))
-                permExecuteEmpty
+      -- cldiv_ B.pageHeader $ do
+        -- buttonGroup_HorizontalSm1 $ do
+        --   -- ACCESS:
+        --   -- * Update: edit thread settings
+        --   -- * Delete: delete thread settings
+        --   --
+        --   permissionsHTML'
+        --     threadPackResponsePermissions
+        --     permCreateEmpty
+        --     permReadEmpty
+        --     (button_editThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (EditS threadResponseName))
+        --     (button_deleteThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (DeleteS threadResponseName))
+        --     permExecuteEmpty
+      elemText "TODO FIXME"
 
-        div_ plumbing_posts
+      plumbing_posts
 
 
 

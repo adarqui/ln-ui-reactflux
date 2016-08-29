@@ -230,7 +230,7 @@ viewShowS !page_info' !l_m_organization' !l_forums' = do
             elemText "Tags: "
             showTagsSmall tags
 
-      -- Loader.loader1 l_forums $ Forums.viewIndex_ page_info organization_pack
+        Loader.loader1 l_forums $ Forums.viewIndex_ page_info organization_pack
 
     go _ _ _ = NotFound.view
 
