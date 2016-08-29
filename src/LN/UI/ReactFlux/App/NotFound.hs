@@ -5,30 +5,18 @@
 {-# LANGUAGE TypeFamilies               #-}
 
 module LN.UI.ReactFlux.App.NotFound (
-  view_,
   view
 ) where
 
 
 
-import           React.Flux  hiding (view)
-import qualified React.Flux  as RF
+import           React.Flux                            hiding (view)
 
-import           LN.UI.ReactFlux.Types (HTMLEvent_)
-
-
-
-view_ :: HTMLEvent_
-view_ =
-  RF.view view () mempty
+import           LN.UI.ReactFlux.Helpers.ReactFluxView
+import           LN.UI.ReactFlux.Types                 (HTMLView_)
 
 
 
-view :: ReactView ()
-view = defineView "not-found" $ \_ ->
-  notFoundImg
-
-
-
-notFoundImg :: HTMLEvent_
-notFoundImg = img_ ["src" $= "/static/img/404.png", "alt" $= "404 page not found"] mempty
+view :: HTMLView_
+view = defineViewWithSKey "not-found" () $ \_ ->
+  img_ ["src" $= "/static/img/404.png", "alt" $= "404 page not found"] mempty

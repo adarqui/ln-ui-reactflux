@@ -68,7 +68,7 @@ import qualified LN.UI.ReactFlux.App.Forums            as Forums (viewIndex_)
 import qualified LN.UI.ReactFlux.App.Gravatar          as Gravatar
 import           LN.UI.ReactFlux.App.Loader            (Loader (..))
 import qualified LN.UI.ReactFlux.App.Loader            as Loader
-import qualified LN.UI.ReactFlux.App.NotFound          as NotFound (view_)
+import qualified LN.UI.ReactFlux.App.NotFound          as NotFound
 import           LN.UI.ReactFlux.App.PageNumbers       (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers       as PageNumbers
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM  (ahref, ahrefName,
@@ -140,7 +140,7 @@ viewIndex_ !me_id' !l_m_user' = do
             elemText "Debug: "
             small_ ["key" $= "profile-debug-sm"] $ elemShow profileResponseDebug
 
-    go _ _ = NotFound.view_
+    go _ _ = NotFound.view
 
 
 

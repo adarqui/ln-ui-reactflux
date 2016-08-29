@@ -53,7 +53,7 @@ import qualified LN.UI.ReactFlux.App.Forums           as Forums
 import qualified LN.UI.ReactFlux.App.Home             as Home
 import qualified LN.UI.ReactFlux.App.Layout           as Layout
 import qualified LN.UI.ReactFlux.App.NavBar           as NavBar
-import qualified LN.UI.ReactFlux.App.NotFound         as NotFound (view_)
+import qualified LN.UI.ReactFlux.App.NotFound         as NotFound
 import qualified LN.UI.ReactFlux.App.Organizations    as Organizations
 import qualified LN.UI.ReactFlux.App.Portal           as Portal
 import qualified LN.UI.ReactFlux.App.Profile          as Profile
@@ -136,4 +136,4 @@ renderRouteView !store = do
       RouteWith (Users crud) params           -> Users.viewShowS _pageInfo _meId _l_m_user
       RouteWith (UsersProfile _ Index) _      -> Profile.viewIndex _meId _l_m_user
       RouteWith (UsersProfile _ EditZ) _      -> Profile.viewEditZ _l_m_user _m_profileRequest
-      RouteWith _ _                           -> NotFound.view_
+      RouteWith _ _                           -> NotFound.view

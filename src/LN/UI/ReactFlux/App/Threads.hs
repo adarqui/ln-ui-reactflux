@@ -79,8 +79,8 @@ import qualified LN.UI.ReactFlux.App.Delete            as Delete
 import qualified LN.UI.ReactFlux.App.Gravatar          as Gravatar
 import           LN.UI.ReactFlux.App.Loader            (Loader (..))
 import qualified LN.UI.ReactFlux.App.Loader            as Loader
-import qualified LN.UI.ReactFlux.App.NotFound          as NotFound (view_)
-import qualified LN.UI.ReactFlux.App.Oops              as Oops (view_)
+import qualified LN.UI.ReactFlux.App.NotFound          as NotFound
+import qualified LN.UI.ReactFlux.App.Oops              as Oops
 import           LN.UI.ReactFlux.App.PageNumbers       (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers       as PageNumbers
 import qualified LN.UI.ReactFlux.App.ThreadPosts       as ThreadPosts
@@ -219,7 +219,7 @@ viewShowS !page_info' !me_id' !l_m_organization' !l_m_forum' !l_m_board' !l_m_th
             board
             thread
             (ThreadPosts.viewIndex_ page_info me_id organization forum board thread posts m_request users_map)
-        _ -> Oops.view_
+        _ -> Oops.view
 
 
 

@@ -83,8 +83,8 @@ import qualified LN.UI.ReactFlux.App.Gravatar          as Gravatar
 import qualified LN.UI.ReactFlux.App.Like              as Like
 import           LN.UI.ReactFlux.App.Loader            (Loader (..))
 import qualified LN.UI.ReactFlux.App.Loader            as Loader
-import qualified LN.UI.ReactFlux.App.NotFound          as NotFound (view_)
-import qualified LN.UI.ReactFlux.App.Oops              as Oops (view_)
+import qualified LN.UI.ReactFlux.App.NotFound          as NotFound
+import qualified LN.UI.ReactFlux.App.Oops              as Oops
 import           LN.UI.ReactFlux.App.PageNumbers       (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers       as PageNumbers
 import qualified LN.UI.ReactFlux.App.Star              as Star
