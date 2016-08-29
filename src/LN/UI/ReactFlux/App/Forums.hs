@@ -391,7 +391,7 @@ viewRecentPosts_ !organization' !forum' !posts_map' = do
             user@UserSanitizedResponse{..} = threadPostPackResponseUser
           li_ $ do
             p_ $ do
-              Gravatar.viewUser_ XSmall threadPostPackResponseUser
+              Gravatar.viewUser XSmall threadPostPackResponseUser
               elemText " "
               ahrefName (thread_name <> "/" <> tshow threadPostResponseId) $ routeWith' (OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName board_name thread_name (ShowI threadPostResponseId))
               elemText " by "

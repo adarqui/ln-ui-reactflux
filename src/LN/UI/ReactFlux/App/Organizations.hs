@@ -76,8 +76,7 @@ import qualified LN.UI.ReactFlux.App.Loader            as Loader
 import qualified LN.UI.ReactFlux.App.NotFound          as NotFound (view_)
 import           LN.UI.ReactFlux.App.PageNumbers       (runPageInfo)
 import qualified LN.UI.ReactFlux.App.PageNumbers       as PageNumbers
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM  (ahref, ahrefName,
-                                                        className_, classNames_)
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM
 import           LN.UI.ReactFlux.Helpers.ReactFluxView (defineViewWithSKey)
 import           LN.UI.ReactFlux.Types
 import           LN.UI.ReactFlux.View.Button
@@ -95,7 +94,7 @@ viewIndex !page_info' !l_organizations' = do
   defineViewWithSKey "organizations-index-1" (page_info', l_organizations') $ \(page_info, l_organizations) -> do
     cldiv_ B.containerFluid $ do
       h1_ ["key" $= "organizations-index-1-h1"] "Organizations"
-      ahref $ routeWith' $ Organizations New
+      ahrefKey "organizations-index-new" $ routeWith' $ Organizations New
       PageNumbers.view page_info (routeWith' $ Organizations Index)
       Loader.loader1 l_organizations (viewIndex_ page_info)
 
@@ -136,7 +135,7 @@ viewIndexOrganization !org' =
 viewUserGravatar :: JSString -> UserSanitizedResponse -> HTMLView_
 viewUserGravatar !col' !user' = defineViewWithSKey "organization-user-gravatar" (col', user') go
   where
-  go (col, user) = cldiv_ col $ p_ $ Gravatar.viewUser_ XSmall user
+  go (col, user) = cldiv_ col $ Gravatar.viewUser XSmall user
 
 
 

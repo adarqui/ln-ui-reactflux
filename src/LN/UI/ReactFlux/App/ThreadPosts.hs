@@ -233,7 +233,7 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
     cldiv_ B.row $ do
       cldiv_ B.colXs2 $ do
         ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
-        p_ $ Gravatar.viewUser_ Medium threadPostPackResponseUser
+        p_ $ Gravatar.viewUser Medium threadPostPackResponseUser
         viewUserStats user
       cldiv_ B.colXs7 $ do
         ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)

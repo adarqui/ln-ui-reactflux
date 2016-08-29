@@ -1,12 +1,13 @@
+{-# LANGUAGE BangPatterns      #-}
+{-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Rank2Types        #-}
 {-# LANGUAGE RecordWildCards   #-}
 
 module LN.UI.ReactFlux.App.Gravatar (
-  view_,
   view,
-  viewUser_,
-  viewOrganization_,
+  viewUser,
+  viewOrganization,
   gravatarSize,
   gravatarSizeParam
 ) where
@@ -24,37 +25,36 @@ import           LN.T.Size                  (Size (..))
 import           LN.T.User                  (UserSanitizedResponse (..))
 import           LN.UI.Core.Helpers.DataText     (tshow)
 import           LN.UI.Core.Helpers.GHCJS        (JSString, textToJSString')
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (ahrefElement)
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM
+import           LN.UI.ReactFlux.Helpers.ReactFluxView
 import           LN.UI.Core.Router               (CRUD (..), Route (..),
                                              RouteWith (..), routeWith')
-import           LN.UI.ReactFlux.Types                (HTMLEvent_)
+import           LN.UI.ReactFlux.Types                (HTMLView_)
 
 
 
 -- | Renders a gravatar based on size, email md5, and alternate text
 --
-view_ :: RouteWith -> Size -> Text -> Text -> HTMLEvent_
-view_ route_with size emailMD5 alt =
-  RF.view view (route_with, size, emailMD5, alt) mempty
+view :: RouteWith -> Size -> Text -> Text -> HTMLView_
+view !route_with' !size' !emailMD5' !alt' =
+  defineViewWithSKey "gravatar" (route_with', size', emailMD5', alt') go
+  where
+  go :: (RouteWith, Size, Text, Text) -> HTMLView_
+  go (route_with, size, emailMD5, alt) = do
+    let alt' = textToJSString' alt
+    ahrefElement route_with $ img_ ["key" $= ("gravatar-img-" <> textToJSString' emailMD5), "src" $= (gravatarUrlFrom'JSS size emailMD5), "alt" $= alt'] mempty
 
 
 
-view :: ReactView (RouteWith, Size, Text, Text)
-view = defineView "gravatar" $ \(route_with, size, emailMD5, alt) -> do
-  let alt' = textToJSString' alt
-  ahrefElement route_with $ img_ ["src" $= (gravatarUrlFrom'JSS size emailMD5), "alt" $= alt'] mempty
+viewUser :: Size -> UserSanitizedResponse -> HTMLView_
+viewUser size UserSanitizedResponse{..} =
+  view (routeWith' $ Users (ShowS userSanitizedResponseName)) size userSanitizedResponseEmailMD5 userSanitizedResponseName
 
 
 
-viewUser_ :: Size -> UserSanitizedResponse -> HTMLEvent_
-viewUser_ size UserSanitizedResponse{..} =
-  RF.view view (routeWith' (Users (ShowS userSanitizedResponseName)), size, userSanitizedResponseEmailMD5, userSanitizedResponseName) mempty
-
-
-
-viewOrganization_ :: Size -> OrganizationResponse -> HTMLEvent_
-viewOrganization_ size OrganizationResponse{..} =
-  RF.view view (routeWith' (Organizations (ShowS organizationResponseName)), size, organizationResponseEmailMD5, organizationResponseName) mempty
+viewOrganization :: Size -> OrganizationResponse -> HTMLView_
+viewOrganization size OrganizationResponse{..} =
+  view (routeWith' $ Organizations (ShowS organizationResponseName)) size organizationResponseEmailMD5 organizationResponseName
 
 
 

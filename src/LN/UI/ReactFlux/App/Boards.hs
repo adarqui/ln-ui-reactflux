@@ -155,7 +155,7 @@ viewIndex_ !page_info' !organization' !forum' !boards_map' = do
                 (Just ThreadResponse{..}, Just ThreadPostResponse{..}, Just user@UserSanitizedResponse{..}) -> do
                   div_ $ do
                     p_ $ do
-                      Gravatar.viewUser_ XSmall user
+                      Gravatar.viewUser XSmall user
                       elemText " Last post by "
                       ahref $ routeWith' (Users (ShowS userSanitizedResponseName))
                     p_ $ do

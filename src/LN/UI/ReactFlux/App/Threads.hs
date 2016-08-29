@@ -151,7 +151,7 @@ viewIndex_ !page_info' !organization' !forum' !board' !threads_map' = do
               -- TODO FIXME: add link to user name
               -- p_ $ ahref ...
               p_ $ ahref $ routeWith' $ Users (ShowS (userSanitizedResponseName threadPackResponseUser))
-              Gravatar.viewUser_ Small threadPackResponseUser
+              Gravatar.viewUser Small threadPackResponseUser
             cldiv_ B.colXs4 $ do
               p_ $ ahrefName threadResponseDisplayName $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName)
               p_ $ elemText "page-numbers"
@@ -173,7 +173,7 @@ viewIndex_ !page_info' !organization' !forum' !board' !threads_map' = do
                       elemText " by "
                       ahref $ routeWith' $ Users (ShowS (userSanitizedResponseName latest_post_user))
                       elemText " "
-                      Gravatar.viewUser_ XSmall (fromJust threadPackResponseLatestThreadPostUser)
+                      Gravatar.viewUser XSmall (fromJust threadPackResponseLatestThreadPostUser)
                 _ -> div_ $ p_ $ elemText "No posts."
             cldiv_ B.colXs1 $ do
               cldiv_ B.container $ do

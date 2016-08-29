@@ -76,7 +76,7 @@ viewIndex_ !page_info' !users' = do
         let user = userSanitizedPackResponseUser
         li_ $ do
           cldiv_ B.row $ do
-            cldiv_ B.colXs1 $ p_ $ Gravatar.viewUser_ XSmall user
+            cldiv_ B.colXs1 $ p_ $ Gravatar.viewUser XSmall user
             cldiv_ B.colXs3 $ p_ $ ahrefName (userSanitizedResponseDisplayName user) (routeWith' $ Users (ShowS $ userSanitizedResponseName user))
             cldiv_ B.colXs2 $ p_ $ elemText $ prettyUTCTimeMaybe $ userSanitizedResponseCreatedAt user
 
