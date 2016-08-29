@@ -175,61 +175,62 @@ viewShowS !page_info' !l_m_organization' !l_forums' = do
       cldiv_ B.containerFluid $ do
         viewShowHeader organizationPackResponseOrganization
 
-        -- cldiv_ B.pageHeader $ do
-        --   h1_ [className_ B.textCenter] $ elemText organizationResponseDisplayName
-        --   p_ [className_ B.textCenter] $ elemText $ maybe "" id organizationResponseDescription
+        -- ACCESS: Organization
+        -- * Member: if not a member, this is a shortcut to join an organization
+        --
+        isMemberOfOrganizationHTML
+         organization_pack
+         mempty
+         (defineViewWithSKey "button-join" () $ const $ button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
 
-          -- ACCESS: Organization
-          -- * Member: if not a member, this is a shortcut to join an organization
-          ---
-          -- isMemberOfOrganizationHTML
-          --  organization_pack
-          --  mempty
-          --  (button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
+        -- ACCESS: Organization
+        -- * Update: can edit organization settings
+        -- * Delete: can delete organization
+        --
+        permissionsHTML'
+          organizationPackResponsePermissions
+          permCreateEmpty
+          permReadEmpty
+          (defineViewWithSKey "button-edit" () $ const $ button_editOrganization $ routeWith' $ Organizations (EditS organizationResponseName))
+          (defineViewWithSKey "button-delete" () $ const $ button_deleteOrganization $ routeWith' $ Organizations (DeleteS organizationResponseName))
+          permExecuteEmpty
 
-          -- ACCESS: Organization
-          -- * Update: can edit organization settings
-          -- * Delete: can delete organization
-          --
-          -- permissionsHTML'
-          --   organizationPackResponsePermissions
-          --   permCreateEmpty
-          --   permReadEmpty
-          --   (button_editOrganization $ routeWith' $ Organizations (EditS organizationResponseName))
-          --   (button_deleteOrganization $ routeWith' $ Organizations (DeleteS organizationResponseName))
-          --   permExecuteEmpty
-
-      cldiv_ B.pageHeader $ do
-        h4_ $ do
-          elemText "Name:"
-          small_ $ elemText (" " <> organizationResponseName)
-
-        ebyam organizationResponseDescription mempty $ \desc -> do
+        defineViewWithSKey "organizations-show-body" () $ \_ -> do
           h4_ $ do
-            elemText "Description"
-            small_ $ elemText desc
+            elemText "Name:"
+            small_ ["key" $= "fixme"] $ elemText (" " <> organizationResponseName)
 
-        h4_ $ do
-          elemText "Company"
-          small_ $ elemText $ " " <> organizationResponseCompany
+        ebyam organizationResponseDescription mempty $ \desc -> defineViewWithSKey "organizations-show-desc" () $ \_ -> do
+          h4_ $ do
+            elemText "Description: "
+            small_ ["key" $= "fixme"] $ elemText desc
 
-        h4_ $ do
-          elemText "Location"
-          small_ $ elemText $ " " <> organizationResponseLocation
+        defineViewWithSKey "organizations-show-company" organizationResponseCompany $ \company ->
+          h4_ $ do
+            elemText "Company"
+            small_ ["key" $= "fixme"] $ elemText $ " " <> company
 
-        h4_ $ do
-          elemText "Location"
-          small_ $ elemText $ " " <> tshow organizationResponseMembership
+        defineViewWithSKey "organizations-show-location" organizationResponseLocation $ \location ->
+          h4_ $ do
+            elemText "Location"
+            small_ ["key" $= "fixme"] $ elemText $ " " <> location
 
-        h4_ $ do
-          elemText "Location"
-          small_ $ elemText $ " " <> tshow organizationResponseVisibility
+        defineViewWithSKey "organizations-show-membership" organizationResponseMembership $ \membership ->
+          h4_ $ do
+            elemText "Location"
+            small_ ["key" $= "fixme"] $ elemText $ " " <> tshow membership
 
-        h4_ $ do
-          elemText "Tags: "
-          showTagsSmall organizationResponseTags
+        defineViewWithSKey "organizations-show-visibility" organizationResponseVisibility $ \visibility ->
+          h4_ $ do
+            elemText "Location"
+            small_ ["key" $= "fixme"] $ elemText $ " " <> tshow visibility
 
-      Loader.loader1 l_forums $ Forums.viewIndex_ page_info organization_pack
+        defineViewWithSKey "organizations-show-tags" organizationResponseTags $ \tags ->
+          h4_ $ do
+            elemText "Tags: "
+            showTagsSmall tags
+
+      -- Loader.loader1 l_forums $ Forums.viewIndex_ page_info organization_pack
 
     go _ _ _ = NotFound.view
 

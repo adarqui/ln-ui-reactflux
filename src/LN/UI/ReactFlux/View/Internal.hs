@@ -31,8 +31,8 @@ import qualified Web.Bootstrap3                       as B
 import           LN.UI.Core.Helpers.DataList          (toSeqList)
 import           LN.UI.Core.Helpers.GHCJS             (JSString,
                                                        textToJSString')
-import           LN.UI.ReactFlux.Helpers.ReactFluxDOM (className_, classNames_,
-                                                       targetValue)
+import           LN.UI.ReactFlux.Helpers.ReactFluxView
+import           LN.UI.ReactFlux.Helpers.ReactFluxDOM
 import           LN.UI.ReactFlux.Types                (HTMLView_)
 
 
@@ -202,18 +202,19 @@ createSimpleInfoButton label click_handler = do
 
 showTags :: [Text] -> HTMLView_
 showTags tags =
-  mapM_ (\tag -> do
-    span_ [classNames_ [B.label, B.labelDefault]] $ do
-      elemText tag
-    elemText " "
-  ) tags
+  defineViewWithSKey "show-tags" () $ \_ -> do
+    forM_ tags $ \tag -> do
+      defineViewWithSKey "show-tag" () $ \_ -> do
+        span_ [classNames_ [B.label, B.labelDefault]] $ do
+          elemText tag
+          elemText " "
 
 
 
 showTagsSmall :: [Text] -> HTMLView_
 showTagsSmall tags = do
-  small_ $ do
-    span_ $ showTags tags
+  defineViewWithSKey "show-tags-small" () $ \_ -> do
+    showTags tags
 
 
 

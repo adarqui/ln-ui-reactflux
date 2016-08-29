@@ -11,7 +11,8 @@ module LN.UI.ReactFlux.Access (
 import           React.Flux
 
 import           LN.T
-import           LN.UI.Core.Access     as A
+import           LN.UI.Core.Access                     as A
+import           LN.UI.ReactFlux.Helpers.ReactFluxView
 import           LN.UI.ReactFlux.Types
 
 
