@@ -1,6 +1,7 @@
 {-# LANGUAGE BangPatterns      #-}
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Rank2Types        #-}
@@ -230,7 +231,7 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
       UserSanitizedResponse{..}     = userSanitizedPackResponseUser
       ProfileResponse{..}           = userSanitizedPackResponseProfile
 
-    cldiv_ B.row $ do
+    li_ $ cldiv_ B.row $ do
       cldiv_ B.colXs2 $ do
         ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
         p_ $ Gravatar.viewUser Medium threadPostPackResponseUser
@@ -309,12 +310,12 @@ viewShared
 
     div_ $ do
       PageNumbers.view1 page_info (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
-      ul_ [className_ B.listUnstyled] $ do
+      ul_ ["key" $= "posts-list", className_ B.listUnstyled] $ do
         forM_ (Map.elems posts) $ \post -> do
           -- TODO FIXME ... trying to figure out these react-js warnings
           -- defineViewWithSKey (textToJSString' $ tshow $ threadPostPackResponseThreadPostId post) () (const $ li_ $ viewShowI_ page_info me_id organization forum board thread post users_map)
           -- li_ ["key" $= (textToJSString' $ tshow $ threadPostPackResponseThreadPostId post)] $ viewShowI_ page_info me_id organization forum board thread post users_map
-          li_ $ viewShowI_ page_info me_id organization forum board thread post users_map
+          viewShowI_ page_info me_id organization forum board thread post users_map
         -- INPUT FORM AT THE BOTTOM
         -- ACCESS: Thread
         -- * Create: post within a thread

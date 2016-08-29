@@ -219,7 +219,7 @@ showTagsSmall tags = do
 
 
 -- | Creates a simple table like so:
---
+-- Adding keys made this horrible
 --
 showTable
   :: Show a
@@ -230,14 +230,14 @@ showTable
   -> HTMLView_
 
 showTable attrs column_headings row_headings rows = do
-  table_ [classNames_ attrs] $ do
+  table_ ["key" $= "show-table", classNames_ attrs] $ do
     thead_ $ do
-      forM_ column_headings $ th_ . elemText
+      forM_ (zip [1 :: Int ..] column_headings) $ \(idx, t) -> th_ ["key" @= idx] $ elemText t
     tbody_ $ do
-      forM_ (zip row_headings rows) $ \(row_heading, row_values) -> do
-        tr_ $ do
-          th_ $ elemText row_heading
-          forM_ row_values $ td_ . elemShow
+      forM_ (zip3 [1 :: Int ..] row_headings rows) $ \(idx, row_heading, row_values) -> do
+        tr_ ["key" @= idx] $ do
+          th_ ["key" @= row_heading] $ elemText row_heading
+          forM_ (zip [1 :: Int ..] row_values) $ \(idx, t) -> td_ ["key" @= idx] $ elemShow t
 
 
 
