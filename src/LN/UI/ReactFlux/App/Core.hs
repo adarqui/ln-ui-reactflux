@@ -96,11 +96,11 @@ view =
 
 
 renderRouteView :: Store -> HTMLView_
-renderRouteView !store = do
-  defineViewWithSKey "render-route-view" store go
+renderRouteView !store' = do
+  defineViewWithSKey "render-route-view" store' go
   where
   go :: Store -> HTMLView_
-  go Store{..} = do
+  go store@Store{..} = do
     case _route of
       RouteWith Home _                        -> Home.view
       RouteWith About _                       -> About.view
@@ -135,9 +135,9 @@ renderRouteView !store = do
 --
 --
 
-      RouteWith (Users Index) params          -> Users.viewIndex _pageInfo _l_users
-      RouteWith (Users crud) params           -> Users.viewShowS _pageInfo _meId _l_m_user
-      RouteWith (UsersProfile _ Index) _      -> Profile.viewIndex _meId _l_m_user
-      RouteWith (UsersProfile _ EditZ) _      -> Profile.viewEditZ _l_m_user _m_profileRequest
-      RouteWith (Experiments experiment_sid)  -> Experiments.view experiment_sid
-      RouteWith _ _                           -> NotFound.view
+      RouteWith (Users Index) params           -> Users.viewIndex _pageInfo _l_users
+      RouteWith (Users crud) params            -> Users.viewShowS _pageInfo _meId _l_m_user
+      RouteWith (UsersProfile _ Index) _       -> Profile.viewIndex _meId _l_m_user
+      RouteWith (UsersProfile _ EditZ) _       -> Profile.viewEditZ _l_m_user _m_profileRequest
+      RouteWith (Experiments experiment_sid) _ -> Experiments.view experiment_sid store
+      RouteWith _ _                            -> NotFound.view

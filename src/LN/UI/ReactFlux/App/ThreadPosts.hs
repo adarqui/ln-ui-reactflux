@@ -9,11 +9,12 @@
 {-# LANGUAGE TypeFamilies      #-}
 
 module LN.UI.ReactFlux.App.ThreadPosts (
-  viewIndex,
-  viewIndex_,
-  viewNew,
-  viewEditI,
-  viewShowI
+    viewIndex
+  , viewIndex_
+  , viewNew
+  , viewEditI
+  , viewShowI
+  , postDataToBody
 ) where
 
 
@@ -100,7 +101,6 @@ import           LN.UI.ReactFlux.View.Button
 import           LN.UI.ReactFlux.View.Field
 import           LN.UI.ReactFlux.View.Internal
 import qualified Web.Bootstrap3                        as B
-
 
 
 
