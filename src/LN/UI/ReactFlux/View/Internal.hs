@@ -231,10 +231,10 @@ showTable
 
 showTable attrs column_headings row_headings rows = do
   defineViewWithSKey "show-table" () $ \_ -> do
-    table_ [classNames_ attrs] $ do
-      thead_ [] $ do
+    table_ ["key" $= "table", classNames_ attrs] $ do
+      thead_ ["key" $= "thead"] $ do
         forM_ (zip [1 :: Int ..] column_headings) $ \(idx, t) -> th_ ["key" @= idx] $ elemText t
-      tbody_ $ do
+      tbody_ ["key" $= "tbody"] $ do
         forM_ (zip3 [1 :: Int ..] row_headings rows) $ \(idx, row_heading, row_values) -> do
           tr_ ["key" @= idx] $ do
             th_ ["key" @= row_heading] $ elemText row_heading

@@ -45,6 +45,7 @@ import           LN.UI.Core.Router
 import           LN.UI.Core.State                     (Action (..), Store (..),
                                                        defaultStore)
 import qualified LN.UI.ReactFlux.App.About            as About
+import qualified LN.UI.ReactFlux.App.Experiments      as Experiments
 import qualified LN.UI.ReactFlux.App.Boards           as Boards
 import qualified LN.UI.ReactFlux.App.Boards           as Boards
 import qualified LN.UI.ReactFlux.App.Breadcrumbs      as Breadcrumbs
@@ -131,9 +132,12 @@ renderRouteView !store = do
       RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> Threads.viewShowS _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
 --      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> ThreadPosts.viewIndex _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_threadPosts _m_threadPostRequest _usersCache
 --      RouteWith (OrganizationsForumsBoardsThreadsPosts _ _ _ _ (ShowI _)) _ -> ThreadPosts.viewShowI _pageInfo _meId _l_m_organization _l_m_forum _l_m_board _l_m_thread _l_m_threadPost _usersCache
+--
+--
 
       RouteWith (Users Index) params          -> Users.viewIndex _pageInfo _l_users
       RouteWith (Users crud) params           -> Users.viewShowS _pageInfo _meId _l_m_user
       RouteWith (UsersProfile _ Index) _      -> Profile.viewIndex _meId _l_m_user
       RouteWith (UsersProfile _ EditZ) _      -> Profile.viewEditZ _l_m_user _m_profileRequest
+      RouteWith (Experiments experiment_sid)  -> Experiments.view experiment_sid
       RouteWith _ _                           -> NotFound.view

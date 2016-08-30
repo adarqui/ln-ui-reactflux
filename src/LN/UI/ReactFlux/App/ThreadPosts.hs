@@ -260,6 +260,7 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
             (button_editThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (EditI threadPostResponseId))
             (button_deleteThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (DeleteI threadPostResponseId))
             permExecuteEmpty
+
         -- ACCESS: Member & Not self
         -- Member: must be a member to like/star
         -- Not Self: can't like/star your own posts

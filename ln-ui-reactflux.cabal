@@ -26,6 +26,7 @@ library
                      , LN.UI.ReactFlux.App.Core
                      , LN.UI.ReactFlux.App.Core.Shared
                      , LN.UI.ReactFlux.App.Delete
+                     , LN.UI.ReactFlux.App.Experiments
                      , LN.UI.ReactFlux.App.Forums
                      , LN.UI.ReactFlux.App.Gravatar
                      , LN.UI.ReactFlux.App.Layout
