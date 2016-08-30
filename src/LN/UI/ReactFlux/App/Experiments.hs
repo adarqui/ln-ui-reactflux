@@ -35,6 +35,7 @@ view experiment_sid store =
   case experiment_sid of
     "re-render-1" -> viewReRender1 store
     "re-render-2" -> viewReRender2 store
+    "re-render-3" -> viewReRender3 store True True (p_ $ elemText "hi")
     _             -> NotFound.view
 
 
@@ -71,6 +72,16 @@ viewReRender2 !store' =
     where
     tpr@ThreadPostRequest{..} = maybe defaultThreadPostRequest id _m_threadPostRequest
     body                      = ThreadPost.postDataToBody threadPostRequestBody
+
+
+
+viewReRender3 :: Store -> Bool -> Bool -> HTMLView_ -> HTMLView_
+viewReRender3 !store' !tf1' !tf2' !plumbing' = do
+  defineViewWithSKey "experiments-re-render-3" (store', tf1', tf2', plumbing') go
+  where
+  go (store, tf1, tf2, plumbing) = do
+    plumbing
+    viewReRender2 store
 
 
 
