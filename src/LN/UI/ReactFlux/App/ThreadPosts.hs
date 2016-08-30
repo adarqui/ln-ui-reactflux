@@ -242,7 +242,6 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
         p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
         p_ $ elemText "quote / reply"
 
-        -- white-space: pre ... for proper output of multiple spaces etc
         div_ $ viewPostData threadPostResponseBody
 
         cldiv_ B.pageHeader mempty
@@ -313,16 +312,18 @@ viewShared
     div_ $ do
       PageNumbers.view1 page_info (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
       ul_ ["key" $= "posts-list", className_ B.listUnstyled] $ do
-        forM_ (Map.elems posts) $ \post -> do
-          -- TODO FIXME ... trying to figure out these react-js warnings
-          -- defineViewWithSKey (textToJSString' $ tshow $ threadPostPackResponseThreadPostId post) () (const $ li_ $ viewShowI_ page_info me_id organization forum board thread post users_map)
-          -- li_ ["key" $= (textToJSString' $ tshow $ threadPostPackResponseThreadPostId post)] $ viewShowI_ page_info me_id organization forum board thread post users_map
+
+        forM_ (Map.elems posts) $ \(!post) -> do
+
           viewShowI_ page_info me_id organization forum board thread post users_map
+          -- doesn't re-render:
+          -- iframe_ [ "src" $= "https://www.youtube.com/embed/AVWRQ21Iorc", "height" @= (405 :: Int), "width" @= (720 :: Int) ] mempty
+
         -- INPUT FORM AT THE BOTTOM
         -- ACCESS: Thread
         -- * Create: post within a thread
         --
-        ebyam m_request mempty $ \request -> do
+        ebyam m_request mempty $ \(!request) -> do
           permissionsMatchCreateHTML
             threadPackResponsePermissions
             (viewMod TyCreate threadResponseId Nothing request)
@@ -337,8 +338,8 @@ viewNew
   -> HTMLView_
 
 viewNew !l_m_thread !m_request = do
-  Loader.maybeLoader1 l_m_thread $ \ThreadPackResponse{..} ->
-    ebyam m_request mempty $ \request -> viewMod TyCreate threadPackResponseThreadId Nothing request
+  Loader.maybeLoader1 l_m_thread $ \(!ThreadPackResponse{..}) ->
+    ebyam m_request mempty $ \(!request) -> viewMod TyCreate threadPackResponseThreadId Nothing request
 
 
 
@@ -348,8 +349,8 @@ viewEditI
   -> HTMLView_
 
 viewEditI !l_m_post !m_request =
-  Loader.maybeLoader1 l_m_post $ \ThreadPostPackResponse{..} ->
-    ebyam m_request mempty $ \request -> viewMod TyUpdate (threadPostResponseThreadId threadPostPackResponseThreadPost) (Just threadPostPackResponseThreadPostId) request
+  Loader.maybeLoader1 l_m_post $ \(!ThreadPostPackResponse{..}) ->
+    ebyam m_request mempty $ \(!request) -> viewMod TyUpdate (threadPostResponseThreadId threadPostPackResponseThreadPost) (Just threadPostPackResponseThreadPostId) request
 
 
 
@@ -361,7 +362,9 @@ viewMod
   -> HTMLView_
 
 viewMod !tycrud' !thread_id' !m_post_id' !request' = do
-  defineViewWithSKey "posts-mod" (tycrud', thread_id', m_post_id', request') $ \(tycrud, thread_id, m_post_id, request) -> do
+  defineViewWithSKey "posts-mod" (tycrud', thread_id', m_post_id', request') go
+  where
+  go (tycrud, thread_id, m_post_id, request) = do
 
     let
       ThreadPostRequest{..} = request
