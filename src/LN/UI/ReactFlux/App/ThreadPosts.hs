@@ -138,7 +138,7 @@ viewIndex_
   -> Map UserId UserSanitizedPackResponse
   -> HTMLView_
 
-viewIndex_ page_info me_id organization forum board thread posts m_request users_map = do
+viewIndex_ !page_info !me_id !organization !forum !board !thread !posts !m_request !users_map = do
 
   viewShared
     page_info
@@ -164,7 +164,7 @@ viewShowI
   -> Map UserId UserSanitizedPackResponse
   -> HTMLView_
 
-viewShowI page_info me_id l_m_organization l_m_forum l_m_board l_m_thread l_m_post users_map = do
+viewShowI !page_info !me_id !l_m_organization !l_m_forum !l_m_board !l_m_thread !l_m_post !users_map = do
   Loader.maybeLoader5 l_m_organization l_m_forum l_m_board l_m_thread l_m_post $ \organization forum board thread post -> do
     viewShowI_
       page_info
@@ -189,7 +189,7 @@ viewShowI_
   -> Map UserId UserSanitizedPackResponse
   -> HTMLView_
 
-viewShowI_ page_info me_id organization forum board thread post users_map = do
+viewShowI_ !page_info !me_id !organization !forum !board !thread !post !users_map = do
   case Map.lookup (userSanitizedResponseId $ threadPostPackResponseUser post) users_map of
     Nothing   -> p_ $ elemText "User not found in Map."
     Just user -> viewShowI__ page_info me_id organization forum board thread post user
@@ -419,7 +419,7 @@ viewPostStats
   :: ThreadPostStatResponse
   -> HTMLView_
 
-viewPostStats ThreadPostStatResponse{..} =
+viewPostStats !ThreadPostStatResponse{..} =
   div_ $ do
     showTableClean
       []
@@ -455,7 +455,7 @@ postDataToBody
   :: PostData
   -> Text
 
-postDataToBody p = case p of
+postDataToBody !p = case p of
   PostDataRaw v    -> v
   PostDataBBCode v -> v
   _                -> ""
