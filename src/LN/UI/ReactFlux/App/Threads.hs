@@ -1,6 +1,7 @@
 {-# LANGUAGE BangPatterns      #-}
 {-# LANGUAGE DeriveAnyClass    #-}
 {-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE Rank2Types        #-}
@@ -106,8 +107,9 @@ viewIndex
   -> HTMLView_
 
 viewIndex !page_info' !l_m_organization' !l_m_forum' !l_m_board' !l_threads' = do
-  defineViewWithSKey "threads-index-1" (page_info', l_m_organization', l_m_forum', l_m_board', l_threads') $ \(page_info, l_m_organization, l_m_forum, l_m_board, l_threads) -> do
-
+  defineViewWithSKey "threads-index-1" (page_info', l_m_organization', l_m_forum', l_m_board', l_threads') go
+  where
+  go (page_info, l_m_organization, l_m_forum, l_m_board, l_threads) = do
     h1_ [className_ B.textCenter] $ elemText "Threads"
     Loader.maybeLoader3 l_m_organization l_m_forum l_m_board $ \organization forum board -> do
       Loader.loader1 l_threads $ \threads -> do
@@ -124,7 +126,9 @@ viewIndex_
   -> HTMLView_
 
 viewIndex_ !page_info' !organization' !forum' !board' !threads_map' = do
-  defineViewWithSKey "threads-index-2" (page_info', organization', forum', board', threads_map') $ \(page_info, organization, forum, board, threads_map) -> do
+  defineViewWithSKey "threads-index-2" (page_info', organization', forum', board', threads_map') go
+  where
+  go (page_info, organization, forum, board, threads_map) = do
 
     let
       OrganizationPackResponse{..} = organization
@@ -207,7 +211,9 @@ viewShowS
   -> HTMLView_
 
 viewShowS !page_info' !me_id' !l_m_organization' !l_m_forum' !l_m_board' !l_m_thread' !l_posts' !m_request' !users_map' = do
-  defineViewWithSKey "threads-show-1" (page_info', me_id', l_m_organization', l_m_forum', l_m_board', l_m_thread', l_posts', m_request', users_map') $ \(page_info, me_id, l_m_organization, l_m_forum, l_m_board, l_m_thread, l_posts, m_request, users_map) -> do
+  defineViewWithSKey "threads-show-1" (page_info', me_id', l_m_organization', l_m_forum', l_m_board', l_m_thread', l_posts', m_request', users_map') go
+  where
+  go (page_info, me_id, l_m_organization, l_m_forum, l_m_board, l_m_thread, l_posts, m_request, users_map) = do
 
     Loader.loader5 l_m_organization l_m_forum l_m_board l_m_thread l_posts $ \m_organization m_forum m_board m_thread posts -> do
       case (m_organization, m_forum, m_board, m_thread) of
@@ -302,7 +308,9 @@ viewMod
   -> HTMLView_
 
 viewMod !tycrud' !board_id' !m_thread_id' !request' = do
-  defineViewWithSKey "threads-mod" (tycrud', board_id', m_thread_id', request') $ \(tycrud, board_id, m_thread_id, request) -> do
+  defineViewWithSKey "threads-mod" (tycrud', board_id', m_thread_id', request') go
+  where
+  go (tycrud, board_id, m_thread_id, request) = do
 
     let
       ThreadRequest{..} = request
