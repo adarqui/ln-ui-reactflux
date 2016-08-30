@@ -17,10 +17,13 @@ import           Data.Text                             (Text)
 import           React.Flux                            hiding (view)
 import qualified Web.Bootstrap3                        as B
 
+
 import           LN.Generate.Default
 import           LN.T
 import qualified LN.UI.Core.App.ThreadPost             as ThreadPost
 import           LN.UI.ReactFlux.App.Core.Shared
+import           LN.UI.ReactFlux.App.Loader            (Loader (..))
+import qualified LN.UI.ReactFlux.App.Loader            as Loader
 import qualified LN.UI.ReactFlux.App.NotFound          as NotFound
 import qualified LN.UI.ReactFlux.App.Oops              as Oops
 import qualified LN.UI.ReactFlux.App.ThreadPosts       as ThreadPost
@@ -41,6 +44,7 @@ view experiment_sid store =
         "re-render-2" -> viewReRender2 tpr store
         "re-render-3" -> viewReRender3 tpr store True True (p_ $ elemText "hi")
         "re-render-4" -> viewReRender4 tpr store 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 (p_ $ elemText "hi")
+        "re-render-5" -> viewReRender5 tpr store (p_ $ elemText "hi")
         _             -> NotFound.view
 
 
@@ -115,11 +119,22 @@ viewReRender4
   -> HTMLView_
   -> HTMLView_
 viewReRender4 !tpr' !store' !i1 !i2 !i3 !i4 !i5 !i6 !i7 !i8 !i9 !i10 !i11 !i12 !i13 !i14 !i15 !i16 !i17 !i18 !i19 !plumbing' = do
-  defineViewWithSKey "experiments-re-render-3" (tpr', store', i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15, i16, i17, i18, i19, plumbing') go
+  defineViewWithSKey "experiments-re-render-4" (tpr', store', i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15, i16, i17, i18, i19, plumbing') go
   where
   go (tpr, store, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14, i15, i16, i17, i18, i19, plumbing) = do
     plumbing
     viewReRender2 tpr store
+
+
+
+viewReRender5 :: ThreadPostRequest -> Store -> HTMLView_ -> HTMLView_
+viewReRender5 !tpr' !store' !plumbing' = do
+  Loader.maybeLoader1 (Loaded $ Just tpr') $ \tpr -> do
+    defineViewWithSKey "experiments-re-render-5" (tpr', store', plumbing') go
+    where
+    go (tpr, store, plumbing) = do
+      plumbing
+      viewReRender2 tpr store
 
 
 
