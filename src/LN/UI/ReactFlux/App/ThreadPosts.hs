@@ -192,8 +192,8 @@ viewShowI_
 
 viewShowI_ !page_info !me_id !organization !forum !board !thread !post !users_map = do
   case Map.lookup (userSanitizedResponseId $ threadPostPackResponseUser post) users_map of
-    Nothing   -> p_ $ elemText "User not found in Map."
-    Just user -> viewShowI__ page_info me_id organization forum board thread post user
+    Nothing    -> p_ $ elemText "User not found in Map."
+    Just !user -> viewShowI__ page_info me_id organization forum board thread post user
 
 
 
@@ -232,45 +232,45 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
       UserSanitizedResponse{..}     = userSanitizedPackResponseUser
       ProfileResponse{..}           = userSanitizedPackResponseProfile
 
-    li_ $ cldiv_ B.row $ do
-      cldiv_ B.colXs2 $ do
-        ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
-        p_ $ Gravatar.viewUser Medium threadPostPackResponseUser
-        viewUserStats user
-      cldiv_ B.colXs7 $ do
-        ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
-        p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
-        p_ $ elemText "quote / reply"
+    -- li_ $ cldiv_ B.row $ do
+    --   cldiv_ B.colXs2 $ do
+    --     ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
+    --     p_ $ Gravatar.viewUser Medium threadPostPackResponseUser
+    --     viewUserStats user
+    --   cldiv_ B.colXs7 $ do
+    --     ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
+    --     p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
+    --     p_ $ elemText "quote / reply"
 
-        div_ $ viewPostData threadPostResponseBody
+    viewPostData threadPostResponseBody
 
-        cldiv_ B.pageHeader mempty
-        p_ $ elemText $ maybe "" id profileResponseSignature
+        -- cldiv_ B.pageHeader mempty
+        -- p_ $ elemText $ maybe "" id profileResponseSignature
 
-      cldiv_ B.colXs1 $ do
-        -- ACCESS: ThreadPost
-        -- * Update: edit thread post
-        -- * Delete: delete thread post
-        --
-        cldiv_ B.row $ do
-          permissionsHTML'
-            threadPostPackResponsePermissions
-            permCreateEmpty
-            permReadEmpty
-            (button_editThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (EditI threadPostResponseId))
-            (button_deleteThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (DeleteI threadPostResponseId))
-            permExecuteEmpty
+      -- cldiv_ B.colXs1 $ do
+      --   -- ACCESS: ThreadPost
+      --   -- * Update: edit thread post
+      --   -- * Delete: delete thread post
+      --   --
+      --   cldiv_ B.row $ do
+      --     permissionsHTML'
+      --       threadPostPackResponsePermissions
+      --       permCreateEmpty
+      --       permReadEmpty
+      --       (button_editThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (EditI threadPostResponseId))
+      --       (button_deleteThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (DeleteI threadPostResponseId))
+      --       permExecuteEmpty
 
-        -- ACCESS: Member & Not self
-        -- Member: must be a member to like/star
-        -- Not Self: can't like/star your own posts
-        if orgMember organization && notSelf me_id threadPostResponseUserId
-          then do
-            Like.view Ent_ThreadPost threadPostResponseId threadPostPackResponseLike
-            Star.view Ent_ThreadPost threadPostResponseId threadPostPackResponseStar
-          else mempty
-      cldiv_ B.colXs2 $ do
-        viewPostStats threadPostPackResponseStat
+      --   -- ACCESS: Member & Not self
+      --   -- Member: must be a member to like/star
+      --   -- Not Self: can't like/star your own posts
+      --   if orgMember organization && notSelf me_id threadPostResponseUserId
+      --     then do
+      --       Like.view Ent_ThreadPost threadPostResponseId threadPostPackResponseLike
+      --       Star.view Ent_ThreadPost threadPostResponseId threadPostPackResponseStar
+      --     else mempty
+      -- cldiv_ B.colXs2 $ do
+      --   viewPostStats threadPostPackResponseStat
 
 
 
@@ -315,9 +315,19 @@ viewShared
 
         forM_ (Map.elems posts) $ \(!post) -> do
 
-          viewShowI_ page_info me_id organization forum board thread post users_map
           -- doesn't re-render:
-          -- iframe_ [ "src" $= "https://www.youtube.com/embed/AVWRQ21Iorc", "height" @= (405 :: Int), "width" @= (720 :: Int) ] mempty
+          iframe_ [ "src" $= "https://www.youtube.com/embed/AVWRQ21Iorc", "height" @= (40 :: Int), "width" @= (100 :: Int) ] mempty
+
+          -- re-renders:
+          -- viewShowI_ page_info me_id organization forum board thread post users_map
+
+          - doesn't re-render!!!!
+          case parseBBCodeWith (defaultParseReader { allowNotClosed = True }) (postDataToBody $ threadPostResponseBody $ threadPostPackResponseThreadPost post) of
+               Left err    -> p_ $ elemText $ "error: " <> err
+               Right codes -> p_ $ runBBCodeToHTML codes
+
+          -- doesn't re-render:
+          iframe_ [ "src" $= "https://www.youtube.com/embed/AVWRQ21Iorc", "height" @= (40 :: Int), "width" @= (100 :: Int) ] mempty
 
         -- INPUT FORM AT THE BOTTOM
         -- ACCESS: Thread
