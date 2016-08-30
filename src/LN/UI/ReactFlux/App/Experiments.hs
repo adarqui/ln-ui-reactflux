@@ -45,6 +45,7 @@ view experiment_sid store =
         "re-render-3" -> viewReRender3 tpr store True True (p_ $ elemText "hi")
         "re-render-4" -> viewReRender4 tpr store 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 (p_ $ elemText "hi")
         "re-render-5" -> viewReRender5 tpr store (p_ $ elemText "hi")
+        "re-render-6" -> viewReRender6 tpr store
         _             -> NotFound.view
 
 
@@ -135,6 +136,35 @@ viewReRender5 !tpr' !store' !plumbing' = do
     go (tpr, store, plumbing) = do
       plumbing
       viewReRender2 tpr store
+
+
+
+-- | This re-creates the issue ONLY if you modfy things above a youtube embed etc..
+-- For example
+-- textBefore1
+-- [youtube]url[/youtube]
+-- textAfter1
+-- so now, if you keep adding more textAfter's, everything is fine..
+-- if you add textBefore2 etc.. it'll re-render the iframe
+-- if you modify textBefore1 but it remains the same element, you won't see a re-render
+-- if you turn textBefore1 into [b]textBefore1[/b], it will re-render
+--
+viewReRender6 :: ThreadPostRequest -> Store -> HTMLView_
+viewReRender6 !tpr' !store' =
+  defineViewWithSKey "experiments-re-render-6" (tpr', store') go
+  where
+  go :: (ThreadPostRequest, Store) -> HTMLView_
+  go (tpr, store@Store{..}) = do
+    ThreadPost.viewPostData threadPostRequestBody
+    cldiv_ B.well $ do
+      textarea_ [ className_ B.formControl
+                , "rows" $= "10"
+                , "value" @= body
+                , onChange $ \input -> dispatch $ ThreadPost.setBody tpr (PostDataBBCode $ targetValue input)
+                ] mempty
+    where
+    ThreadPostRequest{..} = tpr
+    body                  = ThreadPost.postDataToBody threadPostRequestBody
 
 
 

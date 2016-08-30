@@ -14,6 +14,7 @@ module LN.UI.ReactFlux.App.ThreadPosts (
   , viewNew
   , viewEditI
   , viewShowI
+  , viewPostData
   , postDataToBody
 ) where
 
