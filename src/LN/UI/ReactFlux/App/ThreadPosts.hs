@@ -208,29 +208,32 @@ viewShowI__
   -> UserSanitizedPackResponse
   -> HTMLView_
 
-viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !user' = do
-  defineViewWithSKey
-    ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
-    (page_info', me_id', organization', forum', board', thread', post', user')
-    go
+viewShowI__ !page_info !me_id !organization !forum !board !thread !post !user = do
+-- viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !user' = do
+  -- defineViewWithSKey
+  --   ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
+  --   (page_info', me_id', organization', forum', board', thread', post', user')
+  --   go
 
-  where
-  go (page_info, me_id, organization, forum, board, thread, post, user) = do
+  viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post)
+  -- where
+  -- go (page_info, me_id, organization, forum, board, thread, post, user) = do
+  --   viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post')
 
-    let
-      OrganizationPackResponse{..}  = organization
-      OrganizationResponse{..}      = organizationPackResponseOrganization
-      ForumPackResponse{..}         = forum
-      ForumResponse{..}             = forumPackResponseForum
-      BoardPackResponse{..}         = board
-      BoardResponse{..}             = boardPackResponseBoard
-      ThreadPackResponse{..}        = thread
-      ThreadResponse{..}            = threadPackResponseThread
-      ThreadPostPackResponse{..}    = post
-      ThreadPostResponse{..}        = threadPostPackResponseThreadPost
-      UserSanitizedPackResponse{..} = user
-      UserSanitizedResponse{..}     = userSanitizedPackResponseUser
-      ProfileResponse{..}           = userSanitizedPackResponseProfile
+  --   let
+  --     OrganizationPackResponse{..}  = organization
+  --     OrganizationResponse{..}      = organizationPackResponseOrganization
+  --     ForumPackResponse{..}         = forum
+  --     ForumResponse{..}             = forumPackResponseForum
+  --     BoardPackResponse{..}         = board
+  --     BoardResponse{..}             = boardPackResponseBoard
+  --     ThreadPackResponse{..}        = thread
+  --     ThreadResponse{..}            = threadPackResponseThread
+  --     ThreadPostPackResponse{..}    = post
+  --     ThreadPostResponse{..}        = threadPostPackResponseThreadPost
+  --     UserSanitizedPackResponse{..} = user
+  --     UserSanitizedResponse{..}     = userSanitizedPackResponseUser
+  --     ProfileResponse{..}           = userSanitizedPackResponseProfile
 
     -- li_ $ cldiv_ B.row $ do
     --   cldiv_ B.colXs2 $ do
@@ -242,7 +245,7 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
     --     p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
     --     p_ $ elemText "quote / reply"
 
-    viewPostData threadPostResponseBody
+    -- viewPostData threadPostResponseBody
 
         -- cldiv_ B.pageHeader mempty
         -- p_ $ elemText $ maybe "" id profileResponseSignature
@@ -319,9 +322,9 @@ viewShared
           iframe_ [ "src" $= "https://www.youtube.com/embed/AVWRQ21Iorc", "height" @= (40 :: Int), "width" @= (100 :: Int) ] mempty
 
           -- re-renders:
-          -- viewShowI_ page_info me_id organization forum board thread post users_map
+          viewShowI_ page_info me_id organization forum board thread post users_map
 
-          - doesn't re-render!!!!
+          -- doesn't re-render!!!!
           case parseBBCodeWith (defaultParseReader { allowNotClosed = True }) (postDataToBody $ threadPostResponseBody $ threadPostPackResponseThreadPost post) of
                Left err    -> p_ $ elemText $ "error: " <> err
                Right codes -> p_ $ runBBCodeToHTML codes
