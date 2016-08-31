@@ -65,7 +65,7 @@ import qualified LN.UI.Core.App.ThreadPost             as ThreadPost
 import           LN.UI.Core.Helpers.DataList           (deleteNth)
 import           LN.UI.Core.Helpers.DataText           (tshow)
 import           LN.UI.Core.Helpers.DataTime           (prettyUTCTimeMaybe)
-import           LN.UI.Core.Helpers.GHCJS              (textToJSString')
+import           LN.UI.Core.Helpers.GHCJS
 import           LN.UI.Core.Helpers.HaskellApiHelpers  (rd)
 import           LN.UI.Core.Helpers.Map                (idmapFrom)
 import           LN.UI.Core.PageInfo                   (PageInfo (..),
@@ -215,8 +215,13 @@ viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !
   --   (page_info', me_id', organization', forum', board', thread', post', user')
   --   go
   defineViewWithSKey
+    -- ("posts-show-"<>(textToJSString' $ tshow False))
+    ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
     -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
-    "hi"
+    -- (showToJSString' $ tshow False)
+    -- ("posts-show-"<>(textToJSString' $! tshow $! threadPostPackResponseThreadPostId post'))
+    -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
+    -- "hi"
     post'
     go
 
@@ -334,9 +339,9 @@ viewShared
           viewShowI_ page_info me_id organization forum board thread post users_map
 
           -- doesn't re-render!!!!
-          case parseBBCodeWith (defaultParseReader { allowNotClosed = True }) (postDataToBody $ threadPostResponseBody $ threadPostPackResponseThreadPost post) of
-               Left err    -> p_ $ elemText $ "error: " <> err
-               Right codes -> p_ $ runBBCodeToHTML codes
+          -- case parseBBCodeWith (defaultParseReader { allowNotClosed = True }) (postDataToBody $ threadPostResponseBody $ threadPostPackResponseThreadPost post) of
+          --      Left err    -> p_ $ elemText $ "error: " <> err
+          --      Right codes -> p_ $ runBBCodeToHTML codes
 
           -- doesn't re-render:
           iframe_ [ "src" $= "https://www.youtube.com/embed/AVWRQ21Iorc", "height" @= (40 :: Int), "width" @= (100 :: Int) ] mempty
