@@ -208,14 +208,23 @@ viewShowI__
   -> UserSanitizedPackResponse
   -> HTMLView_
 
-viewShowI__ !page_info !me_id !organization !forum !board !thread !post !user = do
--- viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !user' = do
+-- viewShowI__ !page_info !me_id !organization !forum !board !thread !post !user = do
+viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !user' = do
   -- defineViewWithSKey
   --   ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
   --   (page_info', me_id', organization', forum', board', thread', post', user')
   --   go
+  defineViewWithSKey
+    -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
+    "hi"
+    post'
+    go
 
-  viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post)
+  where
+  go post = do
+    viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post)
+
+  -- viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post)
   -- where
   -- go (page_info, me_id, organization, forum, board, thread, post, user) = do
   --   viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post')

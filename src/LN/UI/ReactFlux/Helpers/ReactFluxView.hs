@@ -9,6 +9,7 @@ module LN.UI.ReactFlux.Helpers.ReactFluxView (
 
 import           Data.Typeable
 import           React.Flux
+import qualified React.Flux as RF
 
 import           LN.UI.Core.Helpers.GHCJS
 
