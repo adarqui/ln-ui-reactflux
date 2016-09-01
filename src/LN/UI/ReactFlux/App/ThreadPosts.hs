@@ -208,86 +208,95 @@ viewShowI__
   -> UserSanitizedPackResponse
   -> HTMLView_
 
--- viewShowI__ !page_info !me_id !organization !forum !board !thread !post !user = do
-viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !user' = do
+viewShowI__ !page_info !me_id !organization !forum !board !thread !post !user = do
+-- viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !user' = do
   -- defineViewWithSKey
   --   ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
   --   (page_info', me_id', organization', forum', board', thread', post', user')
   --   go
-  defineViewWithSKey
+  -- defineViewWithSKey
+    -- ("posts-show-" <> (textToJSString' $ tshow (1 :: Int64)))
+    -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
+    -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
+    -- "posts-show"
     -- ("posts-show-"<>(textToJSString' $ tshow False))
-    ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
+    -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
     -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
     -- (showToJSString' $ tshow False)
     -- ("posts-show-"<>(textToJSString' $! tshow $! threadPostPackResponseThreadPostId post'))
     -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
     -- "hi"
-    post'
-    go
+    -- post'
+    -- go
+    -- go post'
 
-  where
-  go post = do
-    viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post)
+  -- where
+  -- go post = do
+    -- div_ $ do
+    --   viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post)
+    --   elemText $ tshow $ threadPostPackResponseThreadPostId post
 
   -- viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post)
   -- where
   -- go (page_info, me_id, organization, forum, board, thread, post, user) = do
   --   viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post')
 
-  --   let
-  --     OrganizationPackResponse{..}  = organization
-  --     OrganizationResponse{..}      = organizationPackResponseOrganization
-  --     ForumPackResponse{..}         = forum
-  --     ForumResponse{..}             = forumPackResponseForum
-  --     BoardPackResponse{..}         = board
-  --     BoardResponse{..}             = boardPackResponseBoard
-  --     ThreadPackResponse{..}        = thread
-  --     ThreadResponse{..}            = threadPackResponseThread
-  --     ThreadPostPackResponse{..}    = post
-  --     ThreadPostResponse{..}        = threadPostPackResponseThreadPost
-  --     UserSanitizedPackResponse{..} = user
-  --     UserSanitizedResponse{..}     = userSanitizedPackResponseUser
-  --     ProfileResponse{..}           = userSanitizedPackResponseProfile
+  let
+    OrganizationPackResponse{..}  = organization
+    OrganizationResponse{..}      = organizationPackResponseOrganization
+    ForumPackResponse{..}         = forum
+    ForumResponse{..}             = forumPackResponseForum
+    BoardPackResponse{..}         = board
+    BoardResponse{..}             = boardPackResponseBoard
+    ThreadPackResponse{..}        = thread
+    ThreadResponse{..}            = threadPackResponseThread
+    ThreadPostPackResponse{..}    = post
+    ThreadPostResponse{..}        = threadPostPackResponseThreadPost
+    UserSanitizedPackResponse{..} = user
+    UserSanitizedResponse{..}     = userSanitizedPackResponseUser
+    ProfileResponse{..}           = userSanitizedPackResponseProfile
 
-    -- li_ $ cldiv_ B.row $ do
-    --   cldiv_ B.colXs2 $ do
-    --     ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
-    --     p_ $ Gravatar.viewUser Medium threadPostPackResponseUser
-    --     viewUserStats user
-    --   cldiv_ B.colXs7 $ do
-    --     ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
-    --     p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
-    --     p_ $ elemText "quote / reply"
+  li_ $ cldiv_ B.row $ do
+    cldiv_ B.colXs2 $ do
+      ahref $ routeWith' $ Users (ShowS userSanitizedResponseName)
+      p_ $ Gravatar.viewUser Medium threadPostPackResponseUser
+      viewUserStats user
+    cldiv_ B.colXs7 $ do
+      ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
+      p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
+      p_ $ elemText "quote / reply"
 
-    -- viewPostData threadPostResponseBody
+      viewPostData threadPostResponseBody
 
-        -- cldiv_ B.pageHeader mempty
-        -- p_ $ elemText $ maybe "" id profileResponseSignature
+      cldiv_ B.pageHeader mempty
+      p_ $ elemText $ maybe "" id profileResponseSignature
 
-      -- cldiv_ B.colXs1 $ do
-      --   -- ACCESS: ThreadPost
-      --   -- * Update: edit thread post
-      --   -- * Delete: delete thread post
-      --   --
-      --   cldiv_ B.row $ do
-      --     permissionsHTML'
-      --       threadPostPackResponsePermissions
-      --       permCreateEmpty
-      --       permReadEmpty
-      --       (button_editThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (EditI threadPostResponseId))
-      --       (button_deleteThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (DeleteI threadPostResponseId))
-      --       permExecuteEmpty
+    cldiv_ B.colXs1 $ do
+      -- ACCESS: ThreadPost
+      -- * Update: edit thread post
+      -- * Delete: delete thread post
+      --
+      cldiv_ B.row $ do
+        permissionsHTML'
+          threadPostPackResponsePermissions
+          permCreateEmpty
+          permReadEmpty
+          (button_editThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (EditI threadPostResponseId))
+          (button_deleteThreadPost $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (DeleteI threadPostResponseId))
+          permExecuteEmpty
 
-      --   -- ACCESS: Member & Not self
-      --   -- Member: must be a member to like/star
-      --   -- Not Self: can't like/star your own posts
-      --   if orgMember organization && notSelf me_id threadPostResponseUserId
-      --     then do
-      --       Like.view Ent_ThreadPost threadPostResponseId threadPostPackResponseLike
-      --       Star.view Ent_ThreadPost threadPostResponseId threadPostPackResponseStar
-      --     else mempty
-      -- cldiv_ B.colXs2 $ do
-      --   viewPostStats threadPostPackResponseStat
+      -- ACCESS: Member & Not self
+      -- Member: must be a member to like/star
+      -- Not Self: can't like/star your own posts
+      if orgMember organization && notSelf me_id threadPostResponseUserId
+        then do
+          Like.view Ent_ThreadPost threadPostResponseId threadPostPackResponseLike
+          Star.view Ent_ThreadPost threadPostResponseId threadPostPackResponseStar
+        else mempty
+
+    -- TODO FIXME: STOPPED WORKING
+    cldiv_ B.colXs2 $ do
+      viewPostStats threadPostPackResponseStat
 
 
 
@@ -314,7 +323,10 @@ viewShared
   !m_request'
   !users_map'
   =
-  defineViewWithSKey "posts-shared" (page_info', me_id', organization', forum', board', thread', posts', m_request', users_map') $ \(page_info, me_id, organization, forum, board, thread, posts, m_request, users_map) -> do
+  defineViewWithSKey "posts-shared" (page_info', me_id', organization', forum', board', thread', posts', m_request', users_map') go
+
+  where
+  go (page_info, me_id, organization, forum, board, thread, posts, m_request, users_map) = do
 
     let
       OrganizationPackResponse{..} = organization
@@ -330,10 +342,10 @@ viewShared
       PageNumbers.view1 page_info (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
       ul_ ["key" $= "posts-list", className_ B.listUnstyled] $ do
 
-        forM_ (Map.elems posts) $ \(!post) -> do
+        forM_ (Map.elems posts) $ \post -> do
 
           -- doesn't re-render:
-          iframe_ [ "src" $= "https://www.youtube.com/embed/AVWRQ21Iorc", "height" @= (40 :: Int), "width" @= (100 :: Int) ] mempty
+          -- iframe_ [ "src" $= "https://www.youtube.com/embed/AVWRQ21Iorc", "height" @= (40 :: Int), "width" @= (100 :: Int) ] mempty
 
           -- re-renders:
           viewShowI_ page_info me_id organization forum board thread post users_map
@@ -344,13 +356,13 @@ viewShared
           --      Right codes -> p_ $ runBBCodeToHTML codes
 
           -- doesn't re-render:
-          iframe_ [ "src" $= "https://www.youtube.com/embed/AVWRQ21Iorc", "height" @= (40 :: Int), "width" @= (100 :: Int) ] mempty
+          -- iframe_ [ "src" $= "https://www.youtube.com/embed/AVWRQ21Iorc", "height" @= (40 :: Int), "width" @= (100 :: Int) ] mempty
 
         -- INPUT FORM AT THE BOTTOM
         -- ACCESS: Thread
         -- * Create: post within a thread
         --
-        ebyam m_request mempty $ \(!request) -> do
+        ebyam m_request mempty $ \request -> do
           permissionsMatchCreateHTML
             threadPackResponsePermissions
             (viewMod TyCreate threadResponseId Nothing request)
@@ -365,8 +377,8 @@ viewNew
   -> HTMLView_
 
 viewNew !l_m_thread !m_request = do
-  Loader.maybeLoader1 l_m_thread $ \(!ThreadPackResponse{..}) ->
-    ebyam m_request mempty $ \(!request) -> viewMod TyCreate threadPackResponseThreadId Nothing request
+  Loader.maybeLoader1 l_m_thread $ \ThreadPackResponse{..} ->
+    ebyam m_request mempty $ \request -> viewMod TyCreate threadPackResponseThreadId Nothing request
 
 
 
@@ -376,8 +388,8 @@ viewEditI
   -> HTMLView_
 
 viewEditI !l_m_post !m_request =
-  Loader.maybeLoader1 l_m_post $ \(!ThreadPostPackResponse{..}) ->
-    ebyam m_request mempty $ \(!request) -> viewMod TyUpdate (threadPostResponseThreadId threadPostPackResponseThreadPost) (Just threadPostPackResponseThreadPostId) request
+  Loader.maybeLoader1 l_m_post $ \ThreadPostPackResponse{..} ->
+    ebyam m_request mempty $ \request -> viewMod TyUpdate (threadPostResponseThreadId threadPostPackResponseThreadPost) (Just threadPostPackResponseThreadPostId) request
 
 
 
@@ -429,17 +441,16 @@ viewUserStats
   -> HTMLView_
 
 viewUserStats !user =
-  div_ $ do
-    showTableClean
-      []
-      ["respect", "threads", "posts", "workouts", "resources", "leurons"]
-      [[userSanitizedStatResponseRespect]
-      ,[userSanitizedStatResponseThreads]
-      ,[userSanitizedStatResponseThreadPosts]
-      ,[userSanitizedStatResponseWorkouts]
-      ,[userSanitizedStatResponseResources]
-      ,[userSanitizedStatResponseLeurons]
-      ]
+  showTableClean
+    []
+    ["respect", "threads", "posts", "workouts", "resources", "leurons"]
+    [[userSanitizedStatResponseRespect]
+    ,[userSanitizedStatResponseThreads]
+    ,[userSanitizedStatResponseThreadPosts]
+    ,[userSanitizedStatResponseWorkouts]
+    ,[userSanitizedStatResponseResources]
+    ,[userSanitizedStatResponseLeurons]
+    ]
   where
   UserSanitizedPackResponse{..} = user
   UserSanitizedStatResponse{..} = userSanitizedPackResponseStat
@@ -450,18 +461,19 @@ viewPostStats
   :: ThreadPostStatResponse
   -> HTMLView_
 
-viewPostStats !ThreadPostStatResponse{..} =
-  div_ $ do
-    showTableClean
-      []
-      ["score", "up", "neutral", "down", "stars", "views"]
-      [[threadPostStatResponseLikes - threadPostStatResponseDislikes]
-      ,[threadPostStatResponseLikes]
-      ,[threadPostStatResponseNeutral]
-      ,[threadPostStatResponseDislikes]
-      ,[threadPostStatResponseStars]
-      ,[threadPostStatResponseViews]
-      ]
+viewPostStats !stat =
+  showTableClean
+    []
+    ["score", "up", "neutral", "down", "stars", "views"]
+    [[threadPostStatResponseLikes - threadPostStatResponseDislikes]
+    ,[threadPostStatResponseLikes]
+    ,[threadPostStatResponseNeutral]
+    ,[threadPostStatResponseDislikes]
+    ,[threadPostStatResponseStars]
+    ,[threadPostStatResponseViews]
+    ]
+  where
+  ThreadPostStatResponse{..} = stat
 
 
 

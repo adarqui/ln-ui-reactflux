@@ -26,3 +26,6 @@ defineViewWithSKey key props handler =
   viewWithSKey go key props mempty
   where
   go = defineView key handler
+
+-- defineViewWithSKey key props handler =
+--   RF.view (defineView key handler) props mempty
