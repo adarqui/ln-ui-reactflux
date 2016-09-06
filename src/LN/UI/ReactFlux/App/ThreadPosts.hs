@@ -209,37 +209,6 @@ viewShowI__
   -> HTMLView_
 
 viewShowI__ !page_info !me_id !organization !forum !board !thread !post !user = do
--- viewShowI__ !page_info' !me_id' !organization' !forum' !board' !thread' !post' !user' = do
-  -- defineViewWithSKey
-  --   ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
-  --   (page_info', me_id', organization', forum', board', thread', post', user')
-  --   go
-  -- defineViewWithSKey
-    -- ("posts-show-" <> (textToJSString' $ tshow (1 :: Int64)))
-    -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
-    -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
-    -- "posts-show"
-    -- ("posts-show-"<>(textToJSString' $ tshow False))
-    -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
-    -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
-    -- (showToJSString' $ tshow False)
-    -- ("posts-show-"<>(textToJSString' $! tshow $! threadPostPackResponseThreadPostId post'))
-    -- ("posts-show-"<>(textToJSString' $ tshow $ threadPostPackResponseThreadPostId post'))
-    -- "hi"
-    -- post'
-    -- go
-    -- go post'
-
-  -- where
-  -- go post = do
-    -- div_ $ do
-    --   viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post)
-    --   elemText $ tshow $ threadPostPackResponseThreadPostId post
-
-  -- viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post)
-  -- where
-  -- go (page_info, me_id, organization, forum, board, thread, post, user) = do
-  --   viewPostData (threadPostResponseBody $ threadPostPackResponseThreadPost post')
 
   let
     OrganizationPackResponse{..}  = organization
@@ -296,7 +265,9 @@ viewShowI__ !page_info !me_id !organization !forum !board !thread !post !user = 
 
     -- TODO FIXME: STOPPED WORKING
     cldiv_ B.colXs2 $ do
-      viewPostStats threadPostPackResponseStat
+      -- works: viewPostStats $ ThreadPostStatResponse 0 0 0 0 0 0
+      -- viewPostStats threadPostPackResponseStat
+      p_ $ elemText "TODO FIXME"
 
 
 
