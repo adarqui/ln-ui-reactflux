@@ -179,9 +179,9 @@ viewShowS !page_info' !l_m_organization' !l_forums' = do
         -- * Member: if not a member, this is a shortcut to join an organization
         --
         isMemberOfOrganizationHTML
-         organization_pack
-         mempty
-         (defineViewWithSKey "button-join" () $ const $ button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
+          organization_pack
+          mempty
+          (defineViewWithSKey "button-join" () $ const $ button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
 
         -- ACCESS: Organization
         -- * Update: can edit organization settings

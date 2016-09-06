@@ -40,6 +40,7 @@ import           LN.UI.Core.State                      (Action (..), Store (..),
                                                         defaultStore)
 import qualified LN.UI.ReactFlux.App.Breadcrumbs       as Breadcrumbs
 import           LN.UI.ReactFlux.App.Core.Shared
+import qualified LN.UI.ReactFlux.App.Errors            as Errors
 import           LN.UI.ReactFlux.App.Loader
 import qualified LN.UI.ReactFlux.App.NavBar            as NavBar
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM
@@ -57,5 +58,6 @@ view !store' !page' = do
     div_ ["key" $= "default-layout"] $ do
       Loader.loader1 _l_m_me $ \m_me -> do
         NavBar.view m_me _route
+        Errors.view _errors
         Breadcrumbs.view _route
         page
