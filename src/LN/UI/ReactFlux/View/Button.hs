@@ -122,6 +122,7 @@ module LN.UI.ReactFlux.View.Button (
   button_editOrganization,
   button_deleteOrganization,
   button_joinOrganization,
+  button_joinOrganization',
   button_newForum,
   button_editForum,
   button_deleteForum,
@@ -398,6 +399,7 @@ button_editOrganization'   = glyphButtonLinkDef_Pencil (Just "edit organization"
 button_deleteOrganization  = glyphButtonLinkDef_Trash Nothing
 button_deleteOrganization' = glyphButtonLinkDef_Trash (Just "delete organization")
 button_joinOrganization    = glyphButtonLinkDef_Ok (Just " join-organization")
+button_joinOrganization' handler = glyphButtonDef_Ok Nothing handler
 
 button_newForum     = glyphButtonLinkDef_Plus (Just " new-forum")
 button_editForum    = glyphButtonLinkDef_Pencil Nothing

@@ -181,7 +181,8 @@ viewShowS !page_info' !l_m_organization' !l_forums' = do
         isMemberOfOrganizationHTML
           organization_pack
           mempty
-          (defineViewWithSKey "button-join" () $ const $ button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
+          -- (defineViewWithSKey "button-join" () $ const $ button_joinOrganization $ routeWith' $ OrganizationsMembership organizationResponseName Index)
+          (defineViewWithSKey "button-join" () $ const $ button_joinOrganization' (dispatch JoinOrganization))
 
         -- ACCESS: Organization
         -- * Update: can edit organization settings
