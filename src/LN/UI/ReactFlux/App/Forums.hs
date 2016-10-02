@@ -252,6 +252,17 @@ viewShowS_ !page_info' !organization' !forum' plumbing_boards' !plumbing_recent_
         div_ plumbing_recent_posts
         div_ plumbing_messages_of_the_week
 
+        -- div_ plumbing_users_online
+        --
+
+        cldiv_ B.containerFluid $ do
+          cldiv_ B.pageHeader $ do
+            h4_ $ p_ $ elemText "Forum stats - TODO"
+
+        cldiv_ B.containerFluid $ do
+          cldiv_ B.pageHeader $ do
+            h4_ $ p_ $ elemText "Users online - TODO"
+
 
 
 viewNew
