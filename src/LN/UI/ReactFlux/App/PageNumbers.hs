@@ -135,14 +135,14 @@ viewAbbreviated_ !key page_info' !route_with' =
                                     then length_pages'+1
                                     else length_pages'
               abbreviated_pages = if length_pages > 4
-                                    then zip [1,2,max_page-1,max_page] [1,2,max_page-1,max_page]
-                                    else zip [1..length_pages'] [1..length_pages']
+                                    then [1,2,max_page-1,max_page]
+                                    else [1..length_pages']
 
             forM_ abbreviated_pages $
-              \(idx, page_number) ->
+              \page_number ->
 
-                li_ ["key" @= idx] $ ahrefName (tshow idx) $
-                  if idx == 1
+                li_ ["key" @= page_number] $ ahrefName (tshow page_number) $
+                  if page_number == 1
                     -- in page 1, we don't want offset/limit showing
                     then RouteWith route emptyParams
                     -- else, append offset/limit to everything
