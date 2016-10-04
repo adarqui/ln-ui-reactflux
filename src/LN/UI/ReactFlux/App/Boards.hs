@@ -238,28 +238,30 @@ viewShowS_ !page_info' !organization' !forum' !board' !plumbing_threads' = do
         h2_ $ elemText boardResponseDisplayName
         p_ [className_ B.lead] $ elemText $ maybe "No description." id boardResponseDescription
 
-        buttonGroup_HorizontalSm1 $ do
-          -- ACCESS: Board
-          -- * Create: can create sub-boards
-          -- * Update: can edit board settings
-          -- * Delete: can delete board
-          --
-          permissionsHTML'
-            boardPackResponsePermissions
-            (button_newBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName New)
-            permReadEmpty
-            (button_editBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (EditS boardResponseName))
-            (button_deleteBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (DeleteS boardResponseName))
-            permExecuteEmpty
+        p_ $ do
+          buttonGroup_HorizontalSm1 $ do
+            -- ACCESS: Board
+            -- * Create: can create sub-boards
+            -- * Update: can edit board settings
+            -- * Delete: can delete board
+            --
+            permissionsHTML'
+              boardPackResponsePermissions
+              (button_newBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName New)
+              permReadEmpty
+              (button_editBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (EditS boardResponseName))
+              (button_deleteBoard $ routeWith' $ OrganizationsForumsBoards organizationResponseName forumResponseName (DeleteS boardResponseName))
+              permExecuteEmpty
 
-        buttonGroup_HorizontalSm1 $ do
-          -- ACCESS: Board
-          -- * Create: can create threads
-          --
-          permissionsMatchCreateHTML
-            boardPackResponseThreadPermissions
-            (button_newThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName New)
-            mempty
+        p_ $ do
+          buttonGroup_HorizontalSm1 $ do
+            -- ACCESS: Board
+            -- * Create: can create threads
+            --
+            permissionsMatchCreateHTML
+              boardPackResponseThreadPermissions
+              (button_newThread $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName New)
+              mempty
 
       div_ plumbing_threads
 
