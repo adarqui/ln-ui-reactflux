@@ -61,6 +61,7 @@ import qualified LN.UI.Core.App.Thread                 as Thread
 import           LN.UI.Core.Helpers.DataList           (deleteNth)
 import           LN.UI.Core.Helpers.DataText           (tshow)
 import           LN.UI.Core.Helpers.DataTime           (prettyUTCTimeMaybe)
+import           LN.UI.Core.Helpers.GHCJS              (showToJSString')
 import           LN.UI.Core.Helpers.HaskellApiHelpers  (rd)
 import           LN.UI.Core.Helpers.Map                (idmapFrom)
 import           LN.UI.Core.PageInfo                   (PageInfo (..),
@@ -158,7 +159,12 @@ viewIndex_ !page_info' !organization' !forum' !board' !threads_map' = do
               Gravatar.viewUser Small threadPackResponseUser
             cldiv_ B.colXs4 $ do
               p_ $ ahrefName threadResponseDisplayName $ routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName)
-              p_ $ elemText "page-numbers"
+              p_ $
+                PageNumbers.viewAbbreviated_
+                  ("page-numbers-abbrv-" <> showToJSString' threadResponseId)
+                  (defaultPageInfo { totalPages = threadStatResponseThreadPosts })
+                  (routeWith' $ OrganizationsForumsBoardsThreads organizationResponseName forumResponseName boardResponseName (ShowS threadResponseName))
+
               p_ $ elemText $ prettyUTCTimeMaybe threadResponseCreatedAt
             cldiv_ B.colXs2 $ do
               showTableClean
