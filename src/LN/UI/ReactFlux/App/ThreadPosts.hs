@@ -457,7 +457,7 @@ viewPostData !body = cldiv_ "thread-post-body" $
     PostDataEmpty      -> p_ [className_ "post-data-empty"] mempty
     PostDataRaw v      -> p_ [className_ "post-data-raw"] $ elemText v
     PostDataBBCode v   -> do
-      case parseBBCodeWith (defaultParseReader { allowNotClosed = True }) v of
+      case parseBBCodeWith (defaultParseReader { allowNotClosed = True, emoticons = Just defaultEmoticons }) v of
            Left err    -> p_ $ elemText $ "error: " <> err
            Right codes -> p_ $ runBBCodeToHTML codes
     PostDataMarkdown v -> p_ [className_ "post-data-markdown"] $ elemText "markdown"
