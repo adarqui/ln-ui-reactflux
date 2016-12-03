@@ -73,7 +73,7 @@ initRouter =
   initRouterRaw'ByteString (Just go) go
   where
   go = \raw_uri -> do
-    print raw_uri
+    putStrLn $ "initRouter: " <> show raw_uri
     routeAlterStore $ toRouteWithHash raw_uri
     where
     routeAlterStore action =

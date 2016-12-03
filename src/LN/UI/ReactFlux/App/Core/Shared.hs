@@ -56,11 +56,21 @@ instance StoreData Store where
 
     where
     basedOn result_ act_ = case result_ of
-      Start              -> pure ()
-      Next               -> Dispatcher.dispatch $ SomeStoreAction store (MachNext act_)
-      Done               -> pure ()
-      Failure            -> pure ()
-      Reroute route_with -> Dispatcher.dispatch $ SomeStoreAction store (Goto route_with)
+      Start              -> do
+                            putStrLn "transform: Start"
+                            pure ()
+      Next               -> do
+                            putStrLn "transform: Next"
+                            Dispatcher.dispatch $ SomeStoreAction store (MachNext act_)
+      Done               -> do
+                            putStrLn "transform: Done"
+                            pure ()
+      Failure            -> do
+                            putStrLn "transform: Failure"
+                            pure ()
+      Reroute route_with -> do
+                            putStrLn "transform: Reroute"
+                            Dispatcher.dispatch $ SomeStoreAction store (Goto route_with)
 
 
 
