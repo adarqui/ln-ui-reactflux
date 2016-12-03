@@ -404,8 +404,12 @@ viewMod !tycrud' !thread_id' !m_post_id' !request' = do
                       , onChange $ \input -> dispatch $ ThreadPost.setBody request (PostDataBBCode $ targetValue input)
                       ] mempty
             -- TODO FIXME: cancel
-            button_ [onClick $ \_ _ -> dispatch $ Goto $ routeWith' Home ] $ elemText "cancel"
-            button_ [onClick $ \_ _ -> dispatch SaveThreadPost] $ elemText "send"
+            case tycrud of
+              TyCreate -> do
+                button_ [onClick $ \_ _ -> dispatch SaveThreadPostInPlace] $ elemText "send"
+              TyUpdate -> do
+                button_ [onClick $ \_ _ -> dispatch $ Goto $ routeWith' Home ] $ elemText "cancel"
+                button_ [onClick $ \_ _ -> dispatch SaveThreadPost] $ elemText "send"
         cldiv_ B.colXs1 mempty
 
 
