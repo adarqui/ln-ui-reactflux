@@ -22,6 +22,13 @@ defineViewWithSKey
   -> (props -> ReactElementM ViewEventHandler ()) -- ^ The rendering function
   -> ReactElementM ViewEventHandler ()
 
+-- TESTING
+--
+-- defineViewWithSKey key props handler =
+--   handler props
+--   where
+--   go = defineView key handler
+
 defineViewWithSKey key props handler =
   viewWithSKey go key props mempty
   where

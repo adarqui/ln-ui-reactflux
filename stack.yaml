@@ -44,6 +44,10 @@ packages:
 - '../haskell-ln-types'
 - '../haskell-api-helpers-shared'
 - '../haskell-api-helpers'
+- '../haskell-bbcode-parser'
+- '../haskell-bbcode-parser-reactflux'
+- '../haskell-media-embed'
+- '../haskell-media-embed-reactflux'
 - '../haskell-either-helpers'
 - '../haskell-ebyam'
 - '../haskell-ifte'
@@ -60,6 +64,7 @@ extra-deps:
   - haskell-src-exts-1.16.0.1
   - react-flux-1.1.1
   - ref-tf-0.4
+  - html-entities-1.1.2
 
 # Override default flag values for local packages and extra-deps
 flags: {}

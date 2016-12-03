@@ -19,6 +19,7 @@ module LN.UI.ReactFlux.App.ThreadPosts (
 ) where
 
 
+import qualified Debug.Trace                           as Trace
 
 import           Control.Concurrent                    (forkIO)
 import           Control.DeepSeq                       (NFData)
@@ -266,7 +267,9 @@ viewShowI__ !page_info !me_id !organization !forum !board !thread !post !user = 
     -- TODO FIXME: STOPPED WORKING
     cldiv_ B.colXs2 $ do
       -- works: viewPostStats $ ThreadPostStatResponse 0 0 0 0 0 0
-      -- viewPostStats threadPostPackResponseStat
+      -- viewPostStats $ ThreadPostStatResponse 0 0 0 0 0 0
+      viewPostStats threadPostPackResponseStat
+      -- p_ $ elemShow threadPostPackResponseStat
       p_ $ elemText "TODO FIXME"
 
 
@@ -436,15 +439,51 @@ viewPostStats !stat =
   showTableClean
     []
     ["score", "up", "neutral", "down", "stars", "views"]
-    [[threadPostStatResponseLikes - threadPostStatResponseDislikes]
+    [[0]
     ,[threadPostStatResponseLikes]
-    ,[threadPostStatResponseNeutral]
-    ,[threadPostStatResponseDislikes]
-    ,[threadPostStatResponseStars]
-    ,[threadPostStatResponseViews]
+    ,[0]
+    ,[0]
+    ,[0]
+    ,[0]
     ]
   where
   ThreadPostStatResponse{..} = stat
+
+-- viewPostStats !stat =
+--   showTableClean
+--     []
+--     ["score", "up", "neutral", "down", "stars", "views"]
+--     [[threadPostStatResponseLikes - threadPostStatResponseDislikes]
+--     ,[threadPostStatResponseLikes]
+--     ,[threadPostStatResponseNeutral]
+--     ,[threadPostStatResponseDislikes]
+--     ,[threadPostStatResponseStars]
+--     ,[threadPostStatResponseViews]
+--     ]
+--   where
+--   ThreadPostStatResponse{..} = stat
+
+-- viewPostStats stat =
+--   do
+--     p_ $ elemText "viewPostStats"
+--     -- p_ $ elemShow (threadPostStatResponseLikes - threadPostStatResponseLikes)
+--     -- p_ $ elemShow (threadPostStatResponseLikes stat)
+--     -- p_ $ elemShow (threadPostStatResponseLikes stat - threadPostStatResponseViews stat)
+--     -- p_ $ elemShow (threadPostStatResponseLikes - threadPostStatResponseDislikes)
+--     -- p_ $ elemShow threadPostStatResponseLikes
+--     -- p_ $ elemShow threadPostStatResponseLikes
+--     -- p_ $ elemShow threadPostStatResponseNeutral
+--     -- p_ $ elemShow threadPostStatResponseDislikes
+--     -- p_ $ elemShow threadPostStatResponseStars
+--     -- p_ $ elemShow threadPostStatResponseViews
+--     -- p_ $ elemShow (threadPostStatResponseLikes stat)
+--     -- p_ $ elemShow (threadPostStatResponseNeutral stat)
+--     -- p_ $ elemShow (threadPostStatResponseDislikes stat)
+--     -- p_ $ elemShow (threadPostStatResponseStars stat)
+--     -- p_ $ elemShow (threadPostStatResponseViews stat)
+--     -- p_ $ elemShow $ threadPostStatResponseLikes - threadPostStatResponseDislikes
+--   -- where
+--   -- ThreadPostStatResponse{..} = stat
 
 
 
