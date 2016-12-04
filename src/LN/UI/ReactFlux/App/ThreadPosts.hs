@@ -234,7 +234,7 @@ viewShowI__ !page_info !me_id !organization !forum !board !thread !post !user = 
     cldiv_ B.colXs7 $ do
       ahrefName (threadResponseName <> "/" <> tshow threadPostResponseId) $ routeWith' $ OrganizationsForumsBoardsThreadsPosts organizationResponseName forumResponseName boardResponseName threadResponseName (ShowI threadPostResponseId)
       p_ $ elemText (prettyUTCTimeMaybe threadPostResponseCreatedAt)
-      p_ $ elemText "quote / reply"
+      button_ [onClick $ \_ _ -> dispatch $ ThreadPost.quote post] $ elemText "quote"
 
       viewPostData threadPostResponseBody
 
