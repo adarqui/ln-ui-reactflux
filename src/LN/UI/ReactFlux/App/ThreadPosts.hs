@@ -439,33 +439,33 @@ viewPostStats
   :: ThreadPostStatResponse
   -> HTMLView_
 
-viewPostStats !stat =
-  showTableClean
-    []
-    ["score", "up", "neutral", "down", "stars", "views"]
-    [[0]
-    ,[threadPostStatResponseLikes]
-    ,[0]
-    ,[0]
-    ,[0]
-    ,[0]
-    ]
-  where
-  ThreadPostStatResponse{..} = stat
-
 -- viewPostStats !stat =
 --   showTableClean
 --     []
 --     ["score", "up", "neutral", "down", "stars", "views"]
---     [[threadPostStatResponseLikes - threadPostStatResponseDislikes]
+--     [[0]
 --     ,[threadPostStatResponseLikes]
---     ,[threadPostStatResponseNeutral]
---     ,[threadPostStatResponseDislikes]
---     ,[threadPostStatResponseStars]
---     ,[threadPostStatResponseViews]
+--     ,[0]
+--     ,[0]
+--     ,[0]
+--     ,[0]
 --     ]
 --   where
 --   ThreadPostStatResponse{..} = stat
+
+viewPostStats !stat =
+  showTableClean
+    []
+    ["score", "up", "neutral", "down", "stars", "views"]
+    [[threadPostStatResponseLikes - threadPostStatResponseDislikes]
+    ,[threadPostStatResponseLikes]
+    ,[threadPostStatResponseNeutral]
+    ,[threadPostStatResponseDislikes]
+    ,[threadPostStatResponseStars]
+    ,[threadPostStatResponseViews]
+    ]
+  where
+  ThreadPostStatResponse{..} = stat
 
 -- viewPostStats stat =
 --   do
