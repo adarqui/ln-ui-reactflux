@@ -14,22 +14,24 @@ module LN.UI.ReactFlux.App.Gravatar (
 
 
 
-import           Data.Monoid                ((<>))
-import           Data.Text                  (Text)
-import qualified Data.Text                  as Text (unpack)
-import           React.Flux                 hiding (view)
-import qualified React.Flux                 as RF
+import           Data.Monoid                           ((<>))
+import           Data.Text                             (Text)
+import qualified Data.Text                             as Text (unpack)
+import           React.Flux                            hiding (view)
+import qualified React.Flux                            as RF
 
-import           LN.T.Organization          (OrganizationResponse (..))
-import           LN.T.Size                  (Size (..))
-import           LN.T.User                  (UserSanitizedResponse (..))
-import           LN.UI.Core.Helpers.DataText     (tshow)
-import           LN.UI.Core.Helpers.GHCJS        (JSString, textToJSString')
+import           LN.T.Organization                     (OrganizationResponse (..))
+import           LN.T.Size                             (Size (..))
+import           LN.T.User                             (UserSanitizedResponse (..))
+import           LN.UI.Core.Helpers.DataText           (tshow)
+import           LN.UI.Core.Helpers.GHCJS              (JSString,
+                                                        textToJSString')
+import           LN.UI.Core.Router                     (CRUD (..), Route (..),
+                                                        RouteWith (..),
+                                                        routeWith')
 import           LN.UI.ReactFlux.Helpers.ReactFluxDOM
 import           LN.UI.ReactFlux.Helpers.ReactFluxView
-import           LN.UI.Core.Router               (CRUD (..), Route (..),
-                                             RouteWith (..), routeWith')
-import           LN.UI.ReactFlux.Types                (HTMLView_)
+import           LN.UI.ReactFlux.Types                 (HTMLView_)
 
 
 
