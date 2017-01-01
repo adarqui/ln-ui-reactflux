@@ -505,8 +505,9 @@ viewPostData !body = cldiv_ "thread-post-body" $
            Right codes -> p_ $ runBBCodeToHTMLWith bbcode_options codes
       where
       bbcode_options = defaultParseReader {
-                           emoticons    = Just (defaultEmoticonsBimap, "/static/emoticons")
-                         , linkResource = Just id
+                           allowNotClosed = True
+                         , emoticons      = Just (defaultEmoticonsBimap, "/static/emoticons")
+                         , linkResource   = Just id
                        }
     PostDataMarkdown v -> p_ [className_ "post-data-markdown"] $ elemText "markdown"
     _                  -> p_ [className_ "post-data-unknown"] $ elemText "unknown post body"
